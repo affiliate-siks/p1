@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Preuzmi kod</title>
+
+  <style>
+    :root{
+      /* Admiral palette (approximations) */
+      --adm-red: #D61F2C;
+      --adm-red-2:#B91723;
+      --adm-navy:#0B1B3A;
+      --adm-blue:#143B8F;
+      --bg:#071126;
+      --card:#0B1B3A;
+      --text:#EAF0FF;
+      --muted: rgba(234,240,255,.75);
+      --stroke: rgba(234,240,255,.14);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 16px;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px 16px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(214,31,44,.25), transparent 60%),
+        radial-gradient(900px 500px at 85% 20%, rgba(20,59,143,.25), transparent 60%),
+        linear-gradient(180deg, var(--bg), #050B18 70%);
+    }
+
+    .wrap{
+      width:100%;
+      max-width: 520px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(11,27,58,.92), rgba(11,27,58,.80));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(500px 200px at 20% 0%, rgba(214,31,44,.22), transparent 60%),
+                  radial-gradient(420px 180px at 90% 20%, rgba(20,59,143,.22), transparent 60%);
+      pointer-events:none;
+    }
+
+    .header{
+      position: relative;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom: 10px;
+    }
+
+    .badge{
+      width:42px; height:42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--adm-red), var(--adm-blue));
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 25px rgba(214,31,44,.25);
+      flex: 0 0 auto;
+    }
+    .badge svg{ opacity:.95; }
+
+    h1{
+      position: relative;
+      margin:0;
+      font-size: 20px;
+      letter-spacing: .2px;
+      line-height: 1.2;
+    }
+
+    p.sub{
+      position: relative;
+      margin: 8px 0 0 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    label{
+      position: relative;
+      display:block;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input{
+      position: relative;
+      width:100%;
+      margin-top: 8px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(5,11,24,.55);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    input::placeholder{ color: rgba(234,240,255,.45); }
+    input:focus{
+      border-color: rgba(214,31,44,.55);
+      box-shadow: 0 0 0 4px rgba(214,31,44,.12);
+    }
+
+    .btn{
+      position: relative;
+      margin-top: 16px;
+      width:100%;
+      padding: 12px 14px;
+      border:0;
+      border-radius: 12px;
+      cursor:pointer;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .2px;
+      background: linear-gradient(135deg, var(--adm-red), var(--adm-red-2));
+      box-shadow: 0 14px 30px rgba(214,31,44,.22);
+      transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+    }
+    .btn:hover{ filter: brightness(1.05); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0); }
+    .btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none;
+      filter:none;
+    }
+
+    .status{
+      position: relative;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 18px;
+    }
+
+    /* ===== Modal (popup) ===== */
+    .modal-overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .modal-overlay.show{ display:flex; }
+
+    .modal{
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(11,27,58,.95), rgba(5,11,24,.92));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform: translateY(8px);
+      opacity: 0;
+      animation: pop .18s ease forwards;
+    }
+    @keyframes pop{
+      to{ transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-top{
+      padding: 18px 18px 12px 18px;
+      display:flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--stroke);
+      background:
+        radial-gradient(420px 200px at 20% 0%, rgba(214,31,44,.22), transparent 60%),
+        radial-gradient(420px 200px at 90% 20%, rgba(20,59,143,.20), transparent 60%);
+    }
+
+    .icon{
+      width: 44px; height:44px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background: linear-gradient(135deg, var(--adm-red), var(--adm-blue));
+      flex: 0 0 auto;
+      box-shadow: 0 10px 25px rgba(20,59,143,.18);
+    }
+
+    .modal-title{
+      margin: 2px 0 0 0;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .modal-msg{
+      margin: 6px 0 0 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .modal-body{
+      padding: 16px 18px 18px 18px;
+    }
+
+    .code-box{
+      border-radius: 14px;
+      border: 1px solid rgba(214,31,44,.35);
+      background: linear-gradient(135deg, rgba(214,31,44,.18), rgba(20,59,143,.10));
+      padding: 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .copy{
+      border: 1px solid var(--stroke);
+      background: rgba(234,240,255,.06);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 700;
+      transition: filter .12s ease, transform .12s ease;
+      white-space: nowrap;
+    }
+    .copy:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+    .copy:active{ transform: translateY(0); }
+
+    .modal-actions{
+      margin-top: 12px;
+      display:flex;
+      gap: 10px;
+    }
+    .btn-secondary{
+      flex:1;
+      border: 1px solid var(--stroke);
+      background: rgba(234,240,255,.06);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 800;
+    }
+    .btn-primary{
+      flex:1;
+      border:0;
+      background: linear-gradient(135deg, var(--adm-red), var(--adm-red-2));
+      color:#fff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 800;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <div class="badge" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.4 9.4-8 10-4.6-.6-8-5-8-10V6l8-4Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 12l2 2 4-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Unesi podatke i preuzmi kod</h1>
+          <p class="sub">Prvih 10 prijava za današnji dan dobija jedinstveni kod. Ostalima se prikazuje poruka zahvalnosti.</p>
+        </div>
+      </div>
+
+      <form id="f">
+        <label>Ime i prezime</label>
+        <input id="fullName" autocomplete="name" required placeholder="npr. Marko Marković" />
+
+        <label>Broj telefona</label>
+        <input id="phone" autocomplete="tel" required placeholder="npr. +382 67 123 456" />
+
+        <button id="btn" class="btn" type="submit">Preuzmi kod</button>
+        <div class="status" id="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <div class="modal-top">
+        <div class="icon" id="modalIcon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2l8 4v6c0 5-3.4 9.4-8 10-4.6-.6-8-5-8-10V6l8-4Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="modal-title" id="modalTitle">Naslov</div>
+          <div class="modal-msg" id="modalMsg">Poruka</div>
+        </div>
+      </div>
+
+      <div class="modal-body" id="modalBody">
+        <!-- ubacuje se dinamički -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Web app URL koji si poslao
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxCdC4R7K8yLTB5AC-C6HyU3YAATjyCP4uDRdw262pxAo7uwKlfKHzsTVaG3TVHJbH4/exec";
+
+    const form = document.getElementById("f");
+    const btn = document.getElementById("btn");
+    const statusEl = document.getElementById("status");
+
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMsg = document.getElementById("modalMsg");
+    const modalBody = document.getElementById("modalBody");
+
+    function openModal({title, message, bodyHtml}) {
+      modalTitle.textContent = title || "";
+      modalMsg.textContent = message || "";
+      modalBody.innerHTML = bodyHtml || "";
+      modalOverlay.classList.add("show");
+      modalOverlay.setAttribute("aria-hidden", "false");
+      // focus management (basic)
+      const focusable = modalOverlay.querySelector("button");
+      if (focusable) focusable.focus();
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove("show");
+      modalOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    // Close on overlay click
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+    // Close on ESC
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modalOverlay.classList.contains("show")) closeModal();
+    });
+
+    function lockForm() {
+      btn.disabled = true;
+      form.querySelectorAll("input").forEach(i => i.disabled = true);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        ta.remove();
+        return ok;
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusEl.textContent = "";
+      btn.disabled = true;
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (fullName.length < 3) {
+        btn.disabled = false;
+        openModal({
+          title: "Nedostaje ime i prezime",
+          message: "Unesi ime i prezime da nastaviš.",
+          bodyHtml: `
+            <div class="modal-actions">
+              <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+            </div>
+          `
+        });
+        document.getElementById("closeBtn").onclick = closeModal;
+        return;
+      }
+
+      if (phone.length < 6) {
+        btn.disabled = false;
+        openModal({
+          title: "Nedostaje broj telefona",
+          message: "Unesi ispravan broj telefona da nastaviš.",
+          bodyHtml: `
+            <div class="modal-actions">
+              <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+            </div>
+          `
+        });
+        document.getElementById("closeBtn").onclick = closeModal;
+        return;
+      }
+
+      try {
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ fullName, phone })
+        });
+
+        const data = await res.json();
+
+        if (!data.ok) {
+          btn.disabled = false;
+          openModal({
+            title: "Nešto nije u redu",
+            message: data.message || "Došlo je do greške.",
+            bodyHtml: `
+              <div class="modal-actions">
+                <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+              </div>
+            `
+          });
+          document.getElementById("closeBtn").onclick = closeModal;
+          statusEl.textContent = data.message || "";
+          return;
+        }
+
+        if (data.status === "OK") {
+          const code = data.code || "";
+          openModal({
+            title: "Kod je uspješno dodijeljen",
+            message: "Sačuvaj kod i iskoristi ga prema pravilima promocije.",
+            bodyHtml: `
+              <div class="code-box">
+                <div class="code" id="codeText">${code}</div>
+                <button class="copy" type="button" id="copyBtn">Kopiraj</button>
+              </div>
+              <div class="modal-actions">
+                <button class="btn-secondary" type="button" id="closeBtn">Zatvori</button>
+                <button class="btn-primary" type="button" id="doneBtn">Gotovo</button>
+              </div>
+            `
+          });
+
+          document.getElementById("copyBtn").onclick = async () => {
+            const ok = await copyText(code);
+            document.getElementById("copyBtn").textContent = ok ? "Kopirano" : "Ne mogu kopirati";
+            setTimeout(() => (document.getElementById("copyBtn").textContent = "Kopiraj"), 1400);
+          };
+          document.getElementById("closeBtn").onclick = closeModal;
+          document.getElementById("doneBtn").onclick = () => { closeModal(); };
+
+          statusEl.textContent = "Kod je dodijeljen.";
+          lockForm();
+          return;
+        }
+
+        if (data.status === "FULL") {
+          openModal({
+            title: "Hvala na prijavi",
+            message: data.message || "Današnji kodovi su već podijeljeni. Prati nas sjutra za nove.",
+            bodyHtml: `
+              <div class="modal-actions">
+                <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+              </div>
+            `
+          });
+          document.getElementById("closeBtn").onclick = closeModal;
+
+          statusEl.textContent = data.message || "";
+          btn.disabled = false;
+          return;
+        }
+
+        btn.disabled = false;
+        openModal({
+          title: "Nepoznat odgovor",
+          message: "Pokušaj ponovo.",
+          bodyHtml: `
+            <div class="modal-actions">
+              <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+            </div>
+          `
+        });
+        document.getElementById("closeBtn").onclick = closeModal;
+
+      } catch (err) {
+        btn.disabled = false;
+        openModal({
+          title: "Greška pri slanju",
+          message: "Pokušaj ponovo za koji trenutak.",
+          bodyHtml: `
+            <div class="modal-actions">
+              <button class="btn-primary" type="button" id="closeBtn">U redu</button>
+            </div>
+          `
+        });
+        document.getElementById("closeBtn").onclick = closeModal;
+        statusEl.textContent = String(err);
+      }
+    });
+  </script>
+</body>
+</html>

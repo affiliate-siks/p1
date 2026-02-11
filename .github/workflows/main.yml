@@ -1,0 +1,82 @@
+name: Deploy to S3 (OIDC)
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  AWS_REGION: eu-central-1
+  SOURCE_DIR: "."
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::474668387276:role/affiliate-github
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set bucket name from repo
+        run: |
+          echo "S3_BUCKET=${GITHUB_REPOSITORY##*/}-siks" >> $GITHUB_ENV
+
+      - name: Ensure S3 bucket exists
+        run: |
+          set -euo pipefail
+
+          if aws s3api head-bucket --bucket "$S3_BUCKET" 2>/dev/null; then
+            echo "Bucket exists: $S3_BUCKET"
+          else
+            echo "Creating bucket: $S3_BUCKET in region: $AWS_REGION"
+
+            if [ "$AWS_REGION" = "us-east-1" ]; then
+              aws s3api create-bucket --bucket "$S3_BUCKET" --region "$AWS_REGION"
+            else
+              aws s3api create-bucket --bucket "$S3_BUCKET" --region "$AWS_REGION" \
+                --create-bucket-configuration LocationConstraint="$AWS_REGION"
+            fi
+          fi
+
+      - name: Enable S3 static website hosting
+        run: |
+          aws s3api put-bucket-website --bucket "$S3_BUCKET" --website-configuration '{
+            "IndexDocument": { "Suffix": "index.html" },
+            "ErrorDocument": { "Key": "index.html" }
+          }'
+
+      - name: Allow public access
+        run: |
+          aws s3api put-public-access-block --bucket "$S3_BUCKET" --public-access-block-configuration \
+            BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false
+
+      - name: Set public read policy
+        run: |
+          cat > /tmp/bucket-policy.json <<EOF
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::$S3_BUCKET/*"
+              }
+            ]
+          }
+          EOF
+          aws s3api put-bucket-policy --bucket "$S3_BUCKET" --policy file:///tmp/bucket-policy.json
+
+      - name: Sync to S3
+        run: |
+          aws s3 sync "$SOURCE_DIR" "s3://$S3_BUCKET" \
+            --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*"
