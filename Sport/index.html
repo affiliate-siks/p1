@@ -14,6 +14,13 @@
         font-family: Arial, sans-serif;
       }
 
+      /* REMOVE ALL OUTLINES */
+      *:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+
       body {
         position: relative;
         background-image:
@@ -36,23 +43,13 @@
       /* TOP CONTENT */
       .content-box {
         position: absolute;
-        top: 6%;
-        left: 5%;
-        width: 40%;
-        max-width: 520px;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+        top: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        text-align: center;
         z-index: 2;
         pointer-events: none;
-      }
-
-      .sub-heading {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
       }
 
       .main-heading {
@@ -66,10 +63,10 @@
         line-height: 0.95;
       }
 
-      /* BOTTOM CTA BUTTON */
+      /* CTA BUTTON */
       .cta-wrapper {
         position: absolute;
-        bottom: 6%;
+        bottom: 8%;
         left: 50%;
         transform: translateX(-50%);
         z-index: 3;
@@ -77,18 +74,18 @@
 
       .cta-button {
         display: inline-block;
-        padding: 1rem 2.2rem;
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #fff;
-        background: linear-gradient(135deg, #007bff, #00c6ff);
+        padding: 1rem 2.5rem;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #000;
+        background: #FFD400;
         border-radius: 999px;
         text-decoration: none;
-        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.5);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         pointer-events: auto;
       }
 
-      /* ===== MOBILE ===== */
+      /* MOBILE */
       @media (max-width: 768px) {
         body {
           background-image:
@@ -96,14 +93,6 @@
             url("/Sport/CURA1.1.jpg"),
             url("sport/cura1.1.jpg"),
             url("/sport/cura1.1.jpg");
-        }
-
-        .content-box {
-          left: 50%;
-          transform: translateX(-50%);
-          width: 90%;
-          align-items: center;
-          text-align: center;
         }
 
         .main-heading {
@@ -122,8 +111,7 @@
     <a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
     <div class="content-box">
-      <div class="sub-heading">Sport bonus</div>
-      <h1 class="main-heading">Изтеглете сега!</h1>
+      <h1 class="main-heading">Sport bonus</h1>
     </div>
 
     <div class="cta-wrapper">
