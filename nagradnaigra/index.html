@@ -17,21 +17,24 @@
       }
 
       body {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
+        position: relative;
         background-image: url("landingpage%20desctop.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
       }
 
+      /* ===== DESKTOP POSITION ===== */
       .content-box {
+        position: absolute;
+        top: 6%;
+        left: 5%;
         width: 40%;
+        max-width: 520px;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        align-items: flex-start;
+        text-align: left;
         gap: 1.25rem;
       }
 
@@ -42,7 +45,7 @@
         text-shadow:
           0 0 1.125rem rgba(0, 123, 255, 1),
           0 0 2rem rgba(0, 123, 255, 0.8);
-        margin: 18% 0 0;
+        margin: 0;
       }
 
       .desc-text {
@@ -52,28 +55,29 @@
         line-height: 1.4;
       }
 
+      /* ===== MOBILE ===== */
       @media (max-width: 768px) {
         body {
           background-image: url("landingpage%20mobile.jpg");
-          flex-direction: column;
-          justify-content: flex-start;
-          padding-top: 2.5rem;
         }
 
         .content-box {
+          top: 6%;
+          left: 50%;
+          transform: translateX(-50%);
           width: 90%;
+          max-width: none;
+          align-items: center;
+          text-align: center;
         }
 
         .main-heading {
           font-size: 3.4rem;
           line-height: 0.95;
-          margin-top: 2rem;
         }
 
         .desc-text {
           font-size: 1.375rem;
-          width: 95%;
-          margin: 0.625rem auto;
         }
       }
     </style>
