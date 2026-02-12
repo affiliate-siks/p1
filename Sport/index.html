@@ -12,13 +12,33 @@
         width: 100%;
         height: 100%;
         font-family: Arial, sans-serif;
+
+        /* MOBILE TAP HIGHLIGHT OFF */
+        -webkit-tap-highlight-color: transparent;
       }
 
-      /* REMOVE ALL OUTLINES */
-      *:focus {
+      /* 🔥 KILL ALL OUTLINES / FOCUS STATES */
+      *,
+      *::before,
+      *::after {
         outline: none !important;
         box-shadow: none !important;
-        -webkit-tap-highlight-color: transparent;
+      }
+
+      *:focus,
+      *:active,
+      *:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      a,
+      a:focus,
+      a:active,
+      a:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
       }
 
       body {
@@ -38,6 +58,7 @@
         position: fixed;
         inset: 0;
         z-index: 1;
+        outline: none;
       }
 
       /* TOP CONTENT */
@@ -83,6 +104,14 @@
         text-decoration: none;
         box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         pointer-events: auto;
+        outline: none;
+      }
+
+      .cta-button:focus,
+      .cta-button:active,
+      .cta-button:focus-visible {
+        outline: none !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
       }
 
       /* MOBILE */
