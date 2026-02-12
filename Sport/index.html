@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="bg">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,13 +12,14 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
         font-family: Arial, sans-serif;
       }
 
       body {
         position: relative;
-        background-image: url("Sport/CURA1.jpg");
+
+        /* 1) prvo proba tačno kako si dao, 2) fallback sa malim slovima */
+        background-image: url("Sport/CURA1.jpg"), url("sport/cura1.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -55,12 +56,13 @@
           0 0 1.125rem rgba(0, 123, 255, 1),
           0 0 2rem rgba(0, 123, 255, 0.8);
         margin: 0;
+        line-height: 0.95;
       }
 
       /* ===== MOBILE ===== */
       @media (max-width: 768px) {
         body {
-          background-image: url("Sport/CURA1.1.jpg");
+          background-image: url("Sport/CURA1.1.jpg"), url("sport/cura1.1.jpg");
         }
 
         .content-box {
@@ -75,21 +77,16 @@
 
         .main-heading {
           font-size: 3.4rem;
-          line-height: 0.95;
         }
       }
     </style>
   </head>
 
   <body>
-    <a
-      href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-      class="full-link"
-    ></a>
+    <a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
     <div class="content-box">
-      <h1 class="main-heading">Изтеглете сега!
-!</h1>
+      <h1 class="main-heading">Изтеглете сега!</h1>
     </div>
   </body>
 </html>
