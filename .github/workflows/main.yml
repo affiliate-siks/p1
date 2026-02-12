@@ -26,7 +26,7 @@ jobs:
 
       - name: Set bucket name from repo
         run: |
-          echo "S3_BUCKET=${GITHUB_REPOSITORY##*/}-siks" >> $GITHUB_ENV
+          echo "S3_BUCKET=${GITHUB_REPOSITORY##*/}-promo" >> $GITHUB_ENV
 
       - name: Ensure S3 bucket exists
         run: |
