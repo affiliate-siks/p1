@@ -26,12 +26,14 @@
         background-repeat: no-repeat;
       }
 
+      /* FULL PAGE CLICK OVERLAY */
       .full-link {
         position: fixed;
         inset: 0;
         z-index: 1;
       }
 
+      /* TOP CONTENT */
       .content-box {
         position: absolute;
         top: 6%;
@@ -40,22 +42,53 @@
         max-width: 520px;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-        gap: 1.25rem;
+        gap: 1rem;
         z-index: 2;
         pointer-events: none;
+      }
+
+      .sub-heading {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
       .main-heading {
         font-size: 5rem;
         font-weight: 900;
         color: #fff;
-        text-shadow: 0 0 1.125rem rgba(0, 123, 255, 1), 0 0 2rem rgba(0, 123, 255, 0.8);
+        text-shadow:
+          0 0 1.125rem rgba(0, 123, 255, 1),
+          0 0 2rem rgba(0, 123, 255, 0.8);
         margin: 0;
         line-height: 0.95;
       }
 
+      /* BOTTOM CTA BUTTON */
+      .cta-wrapper {
+        position: absolute;
+        bottom: 6%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2.2rem;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+        border-radius: 999px;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.5);
+        pointer-events: auto;
+      }
+
+      /* ===== MOBILE ===== */
       @media (max-width: 768px) {
         body {
           background-image:
@@ -66,17 +99,20 @@
         }
 
         .content-box {
-          top: 6%;
           left: 50%;
           transform: translateX(-50%);
           width: 90%;
-          max-width: none;
           align-items: center;
           text-align: center;
         }
 
         .main-heading {
           font-size: 3.4rem;
+        }
+
+        .cta-button {
+          font-size: 1.2rem;
+          padding: 0.9rem 2rem;
         }
       }
     </style>
@@ -86,7 +122,14 @@
     <a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
     <div class="content-box">
+      <div class="sub-heading">Sport bonus</div>
       <h1 class="main-heading">Изтеглете сега!</h1>
+    </div>
+
+    <div class="cta-wrapper">
+      <a href="https://bit.ly/4rxwmTz" class="cta-button">
+        Изтеглете сега!
+      </a>
     </div>
   </body>
 </html>
