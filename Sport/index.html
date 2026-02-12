@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Изтеглете сега!</title>
+    <title>Osvoji Mercedes GLC SAD!</title>
 
     <style>
       html,
@@ -13,155 +14,81 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background: #000;
         font-family: Arial, sans-serif;
       }
 
-      .stage {
+      body {
+        position: relative;
+        background-image: url("landingpage%20desctop.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* FULL PAGE CLICK OVERLAY */
+      .full-link {
         position: fixed;
         inset: 0;
-        background: #000;
         z-index: 1;
       }
 
-      .stage video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      /* ===== DESKTOP POSITION ===== */
+      .content-box {
+        position: absolute;
+        top: 6%;
+        left: 5%;
+        width: 40%;
+        max-width: 520px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 1.25rem;
+        z-index: 2;
+        pointer-events: none;
       }
 
-      .spin-btn {
-        position: fixed;
-        left: 50%;
-        bottom: 2.5rem;
-        transform: translateX(-50%);
-        padding: 1.25rem 5.5rem;
-        font-size: 1.75rem;
-        font-weight: 800;
-        background: #ffcb05;
-        color: #000;
-        border: none;
-        border-radius: 3.75rem;
-        box-shadow: 0 0 0.875rem rgba(0, 123, 255, 0.8);
-        cursor: pointer;
-        z-index: 10;
-        white-space: nowrap;
-        transition: transform 0.2s ease;
+      .main-heading {
+        font-size: 5rem;
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow:
+          0 0 1.125rem rgba(0, 123, 255, 1),
+          0 0 2rem rgba(0, 123, 255, 0.8);
+        margin: 0;
       }
 
-      .spin-btn:hover {
-        transform: translateX(-50%) scale(1.05);
+      /* ===== MOBILE ===== */
+      @media (max-width: 768px) {
+        body {
+          background-image: url("landingpage%20mobile.jpg");
+        }
+
+        .content-box {
+          top: 6%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: none;
+          align-items: center;
+          text-align: center;
+        }
+
+        .main-heading {
+          font-size: 3.4rem;
+          line-height: 0.95;
+        }
       }
     </style>
   </head>
 
   <body>
-    <div class="stage">
-      <video id="video" playsinline preload="auto"></video>
+
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="full-link"></a>
+
+    <div class="content-box">
+      <h1 class="main-heading">Osvoji Mercedes GLC SAD!</h1>
     </div>
 
-    <button id="spinBtn" class="spin-btn">Изтеглете сега!</button>
-
-    <script>
-      const video = document.getElementById("video");
-      const btn = document.getElementById("spinBtn");
-
-      const FINAL_URL = "https://bit.ly/4rxwmTz";
-
-      // 0 = spreman (prvi klik -> 1.mp4)
-      // 1 = prvi video odgledan (drugi klik -> 2.mp4 od 2. sekunde)
-      // 2 = drugi video odgledan (klik -> redirect)
-      let step = 0;
-      let playing = false;
-
-      // (opciono) postavi inicijalni preview na zadnju sekundu 1.mp4,
-      // ali NE puštaj ništa na load.
-      video.src = "1.mp4";
-      video.muted = true;
-      video.addEventListener("loadedmetadata", () => {
-        // preview = zadnja sekunda 1.mp4
-        video.currentTime = Math.max(video.duration - 1, 0);
-        video.pause();
-      });
-
-      function playFrom(src, startSeconds, onDone) {
-        playing = true;
-        video.onended = null;
-
-        // promijeni source samo kad treba (izbjegava blink)
-        if (video.src.indexOf(src) === -1) {
-          video.src = src;
-        }
-
-        const startPlayback = () => {
-          // clamp ako je video kraći
-          const safeStart = Math.min(
-            Math.max(startSeconds, 0),
-            Math.max((video.duration || 0) - 0.05, 0)
-          );
-
-          const onSeeked = () => {
-            video.removeEventListener("seeked", onSeeked);
-            video.muted = false;
-
-            video.play().catch(() => {
-              // ako browser blokira, bar pusti bez zvuka
-              video.muted = true;
-              video.play().catch(() => {});
-            });
-          };
-
-          video.addEventListener("seeked", onSeeked);
-          video.currentTime = safeStart;
-
-          video.onended = () => {
-            playing = false;
-            onDone && onDone();
-          };
-        };
-
-        // ako duration nije spreman, čekaj metadata
-        if (!isFinite(video.duration) || video.duration === 0) {
-          const onMeta = () => {
-            video.removeEventListener("loadedmetadata", onMeta);
-            startPlayback();
-          };
-          video.addEventListener("loadedmetadata", onMeta);
-          video.load();
-        } else {
-          startPlayback();
-        }
-      }
-
-      btn.addEventListener("click", () => {
-        if (playing) return;
-
-        // 1) PRVI KLIK: pusti 1.mp4 od početka
-        if (step === 0) {
-          playFrom("1.mp4", 0, () => {
-            // nakon završetka 1.mp4: zamrzni na zadnjoj sekundi (preview)
-            video.muted = true;
-            video.currentTime = Math.max(video.duration - 1, 0);
-            video.pause();
-            step = 1;
-          });
-        }
-
-        // 2) DRUGI KLIK: pusti 2.mp4 od 2. sekunde
-        else if (step === 1) {
-          playFrom("2.mp4", 2, () => {
-            // nakon završetka 2.mp4: freeze zadnji kadar
-            video.pause();
-            step = 2;
-            btn.textContent = "Continue";
-          });
-        }
-
-        // 3) TREĆI KLIK: redirect
-        else if (step === 2) {
-          window.location.href = FINAL_URL;
-        }
-      });
-    </script>
   </body>
 </html>
