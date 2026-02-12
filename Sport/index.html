@@ -6,8 +6,7 @@
     <title>Sport bonus</title>
 
     <style>
-      html,
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -17,22 +16,22 @@
 
       body {
         position: relative;
-
-        /* 1) prvo proba tačno kako si dao, 2) fallback sa malim slovima */
-        background-image: url("Sport/CURA1.jpg"), url("sport/CURA1.jpg");
+        background-image:
+          url("Sport/CURA1.jpg"),
+          url("/Sport/CURA1.jpg"),
+          url("sport/cura1.jpg"),
+          url("/sport/cura1.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
       }
 
-      /* FULL PAGE CLICK OVERLAY */
       .full-link {
         position: fixed;
         inset: 0;
         z-index: 1;
       }
 
-      /* ===== DESKTOP POSITION ===== */
       .content-box {
         position: absolute;
         top: 6%;
@@ -51,18 +50,19 @@
       .main-heading {
         font-size: 5rem;
         font-weight: 900;
-        color: #ffffff;
-        text-shadow:
-          0 0 1.125rem rgba(0, 123, 255, 1),
-          0 0 2rem rgba(0, 123, 255, 0.8);
+        color: #fff;
+        text-shadow: 0 0 1.125rem rgba(0, 123, 255, 1), 0 0 2rem rgba(0, 123, 255, 0.8);
         margin: 0;
         line-height: 0.95;
       }
 
-      /* ===== MOBILE ===== */
       @media (max-width: 768px) {
         body {
-          background-image: url("Sport/CURA1.1.jpg"), url("sport/CURA1.1.jpg");
+          background-image:
+            url("Sport/CURA1.1.jpg"),
+            url("/Sport/CURA1.1.jpg"),
+            url("sport/cura1.1.jpg"),
+            url("/sport/cura1.1.jpg");
         }
 
         .content-box {
