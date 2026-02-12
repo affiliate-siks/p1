@@ -24,6 +24,13 @@
         background-repeat: no-repeat;
       }
 
+      /* FULL PAGE CLICK OVERLAY */
+      .full-link {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+      }
+
       /* ===== DESKTOP POSITION ===== */
       .content-box {
         position: absolute;
@@ -36,6 +43,8 @@
         align-items: flex-start;
         text-align: left;
         gap: 1.25rem;
+        z-index: 2;
+        pointer-events: none;
       }
 
       .main-heading {
@@ -46,13 +55,6 @@
           0 0 1.125rem rgba(0, 123, 255, 1),
           0 0 2rem rgba(0, 123, 255, 0.8);
         margin: 0;
-      }
-
-      .desc-text {
-        font-size: 1.75rem;
-        font-weight: 500;
-        color: #ffffff;
-        line-height: 1.4;
       }
 
       /* ===== MOBILE ===== */
@@ -75,18 +77,17 @@
           font-size: 3.4rem;
           line-height: 0.95;
         }
-
-        .desc-text {
-          font-size: 1.375rem;
-        }
       }
     </style>
   </head>
 
   <body>
+
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="full-link"></a>
+
     <div class="content-box">
       <h1 class="main-heading">Osvoji Mercedes GLC SAD!</h1>
-
     </div>
+
   </body>
 </html>
