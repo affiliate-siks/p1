@@ -6,15 +6,9 @@
 <title>TRIPLE BONUS</title>
 
 <style>
-:root{
-  --yellow:#FFD400;
-}
+:root{ --yellow:#FFD400; }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
 html,body{
   width:100%;
@@ -24,35 +18,37 @@ html,body{
   color:#fff;
 }
 
+/* Fallback background (ako video ne ucita) */
+body{
+  background: url("casgrl.jpg") no-repeat center center;
+  background-size: cover;
+}
+
 /* VIDEO BACKGROUND */
 .video-bg{
   position:fixed;
-  top:0;
-  left:0;
+  inset:0;
   width:100vw;
   height:100vh;
   object-fit:cover;
-  filter:blur(6px); /* ~30% */
-  transform:scale(1.08);
+  filter: blur(6px);        /* ~30% vizuelno */
+  transform: scale(1.08);   /* sakrije blur ivice */
   z-index:-2;
 }
 
-/* Dark overlay */
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.50);
   z-index:-1;
 }
 
-/* Full click area */
 .full-link{
   position:fixed;
   inset:0;
   z-index:1;
 }
 
-/* CENTERED CONTENT */
 .container{
   position:relative;
   z-index:2;
@@ -65,46 +61,42 @@ html,body{
   padding:20px;
 }
 
-.content{
-  max-width:800px;
-}
+.content{ max-width:820px; }
 
 .tag{
   display:inline-block;
   padding:10px 18px;
-  border-radius:50px;
-  background:rgba(255,212,0,0.2);
-  border:1px solid rgba(255,212,0,0.4);
+  border-radius:999px;
+  background:rgba(255,212,0,.20);
+  border:1px solid rgba(255,212,0,.40);
   font-weight:900;
-  margin-bottom:25px;
+  margin-bottom:22px;
 }
 
 h1{
   font-size:clamp(2.2rem,5vw,3.8rem);
   font-weight:900;
   line-height:1.05;
-  margin-bottom:20px;
+  margin-bottom:18px;
 }
 
-.highlight{
-  color:var(--yellow);
-}
+.highlight{ color:var(--yellow); }
 
 .sub{
   font-size:1.1rem;
-  margin-bottom:35px;
+  margin-bottom:30px;
 }
 
 .bonus-box{
   border:2px solid var(--yellow);
-  padding:22px;
   border-radius:18px;
-  background:rgba(0,0,0,0.6);
-  margin-bottom:35px;
+  padding:22px;
+  background:rgba(0,0,0,0.62);
+  margin-bottom:30px;
 }
 
 .bonus-box h2{
-  font-size:2.2rem;
+  font-size:clamp(1.9rem,4vw,2.4rem);
   font-weight:900;
 }
 
@@ -112,52 +104,43 @@ h1{
   display:inline-block;
   background:var(--yellow);
   color:#000;
-  padding:18px 50px;
+  padding:18px 54px;
   font-weight:900;
   border-radius:60px;
   text-decoration:none;
   font-size:1.15rem;
   pointer-events:auto;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- VIDEO -->
-<video class="video-bg" autoplay muted loop playsinline>
-  <source src="bugarska/casgrl.mp4" type="video/mp4">
+<!-- ✅ src je samo "casgrl.mp4" jer je u istom folderu kao index.html -->
+<video class="video-bg" autoplay muted loop playsinline preload="auto" poster="casgrl.jpg">
+  <source src="casgrl.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<a href="https://bit.ly/4rxwmTz" class="full-link"></a>
+<a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
 <div class="container">
   <div class="content">
-
-    <div class="tag">
-      TRIPLE BONUS
-    </div>
+    <div class="tag">TRIPLE BONUS</div>
 
     <h1>
       <span class="highlight">100% + 150% + 250%</span><br>
       ON YOUR FIRST DEPOSITS
     </h1>
 
-    <div class="sub">
-      Three explosive boosts. One powerful start.
-    </div>
+    <div class="sub">Three explosive boosts. One powerful start.</div>
 
     <div class="bonus-box">
       <h2>Up to 500€ total bonus</h2>
     </div>
 
-    <a href="https://bit.ly/4rxwmTz" class="cta">
-      CLAIM NOW
-    </a>
-
+    <a href="https://bit.ly/4rxwmTz" class="cta">CLAIM NOW</a>
   </div>
 </div>
 
