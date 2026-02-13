@@ -16,15 +16,10 @@ html,body{
   overflow:hidden;
   font-family:Arial, Helvetica, sans-serif;
   color:#fff;
+  background:#000; /* fallback boja ako video kasni */
 }
 
-/* fallback image */
-body{
-  background:url("casgrl.jpg") no-repeat center center;
-  background-size:cover;
-}
-
-/* video bg */
+/* VIDEO BACKGROUND – ONLY */
 .video-bg{
   position:fixed;
   inset:0;
@@ -36,22 +31,22 @@ body{
   z-index:-2;
 }
 
-/* darker overlay */
+/* DARK OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.70);
+  background:rgba(0,0,0,0.72);
   z-index:-1;
 }
 
-/* full click */
+/* FULL CLICK */
 .full-link{
   position:fixed;
   inset:0;
   z-index:1;
 }
 
-/* center layout */
+/* CENTERED LAYOUT */
 .container{
   position:relative;
   z-index:2;
@@ -64,7 +59,7 @@ body{
   text-align:center;
 }
 
-/* locked content width for mobile (prevents “nabacivanje”) */
+/* CONTENT LOCK */
 .content{
   width:min(520px, 92vw);
   display:flex;
@@ -73,7 +68,7 @@ body{
   gap: clamp(12px, 3.5vw, 18px);
 }
 
-/* tag */
+/* TAG */
 .tag{
   display:inline-flex;
   align-items:center;
@@ -87,7 +82,7 @@ body{
   letter-spacing:.3px;
 }
 
-/* headline */
+/* HEADLINE */
 h1{
   font-weight:900;
   line-height:1.06;
@@ -98,16 +93,16 @@ h1{
 
 .highlight{ color:var(--yellow); }
 
-/* sub */
+/* SUB */
 .sub{
   font-size: clamp(1.0rem, 3.9vw, 1.15rem);
   line-height:1.35;
   opacity:.92;
-  max-width: 34ch;           /* clean mobile line length */
+  max-width: 34ch;
   text-wrap: balance;
 }
 
-/* bonus box */
+/* BONUS BOX */
 .bonus-box{
   width:100%;
   border:2px solid var(--yellow);
@@ -137,42 +132,46 @@ h1{
   font-size: clamp(1.0rem, 4.2vw, 1.15rem);
   pointer-events:auto;
 }
-
-/* extra mobile tightening */
-@media (max-width: 390px){
-  .content{ width:92vw; gap:12px; }
-  .bonus-box{ border-width:2px; }
-}
 </style>
 </head>
 
 <body>
 
-<video class="video-bg" autoplay muted loop playsinline preload="auto" poster="casgrl.jpg">
+<!-- VIDEO BACKGROUND -->
+<video class="video-bg"
+       autoplay
+       muted
+       loop
+       playsinline
+       preload="auto">
   <source src="casgrl.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
+<a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Отвори офертата"></a>
 
 <div class="container">
   <div class="content">
 
-    <div class="tag">TRIPLE BONUS</div>
+    <div class="tag">ТРОЕН БОНУС</div>
 
     <h1>
       <span class="highlight">100% + 150% + 250%</span><br>
-      ON YOUR FIRST DEPOSITS
+      ПРИ ПЪРВИТЕ ТИ ДЕПОЗИТИ
     </h1>
 
-    <div class="sub">Three explosive boosts. One powerful start.</div>
-
-    <div class="bonus-box">
-      <h2>Up to 500€ total bonus</h2>
+    <div class="sub">
+      Три мощни бонуса. Един силен старт.
     </div>
 
-    <a class="cta" href="https://bit.ly/4rxwmTz">CLAIM NOW</a>
+    <div class="bonus-box">
+      <h2>До 500€ общ бонус</h2>
+    </div>
+
+    <a class="cta" href="https://bit.ly/4rxwmTz">
+      ВЗЕМИ БОНУСА СЕГА
+    </a>
 
   </div>
 </div>
