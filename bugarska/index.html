@@ -29,11 +29,11 @@ html,body{
   position:fixed;
   top:0;
   left:0;
-  width:100%;
-  height:100%;
+  width:100vw;
+  height:100vh;
   object-fit:cover;
-  filter:blur(6px); /* ≈ 30% blur vizuelno */
-  transform:scale(1.05); /* da sakrije blur ivice */
+  filter:blur(6px); /* ~30% */
+  transform:scale(1.08);
   z-index:-2;
 }
 
@@ -41,50 +41,49 @@ html,body{
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(0,0,0,0.5);
   z-index:-1;
 }
 
-/* Klik preko cijele stranice */
+/* Full click area */
 .full-link{
   position:fixed;
   inset:0;
   z-index:1;
 }
 
+/* CENTERED CONTENT */
 .container{
   position:relative;
   z-index:2;
-  width:min(900px, 90vw);
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
   padding:20px;
 }
 
-.logo{
-  font-size:26px;
-  font-weight:900;
-  margin-bottom:20px;
-}
-
-.logo span{
-  color:var(--yellow);
+.content{
+  max-width:800px;
 }
 
 .tag{
   display:inline-block;
-  padding:8px 16px;
+  padding:10px 18px;
   border-radius:50px;
   background:rgba(255,212,0,0.2);
   border:1px solid rgba(255,212,0,0.4);
   font-weight:900;
-  margin-bottom:20px;
+  margin-bottom:25px;
 }
 
 h1{
-  font-size:clamp(2rem,4.5vw,3.2rem);
+  font-size:clamp(2.2rem,5vw,3.8rem);
   font-weight:900;
   line-height:1.05;
-  margin-bottom:15px;
+  margin-bottom:20px;
 }
 
 .highlight{
@@ -92,20 +91,20 @@ h1{
 }
 
 .sub{
-  font-size:1.05rem;
-  margin-bottom:30px;
+  font-size:1.1rem;
+  margin-bottom:35px;
 }
 
 .bonus-box{
   border:2px solid var(--yellow);
-  padding:18px;
-  border-radius:16px;
+  padding:22px;
+  border-radius:18px;
   background:rgba(0,0,0,0.6);
-  margin-bottom:30px;
+  margin-bottom:35px;
 }
 
 .bonus-box h2{
-  font-size:2rem;
+  font-size:2.2rem;
   font-weight:900;
 }
 
@@ -113,18 +112,14 @@ h1{
   display:inline-block;
   background:var(--yellow);
   color:#000;
-  padding:15px 40px;
+  padding:18px 50px;
   font-weight:900;
-  border-radius:50px;
+  border-radius:60px;
   text-decoration:none;
+  font-size:1.15rem;
   pointer-events:auto;
 }
 
-.legal{
-  margin-top:20px;
-  font-size:0.75rem;
-  opacity:0.8;
-}
 </style>
 </head>
 
@@ -140,36 +135,30 @@ h1{
 <a href="https://bit.ly/4rxwmTz" class="full-link"></a>
 
 <div class="container">
+  <div class="content">
 
-  <div class="logo">
-    Admiral<span>Bet</span>
+    <div class="tag">
+      TRIPLE BONUS
+    </div>
+
+    <h1>
+      <span class="highlight">100% + 150% + 250%</span><br>
+      ON YOUR FIRST DEPOSITS
+    </h1>
+
+    <div class="sub">
+      Three explosive boosts. One powerful start.
+    </div>
+
+    <div class="bonus-box">
+      <h2>Up to 500€ total bonus</h2>
+    </div>
+
+    <a href="https://bit.ly/4rxwmTz" class="cta">
+      CLAIM NOW
+    </a>
+
   </div>
-
-  <div class="tag">
-    TRIPLE BONUS
-  </div>
-
-  <h1>
-    <span class="highlight">100% + 150% + 250%</span><br>
-    ON YOUR FIRST DEPOSITS
-  </h1>
-
-  <div class="sub">
-    Three explosive boosts. One powerful start.
-  </div>
-
-  <div class="bonus-box">
-    <h2>Up to 500€ total bonus</h2>
-  </div>
-
-  <a href="https://bit.ly/4rxwmTz" class="cta">
-    CLAIM NOW
-  </a>
-
-  <div class="legal">
-    Terms apply. Play responsibly.
-  </div>
-
 </div>
 
 </body>
