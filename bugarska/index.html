@@ -24,13 +24,25 @@ html,body{
   color:#fff;
 }
 
-/* ✅ ČISTA BACKGROUND SLIKA */
-body{
-  background: url("/bugarska/casgrl.jpg") no-repeat center center;
-  background-size: cover;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* VIDEO BACKGROUND */
+.video-bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(6px); /* ≈ 30% blur vizuelno */
+  transform:scale(1.05); /* da sakrije blur ivice */
+  z-index:-2;
+}
+
+/* Dark overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:-1;
 }
 
 /* Klik preko cijele stranice */
@@ -113,11 +125,17 @@ h1{
   font-size:0.75rem;
   opacity:0.8;
 }
-
 </style>
 </head>
 
 <body>
+
+<!-- VIDEO -->
+<video class="video-bg" autoplay muted loop playsinline>
+  <source src="bugarska/casgrl.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
 
 <a href="https://bit.ly/4rxwmTz" class="full-link"></a>
 
