@@ -1,48 +1,70 @@
 <!doctype html>
-<html lang="en">
+<html lang="bg">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Osvoji Mercedes GLC SAD!</title>
+    <title>Sport Bonus</title>
 
     <style>
-      html,
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
         font-family: Arial, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* REMOVE ALL OUTLINES */
+      *,
+      *::before,
+      *::after {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      *:focus,
+      *:active,
+      *:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      a,
+      a:focus,
+      a:active,
+      a:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent !important;
       }
 
       body {
         position: relative;
-        background-image: url("landingpage%20desctop.jpg");
+        background-image:
+          url("Sport/CURA1.jpg"),
+          url("/Sport/CURA1.jpg"),
+          url("sport/cura1.jpg"),
+          url("/sport/cura1.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
       }
 
-      /* FULL PAGE CLICK OVERLAY */
       .full-link {
         position: fixed;
         inset: 0;
         z-index: 1;
       }
 
-      /* ===== DESKTOP POSITION ===== */
+      /* CONTENT */
       .content-box {
         position: absolute;
-        top: 6%;
-        left: 5%;
-        width: 40%;
-        max-width: 520px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
-        gap: 1.25rem;
+        top: 8%;
+        left: 40%; /* 10% offset ulijevo */
+        transform: translateX(-50%);
+        width: 90%;
+        text-align: center;
         z-index: 2;
         pointer-events: none;
       }
@@ -50,44 +72,100 @@
       .main-heading {
         font-size: 5rem;
         font-weight: 900;
-        color: #ffffff;
+        color: #fff;
         text-shadow:
           0 0 1.125rem rgba(0, 123, 255, 1),
           0 0 2rem rgba(0, 123, 255, 0.8);
         margin: 0;
+        line-height: 0.95;
       }
 
-      /* ===== MOBILE ===== */
+      .sub-text {
+        margin-top: 1rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #ffffff;
+        text-shadow: 0 0 15px rgba(0,0,0,0.6);
+      }
+
+      /* CTA BUTTON */
+      .cta-wrapper {
+        position: absolute;
+        bottom: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #000;
+        background: #FFD400;
+        border-radius: 999px;
+        text-decoration: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        pointer-events: auto;
+      }
+
+      .cta-button:focus,
+      .cta-button:active,
+      .cta-button:focus-visible {
+        outline: none !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+      }
+
+      /* MOBILE */
       @media (max-width: 768px) {
         body {
-          background-image: url("landingpage%20mobile.jpg");
+          background-image:
+            url("Sport/CURA1.1.jpg"),
+            url("/Sport/CURA1.1.jpg"),
+            url("sport/cura1.1.jpg"),
+            url("/sport/cura1.1.jpg");
         }
 
         .content-box {
-          top: 6%;
           left: 50%;
           transform: translateX(-50%);
-          width: 90%;
-          max-width: none;
-          align-items: center;
-          text-align: center;
         }
 
         .main-heading {
           font-size: 3.4rem;
-          line-height: 0.95;
+        }
+
+        .sub-text {
+          font-size: 1.05rem;
+          padding: 0 10px;
+        }
+
+        .cta-button {
+          font-size: 1.2rem;
+          padding: 0.9rem 2rem;
         }
       }
     </style>
   </head>
 
   <body>
-
-    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="full-link"></a>
+    <a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
     <div class="content-box">
-      <h1 class="main-heading">Osvoji Mercedes GLC SAD!</h1>
+      <h1 class="main-heading">Sport bonus</h1>
+      <div class="sub-text">
+        Два бонуса за по-силен старт
+      </div>
+      <div class="sub-text">
+        150% спортен бонус + 10€ безрисков залог на живо.
+      </div>
     </div>
 
+    <div class="cta-wrapper">
+      <a href="https://bit.ly/4rxwmTz" class="cta-button">
+        Изтеглете сега!
+      </a>
+    </div>
   </body>
 </html>
