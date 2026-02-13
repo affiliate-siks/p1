@@ -16,10 +16,10 @@ html,body{
   overflow:hidden;
   font-family:Arial, Helvetica, sans-serif;
   color:#fff;
-  background:#000; /* fallback boja ako video kasni */
+  background:#000; /* fallback boja */
 }
 
-/* VIDEO BACKGROUND – ONLY */
+/* VIDEO BACKGROUND (NO negative z-index) */
 .video-bg{
   position:fixed;
   inset:0;
@@ -28,7 +28,7 @@ html,body{
   object-fit:cover;
   filter: blur(12px);
   transform: scale(1.14);
-  z-index:-2;
+  z-index:0;
 }
 
 /* DARK OVERLAY */
@@ -36,22 +36,21 @@ html,body{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.72);
-  z-index:-1;
+  z-index:1;
 }
 
 /* FULL CLICK */
 .full-link{
   position:fixed;
   inset:0;
-  z-index:1;
+  z-index:2;
 }
 
 /* CENTERED LAYOUT */
 .container{
-  position:relative;
-  z-index:2;
-  width:100%;
-  height:100%;
+  position:fixed;
+  inset:0;
+  z-index:3;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -59,7 +58,6 @@ html,body{
   text-align:center;
 }
 
-/* CONTENT LOCK */
 .content{
   width:min(520px, 92vw);
   display:flex;
@@ -90,7 +88,6 @@ h1{
   font-size: clamp(1.85rem, 7.2vw, 3.1rem);
   text-wrap: balance;
 }
-
 .highlight{ color:var(--yellow); }
 
 /* SUB */
@@ -110,14 +107,13 @@ h1{
   padding: clamp(14px, 4.2vw, 18px);
   background:rgba(0,0,0,0.72);
 }
-
 .bonus-box h2{
   font-size: clamp(1.35rem, 5.6vw, 2.05rem);
   font-weight:900;
   line-height:1.1;
 }
 
-/* CTA */
+/* CTA (above full-link, so it stays clickable) */
 .cta{
   display:inline-flex;
   align-items:center;
@@ -137,13 +133,7 @@ h1{
 
 <body>
 
-<!-- VIDEO BACKGROUND -->
-<video class="video-bg"
-       autoplay
-       muted
-       loop
-       playsinline
-       preload="auto">
+<video class="video-bg" autoplay muted loop playsinline preload="auto">
   <source src="casgrl.mp4" type="video/mp4">
 </video>
 
@@ -153,7 +143,6 @@ h1{
 
 <div class="container">
   <div class="content">
-
     <div class="tag">ТРОЕН БОНУС</div>
 
     <h1>
@@ -161,18 +150,13 @@ h1{
       ПРИ ПЪРВИТЕ ТИ ДЕПОЗИТИ
     </h1>
 
-    <div class="sub">
-      Три мощни бонуса. Един силен старт.
-    </div>
+    <div class="sub">Три мощни бонуса. Един силен старт.</div>
 
     <div class="bonus-box">
       <h2>До 500€ общ бонус</h2>
     </div>
 
-    <a class="cta" href="https://bit.ly/4rxwmTz">
-      ВЗЕМИ БОНУСА СЕГА
-    </a>
-
+    <a class="cta" href="https://bit.ly/4rxwmTz">ВЗЕМИ БОНУСА СЕГА</a>
   </div>
 </div>
 
