@@ -31,10 +31,10 @@
         z-index: 1;
       }
 
-      /* ===== DESKTOP POSITION ===== */
+      /* CONTENT */
       .content-box {
         position: absolute;
-        top: 6%;
+        top: 14%; /* spušten tekst */
         left: 5%;
         width: 40%;
         max-width: 520px;
@@ -57,25 +57,51 @@
         margin: 0;
       }
 
-      /* ===== MOBILE ===== */
+      /* CTA BUTTON */
+      .cta-wrapper {
+        position: fixed;
+        bottom: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        pointer-events: auto;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        background: #7360f2;
+        border-radius: 999px;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(115, 96, 242, 0.5);
+      }
+
+      /* MOBILE */
       @media (max-width: 768px) {
         body {
           background-image: url("viber.jpg");
         }
 
         .content-box {
-          top: 6%;
+          top: 16%;
           left: 50%;
           transform: translateX(-50%);
           width: 90%;
-          max-width: none;
           align-items: center;
           text-align: center;
         }
 
         .main-heading {
-          font-size: 3.4rem;
-          line-height: 0.95;
+          font-size: 3.2rem;
+          line-height: 1;
+        }
+
+        .cta-button {
+          font-size: 1.1rem;
+          padding: 0.9rem 2rem;
         }
       }
     </style>
@@ -91,6 +117,13 @@
 
     <div class="content-box">
       <h1 class="main-heading">Uđi u Viber zajednicu!</h1>
+    </div>
+
+    <!-- CTA BUTTON -->
+    <div class="cta-wrapper">
+      <a href="https://bit.ly/4raVpLP" class="cta-button">
+        Pridruži se sada
+      </a>
     </div>
   </body>
 </html>
