@@ -4,28 +4,54 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Landing</title>
+  <meta name="robots" content="noindex,nofollow" />
   <style>
-    body { font-family: system-ui, Arial; max-width: 720px; margin: 40px auto; padding: 0 16px; }
-    button { font-size: 18px; padding: 12px 16px; cursor: pointer; }
-    .box { margin-top: 18px; padding: 14px; border: 1px solid #ddd; border-radius: 10px; }
-    ul { margin: 10px 0 0; padding-left: 18px; }
+    body { font-family: system-ui, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 18px; }
+    button, a.btn {
+      display: inline-block;
+      font-size: 18px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      text-decoration: none;
+      background: #111;
+      color: #fff;
+    }
+    .muted { color: #666; font-size: 14px; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h1>Landing</h1>
-  <p>Klikni dugme. Event ide u Google Sheet + dobijaš statistiku.</p>
+  <div class="card">
+    <h1>Landing</h1>
+    <p>Klik na dugme vodi na eksterni link. U Sheet se bilježi odakle je korisnik došao i da li je kliknuo.</p>
 
-  <button id="cta">Klik</button>
-
-  <div class="box">
-    <div><strong>Ukupno klikova:</strong> <span id="total">0</span></div>
-    <div style="margin-top:10px;"><strong>Klikovi po izvoru (utm_source ili referrer):</strong></div>
-    <ul id="list"></ul>
+    <button id="cta" type="button">Nastavi</button>
+    <div class="muted">Napomena: Referrer može biti prazan zbog browser/app pravila. UTM parametri se uvijek hvataju ako su u URL-u.</div>
   </div>
 
   <script>
+    // ====== KONFIG ======
     const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby3dZE46rmHiyVcEGdNhoFaHN_w2fGuiTgpCRB_p_VDGVK44-aNypfgeYz0yzYlPeHcJA/exec";
-    const SHEET_ID = "spreadsheets/d/1s9Lm83xDYoo3ilVoDyRs3GxNfjkyNpmzt427VD1h3oA";
+    const SHEET_ID   = "1s9Lm83xDYoo3ilVoDyRs3GxNfjkyNpmzt427VD1h3oA";
+
+    // Redirect destinacija (zamijeni svojim linkom)
+    const REDIRECT_URL = "https://example.com/";
+
+    // Ako želiš random redirect iz liste, ubaci više linkova i uključi USE_RANDOM_REDIRECT
+    const USE_RANDOM_REDIRECT = false;
+    const REDIRECT_POOL = [
+      "https://example.com/",
+      "https://example.org/",
+      "https://example.net/"
+    ];
+    // ====================
+
+    function pickRedirectUrl() {
+      if (!USE_RANDOM_REDIRECT) return REDIRECT_URL;
+      return REDIRECT_POOL[Math.floor(Math.random() * REDIRECT_POOL.length)];
+    }
 
     function getOrCreateVisitorId() {
       const key = "visitor_id";
@@ -37,19 +63,18 @@
       return id;
     }
 
-    function getParams() {
+    function getUtm() {
       const u = new URL(window.location.href);
       return {
-        utm_source: u.searchParams.get("utm_source") || "",
-        utm_medium: u.searchParams.get("utm_medium") || "",
+        utm_source:   u.searchParams.get("utm_source")   || "",
+        utm_medium:   u.searchParams.get("utm_medium")   || "",
         utm_campaign: u.searchParams.get("utm_campaign") || "",
-        utm_content: u.searchParams.get("utm_content") || "",
-        utm_term: u.searchParams.get("utm_term") || ""
+        utm_content:  u.searchParams.get("utm_content")  || "",
+        utm_term:     u.searchParams.get("utm_term")     || ""
       };
     }
 
-    async function postEvent(event_type) {
-      const params = getParams();
+    function logEvent(event_type, extra = {}) {
       const payload = {
         sheet_id: SHEET_ID,
         event_type,
@@ -57,47 +82,37 @@
         landing_url: window.location.href,
         referrer: document.referrer || "",
         user_agent: navigator.userAgent || "",
-        ...params
+        ...getUtm(),
+        ...extra
       };
 
-      const res = await fetch(WEBAPP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-      return res.json();
-    }
-
-    function renderStats(stats) {
-      if (!stats || !stats.ok) return;
-      document.getElementById("total").textContent = String(stats.total_clicks || 0);
-
-      const list = document.getElementById("list");
-      list.innerHTML = "";
-      const entries = Object.entries(stats.by_source || {}).sort((a,b) => b[1] - a[1]);
-
-      for (const [k, v] of entries) {
-        const li = document.createElement("li");
-        li.textContent = `${k} — ${v}`;
-        list.appendChild(li);
+      // sendBeacon je najpouzdaniji za redirect / unload
+      try {
+        const blob = new Blob([JSON.stringify(payload)], { type: "text/plain;charset=utf-8" });
+        return navigator.sendBeacon(WEBAPP_URL, blob);
+      } catch (e) {
+        // fallback (manje pouzdano)
+        fetch(WEBAPP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(()=>{});
+        return false;
       }
     }
 
-    // optional: log page view once
-    postEvent("page_view").catch(()=>{});
+    // Log page_view jednom kad se stranica otvori
+    logEvent("page_view");
 
-    // load current stats on open
-    (async () => {
-      const url = new URL(WEBAPP_URL);
-      url.searchParams.set("sheet_id", SHEET_ID);
-      const res = await fetch(url.toString(), { method: "GET" });
-      const stats = await res.json();
-      renderStats(stats);
-    })();
+    document.getElementById("cta").addEventListener("click", (e) => {
+      e.preventDefault();
 
-    document.getElementById("cta").addEventListener("click", async () => {
-      const stats = await postEvent("click");
-      renderStats(stats);
+      // Log click prije redirecta
+      logEvent("click", { redirect_url: pickRedirectUrl() });
+
+      // Odmah redirect
+      window.location.href = pickRedirectUrl();
     });
   </script>
 </body>
