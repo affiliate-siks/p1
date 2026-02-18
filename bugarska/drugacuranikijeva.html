@@ -30,7 +30,7 @@ body {
   }
 }
 
-/* DARK OVERLAY – 10% */
+/* DARK OVERLAY */
 body::after {
   content: "";
   position: absolute;
@@ -46,17 +46,16 @@ body::after {
   z-index: 2;
 }
 
-/* CONTENT – DESKTOP (left half) */
+/* CONTENT */
 .content-box {
   position: absolute;
   top: 18%;
   left: 6%;
   width: 44%;
-  text-align: left;
   z-index: 3;
+  text-align: left;
 }
 
-/* CONTENT – MOBILE (center) */
 @media (max-width: 768px) {
   .content-box {
     top: 12%;
@@ -67,7 +66,7 @@ body::after {
   }
 }
 
-/* MAIN HEADING – GOLD + SHINE */
+/* HEADINGS */
 .main-heading {
   font-size: 4.8rem;
   font-weight: 900;
@@ -92,62 +91,31 @@ body::after {
   text-shadow:
     0 3px 0 #b8860b,
     0 6px 0 #8b6508,
-    0 12px 28px rgba(0,0,0,0.92),
-    0 0 45px rgba(255,215,0,0.85),
-    0 0 90px rgba(255,215,0,0.55);
-}
-
-.main-heading::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 70%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.9),
-    transparent
-  );
-  transform: skewX(-25deg);
-  animation: shine 3.5s infinite;
-}
-
-@keyframes shine {
-  0% { left: -120%; }
-  60% { left: 150%; }
-  100% { left: 150%; }
+    0 12px 28px rgba(0,0,0,0.9),
+    0 0 45px rgba(255,215,0,0.85);
 }
 
 .sub-text {
   margin-top: 1.4rem;
   font-size: 1.9rem;
   font-weight: 800;
-  letter-spacing: 1.2px;
-  color: #ffffff;
-  text-shadow: 0 4px 18px rgba(0,0,0,0.6);
-  max-width: 720px;
+  color: #fff;
 }
 
-/* MOBILE TEXT */
 @media (max-width: 768px) {
   .main-heading { font-size: 2.6rem; }
   .sub-text { font-size: 1.2rem; }
 }
 
-/* EMPTYING BAR – DESKTOP (left) */
+/* BAR */
 .limited-wrap {
   position: fixed;
   left: 6%;
   bottom: 18%;
   width: min(420px, 40vw);
   z-index: 3;
-  text-align: left;
-  pointer-events: none;
 }
 
-/* EMPTYING BAR – MOBILE (center) */
 @media (max-width: 768px) {
   .limited-wrap {
     left: 50%;
@@ -163,14 +131,12 @@ body::after {
   border-radius: 999px;
   background: rgba(255,255,255,0.25);
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 
 .bar-fill {
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #ffe680, #ffd000, #ffb000);
-  box-shadow: 0 0 25px rgba(255,215,0,0.6);
   animation: emptyBar 6s linear infinite;
 }
 
@@ -182,13 +148,11 @@ body::after {
 .limit-text {
   margin-top: 10px;
   font-size: 0.85rem;
-  letter-spacing: 1.4px;
   font-weight: 700;
   color: rgba(255,255,255,0.85);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
 }
 
-/* CTA – DESKTOP (bottom right) */
+/* CTA */
 .cta-wrapper {
   position: fixed;
   bottom: 5%;
@@ -196,7 +160,6 @@ body::after {
   z-index: 3;
 }
 
-/* CTA – MOBILE (center bottom) */
 @media (max-width: 768px) {
   .cta-wrapper {
     left: 50%;
@@ -206,8 +169,12 @@ body::after {
   }
 }
 
+/* ✅ CENTRIRAN TEKST */
 .cta-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   padding: 1.2rem 3rem;
   font-size: 1.5rem;
   font-weight: 900;
@@ -222,14 +189,17 @@ body::after {
 }
 
 @media (max-width: 768px) {
-  .cta-button { font-size: 1.1rem; padding: 0.9rem 1.8rem; }
+  .cta-button {
+    font-size: 1.1rem;
+    padding: 0.9rem 1.8rem;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<a href="https://bit.ly/3MtxVm7" class="full-link"></a>
+<a href="https://bit.ly/4rxwmTz" class="full-link"></a>
 
 <div class="content-box">
   <h1 class="main-heading">СУПЕР УИКЕНД</h1>
