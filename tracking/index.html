@@ -6,52 +6,24 @@
   <title>Landing</title>
   <meta name="robots" content="noindex,nofollow" />
   <style>
-    body { font-family: system-ui, Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 18px; }
-    button, a.btn {
-      display: inline-block;
-      font-size: 18px;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 0;
-      cursor: pointer;
-      text-decoration: none;
-      background: #111;
-      color: #fff;
-    }
-    .muted { color: #666; font-size: 14px; margin-top: 10px; }
+    body { font-family: system-ui, Arial, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 16px; }
+    .card { border: 1px solid #ddd; border-radius: 14px; padding: 18px; }
+    button { font-size: 18px; padding: 12px 16px; border-radius: 10px; border: 0; cursor: pointer; background:#111; color:#fff; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Landing</h1>
-    <p>Klik na dugme vodi na eksterni link. U Sheet se bilježi odakle je korisnik došao i da li je kliknuo.</p>
-
+    <p>Klik vodi dalje.</p>
     <button id="cta" type="button">Nastavi</button>
-    <div class="muted">Napomena: Referrer može biti prazan zbog browser/app pravila. UTM parametri se uvijek hvataju ako su u URL-u.</div>
   </div>
 
   <script>
-    // ====== KONFIG ======
     const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby3dZE46rmHiyVcEGdNhoFaHN_w2fGuiTgpCRB_p_VDGVK44-aNypfgeYz0yzYlPeHcJA/exec";
     const SHEET_ID   = "1s9Lm83xDYoo3ilVoDyRs3GxNfjkyNpmzt427VD1h3oA";
 
-    // Redirect destinacija (zamijeni svojim linkom)
+    // PROMIJENI
     const REDIRECT_URL = "https://example.com/";
-
-    // Ako želiš random redirect iz liste, ubaci više linkova i uključi USE_RANDOM_REDIRECT
-    const USE_RANDOM_REDIRECT = false;
-    const REDIRECT_POOL = [
-      "https://example.com/",
-      "https://example.org/",
-      "https://example.net/"
-    ];
-    // ====================
-
-    function pickRedirectUrl() {
-      if (!USE_RANDOM_REDIRECT) return REDIRECT_URL;
-      return REDIRECT_POOL[Math.floor(Math.random() * REDIRECT_POOL.length)];
-    }
 
     function getOrCreateVisitorId() {
       const key = "visitor_id";
@@ -74,7 +46,7 @@
       };
     }
 
-    function logEvent(event_type, extra = {}) {
+    function sendEvent(event_type) {
       const payload = {
         sheet_id: SHEET_ID,
         event_type,
@@ -82,37 +54,32 @@
         landing_url: window.location.href,
         referrer: document.referrer || "",
         user_agent: navigator.userAgent || "",
-        ...getUtm(),
-        ...extra
+        ...getUtm()
       };
 
-      // sendBeacon je najpouzdaniji za redirect / unload
+      // sendBeacon is best for redirect/unload
       try {
         const blob = new Blob([JSON.stringify(payload)], { type: "text/plain;charset=utf-8" });
-        return navigator.sendBeacon(WEBAPP_URL, blob);
+        navigator.sendBeacon(WEBAPP_URL, blob);
       } catch (e) {
-        // fallback (manje pouzdano)
         fetch(WEBAPP_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload),
           keepalive: true
         }).catch(()=>{});
-        return false;
       }
     }
 
-    // Log page_view jednom kad se stranica otvori
-    logEvent("page_view");
+    // page_view on load
+    sendEvent("page_view");
 
+    // click then redirect
     document.getElementById("cta").addEventListener("click", (e) => {
       e.preventDefault();
-
-      // Log click prije redirecta
-      logEvent("click", { redirect_url: pickRedirectUrl() });
-
-      // Odmah redirect
-      window.location.href = pickRedirectUrl();
+      sendEvent("click");
+      // tiny delay makes it bulletproof across browsers
+      setTimeout(() => { window.location.href = REDIRECT_URL; }, 150);
     });
   </script>
 </body>
