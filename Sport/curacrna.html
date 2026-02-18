@@ -30,7 +30,7 @@ body::after {
   background: linear-gradient(
     to bottom,
     rgba(0,0,0,0.7),
-    rgba(0,0,0,0.5),
+    rgba(0,0,0,0.45),
     rgba(0,0,0,0.8)
   );
   z-index: 1;
@@ -42,6 +42,7 @@ body::after {
   z-index: 2;
 }
 
+/* CONTENT */
 .content-box {
   position: absolute;
   top: 12%;
@@ -63,11 +64,12 @@ body::after {
   background: linear-gradient(
     180deg,
     #ffffff 0%,
-    #fff4b0 15%,
-    #ffd900 35%,
-    #ffbf00 55%,
-    #ff9d00 75%,
-    #ffe680 100%
+    #fff7c7 12%,
+    #ffe85a 28%,
+    #ffd000 44%,
+    #ffb800 62%,
+    #ff9900 78%,
+    #fff0a6 100%
   );
 
   -webkit-background-clip: text;
@@ -76,12 +78,12 @@ body::after {
   text-shadow:
     0 3px 0 #b8860b,
     0 6px 0 #8b6508,
-    0 10px 25px rgba(0,0,0,0.9),
-    0 0 40px rgba(255,215,0,0.8),
-    0 0 80px rgba(255,215,0,0.5);
+    0 12px 28px rgba(0,0,0,0.92),
+    0 0 45px rgba(255,215,0,0.85),
+    0 0 90px rgba(255,215,0,0.55);
 }
 
-/* Shine animation */
+/* Shine */
 .main-heading::after {
   content: "";
   position: absolute;
@@ -114,6 +116,48 @@ body::after {
   text-shadow: 0 4px 20px rgba(0,0,0,0.9);
 }
 
+/* EMPTYING BAR */
+.limited-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%);
+  width: min(520px, 86vw);
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+}
+
+.bar-shell {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+}
+
+.bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #ffe680, #ffd000, #ffb000);
+  box-shadow: 0 0 25px rgba(255,215,0,0.6);
+  animation: emptyBar 6s linear infinite;
+}
+
+@keyframes emptyBar {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.limit-text {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+}
+
 /* CTA */
 .cta-wrapper {
   position: absolute;
@@ -136,18 +180,15 @@ body::after {
   box-shadow:
     0 10px 30px rgba(0,0,0,0.6),
     0 0 30px rgba(255,212,0,0.9);
-
-  transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-  transform: scale(1.08);
 }
 
 /* MOBILE */
 @media (max-width: 768px) {
   .main-heading { font-size: 3.2rem; }
   .sub-text { font-size: 1.4rem; }
+
+  .limited-wrap { bottom: 24%; }
+
   .cta-button { font-size: 1.2rem; padding: 1rem 2rem; }
 }
 </style>
@@ -162,10 +203,16 @@ body::after {
   <div class="sub-text">ДО 600 БЕЗПЛАТНИ ЗАВЪРТАНИЯ</div>
 </div>
 
+<!-- Limited offer bar -->
+<div class="limited-wrap">
+  <div class="bar-shell">
+    <div class="bar-fill"></div>
+  </div>
+  <div class="limit-text">ОФЕРТАТА Е ОГРАНИЧЕНА</div>
+</div>
+
 <div class="cta-wrapper">
-  <a href="https://bit.ly/4rxwmTz" class="cta-button">
-    ИГРАЙ СЕГА
-  </a>
+  <a href="https://bit.ly/4rxwmTz" class="cta-button">ИГРАЙ СЕГА</a>
 </div>
 
 <script>
