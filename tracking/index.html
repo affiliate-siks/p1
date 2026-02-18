@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="sr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Landing</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+    button { font-size: 18px; padding: 12px 16px; cursor: pointer; }
+    .box { margin-top: 18px; padding: 14px; border: 1px solid #ddd; border-radius: 10px; }
+    ul { margin: 10px 0 0; padding-left: 18px; }
+  </style>
+</head>
+<body>
+  <h1>Landing</h1>
+  <p>Klikni dugme. Event ide u Google Sheet + dobijaš statistiku.</p>
+
+  <button id="cta">Klik</button>
+
+  <div class="box">
+    <div><strong>Ukupno klikova:</strong> <span id="total">0</span></div>
+    <div style="margin-top:10px;"><strong>Klikovi po izvoru (utm_source ili referrer):</strong></div>
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby3dZE46rmHiyVcEGdNhoFaHN_w2fGuiTgpCRB_p_VDGVK44-aNypfgeYz0yzYlPeHcJA/exec";
+    const SHEET_ID = "spreadsheets/d/1s9Lm83xDYoo3ilVoDyRs3GxNfjkyNpmzt427VD1h3oA";
+
+    function getOrCreateVisitorId() {
+      const key = "visitor_id";
+      let id = localStorage.getItem(key);
+      if (!id) {
+        id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2));
+        localStorage.setItem(key, id);
+      }
+      return id;
+    }
+
+    function getParams() {
+      const u = new URL(window.location.href);
+      return {
+        utm_source: u.searchParams.get("utm_source") || "",
+        utm_medium: u.searchParams.get("utm_medium") || "",
+        utm_campaign: u.searchParams.get("utm_campaign") || "",
+        utm_content: u.searchParams.get("utm_content") || "",
+        utm_term: u.searchParams.get("utm_term") || ""
+      };
+    }
+
+    async function postEvent(event_type) {
+      const params = getParams();
+      const payload = {
+        sheet_id: SHEET_ID,
+        event_type,
+        visitor_id: getOrCreateVisitorId(),
+        landing_url: window.location.href,
+        referrer: document.referrer || "",
+        user_agent: navigator.userAgent || "",
+        ...params
+      };
+
+      const res = await fetch(WEBAPP_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return res.json();
+    }
+
+    function renderStats(stats) {
+      if (!stats || !stats.ok) return;
+      document.getElementById("total").textContent = String(stats.total_clicks || 0);
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      const entries = Object.entries(stats.by_source || {}).sort((a,b) => b[1] - a[1]);
+
+      for (const [k, v] of entries) {
+        const li = document.createElement("li");
+        li.textContent = `${k} — ${v}`;
+        list.appendChild(li);
+      }
+    }
+
+    // optional: log page view once
+    postEvent("page_view").catch(()=>{});
+
+    // load current stats on open
+    (async () => {
+      const url = new URL(WEBAPP_URL);
+      url.searchParams.set("sheet_id", SHEET_ID);
+      const res = await fetch(url.toString(), { method: "GET" });
+      const stats = await res.json();
+      renderStats(stats);
+    })();
+
+    document.getElementById("cta").addEventListener("click", async () => {
+      const stats = await postEvent("click");
+      renderStats(stats);
+    });
+  </script>
+</body>
+</html>
