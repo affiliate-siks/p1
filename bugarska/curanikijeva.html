@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>СУПЕР УИКЕНД</title>
+<title>Силен Спортен Старт</title>
 
 <style>
 html, body {
@@ -16,7 +16,7 @@ html, body {
 }
 
 body {
-  background-image: url('bugarska/desk.png');
+  background-image: url('bugarska/desk1.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -26,46 +26,43 @@ body {
 /* Mobile background */
 @media (max-width: 768px) {
   body {
-    background-image: url('bugarska/phone.png');
+    background-image: url('bugarska/phone1.png');
   }
 }
 
-/* Dark overlay */
-body::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.7),
-    rgba(0,0,0,0.45),
-    rgba(0,0,0,0.8)
-  );
-  z-index: 1;
-}
-
+/* FULL LINK */
 .full-link {
   position: fixed;
   inset: 0;
   z-index: 2;
 }
 
-/* CONTENT */
+/* CONTENT – DESKTOP */
 .content-box {
   position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  text-align: center;
+  top: 18%;
+  left: 6%;
+  width: 44%;
+  text-align: left;
   z-index: 3;
 }
 
+/* MOBILE CONTENT */
+@media (max-width: 768px) {
+  .content-box {
+    top: 12%;
+    left: 50%;
+    width: 90%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+}
+
 .main-heading {
-  font-size: 5.4rem;
+  font-size: 4.8rem;
   font-weight: 900;
   margin: 0;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   position: relative;
 
   background: linear-gradient(
@@ -85,9 +82,8 @@ body::after {
   text-shadow:
     0 3px 0 #b8860b,
     0 6px 0 #8b6508,
-    0 12px 28px rgba(0,0,0,0.92),
-    0 0 45px rgba(255,215,0,0.85),
-    0 0 90px rgba(255,215,0,0.55);
+    0 12px 28px rgba(0,0,0,0.75),
+    0 0 45px rgba(255,215,0,0.7);
 }
 
 .main-heading::after {
@@ -114,39 +110,53 @@ body::after {
 }
 
 .sub-text {
-  margin-top: 1.6rem;
-  font-size: 2.2rem;
-  font-weight: 900;
-  letter-spacing: 2px;
+  margin-top: 1.4rem;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
   color: #ffffff;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  text-shadow: 0 4px 18px rgba(0,0,0,0.6);
+}
+
+/* MOBILE TEXT */
+@media (max-width: 768px) {
+  .main-heading { font-size: 3rem; }
+  .sub-text { font-size: 1.3rem; }
 }
 
 /* EMPTYING BAR */
 .limited-wrap {
   position: fixed;
-  left: 50%;
-  bottom: 22%;
-  transform: translateX(-50%);
-  width: min(520px, 86vw);
+  left: 6%;
+  bottom: 18%;
+  width: min(420px, 40vw);
   z-index: 3;
-  text-align: center;
+  text-align: left;
   pointer-events: none;
+}
+
+/* MOBILE BAR */
+@media (max-width: 768px) {
+  .limited-wrap {
+    left: 50%;
+    bottom: 24%;
+    transform: translateX(-50%);
+    width: min(520px, 86vw);
+    text-align: center;
+  }
 }
 
 .bar-shell {
   height: 10px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.25);
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
 }
 
 .bar-fill {
   height: 100%;
   width: 100%;
   background: linear-gradient(90deg, #ffe680, #ffd000, #ffb000);
-  box-shadow: 0 0 25px rgba(255,215,0,0.6);
   animation: emptyBar 6s linear infinite;
 }
 
@@ -157,20 +167,28 @@ body::after {
 
 .limit-text {
   margin-top: 10px;
-  font-size: 0.9rem;
-  letter-spacing: 1.5px;
+  font-size: 0.85rem;
+  letter-spacing: 1.4px;
   font-weight: 700;
   color: rgba(255,255,255,0.85);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
 }
 
-/* CTA */
+/* CTA – DESKTOP */
 .cta-wrapper {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
   z-index: 3;
+}
+
+/* CTA – MOBILE */
+@media (max-width: 768px) {
+  .cta-wrapper {
+    left: 50%;
+    right: auto;
+    bottom: 10%;
+    transform: translateX(-50%);
+  }
 }
 
 .cta-button {
@@ -185,15 +203,7 @@ body::after {
   background: linear-gradient(180deg, #fff066, #ffd400);
   box-shadow:
     0 10px 30px rgba(0,0,0,0.6),
-    0 0 30px rgba(255,212,0,0.9);
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .main-heading { font-size: 3.2rem; }
-  .sub-text { font-size: 1.4rem; }
-  .limited-wrap { bottom: 24%; }
-  .cta-button { font-size: 1.2rem; padding: 1rem 2rem; }
+    0 0 30px rgba(255,212,0,0.8);
 }
 </style>
 </head>
@@ -203,8 +213,10 @@ body::after {
 <a href="https://bit.ly/4rxwmTz" class="full-link"></a>
 
 <div class="content-box">
-  <h1 class="main-heading">СУПЕР УИКЕНД</h1>
-  <div class="sub-text">ДО 600 БЕЗПЛАТНИ ЗАВЪРТАНИЯ</div>
+  <h1 class="main-heading">Силен Спортен Старт</h1>
+  <div class="sub-text">
+    Два отскока за по-силен старт – 150% Бонус Спорт + 10€ Risk-free Live залог.
+  </div>
 </div>
 
 <div class="limited-wrap">
