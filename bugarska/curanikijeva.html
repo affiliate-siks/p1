@@ -12,11 +12,10 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: Arial, sans-serif;
-  overflow: hidden;
 }
 
 body {
-  background-image: url('/bugarska/desk1.png');
+  background-image: url('/bugarska/desk.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -26,29 +25,36 @@ body {
 /* Mobile background */
 @media (max-width: 768px) {
   body {
-    background-image: url('/bugarska/phone1.png');
+    background-image: url('/bugarska/phone.png');
   }
 }
 
-/* Overlay removed */
-body::after {
-  content: none;
-}
-
+/* FULL LINK */
 .full-link {
   position: fixed;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
 }
 
+/* CONTENT – DESKTOP LEFT */
 .content-box {
   position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  text-align: center;
-  z-index: 3;
+  top: 15%;
+  left: 6%;
+  width: 40%;
+  z-index: 2;
+  text-align: left;
+}
+
+/* MOBILE CENTER */
+@media (max-width: 768px) {
+  .content-box {
+    top: 12%;
+    left: 50%;
+    width: 90%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
 }
 
 .main-heading {
@@ -74,35 +80,12 @@ body::after {
   text-shadow:
     0 3px 0 #b8860b,
     0 6px 0 #8b6508,
-    0 12px 28px rgba(0,0,0,0.9),
+    0 12px 28px rgba(0,0,0,0.8),
     0 0 45px rgba(255,215,0,0.8);
 }
 
-.main-heading::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 70%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.9),
-    transparent
-  );
-  transform: skewX(-25deg);
-  animation: shine 3.5s infinite;
-}
-
-@keyframes shine {
-  0% { left: -120%; }
-  60% { left: 150%; }
-  100% { left: 150%; }
-}
-
 .sub-text {
-  margin-top: 1.6rem;
+  margin-top: 1.5rem;
   font-size: 2.2rem;
   font-weight: 900;
   letter-spacing: 2px;
@@ -110,16 +93,11 @@ body::after {
   text-shadow: 0 4px 20px rgba(0,0,0,0.8);
 }
 
-/* EMPTYING BAR */
+/* LIMITED BAR – ispod teksta, bez preklapanja */
 .limited-wrap {
-  position: fixed;
-  left: 50%;
-  bottom: 22%;
-  transform: translateX(-50%);
-  width: min(520px, 86vw);
-  z-index: 3;
-  text-align: center;
-  pointer-events: none;
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 420px;
 }
 
 .bar-shell {
@@ -146,16 +124,25 @@ body::after {
   font-size: 0.9rem;
   letter-spacing: 1.5px;
   font-weight: 700;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.9);
 }
 
-/* CTA */
+/* CTA – bottom right */
 .cta-wrapper {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 2;
+}
+
+/* MOBILE CTA CENTER */
+@media (max-width: 768px) {
+  .cta-wrapper {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 10%;
+  }
 }
 
 .cta-button {
@@ -173,11 +160,10 @@ body::after {
     0 0 30px rgba(255,212,0,0.9);
 }
 
-/* MOBILE */
+/* MOBILE FONT ADJUST */
 @media (max-width: 768px) {
   .main-heading { font-size: 3rem; }
   .sub-text { font-size: 1.4rem; }
-  .limited-wrap { bottom: 24%; }
   .cta-button { font-size: 1.2rem; padding: 1rem 2rem; }
 }
 </style>
@@ -190,13 +176,13 @@ body::after {
 <div class="content-box">
   <h1 class="main-heading">СУПЕР УИКЕНД</h1>
   <div class="sub-text">ДО 600 БЕЗПЛАТНИ ЗАВЪРТАНИЯ</div>
-</div>
 
-<div class="limited-wrap">
-  <div class="bar-shell">
-    <div class="bar-fill"></div>
+  <div class="limited-wrap">
+    <div class="bar-shell">
+      <div class="bar-fill"></div>
+    </div>
+    <div class="limit-text">ОФЕРТАТА Е ОГРАНИЧЕНА</div>
   </div>
-  <div class="limit-text">ОФЕРТАТА Е ОГРАНИЧЕНА</div>
 </div>
 
 <div class="cta-wrapper">
