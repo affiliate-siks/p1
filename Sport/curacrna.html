@@ -1,116 +1,158 @@
 <!doctype html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>СУПЕР УИКЕНД</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>СУПЕР УИКЕНД</title>
 
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: Arial, sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-* { outline: none !important; box-shadow: none !important; }
+    /* REMOVE ALL OUTLINES */
+    *,
+    *::before,
+    *::after {
+      outline: none !important;
+      box-shadow: none !important;
+    }
 
-body {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+    *:focus,
+    *:active,
+    *:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
 
-.full-link {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-}
+    a,
+    a:focus,
+    a:active,
+    a:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
 
-.content-box {
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  text-align: center;
-  z-index: 2;
-  pointer-events: none;
-}
+    body {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-.main-heading {
-  font-size: 4.5rem;
-  font-weight: 900;
-  color: #fff;
-  line-height: .95;
-  margin: 0;
-  text-shadow: 0 0 20px rgba(0,0,0,.6);
-}
+    .full-link {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
 
-.sub-text {
-  margin-top: 1.2rem;
-  font-size: 2rem;
-  font-weight: 900;
-  color: #FFD400;
-  text-shadow: 0 0 20px rgba(0,0,0,.6);
-}
+    /* CONTENT */
+    .content-box {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      text-align: center;
+      z-index: 2;
+      pointer-events: none;
+    }
 
-.cta-wrapper {
-  position: absolute;
-  bottom: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-}
+    .main-heading {
+      font-size: 4.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 0.95;
+      margin: 0;
 
-.cta-button {
-  padding: 1rem 2.5rem;
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #000;
-  background: #FFD400;
-  border-radius: 999px;
-  text-decoration: none;
-  box-shadow: 0 10px 25px rgba(0,0,0,.3);
-}
+      -webkit-text-stroke: 2px rgba(0,0,0,0.7);
 
-@media (max-width: 768px) {
-  .main-heading { font-size: 2.8rem; }
-  .sub-text { font-size: 1.3rem; }
-  .cta-button { font-size: 1.1rem; padding: .9rem 2rem; }
-}
-</style>
+      text-shadow:
+        0 4px 15px rgba(0,0,0,0.8),
+        0 0 30px rgba(0,0,0,0.6);
+
+      letter-spacing: 2px;
+    }
+
+    .sub-text {
+      margin-top: 1.4rem;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #FFD400;
+
+      -webkit-text-stroke: 1.5px rgba(0,0,0,0.7);
+
+      text-shadow:
+        0 4px 15px rgba(0,0,0,0.8),
+        0 0 25px rgba(0,0,0,0.6);
+
+      letter-spacing: 1.5px;
+    }
+
+    /* CTA BUTTON */
+    .cta-wrapper {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #000;
+      background: #FFD400;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      pointer-events: auto;
+    }
+
+    .cta-button:focus,
+    .cta-button:active,
+    .cta-button:focus-visible {
+      outline: none !important;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .main-heading { font-size: 2.8rem; }
+      .sub-text { font-size: 1.3rem; }
+      .cta-button { font-size: 1.1rem; padding: 0.9rem 2rem; }
+    }
+  </style>
 </head>
 
 <body>
+  <a href="https://bit.ly/4rxwmTz" class="full-link" aria-label="Open offer"></a>
 
-<a href="https://bit.ly/4rxwmTz" class="full-link"></a>
+  <div class="content-box">
+    <h1 class="main-heading">СУПЕР УИКЕНД</h1>
+    <div class="sub-text">ДО 600 БЕЗПЛАТНИ ЗАВЪРТАНИЯ</div>
+  </div>
 
-<div class="content-box">
-  <h1 class="main-heading">СУПЕР УИКЕНД</h1>
-  <div class="sub-text">ДО 600 БЕЗПЛАТНИ ЗАВЪРТАНИЯ</div>
-</div>
+  <div class="cta-wrapper">
+    <a href="https://bit.ly/4rxwmTz" class="cta-button">ИГРАЙ СЕГА</a>
+  </div>
 
-<div class="cta-wrapper">
-  <a href="https://bit.ly/4rxwmTz" class="cta-button">
-    ИГРАЙ СЕГА
-  </a>
-</div>
+  <script>
+    const images = [
+      "curacrna.png",
+      "curacrnka.png",
+      "curacrvena.png"
+    ];
 
-<script>
-const images = [
-  "CURA1.jpg",
-  "curacrna.png",
-  "curacrnka.png",
-  "curacrvena.png"
-];
-
-// random izbor
-const randomImage = images[Math.floor(Math.random() * images.length)];
-document.body.style.backgroundImage = `url('${randomImage}')`;
-</script>
-
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+    document.body.style.backgroundImage = `url('${randomImage}')`;
+  </script>
 </body>
 </html>
