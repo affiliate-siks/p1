@@ -10,6 +10,7 @@
       --bg2:#0f1420;
       --panel:#121722;
       --panel2:#171d2a;
+      --panel3:#1c2331;
       --line:rgba(255,255,255,.08);
       --line2:rgba(255,255,255,.12);
       --text:#eef2ff;
@@ -21,6 +22,7 @@
       --cyan:#22d3ee;
       --green:#22c55e;
       --red:#f87171;
+      --yellow:#facc15;
       --radius:22px;
       --shadow:0 18px 50px rgba(0,0,0,.35);
     }
@@ -41,6 +43,7 @@
     .g2{grid-template-columns:1fr 1fr}
     .g3{grid-template-columns:repeat(3,1fr)}
     .g4{grid-template-columns:repeat(4,1fr)}
+    .g5{grid-template-columns:repeat(5,1fr)}
     .hero,.card,.modal{
       background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
       border:1px solid var(--line);
@@ -65,7 +68,7 @@
     }
     .sub{color:rgba(255,255,255,.72);margin-top:8px;font-size:14px}
     .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .chip,.badge{
+    .chip,.badge,.mode-badge{
       display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;
       border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:12px;font-weight:700
     }
@@ -174,9 +177,10 @@
       display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);
       border:1px solid var(--line);font-size:11px;font-weight:700;color:var(--muted)
     }
-    .note-box{
+    .note-box,.analysis-box{
       padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.02);line-height:1.65
     }
+    .analysis-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
     .toast{
       position:fixed;right:18px;bottom:18px;z-index:70;
       background:#121722;border:1px solid var(--line);padding:12px 14px;border-radius:14px;
@@ -189,7 +193,7 @@
     }
     .modal-backdrop.open{display:flex}
     .modal{
-      width:min(1040px,100%);
+      width:min(1080px,100%);
       max-height:94vh;border-radius:26px;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden
     }
     .modal-head,.modal-foot{
@@ -216,14 +220,15 @@
     .entry{
       padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);margin-bottom:12px
     }
-    .right{margin-left:auto}
+    .preview-grid{display:grid;gap:12px}
     .saving-badge{
       display:none;
       padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px;color:var(--muted)
     }
     .saving-badge.show{display:inline-flex}
+    .hidden{display:none!important}
     @media (max-width:1200px){
-      .g4,.g3,.g2,.toolbar,.embeds{grid-template-columns:1fr}
+      .g5,.g4,.g3,.g2,.toolbar,.embeds,.analysis-grid{grid-template-columns:1fr}
       .hero{flex-direction:column;align-items:flex-start}
     }
     @media (max-width:760px){
@@ -239,8 +244,9 @@
       <div class="hero">
         <div>
           <h1>Instagram Marketing Dashboard</h1>
-          <div class="sub">Dashboard povezan sa Google Sheet bazom, sa filterima, unosom, editom i asinhronim čuvanjem.</div>
+          <div class="sub">Jedan dashboard, dva režima: overview za zbirni pregled i single report za detaljni prikaz.</div>
           <div class="chips">
+            <span class="mode-badge" id="modeBadge">Overview mode</span>
             <span class="chip" id="heroProfile">-</span>
             <span class="chip" id="heroPeriod">-</span>
             <span class="chip" id="heroOwner">-</span>
@@ -248,6 +254,7 @@
         </div>
         <div class="actions">
           <span class="saving-badge" id="savingBadge">Čuvanje u toku...</span>
+          <button class="btn btn-ghost" id="backToOverviewBtn" style="display:none">Nazad na overview</button>
           <button class="btn btn-ghost" id="loadDemoBtn">Demo</button>
           <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
           <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
@@ -286,165 +293,259 @@
       </div>
     </section>
 
-    <section class="section grid g4">
-      <div class="card">
-        <h3>Profil</h3>
-        <div class="metric" id="profileName">-</div>
-        <div class="muted">Osoba: <strong id="ownerName">-</strong></div>
-      </div>
-      <div class="card">
-        <h3>Period</h3>
-        <div class="metric" id="periodLabel">-</div>
-        <div class="muted">Datum izvještaja: <span id="reportDateLabel">-</span></div>
-      </div>
-      <div class="card">
-        <h3>Ukupni views</h3>
-        <div class="metric" id="viewsCurrent">0</div>
-        <div class="muted">Prošla nedelja: <span id="viewsPrevious">0</span></div>
-      </div>
-      <div class="card">
-        <h3>Izvještaja u filteru</h3>
-        <div class="metric" id="filteredReportsCount">0</div>
-        <div class="muted">Sačuvanih zapisa</div>
-      </div>
-    </section>
+    <!-- OVERVIEW ONLY -->
+    <div id="overviewSections">
+      <section class="section grid g5">
+        <div class="card">
+          <h3>Broj izvještaja</h3>
+          <div class="metric" id="ovReportsCount">0</div>
+          <div class="muted">U aktivnom filteru</div>
+        </div>
+        <div class="card">
+          <h3>Ukupni views</h3>
+          <div class="metric" id="ovViewsTotal">0</div>
+          <div class="muted">Promjena: <span id="ovViewsChange">0.00%</span></div>
+        </div>
+        <div class="card">
+          <h3>Ukupne interactions</h3>
+          <div class="metric" id="ovInteractionsTotal">0</div>
+          <div class="muted">Promjena: <span id="ovInteractionsChange">0.00%</span></div>
+        </div>
+        <div class="card">
+          <h3>Novi pratioci</h3>
+          <div class="metric" id="ovFollowersTotal">0</div>
+          <div class="muted">Promjena: <span id="ovFollowersChange">0.00%</span></div>
+        </div>
+        <div class="card">
+          <h3>Ads CTR</h3>
+          <div class="metric" id="ovAdsCtr">0.00%</div>
+          <div class="muted">Budget: <span id="ovAdsBudget">0</span></div>
+        </div>
+      </section>
 
-    <section class="section grid g4">
-      <div class="card stat">
-        <div class="icon">👁</div>
-        <div>
-          <div class="muted">Views promjena</div>
-          <div class="metric-sm" id="viewsDeltaPercent">0.00%</div>
-        </div>
-      </div>
-      <div class="card stat">
-        <div class="icon">⚡</div>
-        <div>
-          <div class="muted">Interactions promjena</div>
-          <div class="metric-sm" id="interactionsDeltaPercent">0.00%</div>
-        </div>
-      </div>
-      <div class="card stat">
-        <div class="icon">📈</div>
-        <div>
-          <div class="muted">Engagement rate</div>
-          <div class="metric-sm" id="engagementRateValue">0.00%</div>
-        </div>
-      </div>
-      <div class="card stat">
-        <div class="icon">🔗</div>
-        <div>
-          <div class="muted">Ads CTR</div>
-          <div class="metric-sm" id="ctrValue">0.00%</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section grid g2">
-      <div class="card">
-        <h3>KPI po profilu – organski rezultati</h3>
-        <div class="kpi-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Metrika</th>
-                <th>Tekuća</th>
-                <th>Prošla</th>
-                <th>Promjena</th>
-              </tr>
-            </thead>
-            <tbody id="organicTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px">
-          <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
-          <span class="badge"><span id="adsCampaignsCount">0</span> kampanja</span>
-        </div>
-        <div class="kpi-wrap">
-          <table>
-            <thead id="adsHead"></thead>
-            <tbody id="adsTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section class="section grid g2">
-      <div class="card">
-        <h3>Ciljevi i napredak</h3>
-        <div class="progress">
-          <div>
-            <div class="label-line"><strong>Objave</strong><strong id="postsProgressLabel">0 / 0</strong></div>
-            <div class="track"><div id="postsProgressBar" class="fill" style="background:linear-gradient(90deg,var(--pink),var(--pink2));width:0%"></div></div>
-          </div>
-          <div>
-            <div class="label-line"><strong>Stories</strong><strong id="storiesProgressLabel">0 / 0</strong></div>
-            <div class="track"><div id="storiesProgressBar" class="fill" style="background:linear-gradient(90deg,var(--orange),#ffc17a);width:0%"></div></div>
-          </div>
-          <div>
-            <div class="label-line"><strong>Novi pratioci</strong><strong id="followersProgressLabel">0 / 0</strong></div>
-            <div class="track"><div id="followersProgressBar" class="fill" style="background:linear-gradient(90deg,var(--purple),#b89cff);width:0%"></div></div>
+      <section class="section grid g2">
+        <div class="card">
+          <h3>Agregirani organic KPI</h3>
+          <div class="kpi-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metrika</th>
+                  <th>Tekuća</th>
+                  <th>Prošla</th>
+                  <th>Promjena</th>
+                </tr>
+              </thead>
+              <tbody id="overviewOrganicTableBody"></tbody>
+            </table>
           </div>
         </div>
-      </div>
-      <div class="card">
-        <h3>Performance funnel</h3>
-        <div class="mini-grid">
-          <div class="row"><span>Views</span><strong id="funnelViews">0</strong></div>
-          <div class="row"><span>Impressions</span><strong id="funnelImpressions">0</strong></div>
-          <div class="row"><span>Interactions</span><strong id="funnelInteractions">0</strong></div>
-          <div class="row"><span>Novi pratioci</span><strong id="funnelFollowers">0</strong></div>
-          <div class="row"><span>Lead rate iz organika</span><strong id="leadRateValue">0.00%</strong></div>
+        <div class="card">
+          <h3>Agregirani paid summary</h3>
+          <div class="mini-grid" id="overviewPaidSummary"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section grid g2">
-      <div class="card">
-        <h3>Top objave – po views</h3>
-        <div id="topViewsList"></div>
-      </div>
-      <div class="card">
-        <h3>Top objave – po lajkovima</h3>
-        <div id="topLikesList"></div>
-      </div>
-    </section>
+      <section class="section grid g2">
+        <div class="card">
+          <h3>Trend kroz vrijeme</h3>
+          <div class="legend">
+            <span><span class="dot" style="background:var(--pink)"></span>Views</span>
+            <span><span class="dot" style="background:var(--purple)"></span>Interactions</span>
+            <span><span class="dot" style="background:var(--cyan)"></span>Novi pratioci</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="overviewTrendChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Aggregate summary</h3>
+          <div class="analysis-box" id="overviewSummary">—</div>
+        </div>
+      </section>
+    </div>
 
+    <!-- SINGLE REPORT ONLY -->
+    <div id="singleSections" class="hidden">
+      <section class="section grid g4">
+        <div class="card">
+          <h3>Profil</h3>
+          <div class="metric" id="profileName">-</div>
+          <div class="muted">Osoba: <strong id="ownerName">-</strong></div>
+        </div>
+        <div class="card">
+          <h3>Period</h3>
+          <div class="metric" id="periodLabel">-</div>
+          <div class="muted">Datum: <span id="reportDateLabel">-</span></div>
+        </div>
+        <div class="card">
+          <h3>Views</h3>
+          <div class="metric" id="viewsCurrent">0</div>
+          <div class="muted">Prošla nedelja: <span id="viewsPrevious">0</span></div>
+        </div>
+        <div class="card">
+          <h3>Interactions</h3>
+          <div class="metric" id="interactionsCurrent">0</div>
+          <div class="muted">Prošla nedelja: <span id="interactionsPrevious">0</span></div>
+        </div>
+      </section>
+
+      <section class="section grid g4">
+        <div class="card stat">
+          <div class="icon">👁</div>
+          <div>
+            <div class="muted">Views promjena</div>
+            <div class="metric-sm" id="viewsDeltaPercent">0.00%</div>
+          </div>
+        </div>
+        <div class="card stat">
+          <div class="icon">⚡</div>
+          <div>
+            <div class="muted">Interactions promjena</div>
+            <div class="metric-sm" id="interactionsDeltaPercent">0.00%</div>
+          </div>
+        </div>
+        <div class="card stat">
+          <div class="icon">📈</div>
+          <div>
+            <div class="muted">Engagement rate</div>
+            <div class="metric-sm" id="engagementRateValue">0.00%</div>
+          </div>
+        </div>
+        <div class="card stat">
+          <div class="icon">🔗</div>
+          <div>
+            <div class="muted">Ads CTR</div>
+            <div class="metric-sm" id="ctrValue">0.00%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card">
+          <h3>Executive summary</h3>
+          <div class="analysis-box" id="summaryBox">—</div>
+        </div>
+      </section>
+
+      <section class="section grid g2">
+        <div class="card">
+          <h3>KPI po profilu – organski rezultati</h3>
+          <div class="kpi-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metrika</th>
+                  <th>Tekuća</th>
+                  <th>Prošla</th>
+                  <th>Promjena</th>
+                </tr>
+              </thead>
+              <tbody id="organicTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px">
+            <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
+            <span class="badge"><span id="adsCampaignsCount">0</span> kampanja</span>
+          </div>
+          <div class="kpi-wrap">
+            <table>
+              <thead id="adsHead"></thead>
+              <tbody id="adsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section grid g2">
+        <div class="card">
+          <h3>Ciljevi i napredak</h3>
+          <div class="progress">
+            <div>
+              <div class="label-line"><strong>Objave</strong><strong id="postsProgressLabel">0 / 0</strong></div>
+              <div class="track"><div id="postsProgressBar" class="fill" style="background:linear-gradient(90deg,var(--pink),var(--pink2));width:0%"></div></div>
+            </div>
+            <div>
+              <div class="label-line"><strong>Stories</strong><strong id="storiesProgressLabel">0 / 0</strong></div>
+              <div class="track"><div id="storiesProgressBar" class="fill" style="background:linear-gradient(90deg,var(--orange),#ffc17a);width:0%"></div></div>
+            </div>
+            <div>
+              <div class="label-line"><strong>Novi pratioci</strong><strong id="followersProgressLabel">0 / 0</strong></div>
+              <div class="track"><div id="followersProgressBar" class="fill" style="background:linear-gradient(90deg,var(--purple),#b89cff);width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Performance snapshot</h3>
+          <div class="mini-grid">
+            <div class="row"><span>Views</span><strong id="funnelViews">0</strong></div>
+            <div class="row"><span>Ads impressions</span><strong id="funnelImpressions">0</strong></div>
+            <div class="row"><span>Interactions</span><strong id="funnelInteractions">0</strong></div>
+            <div class="row"><span>Novi pratioci</span><strong id="funnelFollowers">0</strong></div>
+            <div class="row"><span>Lead rate iz organika</span><strong id="leadRateValue">0.00%</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section grid g2">
+        <div class="card">
+          <h3>Top objave – po views</h3>
+          <div id="topViewsList"></div>
+        </div>
+        <div class="card">
+          <h3>Top objave – po lajkovima</h3>
+          <div id="topLikesList"></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card">
+          <h3>Instagram embed top objava</h3>
+          <div class="embeds" id="postEmbeds"></div>
+        </div>
+      </section>
+
+      <section class="section grid g2">
+        <div class="card">
+          <h3>Weekly trend</h3>
+          <div class="legend">
+            <span><span class="dot" style="background:var(--pink)"></span>Tekuća</span>
+            <span><span class="dot" style="background:var(--orange)"></span>Prošla</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="weeklyChart"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Organske metrike</h3>
+          <div class="legend">
+            <span><span class="dot" style="background:var(--pink)"></span>Views</span>
+            <span><span class="dot" style="background:var(--purple)"></span>Interactions</span>
+            <span><span class="dot" style="background:var(--cyan)"></span>Novi pratioci</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="organicBarsChart"></canvas></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="analysis-grid">
+          <div class="card">
+            <h3>Insights</h3>
+            <div class="analysis-box" id="insightsBox">—</div>
+          </div>
+          <div class="card">
+            <h3>Recommendations</h3>
+            <div class="analysis-box" id="recommendationsBox">—</div>
+          </div>
+          <div class="card">
+            <h3>Napomena / zaključak</h3>
+            <div class="note-box" id="notesBox">—</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ALWAYS VISIBLE -->
     <section class="section">
-      <div class="card">
-        <h3>Instagram embed top objava</h3>
-        <div class="embeds" id="postEmbeds"></div>
-      </div>
-    </section>
-
-    <section class="section grid g2">
-      <div class="card">
-        <h3>Weekly trend</h3>
-        <div class="legend">
-          <span><span class="dot" style="background:var(--pink)"></span>Tekuća</span>
-          <span><span class="dot" style="background:var(--orange)"></span>Prošla</span>
-        </div>
-        <div class="canvas-wrap"><canvas id="weeklyChart"></canvas></div>
-      </div>
-      <div class="card">
-        <h3>Organske metrike</h3>
-        <div class="legend">
-          <span><span class="dot" style="background:var(--pink)"></span>Views</span>
-          <span><span class="dot" style="background:var(--purple)"></span>Interactions</span>
-          <span><span class="dot" style="background:var(--cyan)"></span>Novi pratioci</span>
-        </div>
-        <div class="canvas-wrap"><canvas id="organicBarsChart"></canvas></div>
-      </div>
-    </section>
-
-    <section class="section grid g2">
-      <div class="card">
-        <h3>Komentar / zaključak</h3>
-        <div class="note-box" id="notesBox">—</div>
-      </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px">
           <h3 style="margin:0">Sačuvani izvještaji</h3>
@@ -459,6 +560,7 @@
                 <th>Osoba</th>
                 <th>Period</th>
                 <th>Views</th>
+                <th>Interactions</th>
                 <th>Akcije</th>
               </tr>
             </thead>
@@ -475,7 +577,7 @@
       <div class="modal-head">
         <div>
           <div style="font-size:22px;font-weight:800">Unos sedmičnog izvještaja</div>
-          <div class="muted">Kratak wizard sa organskim KPI, dinamičkim kampanjama i top objavama.</div>
+          <div class="muted">Jedinstvena forma za sve profile, kampanje i top objave.</div>
         </div>
         <button class="btn btn-ghost" id="closeModalBtn">Zatvori</button>
       </div>
@@ -486,7 +588,7 @@
         <div class="step active" data-step="0">
           <div class="step-card">
             <div class="step-title">1. Osnovni podaci</div>
-            <div class="helper">Unesi profil, osobu, period i opšti komentar izvještaja.</div>
+            <div class="helper">Unesi profil, osobu, period i opšti zaključak izvještaja.</div>
 
             <div class="form3">
               <div class="field">
@@ -535,7 +637,7 @@
         <div class="step" data-step="1">
           <div class="step-card">
             <div class="step-title">2. Organski KPI</div>
-            <div class="helper">Unosiš tekuću i prošlu nedelju. Targets određuju progress barove.</div>
+            <div class="helper">Tekuća i prošla nedelja. Targets služe za progress i plan.</div>
             <div class="form3" id="organicInputsGrid"></div>
           </div>
         </div>
@@ -567,10 +669,18 @@
             <button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu po lajkovima</button>
           </div>
         </div>
+
+        <div class="step" data-step="4">
+          <div class="step-card">
+            <div class="step-title">5. Preview</div>
+            <div class="helper">Provjeri unos prije čuvanja.</div>
+            <div class="preview-grid" id="previewBox"></div>
+          </div>
+        </div>
       </div>
 
       <div class="modal-foot">
-        <div class="muted" id="stepStatus">Korak 1 od 4</div>
+        <div class="muted" id="stepStatus">Korak 1 od 5</div>
         <div class="actions">
           <button class="btn btn-ghost" id="prevStepBtn">Nazad</button>
           <button class="btn btn-primary" id="nextStepBtn">Dalje</button>
@@ -614,10 +724,11 @@
 
     const state = {
       step: 0,
-      activeReportId: null,
       allReports: [],
       filteredReports: [],
-      report: createEmptyReport()
+      selectedReportId: null,
+      report: createEmptyReport(),
+      isSaving: false
     };
 
     const modal = document.getElementById('reportModal');
@@ -667,6 +778,7 @@
     }
 
     function setSaving(on) {
+      state.isSaving = on;
       document.getElementById('savingBadge').classList.toggle('show', on);
       document.getElementById('saveReportBtn').disabled = on;
     }
@@ -877,19 +989,21 @@
           lost_followers_current: p.organic.lost_followers_current,
           lost_followers_previous: p.organic.lost_followers_previous,
           organic_leads_current: p.organic.organic_leads_current,
-          organic_leads_previous: p.organic.organic_leads_previous
+          organic_leads_previous: p.organic.organic_leads_previous,
+          engagement_rate_pct: safeRate(p.organic.interactions_current, p.organic.views_current),
+          lead_rate_pct: safeRate(p.organic.organic_leads_current, p.organic.views_current)
         },
-        ads: p.ads,
         ads_totals: {
-          clicks: p.ads.reduce((s, a) => s + (+a.clicks || 0), 0),
+          budget: p.ads.reduce((s, a) => s + (+a.budget || 0), 0),
           impressions: p.ads.reduce((s, a) => s + (+a.impressions || 0), 0),
+          clicks: p.ads.reduce((s, a) => s + (+a.clicks || 0), 0),
           ctr_pct: safeRate(
             p.ads.reduce((s, a) => s + (+a.clicks || 0), 0),
             p.ads.reduce((s, a) => s + (+a.impressions || 0), 0)
           ),
-          budget: p.ads.reduce((s, a) => s + (+a.budget || 0), 0),
           revenue: p.ads.reduce((s, a) => s + (+a.revenue || 0), 0)
         },
+        ads: p.ads,
         topViews: p.topViews,
         topLikes: p.topLikes
       };
@@ -897,6 +1011,7 @@
 
     function loadDemo() {
       state.allReports = [demoStored()];
+      state.selectedReportId = null;
       fillFilters();
       applyFilters();
       showToast('Učitan demo prikaz.');
@@ -938,12 +1053,99 @@
         (!to || !r.report_date || r.report_date <= to)
       );
 
-      renderDashboard();
-      renderReportsTable();
+      state.selectedReportId = null;
+      renderAll();
     }
 
-    function renderDashboard() {
-      const r = state.filteredReports[0] || state.allReports[0] || demoStored();
+    function getSelectedReport() {
+      return state.allReports.find(r => r.report_id === state.selectedReportId) || null;
+    }
+
+    function isSingleMode() {
+      return !!state.selectedReportId;
+    }
+
+    function renderAll() {
+      renderMode();
+      renderReportsTable();
+      if (isSingleMode()) renderSingleMode();
+      else renderOverviewMode();
+    }
+
+    function renderMode() {
+      const single = isSingleMode();
+      document.getElementById('overviewSections').classList.toggle('hidden', single);
+      document.getElementById('singleSections').classList.toggle('hidden', !single);
+      document.getElementById('backToOverviewBtn').style.display = single ? 'inline-flex' : 'none';
+      document.getElementById('modeBadge').textContent = single ? 'Single report mode' : 'Overview mode';
+    }
+
+    function renderOverviewMode() {
+      const reports = state.filteredReports;
+      const summary = summarizeReports(reports);
+
+      heroProfile.textContent = filterProfile.value === 'all' ? 'Svi profili' : filterProfile.value;
+      heroPeriod.textContent = filterPeriod.value === 'all' ? 'Svi periodi' : filterPeriod.value;
+      heroOwner.textContent = filterOwner.value === 'all' ? 'Sve osobe' : filterOwner.value;
+
+      ovReportsCount.textContent = fmt(summary.reports_count);
+      ovViewsTotal.textContent = fmt(summary.views_current_total);
+      ovViewsChange.textContent = `${fmt(summary.views_change_pct, 2)}%`;
+      ovInteractionsTotal.textContent = fmt(summary.interactions_current_total);
+      ovInteractionsChange.textContent = `${fmt(summary.interactions_change_pct, 2)}%`;
+      ovFollowersTotal.textContent = fmt(summary.new_followers_current_total);
+      ovFollowersChange.textContent = `${fmt(summary.new_followers_change_pct, 2)}%`;
+      ovAdsCtr.textContent = `${fmt(summary.ads_ctr_pct, 2)}%`;
+      ovAdsBudget.textContent = fmt(summary.ads_budget_total);
+
+      renderOverviewOrganicTable(summary);
+      renderOverviewPaidSummary(summary);
+      document.getElementById('overviewSummary').innerHTML = buildOverviewSummary(summary, reports);
+      drawOverviewTrendChart(reports);
+    }
+
+    function renderOverviewOrganicTable(summary) {
+      const rows = [
+        ['Objave', summary.posts_current_total, summary.posts_previous_total, summary.posts_change_pct],
+        ['Reels / video', summary.reels_current_total, summary.reels_previous_total, summary.reels_change_pct],
+        ['Stories', summary.stories_current_total, summary.stories_previous_total, summary.stories_change_pct],
+        ['Views', summary.views_current_total, summary.views_previous_total, summary.views_change_pct],
+        ['Interactions', summary.interactions_current_total, summary.interactions_previous_total, summary.interactions_change_pct],
+        ['Novi pratioci', summary.new_followers_current_total, summary.new_followers_previous_total, summary.new_followers_change_pct],
+        ['Izgubljeni pratioci', summary.lost_followers_current_total, summary.lost_followers_previous_total, summary.lost_followers_change_pct],
+        ['Leads iz organika', summary.organic_leads_current_total, summary.organic_leads_previous_total, summary.organic_leads_change_pct]
+      ];
+
+      overviewOrganicTableBody.innerHTML = rows.map(([label, c, p, d]) => `
+        <tr>
+          <td>${escapeHtml(label)}</td>
+          <td>${fmt(c)}</td>
+          <td>${fmt(p)}</td>
+          <td><span class="delta ${deltaClass(d)}">${fmt(d, 2)}%</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderOverviewPaidSummary(summary) {
+      const html = `
+        <div class="row"><span>Ukupni budget</span><strong>${fmt(summary.ads_budget_total)}</strong></div>
+        <div class="row"><span>Ukupne impresije</span><strong>${fmt(summary.ads_impressions_total)}</strong></div>
+        <div class="row"><span>Ukupni klikovi</span><strong>${fmt(summary.ads_clicks_total)}</strong></div>
+        <div class="row"><span>Ukupan revenue</span><strong>${fmt(summary.ads_revenue_total)}</strong></div>
+        <div class="row"><span>Ads CTR</span><strong>${fmt(summary.ads_ctr_pct, 2)}%</strong></div>
+        <div class="row"><span>Organic engagement rate</span><strong>${fmt(summary.organic_engagement_rate_pct, 2)}%</strong></div>
+      `;
+      document.getElementById('overviewPaidSummary').innerHTML = html;
+    }
+
+    function renderSingleMode() {
+      const r = getSelectedReport();
+      if (!r) {
+        state.selectedReportId = null;
+        renderAll();
+        return;
+      }
+
       const o = r.organic || {};
       const ads = r.ads || [];
 
@@ -955,9 +1157,11 @@
       ownerName.textContent = r.owner || '-';
       periodLabel.textContent = r.period_label || '-';
       reportDateLabel.textContent = r.report_date || '-';
+
       viewsCurrent.textContent = fmt(o.views_current || 0);
       viewsPrevious.textContent = fmt(o.views_previous || 0);
-      filteredReportsCount.textContent = state.filteredReports.length || state.allReports.length || 0;
+      interactionsCurrent.textContent = fmt(o.interactions_current || 0);
+      interactionsPrevious.textContent = fmt(o.interactions_previous || 0);
 
       const viewsDelta = pctChange(o.views_current, o.views_previous);
       const interactionsDelta = pctChange(o.interactions_current, o.interactions_previous);
@@ -988,9 +1192,13 @@
       renderTop(topViewsList, r.topViews || [], 'views');
       renderTop(topLikesList, r.topLikes || [], 'lajkovi');
       renderEmbeds(r);
+
+      summaryBox.innerHTML = buildSingleSummary(r);
+      insightsBox.innerHTML = buildInsights(r);
+      recommendationsBox.innerHTML = buildRecommendations(r);
       notesBox.textContent = r.notes || '—';
 
-      drawCharts(r);
+      drawSingleCharts(r);
     }
 
     function setProgress(bar, label, current, target) {
@@ -1080,7 +1288,9 @@
     }
 
     function renderEmbeds(r) {
-      const items = [...(r.topViews || []).slice(0, 1), ...(r.topLikes || []).slice(0, 1)];
+      const viewsPost = (r.topViews || [])[0];
+      const likesPost = (r.topLikes || [])[0];
+      const items = [viewsPost, likesPost].filter(Boolean);
       const container = document.getElementById('postEmbeds');
 
       if (!items.length) {
@@ -1103,7 +1313,7 @@
             ${
               valid
                 ? `<blockquote class="instagram-media" data-instgrm-permalink="${escapeAttr(link)}" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:8px;margin:0 auto;max-width:540px;width:100%;"></blockquote>`
-                : `<div class="empty">Embed nije dostupan. <br><a class="link" href="${escapeAttr(link || '#')}" target="_blank" rel="noreferrer">Otvori objavu</a></div>`
+                : `<div class="empty">Embed nije dostupan.<br><a class="link" href="${escapeAttr(link || '#')}" target="_blank" rel="noreferrer">Otvori objavu</a></div>`
             }
           </div>
         `;
@@ -1125,13 +1335,145 @@
           <td>${escapeHtml(r.owner || '-')}</td>
           <td>${escapeHtml(r.period_label || '-')}</td>
           <td>${fmt(r.organic?.views_current || 0)}</td>
+          <td>${fmt(r.organic?.interactions_current || 0)}</td>
           <td class="report-actions">
             <a data-show="${escapeAttr(r.report_id)}">Prikaži</a>
             <a data-edit="${escapeAttr(r.report_id)}">Edit</a>
+            <a data-duplicate="${escapeAttr(r.report_id)}">Dupliciraj</a>
             <a data-delete="${escapeAttr(r.report_id)}">Obriši</a>
           </td>
         </tr>
       `).join('');
+    }
+
+    function summarizeReports(reports) {
+      const s = {
+        reports_count: reports.length,
+        posts_current_total: 0,
+        posts_previous_total: 0,
+        reels_current_total: 0,
+        reels_previous_total: 0,
+        stories_current_total: 0,
+        stories_previous_total: 0,
+        views_current_total: 0,
+        views_previous_total: 0,
+        interactions_current_total: 0,
+        interactions_previous_total: 0,
+        new_followers_current_total: 0,
+        new_followers_previous_total: 0,
+        lost_followers_current_total: 0,
+        lost_followers_previous_total: 0,
+        organic_leads_current_total: 0,
+        organic_leads_previous_total: 0,
+        ads_budget_total: 0,
+        ads_impressions_total: 0,
+        ads_clicks_total: 0,
+        ads_revenue_total: 0
+      };
+
+      reports.forEach(r => {
+        const o = r.organic || {};
+        s.posts_current_total += +o.posts_current || 0;
+        s.posts_previous_total += +o.posts_previous || 0;
+        s.reels_current_total += +o.reels_current || 0;
+        s.reels_previous_total += +o.reels_previous || 0;
+        s.stories_current_total += +o.stories_current || 0;
+        s.stories_previous_total += +o.stories_previous || 0;
+        s.views_current_total += +o.views_current || 0;
+        s.views_previous_total += +o.views_previous || 0;
+        s.interactions_current_total += +o.interactions_current || 0;
+        s.interactions_previous_total += +o.interactions_previous || 0;
+        s.new_followers_current_total += +o.new_followers_current || 0;
+        s.new_followers_previous_total += +o.new_followers_previous || 0;
+        s.lost_followers_current_total += +o.lost_followers_current || 0;
+        s.lost_followers_previous_total += +o.lost_followers_previous || 0;
+        s.organic_leads_current_total += +o.organic_leads_current || 0;
+        s.organic_leads_previous_total += +o.organic_leads_previous || 0;
+
+        (r.ads || []).forEach(a => {
+          s.ads_budget_total += +a.budget || 0;
+          s.ads_impressions_total += +a.impressions || 0;
+          s.ads_clicks_total += +a.clicks || 0;
+          s.ads_revenue_total += +a.revenue || 0;
+        });
+      });
+
+      s.posts_change_pct = pctChange(s.posts_current_total, s.posts_previous_total);
+      s.reels_change_pct = pctChange(s.reels_current_total, s.reels_previous_total);
+      s.stories_change_pct = pctChange(s.stories_current_total, s.stories_previous_total);
+      s.views_change_pct = pctChange(s.views_current_total, s.views_previous_total);
+      s.interactions_change_pct = pctChange(s.interactions_current_total, s.interactions_previous_total);
+      s.new_followers_change_pct = pctChange(s.new_followers_current_total, s.new_followers_previous_total);
+      s.lost_followers_change_pct = pctChange(s.lost_followers_current_total, s.lost_followers_previous_total);
+      s.organic_leads_change_pct = pctChange(s.organic_leads_current_total, s.organic_leads_previous_total);
+      s.ads_ctr_pct = safeRate(s.ads_clicks_total, s.ads_impressions_total);
+      s.organic_engagement_rate_pct = safeRate(s.interactions_current_total, s.views_current_total);
+      s.organic_lead_rate_pct = safeRate(s.organic_leads_current_total, s.views_current_total);
+
+      return s;
+    }
+
+    function buildOverviewSummary(summary, reports) {
+      if (!reports.length) return 'Nema izvještaja u aktivnom filteru.';
+      const parts = [];
+      parts.push(`U aktivnom filteru nalazi se <strong>${fmt(summary.reports_count)}</strong> izvještaja.`);
+      parts.push(`Ukupni views iznose <strong>${fmt(summary.views_current_total)}</strong>, a ukupne interactions <strong>${fmt(summary.interactions_current_total)}</strong>.`);
+      parts.push(`Rast pregleda iznosi <strong>${fmt(summary.views_change_pct, 2)}%</strong>, dok rast interactions iznosi <strong>${fmt(summary.interactions_change_pct, 2)}%</strong>.`);
+      parts.push(`Ukupan organic engagement rate je <strong>${fmt(summary.organic_engagement_rate_pct, 2)}%</strong>, a ads CTR <strong>${fmt(summary.ads_ctr_pct, 2)}%</strong>.`);
+      return parts.join(' ');
+    }
+
+    function buildSingleSummary(report) {
+      const o = report.organic || {};
+      const viewsChange = pctChange(o.views_current, o.views_previous);
+      const intChange = pctChange(o.interactions_current, o.interactions_previous);
+      const followersChange = pctChange(o.new_followers_current, o.new_followers_previous);
+      const topPost = (report.topViews || [])[0];
+      const hasAds = (report.ads || []).some(a => (+a.budget || 0) > 0 || (+a.impressions || 0) > 0);
+
+      const parts = [];
+      parts.push(`Profil <strong>${escapeHtml(report.profile || '-')}</strong> u periodu <strong>${escapeHtml(report.period_label || '-')}</strong> vodila je <strong>${escapeHtml(report.owner || '-')}</strong>.`);
+      parts.push(`Views su porasli za <strong>${fmt(viewsChange, 2)}%</strong>, a interactions za <strong>${fmt(intChange, 2)}%</strong>.`);
+      parts.push(`Novi pratioci iznose <strong>${fmt(o.new_followers_current || 0)}</strong>, uz promjenu od <strong>${fmt(followersChange, 2)}%</strong>.`);
+      if (topPost) {
+        parts.push(`Najjača objava po views bila je <strong>${escapeHtml(topPost.title || 'objava bez naziva')}</strong> sa <strong>${fmt(topPost.value || 0)}</strong> pregleda i <strong>${fmt(topPost.interactions || 0)}</strong> interactions.`);
+      }
+      parts.push(hasAds ? `Paid kampanje su bile aktivne u ovom periodu.` : `Rezultati u ovom periodu ostvareni su bez značajnog paid doprinosa.`);
+      return parts.join(' ');
+    }
+
+    function buildInsights(report) {
+      const o = report.organic || {};
+      const insights = [];
+      const viewsChange = pctChange(o.views_current, o.views_previous);
+      const intChange = pctChange(o.interactions_current, o.interactions_previous);
+      const storiesChange = pctChange(o.stories_current, o.stories_previous);
+      const lostChange = pctChange(o.lost_followers_current, o.lost_followers_previous);
+      const paidActive = (report.ads || []).some(a => (+a.impressions || 0) > 0);
+
+      if (intChange > viewsChange) insights.push('Angažman raste brže od dosega, što ukazuje na kvalitetniji odziv publike.');
+      if (storiesChange > 0 && viewsChange > 0) insights.push('Povećana stories aktivnost prati rast vidljivosti sadržaja.');
+      if (lostChange < 0) insights.push('Broj izgubljenih pratilaca je smanjen, što je pozitivan signal za retention.');
+      if (!paidActive) insights.push('Rezultat ovog perioda u najvećoj mjeri dolazi iz organskog sadržaja.');
+      if ((report.topViews || [])[0]) insights.push(`Najjača tema u sadržaju trenutno je povezana sa objavom "${escapeHtml((report.topViews || [])[0].title || '')}".`);
+
+      return insights.length ? `<ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>` : 'Nema dovoljno podataka za insight analizu.';
+    }
+
+    function buildRecommendations(report) {
+      const o = report.organic || {};
+      const recs = [];
+      const viewsChange = pctChange(o.views_current, o.views_previous);
+      const intChange = pctChange(o.interactions_current, o.interactions_previous);
+      const top = (report.topViews || [])[0];
+
+      if (top) recs.push(`Nastaviti sa temama i formatima sličnim objavi "${escapeHtml(top.title || '')}" pošto trenutno nose najveći rezultat.`);
+      if (o.stories_current < (o.stories_target || o.stories_current)) recs.push('Povećati stories output do planiranog targeta.');
+      if (viewsChange <= 0) recs.push('Testirati dodatni reels ili video format kako bi se ubrzao rast pregleda.');
+      if (intChange > 0 && (+o.organic_leads_current || 0) === 0) recs.push('Dodati jači CTA ako angažman raste, a leads ostaju niski.');
+      if (!(report.ads || []).length || (report.ads || []).every(a => (+a.impressions || 0) === 0)) recs.push('Ako cilj postane širi reach, testirati minimalnu paid podršku na najboljim organskim objavama.');
+
+      return recs.length ? `<ul>${recs.map(i => `<li>${i}</li>`).join('')}</ul>` : 'Nema dovoljno podataka za preporuke.';
     }
 
     function setupCanvas(canvas) {
@@ -1194,7 +1536,34 @@
       }));
     }
 
-    function drawCharts(r) {
+    function drawOverviewTrendChart(reports) {
+      const grouped = {};
+      reports.forEach(r => {
+        const key = r.report_date || '-';
+        if (!grouped[key]) grouped[key] = { views: 0, interactions: 0, followers: 0 };
+        grouped[key].views += +r.organic?.views_current || 0;
+        grouped[key].interactions += +r.organic?.interactions_current || 0;
+        grouped[key].followers += +r.organic?.new_followers_current || 0;
+      });
+
+      const labels = Object.keys(grouped).sort();
+      if (!labels.length) {
+        lineChart('overviewTrendChart', ['-'], [
+          { color: '#ff4fa7', data: [0] },
+          { color: '#8b5cf6', data: [0] },
+          { color: '#22d3ee', data: [0] }
+        ], 10);
+        return;
+      }
+
+      lineChart('overviewTrendChart', labels, [
+        { color: '#ff4fa7', data: labels.map(l => grouped[l].views) },
+        { color: '#8b5cf6', data: labels.map(l => grouped[l].interactions) },
+        { color: '#22d3ee', data: labels.map(l => grouped[l].followers) }
+      ]);
+    }
+
+    function drawSingleCharts(r) {
       const o = r.organic || {};
       lineChart('weeklyChart',
         ['Objave', 'Reels', 'Stories', 'Views', 'Inter.', 'Novi'],
@@ -1217,22 +1586,21 @@
     }
 
     function renderStepper() {
-      const labels = ['Osnovno', 'Organski KPI', 'ADS', 'Top objave'];
+      const labels = ['Osnovno', 'Organski KPI', 'ADS', 'Top objave', 'Preview'];
       stepper.innerHTML = labels.map((l, i) =>
         `<div class="step-pill ${i === state.step ? 'active' : ''}">${i + 1}. ${escapeHtml(l)}</div>`
       ).join('');
       steps.forEach((s, i) => s.classList.toggle('active', i === state.step));
-      stepStatus.textContent = `Korak ${state.step + 1} od 4`;
+      stepStatus.textContent = `Korak ${state.step + 1} od 5`;
       prevStepBtn.style.display = state.step === 0 ? 'none' : 'inline-block';
       nextStepBtn.style.display = state.step === steps.length - 1 ? 'none' : 'inline-block';
       saveReportBtn.style.display = state.step === steps.length - 1 ? 'inline-block' : 'none';
     }
 
-    function openModal(id = null) {
-      state.activeReportId = id;
-      state.report = id
-        ? storedToForm(state.allReports.find(r => r.report_id === id) || demoStored())
-        : createEmptyReport();
+    function openModal(id = null, duplicate = false) {
+      const found = id ? state.allReports.find(r => r.report_id === id) : null;
+      state.report = found ? storedToForm(found) : createEmptyReport();
+      if (duplicate) state.report.report_id = null;
       loadStateIntoForm();
       modal.classList.add('open');
       renderStepper();
@@ -1256,6 +1624,7 @@
       renderOrganicInputs();
       renderCampaignInputs();
       renderPostInputs();
+      renderPreview();
     }
 
     function renderOrganicInputs() {
@@ -1341,6 +1710,23 @@
       bindDynamicButtons();
     }
 
+    function renderPreview() {
+      const r = state.report;
+      const payload = formToPayload();
+      previewBox.innerHTML = `
+        <div class="row"><span>Profil</span><strong>${escapeHtml(r.profile || '-')}</strong></div>
+        <div class="row"><span>Osoba</span><strong>${escapeHtml(r.owner || '-')}</strong></div>
+        <div class="row"><span>Period</span><strong>${escapeHtml(r.period || '-')}</strong></div>
+        <div class="row"><span>Datum</span><strong>${escapeHtml(r.report_date || '-')}</strong></div>
+        <div class="row"><span>Views</span><strong>${fmt(payload.organic.views_current)}</strong></div>
+        <div class="row"><span>Interactions</span><strong>${fmt(payload.organic.interactions_current)}</strong></div>
+        <div class="row"><span>Novi pratioci</span><strong>${fmt(payload.organic.new_followers_current)}</strong></div>
+        <div class="row"><span>Broj kampanja</span><strong>${fmt(payload.ads.length)}</strong></div>
+        <div class="row"><span>Top views objava</span><strong>${escapeHtml((payload.topViews[0] || {}).title || '-')}</strong></div>
+        <div class="row"><span>Top likes objava</span><strong>${escapeHtml((payload.topLikes[0] || {}).title || '-')}</strong></div>
+      `;
+    }
+
     function bindDynamicButtons() {
       document.querySelectorAll('.remove-campaign-btn').forEach(b => {
         b.onclick = () => b.closest('.campaign-entry').remove();
@@ -1360,15 +1746,9 @@
       state.report.topCount = +topCountInput.value || 0;
       state.report.notes = notesInput.value || '';
 
-      document.querySelectorAll('[data-oc]').forEach(i => {
-        state.report.organic[i.dataset.oc].current = +i.value || 0;
-      });
-      document.querySelectorAll('[data-op]').forEach(i => {
-        state.report.organic[i.dataset.op].previous = +i.value || 0;
-      });
-      document.querySelectorAll('[data-ot]').forEach(i => {
-        state.report.organic[i.dataset.ot].target = +i.value || 0;
-      });
+      document.querySelectorAll('[data-oc]').forEach(i => { state.report.organic[i.dataset.oc].current = +i.value || 0; });
+      document.querySelectorAll('[data-op]').forEach(i => { state.report.organic[i.dataset.op].previous = +i.value || 0; });
+      document.querySelectorAll('[data-ot]').forEach(i => { state.report.organic[i.dataset.ot].target = +i.value || 0; });
 
       state.report.campaigns = [...document.querySelectorAll('.campaign-entry')].map(e => {
         const c = {};
@@ -1388,17 +1768,17 @@
 
       state.report.topViews = parsePosts('topViewsInputs');
       state.report.topLikes = parsePosts('topLikesInputs');
+      renderPreview();
     }
 
     async function saveReport() {
       collectForm();
       setSaving(true);
 
-      const previousModalState = modal.classList.contains('open');
-      if (previousModalState) closeModal();
+      const payload = formToPayload();
 
       try {
-        const res = await apiPost({ action: 'saveReport', report: formToPayload() });
+        const res = await apiPost({ action: 'saveReport', report: payload });
         if (!res.ok) throw new Error(res.error || 'Greška pri čuvanju');
 
         const saved = res.report;
@@ -1407,7 +1787,24 @@
         else state.allReports.unshift(saved);
 
         fillFilters();
-        applyFilters();
+
+        const profile = filterProfile.value;
+        const owner = filterOwner.value;
+        const period = filterPeriod.value;
+        const from = filterDateFrom.value;
+        const to = filterDateTo.value;
+
+        state.filteredReports = state.allReports.filter(r =>
+          (profile === 'all' || r.profile === profile) &&
+          (owner === 'all' || r.owner === owner) &&
+          (period === 'all' || r.period_label === period) &&
+          (!from || !r.report_date || r.report_date >= from) &&
+          (!to || !r.report_date || r.report_date <= to)
+        );
+
+        state.selectedReportId = saved.report_id;
+        closeModal();
+        renderAll();
         showToast('Izvještaj je sačuvan.');
       } catch (e) {
         showToast(e.message || 'Greška pri čuvanju.', true);
@@ -1421,9 +1818,11 @@
       try {
         const res = await apiPost({ action: 'deleteReport', report_id: id });
         if (!res.ok) throw new Error(res.error || 'Greška pri brisanju');
+
         state.allReports = state.allReports.filter(r => r.report_id !== id);
-        fillFilters();
-        applyFilters();
+        state.filteredReports = state.filteredReports.filter(r => r.report_id !== id);
+        if (state.selectedReportId === id) state.selectedReportId = null;
+        renderAll();
         showToast('Izvještaj je obrisan.');
       } catch (e) {
         showToast(e.message || 'Greška pri brisanju.', true);
@@ -1445,8 +1844,12 @@
 
     openModalBtn.onclick = () => openModal();
     closeModalBtn.onclick = closeModal;
-    modal.onclick = e => { if (e.target === modal) closeModal(); };
+    backToOverviewBtn.onclick = () => {
+      state.selectedReportId = null;
+      renderAll();
+    };
 
+    modal.onclick = e => { if (e.target === modal) closeModal(); };
     loadDemoBtn.onclick = loadDemo;
     resetFiltersBtn.onclick = () => {
       filterProfile.value = 'all';
@@ -1454,7 +1857,8 @@
       filterPeriod.value = 'all';
       filterDateFrom.value = '';
       filterDateTo.value = '';
-      applyFilters();
+      state.selectedReportId = null;
+      renderAll();
     };
     applyFiltersBtn.onclick = applyFilters;
 
@@ -1476,14 +1880,12 @@
     prevStepBtn.onclick = () => {
       collectForm();
       state.step = Math.max(0, state.step - 1);
-      renderOrganicInputs();
       renderStepper();
     };
 
     nextStepBtn.onclick = () => {
       collectForm();
       state.step = Math.min(steps.length - 1, state.step + 1);
-      renderOrganicInputs();
       renderStepper();
     };
 
@@ -1492,20 +1894,22 @@
     reportsTableBody.onclick = e => {
       const show = e.target.dataset.show;
       const edit = e.target.dataset.edit;
+      const duplicate = e.target.dataset.duplicate;
       const del = e.target.dataset.delete;
 
       if (show) {
-        const r = state.allReports.find(x => x.report_id === show);
-        if (r) {
-          state.filteredReports = [r];
-          renderDashboard();
-        }
+        state.selectedReportId = show;
+        renderAll();
       }
-      if (edit) openModal(edit);
+      if (edit) openModal(edit, false);
+      if (duplicate) openModal(duplicate, true);
       if (del) deleteReport(del);
     };
 
-    window.addEventListener('resize', () => renderDashboard());
+    window.addEventListener('resize', () => {
+      if (isSingleMode()) renderSingleMode();
+      else renderOverviewMode();
+    });
 
     bootstrap();
   </script>
