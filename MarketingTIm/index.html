@@ -1460,21 +1460,105 @@
       return insights.length ? `<ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>` : 'Nema dovoljno podataka za insight analizu.';
     }
 
-    function buildRecommendations(report) {
-      const o = report.organic || {};
-      const recs = [];
-      const viewsChange = pctChange(o.views_current, o.views_previous);
-      const intChange = pctChange(o.interactions_current, o.interactions_previous);
-      const top = (report.topViews || [])[0];
+   function buildRecommendations(report) {
+  const o = report.organic || {};
+  const ads = report.ads || [];
 
-      if (top) recs.push(`Nastaviti sa temama i formatima sličnim objavi "${escapeHtml(top.title || '')}" pošto trenutno nose najveći rezultat.`);
-      if (o.stories_current < (o.stories_target || o.stories_current)) recs.push('Povećati stories output do planiranog targeta.');
-      if (viewsChange <= 0) recs.push('Testirati dodatni reels ili video format kako bi se ubrzao rast pregleda.');
-      if (intChange > 0 && (+o.organic_leads_current || 0) === 0) recs.push('Dodati jači CTA ako angažman raste, a leads ostaju niski.');
-      if (!(report.ads || []).length || (report.ads || []).every(a => (+a.impressions || 0) === 0)) recs.push('Ako cilj postane širi reach, testirati minimalnu paid podršku na najboljim organskim objavama.');
+  const recs = [];
 
-      return recs.length ? `<ul>${recs.map(i => `<li>${i}</li>`).join('')}</ul>` : 'Nema dovoljno podataka za preporuke.';
-    }
+  const viewsChange = pctChange(o.views_current, o.views_previous);
+  const intChange = pctChange(o.interactions_current, o.interactions_previous);
+  const followersChange = pctChange(o.new_followers_current, o.new_followers_previous);
+
+  const engagementRate = (+o.interactions_current || 0) && (+o.views_current || 0)
+    ? (o.interactions_current / o.views_current) * 100
+    : 0;
+
+  const adsImpressions = ads.reduce((s, a) => s + (+a.impressions || 0), 0);
+  const adsClicks = ads.reduce((s, a) => s + (+a.clicks || 0), 0);
+  const adsCTR = adsImpressions ? (adsClicks / adsImpressions) * 100 : 0;
+
+  const top = (report.topViews || [])[0];
+
+  // PRIORITY 1 — kritične stvari
+
+  if (viewsChange <= 0) {
+    recs.push({
+      priority: 1,
+      text: 'Reach stagnira ili opada — testirati više reels/video formata i unaprijediti hook u prvim sekundama sadržaja.'
+    });
+  }
+
+  if (intChange > 0 && (+o.organic_leads_current || 0) === 0) {
+    recs.push({
+      priority: 1,
+      text: 'Angažman raste, ali nema konverzija — dodati jasniji CTA i usmjeriti sadržaj ka akciji (klik, prijava, DM).'
+    });
+  }
+
+  if (ads.length && adsCTR > 0 && adsCTR < 0.8) {
+    recs.push({
+      priority: 1,
+      text: 'Paid kampanje imaju nizak CTR — testirati novu kreativu, headline i targetiranje.'
+    });
+  }
+
+  // PRIORITY 2 — opportunity
+
+  if (top) {
+    recs.push({
+      priority: 2,
+      text: `Najbolja objava ("${top.title}") treba biti referenca — razviti sličan sadržaj ili serijal na tu temu.`
+    });
+  }
+
+  if (o.stories_target > 0 && o.stories_current < o.stories_target) {
+    recs.push({
+      priority: 2,
+      text: 'Stories output je ispod plana — povećati frekvenciju za bolju dnevnu vidljivost.'
+    });
+  }
+
+  if (intChange > viewsChange) {
+    recs.push({
+      priority: 2,
+      text: 'Angažman raste brže od reach-a — sadržaj rezonuje, preporuka je skalirati ovaj tip objava.'
+    });
+  }
+
+  // PRIORITY 3 — potvrde i optimizacije
+
+  if (followersChange > 0) {
+    recs.push({
+      priority: 3,
+      text: 'Rast pratilaca je stabilan — nastaviti sa trenutnim content pravcem.'
+    });
+  }
+
+  if (engagementRate < 2 && o.views_current > 0) {
+    recs.push({
+      priority: 3,
+      text: 'Engagement rate je nizak — uključiti više pitanja, CTA i interaktivnih elemenata u sadržaj.'
+    });
+  }
+
+  if (!ads.length || adsImpressions === 0) {
+    recs.push({
+      priority: 2,
+      text: 'Nema paid aktivnosti — testirati minimalni boost najboljih organskih objava za veći reach.'
+    });
+  }
+
+  // SORT + LIMIT (max 4)
+  const finalRecs = recs
+    .sort((a, b) => a.priority - b.priority)
+    .slice(0, 4)
+    .map(r => r.text);
+
+  return finalRecs.length
+    ? `<ul>${finalRecs.map(i => `<li>${i}</li>`).join('')}</ul>`
+    : 'Nema dovoljno podataka za preporuke.';
+}
 
     function setupCanvas(canvas) {
       const ratio = window.devicePixelRatio || 1;
