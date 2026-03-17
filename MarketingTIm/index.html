@@ -5,533 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Instagram Weekly Report</title>
   <style>
-    :root {
-      --bg: #f8e6ec;
-      --card: #fcfcfd;
-      --text: #222228;
-      --muted: #7d7d88;
-      --line: #ececf2;
-      --pink: #ef3d96;
-      --pink-dark: #d9267f;
-      --orange: #ff7a1a;
-      --purple: #a855f7;
-      --cyan: #27c7f3;
-      --green: #33b56e;
-      --danger: #e25555;
-      --shadow: 0 10px 28px rgba(209, 63, 133, 0.08);
-      --radius: 24px;
-      --radius-sm: 16px;
+    :root{
+      --bg:#0b0d12;--panel:#121722;--panel2:#171d2a;--line:rgba(255,255,255,.08);
+      --text:#eef2ff;--muted:#98a2b3;--pink:#ff4fa7;--pink2:#ff78bf;--orange:#ff9a31;
+      --purple:#8b5cf6;--cyan:#22d3ee;--green:#22c55e;--red:#f87171;--radius:22px;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
     }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .page {
-      width: min(1600px, calc(100vw - 24px));
-      margin: 14px auto 28px;
-    }
-
-    .section { margin-bottom: 18px; }
-
-    .hero {
-      min-height: 132px;
-      border-radius: 28px;
-      overflow: hidden;
-      padding: 28px 34px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 22px;
-      color: white;
-      background:
-        radial-gradient(circle at 82% 34%, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.18) 16%, rgba(255,255,255,0) 36%),
-        repeating-linear-gradient(98deg, rgba(255,255,255,0.85) 0 3px, rgba(255,255,255,0.08) 3px 18px, rgba(255,255,255,0) 18px 26px),
-        linear-gradient(90deg, #df2d80 0%, #d9267f 42%, #ef5aa0 100%);
-      box-shadow: var(--shadow);
-      position: relative;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(255,255,255,0) 0 48%, rgba(255,255,255,0.12) 60%, rgba(255,255,255,0) 74%);
-      pointer-events: none;
-    }
-
-    .hero h1, .hero h2, .hero h3 {
-      margin: 0;
-      font-weight: 300;
-      letter-spacing: -0.04em;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h1 { font-size: clamp(32px, 4vw, 60px); }
-    .hero h2 { font-size: clamp(26px, 3vw, 46px); }
-
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      position: relative;
-      z-index: 1;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary { background: #111; color: #fff; }
-    .btn-light { background: rgba(255,255,255,0.18); color: #fff; backdrop-filter: blur(8px); }
-    .btn-ghost { background: #fff; color: var(--text); }
-
-    .grid-2, .grid-3, .grid-4 {
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid-2 { grid-template-columns: 1fr 1fr; }
-    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-    .grid-4 { grid-template-columns: repeat(4, 1fr); }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card h3 {
-      margin: 0 0 16px;
-      font-size: 20px;
-      line-height: 1.2;
-    }
-
-    .subtle {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .headline-metric {
-      font-size: 42px;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .mini-label {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .info-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--line);
-      font-size: 15px;
-    }
-
-    .info-row:last-child { border-bottom: 0; padding-bottom: 0; }
-
-    .watermark {
-      position: absolute;
-      left: 24px;
-      bottom: 18px;
-      color: var(--pink-dark);
-      font-weight: 700;
-      font-size: 18px;
-      opacity: .95;
-    }
-
-    .sample {
-      position: absolute;
-      right: 24px;
-      bottom: 18px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .progress-group { display: grid; gap: 14px; }
-
-    .progress-row {
-      display: grid;
-      grid-template-columns: 1fr 18px;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .label-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-
-    .track {
-      height: 13px;
-      border-radius: 999px;
-      background: #e8ebf1;
-      overflow: hidden;
-    }
-
-    .fill { height: 100%; border-radius: inherit; }
-    .dot { width: 18px; height: 18px; border-radius: 50%; background: #e2e5eb; }
-
-    .chip-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .chip {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(239,61,150,.08);
-      color: var(--pink-dark);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .kpi-table-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 760px;
-    }
-
-    th, td {
-      padding: 12px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--line);
-      font-size: 14px;
-      vertical-align: middle;
-    }
-
-    th {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      color: var(--muted);
-      background: #fafafd;
-      position: sticky;
-      top: 0;
-    }
-
-    .delta {
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .delta.up { color: var(--green); }
-    .delta.down { color: var(--danger); }
-    .delta.flat { color: var(--muted); }
-
-    .stat-box {
-      min-height: 120px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-
-    .stat-icon {
-      width: 54px;
-      height: 54px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      background: rgba(239,61,150,.08);
-      color: var(--pink-dark);
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    .stat-copy .label { font-size: 16px; }
-    .stat-copy .value { font-size: 32px; line-height: 1.1; font-weight: 700; }
-
-    .funnel-card {
-      min-height: 340px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .funnel-legend { display: grid; gap: 12px; }
-
-    .legend-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-    }
-
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .conversion {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 2px solid rgba(239,61,150,.25);
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 15px;
-    }
-
-    .funnel-visual {
-      min-height: 260px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .funnel-stack {
-      width: min(340px, 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .trap {
-      height: 60px;
-      clip-path: polygon(10% 0%, 90% 0%, 82% 100%, 18% 100%);
-    }
-
-    .trap.t1 { width: 100%; background: linear-gradient(180deg, #ef4fa0, #e54897); }
-    .trap.t2 { width: 82%; background: linear-gradient(180deg, #ff7d1e, #f16d12); }
-    .trap.t3 { width: 26%; background: linear-gradient(180deg, #a855f7, #9450e5); }
-    .trap.t4 { width: 14%; background: linear-gradient(180deg, #32c8ef, #20b8de); height: 64px; }
-
-    .summary-text {
-      font-size: 17px;
-      line-height: 1.6;
-    }
-
-    .summary-text .green { color: var(--green); font-weight: 700; }
-
-    .top-post {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
-      font-size: 14px;
-    }
-
-    .top-post:last-child { border-bottom: 0; }
-
-    .post-link {
-      color: var(--pink-dark);
-      text-decoration: none;
-      word-break: break-word;
-      font-weight: 600;
-    }
-
-    .post-link:hover { text-decoration: underline; }
-
-    .canvas-wrap { width: 100%; height: 240px; }
-    .canvas-wrap.short { height: 180px; }
-    canvas { width: 100%; height: 100%; display: block; }
-
-    .legend-inline {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(16,16,22,.42);
-      backdrop-filter: blur(5px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 30;
-    }
-
-    .modal-backdrop.open { display: flex; }
-
-    .modal {
-      width: min(980px, 100%);
-      max-height: min(92vh, 1000px);
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      background: #fff;
-      border-radius: 28px;
-      box-shadow: 0 18px 70px rgba(0,0,0,.18);
-    }
-
-    .modal-head, .modal-foot {
-      padding: 18px 22px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .modal-foot {
-      border-top: 1px solid var(--line);
-      border-bottom: 0;
-    }
-
-    .modal-body {
-      overflow: auto;
-      padding: 22px;
-      background: #fff;
-    }
-
-    .stepper {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .step-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #f3f4f8;
-      color: var(--muted);
-    }
-
-    .step-pill.active {
-      background: rgba(239,61,150,.12);
-      color: var(--pink-dark);
-    }
-
-    .step { display: none; }
-    .step.active { display: block; }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 16px;
-    }
-
-    .form-grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px 16px;
-    }
-
-    .field { display: grid; gap: 6px; }
-
-    label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid #dfe3ec;
-      background: #fff;
-      font: inherit;
-      color: var(--text);
-    }
-
-    textarea { min-height: 82px; resize: vertical; }
-
-    .step-card {
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      margin-bottom: 16px;
-      background: #fcfcff;
-    }
-
-    .step-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin: 0 0 12px;
-    }
-
-    .helper {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 14px;
-      line-height: 1.5;
-    }
-
-    .post-entry {
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      margin-bottom: 12px;
-      background: #fbfbfe;
-    }
-
-    .foot-actions {
-      display: flex;
-      gap: 10px;
-      margin-left: auto;
-    }
-
-    .section-divider {
-      height: 1px;
-      background: var(--line);
-      margin: 18px 0;
-    }
-
-    @media (max-width: 1200px) {
-      .grid-3, .grid-4, .grid-2, .funnel-card { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .page { width: calc(100vw - 16px); }
-      .card, .hero { padding: 18px; }
-      .hero { flex-direction: column; align-items: flex-start; }
-      .hero-actions { justify-content: flex-start; }
-      .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
-      .modal { border-radius: 20px; }
-    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--text);
+      background:radial-gradient(circle at 0 0,rgba(255,79,167,.14),transparent 22%),linear-gradient(180deg,#090b10,#0d1017)}
+    .page{width:min(1440px,calc(100vw - 24px));margin:14px auto 28px}
+    .section{margin-bottom:18px}.grid{display:grid;gap:18px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+    .card,.hero,.modal{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid var(--line);box-shadow:var(--shadow)}
+    .card{border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}.card h3{margin:0 0 14px;font-size:18px}
+    .hero{border-radius:28px;padding:28px 32px;display:flex;justify-content:space-between;gap:20px;align-items:center;
+      background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.16),transparent 22%),linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%)}
+    h1{margin:0;font-size:clamp(32px,4vw,58px);font-weight:300;letter-spacing:-.05em}.sub{color:rgba(255,255,255,.72);margin-top:8px;font-size:14px}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.chip,.badge{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:12px;font-weight:700}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:11px 16px;font:700 14px inherit;cursor:pointer;color:var(--text)}
+    .btn-primary{background:linear-gradient(90deg,var(--pink),var(--pink2));color:#fff}.btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--line)}.btn-danger{background:rgba(248,113,113,.12);color:#ffd8d8;border:1px solid rgba(248,113,113,.18)}
+    .toolbar{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1fr 1fr auto;gap:12px;align-items:end}.field,.field-inline{display:grid;gap:6px}label{font-size:12px;color:var(--muted);font-weight:700}
+    input,select,textarea{width:100%;padding:12px 13px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text);font:inherit}
+    textarea{min-height:84px;resize:vertical} select option{background:#0f1420}.metric{font-size:38px;font-weight:800;line-height:1;margin-bottom:6px}.muted{color:var(--muted);font-size:13px}
+    .mini-grid{display:grid;gap:10px}.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border-bottom:0;padding-bottom:0}
+    .kpi-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:640px}th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}th{font-size:12px;color:var(--muted);text-transform:uppercase}
+    .delta.up{color:var(--green)}.delta.down{color:var(--red)}.delta.flat{color:var(--muted)}
+    .stat{display:flex;align-items:center;gap:14px;min-height:110px}.icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:rgba(255,79,167,.12);border:1px solid rgba(255,79,167,.15)}
+    .progress{display:grid;gap:14px}.track{height:12px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid rgba(255,255,255,.03)}.fill{height:100%}.label-line{display:flex;justify-content:space-between;margin-bottom:6px;font-size:14px}
+    .top-post{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}.top-post:last-child{border-bottom:0}.link{color:#f8a5d0;text-decoration:none;word-break:break-word}
+    .empty{padding:26px;text-align:center;color:var(--muted);border:1px dashed rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.02)}
+    .canvas-wrap{height:220px} canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:10px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(4,6,10,.74);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}.modal-backdrop.open{display:flex}
+    .modal{width:min(980px,100%);max-height:94vh;border-radius:26px;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}.modal-head,.modal-foot{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.modal-foot{border-top:1px solid var(--line);border-bottom:0}
+    .modal-body{padding:20px;overflow:auto}.stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.step-pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:12px;color:var(--muted);font-weight:700}.step-pill.active{background:rgba(255,79,167,.14);color:#ffd8ea;border-color:rgba(255,79,167,.24)}
+    .step{display:none}.step.active{display:block}.step-card{padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.02);margin-bottom:16px}.step-title{font-size:18px;font-weight:800;margin:0 0 10px}.helper{color:var(--muted);font-size:13px;margin-bottom:12px}.form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .entry{padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);margin-bottom:12px}.report-actions a{color:#ffc7e2;text-decoration:none;font-weight:700;margin-right:12px;cursor:pointer}
+    @media (max-width:1200px){.g4,.g3,.g2,.toolbar{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}} @media (max-width:760px){.page{width:calc(100vw - 16px)}.form2,.form3{grid-template-columns:1fr}.top-post{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -539,754 +47,213 @@
     <section class="section">
       <div class="hero">
         <div>
-          <h1>Instagram Weekly Report</h1>
-          <div class="chip-row">
+          <h1>Instagram Marketing Dashboard</h1>
+          <div class="sub">Jednostavan pregled izvještaja, filtera i unosa povezanih sa Google Sheet bazom.</div>
+          <div class="chips">
             <span class="chip" id="heroProfile">Siks_ holding</span>
             <span class="chip" id="heroPeriod">pon-ned</span>
             <span class="chip" id="heroOwner">Anđela Mijatović</span>
           </div>
         </div>
-        <div class="hero-actions">
-          <button class="btn btn-light" id="loadDemoBtn">Učitaj demo podatke</button>
-          <button class="btn btn-primary" id="openModalBtn">Unesi izvještaj</button>
+        <div class="actions">
+          <button class="btn btn-ghost" id="loadDemoBtn">Demo</button>
+          <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
+          <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
         </div>
       </div>
     </section>
 
-    <section class="section grid-4">
-      <div class="card">
-        <h3>Profil</h3>
-        <div class="headline-metric" id="profileName">Siks_ holding</div>
-        <div class="mini-label">Odgovorna osoba: <strong id="ownerName">Anđela Mijatović</strong></div>
+    <section class="section"><div class="card">
+      <h3>Filteri izvještaja</h3>
+      <div class="toolbar">
+        <div class="field-inline"><label>Profil</label><select id="filterProfile"></select></div>
+        <div class="field-inline"><label>Zadužena osoba</label><select id="filterOwner"></select></div>
+        <div class="field-inline"><label>Period</label><select id="filterPeriod"></select></div>
+        <div class="field-inline"><label>Od datuma</label><input id="filterDateFrom" type="date"></div>
+        <div class="field-inline"><label>Do datuma</label><input id="filterDateTo" type="date"></div>
+        <div class="field-inline"><button class="btn btn-primary" id="applyFiltersBtn">Primijeni</button></div>
       </div>
-      <div class="card">
-        <h3>Period</h3>
-        <div class="headline-metric" id="periodLabel">pon-ned</div>
-        <div class="mini-label">Sedmični izvještaj</div>
-      </div>
-      <div class="card">
-        <h3>Objave</h3>
-        <div class="headline-metric" id="postsCurrent">2</div>
-        <div class="mini-label">Tekuća nedelja</div>
-      </div>
-      <div class="card">
-        <h3>Reels / video</h3>
-        <div class="headline-metric" id="reelsCurrent">2</div>
-        <div class="mini-label">Tekuća nedelja</div>
-      </div>
+    </div></section>
+
+    <section class="section grid g4">
+      <div class="card"><h3>Profil</h3><div class="metric" id="profileName">Siks_ holding</div><div class="muted">Osoba: <strong id="ownerName">Anđela Mijatović</strong></div></div>
+      <div class="card"><h3>Period</h3><div class="metric" id="periodLabel">pon-ned</div><div class="muted">Datum izvještaja: <span id="reportDateLabel">-</span></div></div>
+      <div class="card"><h3>Ukupni views</h3><div class="metric" id="viewsCurrent">4,500</div><div class="muted">Prošla nedelja: <span id="viewsPrevious">3,214</span></div></div>
+      <div class="card"><h3>Izvještaja u filteru</h3><div class="metric" id="filteredReportsCount">1</div><div class="muted">Sačuvanih zapisa</div></div>
     </section>
 
-    <section class="section grid-3">
-      <div class="card">
-        <h3>Sažetak profila</h3>
-        <div class="info-list">
-          <div class="info-row"><span>Zadužena osoba</span><strong id="summaryOwner">Anđela Mijatović</strong></div>
-          <div class="info-row"><span>Profil</span><strong id="summaryProfile">Siks_ holding</strong></div>
-          <div class="info-row"><span>Period</span><strong id="summaryPeriod">pon-ned</strong></div>
-          <div class="info-row"><span>Broj top objava</span><strong id="summaryTopCount">1</strong></div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Ukupni organski views</h3>
-        <div class="headline-metric" id="viewsCurrent">4,500</div>
-        <div class="mini-label">Prošla nedelja: <span id="viewsPrevious">3,214</span></div>
-      </div>
-      <div class="card">
-        <h3>Novi pratioci</h3>
-        <div class="headline-metric" id="followersNewCurrent">12</div>
-        <div class="mini-label">Izgubljeni pratioci: <span id="followersLostCurrent">4</span></div>
-      </div>
+    <section class="section grid g3">
+      <div class="card stat"><div class="icon">👁</div><div><div class="muted">Views promjena</div><div class="metric" style="font-size:30px" id="viewsDeltaPercent">40.01%</div></div></div>
+      <div class="card stat"><div class="icon">📈</div><div><div class="muted">Engagement rate</div><div class="metric" style="font-size:30px" id="engagementRateValue">0.58%</div></div></div>
+      <div class="card stat"><div class="icon">🔗</div><div><div class="muted">CTR</div><div class="metric" style="font-size:30px" id="ctrValue">0.00%</div></div></div>
     </section>
 
-    <section class="section grid-2">
+    <section class="section grid g2">
       <div class="card">
         <h3>KPI po profilu – organski rezultati</h3>
-        <div class="kpi-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Metri ka</th>
-                <th>Tekuća nedelja</th>
-                <th>Prošla nedelja</th>
-                <th>Promjena</th>
-              </tr>
-            </thead>
-            <tbody id="organicTableBody"></tbody>
-          </table>
-        </div>
+        <div class="kpi-wrap"><table><thead><tr><th>Metrika</th><th>Tekuća</th><th>Prošla</th><th>Promjena</th></tr></thead><tbody id="organicTableBody"></tbody></table></div>
       </div>
-
       <div class="card">
-        <h3>Plaćeni rezultati (ADS)</h3>
-        <div class="kpi-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Metri ka</th>
-                <th>Kampanja 1</th>
-                <th>Kampanja 2</th>
-                <th>Kampanja 3</th>
-              </tr>
-            </thead>
-            <tbody id="adsTableBody"></tbody>
-          </table>
-        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px"><h3 style="margin:0">Plaćeni rezultati (ADS)</h3><span class="badge"><span id="adsCampaignsCount">0</span> kampanja</span></div>
+        <div class="kpi-wrap"><table><thead id="adsHead"></thead><tbody id="adsTableBody"></tbody></table></div>
       </div>
     </section>
 
-    <section class="section grid-3">
-      <div class="card stat-box">
-        <div class="stat-icon">👁</div>
-        <div class="stat-copy">
-          <div class="label">Views promjena</div>
-          <div class="value" id="viewsDeltaPercent">40.01%</div>
-        </div>
-      </div>
-      <div class="card stat-box">
-        <div class="stat-icon">📈</div>
-        <div class="stat-copy">
-          <div class="label">Engagement rate</div>
-          <div class="value" id="engagementRateValue">0.58%</div>
-        </div>
-      </div>
-      <div class="card stat-box">
-        <div class="stat-icon">🔗</div>
-        <div class="stat-copy">
-          <div class="label">CTR</div>
-          <div class="value" id="ctrValue">0.00%</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section grid-2">
+    <section class="section grid g2">
       <div class="card">
         <h3>Ciljevi i napredak</h3>
-        <div class="progress-group">
-          <div class="progress-row">
-            <div>
-              <div class="label-line"><strong>Objave</strong><strong><span id="postsProgressLabel">2 / 2</span></strong></div>
-              <div class="track"><div id="postsProgressBar" class="fill" style="width:100%; background:linear-gradient(90deg, var(--pink), #f260ae);"></div></div>
-            </div>
-            <div class="dot"></div>
-          </div>
-          <div class="progress-row">
-            <div>
-              <div class="label-line"><strong>Stories</strong><strong><span id="storiesProgressLabel">3 / 3</span></strong></div>
-              <div class="track"><div id="storiesProgressBar" class="fill" style="width:100%; background:linear-gradient(90deg, var(--orange), #ff9948);"></div></div>
-            </div>
-            <div class="dot"></div>
-          </div>
-          <div class="progress-row">
-            <div>
-              <div class="label-line"><strong>Novi pratioci</strong><strong><span id="followersProgressLabel">12 / 12</span></strong></div>
-              <div class="track"><div id="followersProgressBar" class="fill" style="width:100%; background:linear-gradient(90deg, var(--purple), #bf73ff);"></div></div>
-            </div>
-            <div class="dot"></div>
-          </div>
+        <div class="progress">
+          <div><div class="label-line"><strong>Objave</strong><strong id="postsProgressLabel">0 / 0</strong></div><div class="track"><div id="postsProgressBar" class="fill" style="background:linear-gradient(90deg,var(--pink),var(--pink2));width:0%"></div></div></div>
+          <div><div class="label-line"><strong>Stories</strong><strong id="storiesProgressLabel">0 / 0</strong></div><div class="track"><div id="storiesProgressBar" class="fill" style="background:linear-gradient(90deg,var(--orange),#ffc17a);width:0%"></div></div></div>
+          <div><div class="label-line"><strong>Novi pratioci</strong><strong id="followersProgressLabel">0 / 0</strong></div><div class="track"><div id="followersProgressBar" class="fill" style="background:linear-gradient(90deg,var(--purple),#b89cff);width:0%"></div></div></div>
         </div>
       </div>
-
-      <div class="card funnel-card">
-        <div>
-          <h3>Performance funnel</h3>
-          <div class="funnel-legend">
-            <div class="legend-row"><span class="legend-dot" style="background: var(--pink);"></span><span>Views</span><strong id="funnelViews">4,500</strong></div>
-            <div class="legend-row"><span class="legend-dot" style="background: var(--orange);"></span><span>Impressions</span><strong id="funnelImpressions">200</strong></div>
-            <div class="legend-row"><span class="legend-dot" style="background: var(--purple);"></span><span>Interactions</span><strong id="funnelInteractions">26</strong></div>
-            <div class="legend-row"><span class="legend-dot" style="background: var(--cyan);"></span><span>Novi pratioci</span><strong id="funnelFollowers">12</strong></div>
-          </div>
-          <div class="conversion"><span>Lead rate iz organika</span><strong id="leadRateValue">0.00%</strong></div>
-        </div>
-        <div class="funnel-visual">
-          <div class="funnel-stack">
-            <div class="trap t1"></div>
-            <div class="trap t2"></div>
-            <div class="trap t3"></div>
-            <div class="trap t4"></div>
-          </div>
+      <div class="card">
+        <h3>Performance funnel</h3>
+        <div class="mini-grid">
+          <div class="row"><span>Views</span><strong id="funnelViews">0</strong></div>
+          <div class="row"><span>Impressions</span><strong id="funnelImpressions">0</strong></div>
+          <div class="row"><span>Interactions</span><strong id="funnelInteractions">0</strong></div>
+          <div class="row"><span>Novi pratioci</span><strong id="funnelFollowers">0</strong></div>
+          <div class="row"><span>Lead rate iz organika</span><strong id="leadRateValue">0.00%</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="section grid-2">
-      <div class="card">
-        <h3>Top objave – po views</h3>
-        <div id="topViewsList"></div>
-      </div>
-      <div class="card">
-        <h3>Top objave – po lajkovima</h3>
-        <div id="topLikesList"></div>
-      </div>
+    <section class="section grid g2">
+      <div class="card"><h3>Top objave – po views</h3><div id="topViewsList"></div></div>
+      <div class="card"><h3>Top objave – po lajkovima</h3><div id="topLikesList"></div></div>
     </section>
 
-    <section class="section grid-2">
-      <div class="card">
-        <h3>Weekly trend</h3>
-        <div class="legend-inline">
-          <span><span class="legend-dot" style="display:inline-block;background:var(--pink);margin-right:6px;"></span>Tekuća nedelja</span>
-          <span><span class="legend-dot" style="display:inline-block;background:var(--orange);margin-right:6px;"></span>Prošla nedelja</span>
-        </div>
-        <div class="canvas-wrap"><canvas id="weeklyChart"></canvas></div>
-      </div>
-      <div class="card">
-        <h3>Organske metrike</h3>
-        <div class="legend-inline">
-          <span><span class="legend-dot" style="display:inline-block;background:var(--pink);margin-right:6px;"></span>Views</span>
-          <span><span class="legend-dot" style="display:inline-block;background:var(--purple);margin-right:6px;"></span>Impressions</span>
-          <span><span class="legend-dot" style="display:inline-block;background:var(--cyan);margin-right:6px;"></span>Novi pratioci</span>
-        </div>
-        <div class="canvas-wrap"><canvas id="organicBarsChart"></canvas></div>
-      </div>
+    <section class="section grid g2">
+      <div class="card"><h3>Weekly trend</h3><div class="legend"><span><span class="dot" style="background:var(--pink)"></span>Tekuća</span><span><span class="dot" style="background:var(--orange)"></span>Prošla</span></div><div class="canvas-wrap"><canvas id="weeklyChart"></canvas></div></div>
+      <div class="card"><h3>Organske metrike</h3><div class="legend"><span><span class="dot" style="background:var(--pink)"></span>Views</span><span><span class="dot" style="background:var(--purple)"></span>Impressions</span><span><span class="dot" style="background:var(--cyan)"></span>Novi pratioci</span></div><div class="canvas-wrap"><canvas id="organicBarsChart"></canvas></div></div>
     </section>
 
-    <section class="section">
+    <section class="section grid g2">
+      <div class="card"><h3>Automatski zaključak</h3><div id="autoSummary" style="line-height:1.65;color:#dfe7ff"></div></div>
       <div class="card">
-        <h3>Automatski zaključak</h3>
-        <div class="summary-text" id="autoSummary"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px"><h3 style="margin:0">Sačuvani izvještaji</h3><span class="badge"><span id="reportsCountLabel">0</span> zapis</span></div>
+        <div class="kpi-wrap"><table><thead><tr><th>Datum</th><th>Profil</th><th>Osoba</th><th>Period</th><th>Views</th><th>Akcije</th></tr></thead><tbody id="reportsTableBody"></tbody></table></div>
+        <div id="reportsEmptyState" class="empty" style="display:none">Nema izvještaja za izabrane filtere.</div>
       </div>
     </section>
   </div>
 
   <div class="modal-backdrop" id="reportModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div>
-          <div id="modalTitle" style="font-size:22px;font-weight:800;">Unos sedmičnog Instagram izvještaja</div>
-          <div class="subtle">Jednostavan popup vodi kroz cijeli unos i automatski puni dashboard.</div>
-        </div>
-        <button class="btn btn-ghost" id="closeModalBtn">Zatvori</button>
-      </div>
+    <div class="modal">
+      <div class="modal-head"><div><div style="font-size:22px;font-weight:800">Unos sedmičnog izvještaja</div><div class="muted">Kratak wizard sa dinamičkim kampanjama i top objavama.</div></div><button class="btn btn-ghost" id="closeModalBtn">Zatvori</button></div>
       <div class="modal-body">
         <div class="stepper" id="stepper"></div>
-
-        <div class="step active" data-step="0">
-          <div class="step-card">
-            <div class="step-title">1. Osnovni podaci</div>
-            <div class="helper">Unesi ko je odgovoran za profil, naziv profila i period izvještaja.</div>
-            <div class="form-grid">
-              <div class="field"><label for="ownerInput">Zadužena osoba</label><input id="ownerInput" type="text" /></div>
-              <div class="field"><label for="profileInput">Profil</label><input id="profileInput" type="text" /></div>
-              <div class="field"><label for="periodInput">Period</label><input id="periodInput" type="text" /></div>
-              <div class="field"><label for="topCountInput">Broj top objava</label><input id="topCountInput" type="number" min="0" step="1" /></div>
-            </div>
+        <div class="step active" data-step="0"><div class="step-card"><div class="step-title">1. Osnovni podaci</div><div class="helper">Unesi profil, osobu i vremenski period.</div>
+          <div class="form3">
+            <div class="field"><label>Datum izvještaja</label><input id="reportDateInput" type="date"></div>
+            <div class="field"><label>Početak perioda</label><input id="weekStartInput" type="date"></div>
+            <div class="field"><label>Kraj perioda</label><input id="weekEndInput" type="date"></div>
           </div>
-        </div>
-
-        <div class="step" data-step="1">
-          <div class="step-card">
-            <div class="step-title">2. Organski KPI</div>
-            <div class="helper">Unosiš tekuću nedelju i prošlu nedelju. Promjena se računa automatski.</div>
-            <div class="form-grid-3" id="organicInputsGrid"></div>
+          <div class="form2" style="margin-top:14px">
+            <div class="field"><label>Zadužena osoba</label><input id="ownerInput" list="ownersList"></div>
+            <div class="field"><label>Profil</label><input id="profileInput" list="profilesList"></div>
+            <div class="field"><label>Period</label><input id="periodInput" placeholder="npr. pon-ned"></div>
+            <div class="field"><label>Broj top objava</label><input id="topCountInput" type="number" min="0" step="1"></div>
           </div>
-        </div>
-
-        <div class="step" data-step="2">
-          <div class="step-card">
-            <div class="step-title">3. Plaćeni rezultati (ADS)</div>
-            <div class="helper">Za svaku metriku unesi vrijednosti za Kampanju 1, 2 i 3.</div>
-            <div class="form-grid-3" id="adsInputsGrid"></div>
-          </div>
-        </div>
-
-        <div class="step" data-step="3">
-          <div class="step-card">
-            <div class="step-title">4. Top objave</div>
-            <div class="helper">Dodaj objave koje želiš da se prikažu kao top po views i po lajkovima.</div>
-            <div class="section-divider"></div>
-            <h3 style="margin-top:0;">Top objave – po views</h3>
-            <div id="topViewsInputs"></div>
-            <button class="btn btn-ghost" type="button" id="addTopViewsBtn">Dodaj objavu po views</button>
-            <div class="section-divider"></div>
-            <h3 style="margin-top:0;">Top objave – po lajkovima</h3>
-            <div id="topLikesInputs"></div>
-            <button class="btn btn-ghost" type="button" id="addTopLikesBtn">Dodaj objavu po lajkovima</button>
-          </div>
-        </div>
+          <div class="field" style="margin-top:14px"><label>Napomena</label><textarea id="notesInput"></textarea></div>
+          <datalist id="ownersList"></datalist><datalist id="profilesList"></datalist>
+        </div></div>
+        <div class="step" data-step="1"><div class="step-card"><div class="step-title">2. Organski KPI</div><div class="helper">Tekuća i prošla nedelja, promjena se računa automatski.</div><div class="form3" id="organicInputsGrid"></div></div></div>
+        <div class="step" data-step="2"><div class="step-card"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><div class="step-title">3. ADS kampanje</div><div class="helper" style="margin:4px 0 0">Dodaj i briši kampanje po potrebi.</div></div><button class="btn btn-primary" id="addCampaignBtn" type="button">Dodaj kampanju</button></div><div id="campaignsContainer"></div></div></div>
+        <div class="step" data-step="3"><div class="step-card"><div class="step-title">4. Top objave</div><div class="helper">Top objave po views i po lajkovima.</div><div style="margin:16px 0 8px;font-weight:700">Po views</div><div id="topViewsInputs"></div><button class="btn btn-ghost" id="addTopViewsBtn" type="button">Dodaj objavu po views</button><div style="margin:18px 0 8px;font-weight:700">Po lajkovima</div><div id="topLikesInputs"></div><button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu po lajkovima</button></div></div>
       </div>
-      <div class="modal-foot">
-        <div class="subtle" id="stepStatus">Korak 1 od 4</div>
-        <div class="foot-actions">
-          <button class="btn btn-ghost" id="prevStepBtn">Nazad</button>
-          <button class="btn btn-primary" id="nextStepBtn">Dalje</button>
-          <button class="btn btn-primary" id="saveReportBtn" style="display:none;">Sačuvaj i prikaži</button>
-        </div>
-      </div>
+      <div class="modal-foot"><div class="muted" id="stepStatus">Korak 1 od 4</div><div class="actions"><button class="btn btn-ghost" id="prevStepBtn">Nazad</button><button class="btn btn-primary" id="nextStepBtn">Dalje</button><button class="btn btn-primary" id="saveReportBtn" style="display:none">Sačuvaj i prikaži</button></div></div>
     </div>
   </div>
 
   <script>
-    const organicMetricDefs = [
-      { key: 'posts', label: 'Objave (broj)' },
-      { key: 'reels', label: 'Reels / video' },
-      { key: 'stories', label: 'Stories (broj)' },
-      { key: 'views', label: 'Views' },
-      { key: 'impressions', label: 'Impressions' },
-      { key: 'newFollowers', label: 'Novi pratioci' },
-      { key: 'lostFollowers', label: 'Izgubljeni pratioci' },
-      { key: 'organicLeads', label: 'Leads iz organika' }
-    ];
+    const GAS_WEB_APP_URL='https://script.google.com/macros/s/AKfycbzVkNkYx0fdfcZahJJ3f8H7uqdeoiFqYAwKtlY64Mw6WnKLMedeuVKU_Jlj9fk7fSTzzA/exec';
+    const organicMetricDefs=[['posts','Objave (broj)'],['reels','Reels / video'],['stories','Stories (broj)'],['views','Views'],['impressions','Impressions'],['newFollowers','Novi pratioci'],['lostFollowers','Izgubljeni pratioci'],['organicLeads','Leads iz organika']];
+    const adMetricDefs=[['campaign_name','Naziv kampanje','text'],['budget','Budžet'],['impressions','Impresije'],['cpm','CPM'],['ctr','CTR (%)'],['clicks','Klikovi'],['cpc','CPC'],['leads','Leads / Registracije'],['conversion','Konverzija (%)'],['cpa','CPA'],['revenue','Prihod'],['roas','ROAS']];
+    const state={step:0,activeReportId:null,allReports:[],filteredReports:[],report:createEmptyReport()};
+    const modal=document.getElementById('reportModal'), stepper=document.getElementById('stepper'), steps=[...document.querySelectorAll('.step')];
 
-    const adsMetricDefs = [
-      { key: 'budget', label: 'Budžet' },
-      { key: 'impressions', label: 'Impresije' },
-      { key: 'cpm', label: 'CPM' },
-      { key: 'ctr', label: 'CTR (%)' },
-      { key: 'clicks', label: 'Klikovi' },
-      { key: 'cpc', label: 'CPC' },
-      { key: 'leads', label: 'Leads / Registracije' },
-      { key: 'conversion', label: 'Konverzija (%)' },
-      { key: 'cpa', label: 'CPA' },
-      { key: 'revenue', label: 'Prihod' },
-      { key: 'roas', label: 'ROAS' }
-    ];
+    function todayDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    function fmt(v,d=0){return (Number(v)||0).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+    function pctChange(c,p){c=+c||0;p=+p||0;return p===0?(c===0?0:100):((c-p)/p)*100}
+    function safeRate(n,d){n=+n||0;d=+d||0;return d? n/d*100:0}
+    function clone(o){return JSON.parse(JSON.stringify(o))}
+    function emptyCampaign(i=1){return {campaign_name:`Kampanja ${i}`,budget:0,impressions:0,cpm:0,ctr:0,clicks:0,cpc:0,leads:0,conversion:0,cpa:0,revenue:0,roas:0}}
+    function createEmptyReport(){return {report_id:null,report_date:todayDate(),week_start:todayDate(),week_end:todayDate(),owner:'Anđela Mijatović',profile:'Siks_ holding',period:'pon-ned',topCount:1,notes:'',organic:{posts:{current:2,previous:2},reels:{current:2,previous:1},stories:{current:3,previous:1},views:{current:4500,previous:3214},impressions:{current:200,previous:55},newFollowers:{current:12,previous:2},lostFollowers:{current:4,previous:6},organicLeads:{current:0,previous:1}},campaigns:[emptyCampaign(1),emptyCampaign(2),emptyCampaign(3)],topViews:[{title:'Petak 13',link:'https://www.instagram.com/p/DVwSFeLiPis/',value:675,interactions:26,comment:'Komentar'}],topLikes:[{title:'Petak 13',link:'https://www.instagram.com/p/DVwSFeLiPis/',value:24,interactions:26,comment:''}]}}
+    function deltaClass(v){return v>0?'up':v<0?'down':'flat'}
 
-    const state = {
-      step: 0,
-      report: {
-        owner: 'Anđela Mijatović',
-        profile: 'Siks_ holding',
-        period: 'pon-ned',
-        topCount: 1,
-        organic: {
-          posts: { current: 2, previous: 2 },
-          reels: { current: 2, previous: 1 },
-          stories: { current: 3, previous: 1 },
-          views: { current: 4500, previous: 3214 },
-          impressions: { current: 200, previous: 55 },
-          newFollowers: { current: 12, previous: 2 },
-          lostFollowers: { current: 4, previous: 6 },
-          organicLeads: { current: 0, previous: 1 }
-        },
-        ads: {
-          budget: [0,0,0],
-          impressions: [0,0,0],
-          cpm: [0,0,0],
-          ctr: [0,0,0],
-          clicks: [0,0,0],
-          cpc: [0,0,0],
-          leads: [0,0,0],
-          conversion: [0,0,0],
-          cpa: [0,0,0],
-          revenue: [0,0,0],
-          roas: [0,0,0]
-        },
-        topViews: [
-          {
-            title: 'Petak 13',
-            link: 'https://www.instagram.com/p/DVwSFeLiPis/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==',
-            value: 675,
-            interactions: 26,
-            comment: 'Komentar'
-          }
-        ],
-        topLikes: [
-          {
-            title: 'Petak 13',
-            link: 'https://www.instagram.com/p/DVwSFeLiPis/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==',
-            value: 24,
-            interactions: 26,
-            comment: ''
-          }
-        ]
-      }
-    };
+    function formToPayload(){const r=state.report;return {report_id:r.report_id,report_date:r.report_date,week_start:r.week_start,week_end:r.week_end,period_label:r.period,profile:r.profile,owner:r.owner,top_posts_count:r.topCount,notes:r.notes,organic:{posts_current:r.organic.posts.current,posts_previous:r.organic.posts.previous,reels_current:r.organic.reels.current,reels_previous:r.organic.reels.previous,stories_current:r.organic.stories.current,stories_previous:r.organic.stories.previous,views_current:r.organic.views.current,views_previous:r.organic.views.previous,impressions_current:r.organic.impressions.current,impressions_previous:r.organic.impressions.previous,new_followers_current:r.organic.newFollowers.current,new_followers_previous:r.organic.newFollowers.previous,lost_followers_current:r.organic.lostFollowers.current,lost_followers_previous:r.organic.lostFollowers.previous,organic_leads_current:r.organic.organicLeads.current,organic_leads_previous:r.organic.organicLeads.previous},ads:r.campaigns.map(c=>({campaign_name:c.campaign_name,budget:c.budget,impressions:c.impressions,cpm:c.cpm,ctr_pct:c.ctr,clicks:c.clicks,cpc:c.cpc,leads_registrations:c.leads,conversion_pct:c.conversion,cpa:c.cpa,revenue:c.revenue,roas:c.roas})),topViews:r.topViews,topLikes:r.topLikes}}
+    function storedToForm(s){const o=s.organic||{};return {report_id:s.report_id||null,report_date:s.report_date||todayDate(),week_start:s.week_start||todayDate(),week_end:s.week_end||todayDate(),owner:s.owner||'',profile:s.profile||'',period:s.period_label||'',topCount:s.top_posts_count||0,notes:s.notes||'',organic:{posts:{current:o.posts_current||0,previous:o.posts_previous||0},reels:{current:o.reels_current||0,previous:o.reels_previous||0},stories:{current:o.stories_current||0,previous:o.stories_previous||0},views:{current:o.views_current||0,previous:o.views_previous||0},impressions:{current:o.impressions_current||0,previous:o.impressions_previous||0},newFollowers:{current:o.new_followers_current||0,previous:o.new_followers_previous||0},lostFollowers:{current:o.lost_followers_current||0,previous:o.lost_followers_previous||0},organicLeads:{current:o.organic_leads_current||0,previous:o.organic_leads_previous||0}},campaigns:(s.ads||[]).map(a=>({campaign_name:a.campaign_name||'',budget:a.budget||0,impressions:a.impressions||0,cpm:a.cpm||0,ctr:a.ctr_pct||0,clicks:a.clicks||0,cpc:a.cpc||0,leads:a.leads_registrations||0,conversion:a.conversion_pct||0,cpa:a.cpa||0,revenue:a.revenue||0,roas:a.roas||0})),topViews:clone(s.topViews||[]),topLikes:clone(s.topLikes||[])}}
 
-    const modal = document.getElementById('reportModal');
-    const stepper = document.getElementById('stepper');
-    const steps = Array.from(document.querySelectorAll('.step'));
+    async function apiGet(params={}){const q=new URLSearchParams(params).toString();const r=await fetch(`${GAS_WEB_APP_URL}?${q}`);return r.json()}
+    async function apiPost(body){const r=await fetch(GAS_WEB_APP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});return r.json()}
 
-    function fmt(value, decimals = 0) {
-      const num = Number(value) || 0;
-      return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    async function bootstrap(){try{await apiGet({action:'bootstrap'});const data=await apiGet({action:'listReports'});state.allReports=data.reports||[];fillFilters();applyFilters();}catch(e){loadDemo();}}
+    function loadDemo(){state.allReports=[demoStored()];fillFilters();applyFilters()}
+    function demoStored(){const p=formToPayload(), o=p.organic;return {report_id:'demo-1',report_date:p.report_date,week_start:p.week_start,week_end:p.week_end,period_label:p.period_label,profile:p.profile,owner:p.owner,top_posts_count:p.top_posts_count,notes:p.notes,organic:{posts_current:o.posts_current,posts_previous:o.posts_previous,reels_current:o.reels_current,reels_previous:o.reels_previous,stories_current:o.stories_current,stories_previous:o.stories_previous,views_current:o.views_current,views_previous:o.views_previous,impressions_current:o.impressions_current,impressions_previous:o.impressions_previous,new_followers_current:o.new_followers_current,new_followers_previous:o.new_followers_previous,lost_followers_current:o.lost_followers_current,lost_followers_previous:o.lost_followers_previous,organic_leads_current:o.organic_leads_current,organic_leads_previous:o.organic_leads_previous},ads:p.ads,topViews:p.topViews,topLikes:p.topLikes}}
+
+    function fillFilters(){const reports=state.allReports, profiles=[...new Set(reports.map(r=>r.profile).filter(Boolean))], owners=[...new Set(reports.map(r=>r.owner).filter(Boolean))], periods=[...new Set(reports.map(r=>r.period_label).filter(Boolean))];
+      setSelect('filterProfile',['all','Svi profili',...profiles.flatMap(v=>[v,v])]); setSelect('filterOwner',['all','Sve osobe',...owners.flatMap(v=>[v,v])]); setSelect('filterPeriod',['all','Svi periodi',...periods.flatMap(v=>[v,v])]);
+      document.getElementById('ownersList').innerHTML=owners.map(v=>`<option value="${v}">`).join(''); document.getElementById('profilesList').innerHTML=profiles.map(v=>`<option value="${v}">`).join('');
     }
+    function setSelect(id,data){const el=document.getElementById(id), current=el.value||'all'; let html=''; for(let i=0;i<data.length;i+=2) html+=`<option value="${data[i]}">${data[i+1]}</option>`; el.innerHTML=html; if([...el.options].some(o=>o.value===current)) el.value=current}
+    function applyFilters(){const profile=filterProfile.value, owner=filterOwner.value, period=filterPeriod.value, from=filterDateFrom.value, to=filterDateTo.value;
+      state.filteredReports=state.allReports.filter(r=>(profile==='all'||r.profile===profile)&&(owner==='all'||r.owner===owner)&&(period==='all'||r.period_label===period)&&(!from||!r.report_date||r.report_date>=from)&&(!to||!r.report_date||r.report_date<=to));
+      renderDashboard(); renderReportsTable();}
 
-    function pctChange(current, previous) {
-      current = Number(current) || 0;
-      previous = Number(previous) || 0;
-      if (previous === 0) {
-        if (current === 0) return 0;
-        return 100;
-      }
-      return ((current - previous) / previous) * 100;
+    function renderDashboard(){const r=state.filteredReports[0]||state.allReports[0]||demoStored(), o=r.organic||{}, ads=r.ads||[]; heroProfile.textContent=r.profile||'-'; heroPeriod.textContent=r.period_label||'-'; heroOwner.textContent=r.owner||'-';
+      profileName.textContent=r.profile||'-'; ownerName.textContent=r.owner||'-'; periodLabel.textContent=r.period_label||'-'; reportDateLabel.textContent=r.report_date||'-'; viewsCurrent.textContent=fmt(o.views_current||0); viewsPrevious.textContent=fmt(o.views_previous||0); filteredReportsCount.textContent=state.filteredReports.length||state.allReports.length||0;
+      const viewsDelta=pctChange(o.views_current,o.views_previous), interaction=r.topViews?.[0]?.interactions||0, engagement=safeRate(interaction,o.views_current), ctr=safeRate(ads.reduce((s,a)=>s+(+a.clicks||0),0),ads.reduce((s,a)=>s+(+a.impressions||0),0)), leadRate=safeRate(o.organic_leads_current,o.views_current);
+      viewsDeltaPercent.textContent=`${fmt(viewsDelta,2)}%`; engagementRateValue.textContent=`${fmt(engagement,2)}%`; ctrValue.textContent=`${fmt(ctr,2)}%`;
+      funnelViews.textContent=fmt(o.views_current||0); funnelImpressions.textContent=fmt(o.impressions_current||0); funnelInteractions.textContent=fmt(interaction); funnelFollowers.textContent=fmt(o.new_followers_current||0); leadRateValue.textContent=`${fmt(leadRate,2)}%`;
+      setProgress(postsProgressBar,postsProgressLabel,o.posts_current,Math.max(o.posts_current||0,2)); setProgress(storiesProgressBar,storiesProgressLabel,o.stories_current,Math.max(o.stories_current||0,3)); setProgress(followersProgressBar,followersProgressLabel,o.new_followers_current,Math.max(o.new_followers_current||0,12));
+      renderOrganicTable(r); renderAdsTable(r); renderTop(topViewsList,r.topViews||[],'views'); renderTop(topLikesList,r.topLikes||[],'lajkovi');
+      autoSummary.innerHTML=`Profil <span style="color:#7ef0a9;font-weight:700">${r.profile||'-'}</span> vodi <span style="color:#7ef0a9;font-weight:700">${r.owner||'-'}</span> u periodu <span style="color:#7ef0a9;font-weight:700">${r.period_label||'-'}</span>. Views su <span style="color:#7ef0a9;font-weight:700">${fmt(o.views_current||0)}</span>, promjena je <span style="color:#7ef0a9;font-weight:700">${fmt(viewsDelta,2)}%</span>, a novi pratioci <span style="color:#7ef0a9;font-weight:700">${fmt(o.new_followers_current||0)}</span>.`;
+      drawCharts(r);
     }
+    function setProgress(bar,label,current,target){const p=target?Math.min(current/target*100,100):0; bar.style.width=`${p}%`; label.textContent=`${fmt(current)} / ${fmt(target)}`}
+    function renderOrganicTable(r){const o=r.organic||{}, map={posts:['posts_current','posts_previous'],reels:['reels_current','reels_previous'],stories:['stories_current','stories_previous'],views:['views_current','views_previous'],impressions:['impressions_current','impressions_previous'],newFollowers:['new_followers_current','new_followers_previous'],lostFollowers:['lost_followers_current','lost_followers_previous'],organicLeads:['organic_leads_current','organic_leads_previous']};
+      organicTableBody.innerHTML=organicMetricDefs.map(([k,l])=>{const [ck,pk]=map[k], c=+o[ck]||0, p=+o[pk]||0, d=pctChange(c,p); return `<tr><td>${l}</td><td>${fmt(c)}</td><td>${fmt(p)}</td><td><span class="delta ${deltaClass(d)}">${fmt(d,2)}%</span></td></tr>`}).join('')}
+    function renderAdsTable(r){const ads=r.ads||[]; adsCampaignsCount.textContent=ads.length; adsHead.innerHTML=`<tr><th>Metrika</th>${ads.map((a,i)=>`<th>${a.campaign_name||`Kampanja ${i+1}`}</th>`).join('')||'<th>Nema</th>'}</tr>`; if(!ads.length){adsTableBody.innerHTML='<tr><td colspan="2">Nema dodatih kampanja.</td></tr>'; return}
+      const rows=[['budget','Budžet'],['impressions','Impresije'],['cpm','CPM'],['ctr_pct','CTR (%)'],['clicks','Klikovi'],['cpc','CPC'],['leads_registrations','Leads / Registracije'],['conversion_pct','Konverzija (%)'],['cpa','CPA'],['revenue','Prihod'],['roas','ROAS']];
+      adsTableBody.innerHTML=rows.map(([k,l])=>`<tr><td>${l}</td>${ads.map(a=>`<td>${fmt(a[k]||0,2).replace('.00','')}</td>`).join('')}</tr>`).join('')}
+    function renderTop(el,items,mode){el.innerHTML=!items.length?'<div class="empty">Nema unosa.</div>':items.map(i=>`<div class="top-post"><div><div style="font-weight:700;margin-bottom:4px">${i.title||'Bez naziva'}</div>${i.link?`<a class="link" href="${i.link}" target="_blank">${i.link}</a>`:'<span class="muted">Bez linka</span>'}${i.comment?`<div class="muted" style="margin-top:6px">${i.comment}</div>`:''}</div><div><strong>${fmt(i.value||0)}</strong><div class="muted">${mode}</div></div><div><strong>${fmt(i.interactions||0)}</strong><div class="muted">interactions</div></div></div>`).join('')}
+    function renderReportsTable(){reportsCountLabel.textContent=state.filteredReports.length; reportsEmptyState.style.display=state.filteredReports.length?'none':'block';
+      reportsTableBody.innerHTML=state.filteredReports.map(r=>`<tr><td>${r.report_date||'-'}</td><td>${r.profile||'-'}</td><td>${r.owner||'-'}</td><td>${r.period_label||'-'}</td><td>${fmt(r.organic?.views_current||0)}</td><td class="report-actions"><a data-edit="${r.report_id}">Edit</a><a data-show="${r.report_id}">Prikaži</a><a data-delete="${r.report_id}">Obriši</a></td></tr>`).join('')}
 
-    function safeRate(numerator, denominator) {
-      numerator = Number(numerator) || 0;
-      denominator = Number(denominator) || 0;
-      if (!denominator) return 0;
-      return (numerator / denominator) * 100;
-    }
+    function setupCanvas(canvas){const ratio=window.devicePixelRatio||1, rect=canvas.getBoundingClientRect(); canvas.width=rect.width*ratio; canvas.height=rect.height*ratio; const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); return {ctx,w:rect.width,h:rect.height}}
+    function axes(ctx,w,h,labels){const m={t:20,r:18,b:34,l:42}, pw=w-m.l-m.r, ph=h-m.t-m.b; ctx.clearRect(0,0,w,h); ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.fillStyle='#98a2b3'; ctx.font='12px Inter'; for(let i=0;i<5;i++){const y=m.t+ph*i/4; ctx.beginPath(); ctx.moveTo(m.l,y); ctx.lineTo(w-m.r,y); ctx.stroke()} labels.forEach((lb,i)=>ctx.fillText(lb,m.l+pw*(i/Math.max(labels.length-1,1))-10,h-10)); return {m,pw,ph}}
+    function lineChart(id,labels,sets,max){const {ctx,w,h}=setupCanvas(document.getElementById(id)),{m,pw,ph}=axes(ctx,w,h,labels); const M=max||Math.max(1,...sets.flatMap(s=>s.data)); const x=i=>m.l+pw*(i/Math.max(labels.length-1,1)), y=v=>m.t+ph-(v/M)*ph; sets.forEach(s=>{ctx.beginPath(); s.data.forEach((v,i)=>i?ctx.lineTo(x(i),y(v)):ctx.moveTo(x(i),y(v))); ctx.strokeStyle=s.color; ctx.lineWidth=2; ctx.stroke()})}
+    function barChart(id,labels,sets,max){const {ctx,w,h}=setupCanvas(document.getElementById(id)),{m,pw,ph}=axes(ctx,w,h,labels); const M=max||Math.max(1,...sets.flatMap(s=>s.data)), slot=pw/Math.max(labels.length,1), bw=slot/(sets.length+1); sets.forEach((s,si)=>s.data.forEach((v,i)=>{const x=m.l+i*slot+si*bw+(slot-sets.length*bw)/2, y=m.t+ph-(v/M)*ph; ctx.fillStyle=s.color; ctx.fillRect(x,y,bw-4,m.t+ph-y)}))}
+    function drawCharts(r){const o=r.organic||{}; lineChart('weeklyChart',['Objave','Reels','Stories','Views','Impr.','Novi'],[{color:'#ff4fa7',data:[o.posts_current||0,o.reels_current||0,o.stories_current||0,o.views_current||0,o.impressions_current||0,o.new_followers_current||0]},{color:'#ff9a31',data:[o.posts_previous||0,o.reels_previous||0,o.stories_previous||0,o.views_previous||0,o.impressions_previous||0,o.new_followers_previous||0]}],Math.max(o.views_current||0,o.views_previous||0,10));
+      barChart('organicBarsChart',['Views','Impr.','Novi'],[{color:'#ff4fa7',data:[o.views_current||0,0,0]},{color:'#8b5cf6',data:[0,o.impressions_current||0,0]},{color:'#22d3ee',data:[0,0,o.new_followers_current||0]}],Math.max(o.views_current||0,o.impressions_current||0,o.new_followers_current||0,10))}
 
-    function renderStepper() {
-      const labels = ['Osnovno', 'Organski KPI', 'ADS', 'Top objave'];
-      stepper.innerHTML = labels.map((label, i) => `<div class="step-pill ${i === state.step ? 'active' : ''}">${i + 1}. ${label}</div>`).join('');
-      steps.forEach((stepEl, i) => stepEl.classList.toggle('active', i === state.step));
-      document.getElementById('stepStatus').textContent = `Korak ${state.step + 1} od 4`;
-      document.getElementById('prevStepBtn').style.display = state.step === 0 ? 'none' : 'inline-block';
-      document.getElementById('nextStepBtn').style.display = state.step === steps.length - 1 ? 'none' : 'inline-block';
-      document.getElementById('saveReportBtn').style.display = state.step === steps.length - 1 ? 'inline-block' : 'none';
-    }
+    function renderStepper(){const labels=['Osnovno','Organski KPI','ADS','Top objave']; stepper.innerHTML=labels.map((l,i)=>`<div class="step-pill ${i===state.step?'active':''}">${i+1}. ${l}</div>`).join(''); steps.forEach((s,i)=>s.classList.toggle('active',i===state.step)); stepStatus.textContent=`Korak ${state.step+1} od 4`; prevStepBtn.style.display=state.step===0?'none':'inline-block'; nextStepBtn.style.display=state.step===steps.length-1?'none':'inline-block'; saveReportBtn.style.display=state.step===steps.length-1?'inline-block':'none'}
+    function openModal(id=null){state.activeReportId=id; state.report=id?storedToForm(state.allReports.find(r=>r.report_id===id)||demoStored()):createEmptyReport(); loadStateIntoForm(); modal.classList.add('open'); renderStepper()}
+    function closeModal(){modal.classList.remove('open'); state.step=0; renderStepper()}
+    function loadStateIntoForm(){reportDateInput.value=state.report.report_date; weekStartInput.value=state.report.week_start; weekEndInput.value=state.report.week_end; ownerInput.value=state.report.owner; profileInput.value=state.report.profile; periodInput.value=state.report.period; topCountInput.value=state.report.topCount; notesInput.value=state.report.notes||''; renderOrganicInputs(); renderCampaignInputs(); renderPostInputs()}
+    function renderOrganicInputs(){organicInputsGrid.innerHTML=organicMetricDefs.map(([k,l])=>`<div class="field"><label>${l} – tekuća</label><input type="number" step="any" data-oc="${k}" value="${state.report.organic[k].current}"></div><div class="field"><label>${l} – prošla</label><input type="number" step="any" data-op="${k}" value="${state.report.organic[k].previous}"></div><div class="field"><label>${l} – promjena %</label><input disabled value="${fmt(pctChange(state.report.organic[k].current,state.report.organic[k].previous),2)}%"></div>`).join('')}
+    function campaignTemplate(c,i){return `<div class="entry campaign-entry"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px"><strong>Kampanja ${i+1}</strong><button class="btn btn-danger remove-campaign-btn" data-index="${i}" type="button">Obriši</button></div><div class="form3">${adMetricDefs.map(([k,l,t])=>`<div class="field"><label>${l}</label><input type="${t||'number'}" step="any" data-cf="${k}" value="${c[k]??(t==='text'?'':0)}"></div>`).join('')}</div></div>`}
+    function renderCampaignInputs(){campaignsContainer.innerHTML=state.report.campaigns.map((c,i)=>campaignTemplate(c,i)).join(''); bindDynamicButtons()}
+    function postTemplate(type,p={}){return `<div class="entry post-entry"><div class="form2"><div class="field"><label>Naziv objave</label><input data-pf="title" value="${p.title||''}"></div><div class="field"><label>Link objave</label><input data-pf="link" value="${p.link||''}"></div><div class="field"><label>${type==='views'?'Views':'Lajkovi'}</label><input type="number" step="any" data-pf="value" value="${p.value??''}"></div><div class="field"><label>Interactions</label><input type="number" step="any" data-pf="interactions" value="${p.interactions??''}"></div></div><div class="field" style="margin-top:10px"><label>Komentar</label><textarea data-pf="comment">${p.comment||''}</textarea></div><div style="margin-top:10px"><button class="btn btn-ghost remove-post-btn" type="button">Obriši</button></div></div>`}
+    function renderPostInputs(){topViewsInputs.innerHTML=state.report.topViews.map(p=>postTemplate('views',p)).join(''); topLikesInputs.innerHTML=state.report.topLikes.map(p=>postTemplate('likes',p)).join(''); bindDynamicButtons()}
+    function bindDynamicButtons(){document.querySelectorAll('.remove-campaign-btn').forEach(b=>b.onclick=()=>{b.closest('.campaign-entry').remove()}); document.querySelectorAll('.remove-post-btn').forEach(b=>b.onclick=()=>b.closest('.post-entry').remove())}
+    function collectForm(){state.report.report_date=reportDateInput.value||todayDate(); state.report.week_start=weekStartInput.value||todayDate(); state.report.week_end=weekEndInput.value||todayDate(); state.report.owner=ownerInput.value||''; state.report.profile=profileInput.value||''; state.report.period=periodInput.value||''; state.report.topCount=+topCountInput.value||0; state.report.notes=notesInput.value||'';
+      document.querySelectorAll('[data-oc]').forEach(i=>state.report.organic[i.dataset.oc].current=+i.value||0); document.querySelectorAll('[data-op]').forEach(i=>state.report.organic[i.dataset.op].previous=+i.value||0);
+      state.report.campaigns=[...document.querySelectorAll('.campaign-entry')].map(e=>{const c={}; e.querySelectorAll('[data-cf]').forEach(i=>c[i.dataset.cf]=i.dataset.cf==='campaign_name'?(i.value||''):(+i.value||0)); return c}).filter(c=>Object.values(c).some(v=>v!==''&&v!==0));
+      const parse=id=>[...document.querySelectorAll(`#${id} .post-entry`)].map(e=>({title:e.querySelector('[data-pf="title"]').value||'',link:e.querySelector('[data-pf="link"]').value||'',value:+e.querySelector('[data-pf="value"]').value||0,interactions:+e.querySelector('[data-pf="interactions"]').value||0,comment:e.querySelector('[data-pf="comment"]').value||''})).filter(p=>p.title||p.link||p.value||p.interactions||p.comment);
+      state.report.topViews=parse('topViewsInputs'); state.report.topLikes=parse('topLikesInputs')}
 
-    function openModal() { modal.classList.add('open'); renderStepper(); }
-    function closeModal() { modal.classList.remove('open'); }
+    async function saveReport(){collectForm(); try{const res=await apiPost({action:'saveReport',report:formToPayload()}); if(res.ok){await bootstrap(); closeModal()} else alert(res.error||'Greška pri čuvanju')}catch(e){const fallback=demoStored(); fallback.report_id=state.report.report_id||`local-${Date.now()}`; const idx=state.allReports.findIndex(r=>r.report_id===fallback.report_id); if(idx>-1) state.allReports[idx]=fallback; else state.allReports.unshift(fallback); fillFilters(); applyFilters(); closeModal()}}
+    async function deleteReport(id){if(!confirm('Obrisati izvještaj?')) return; try{const res=await apiPost({action:'deleteReport',report_id:id}); if(res.ok) await bootstrap()}catch(e){state.allReports=state.allReports.filter(r=>r.report_id!==id); fillFilters(); applyFilters()}}
 
-    function renderOrganicInputs() {
-      const grid = document.getElementById('organicInputsGrid');
-      grid.innerHTML = organicMetricDefs.map(def => `
-        <div class="field"><label>${def.label} – tekuća nedelja</label><input type="number" step="any" data-organic-current="${def.key}" value="${state.report.organic[def.key].current}" /></div>
-        <div class="field"><label>${def.label} – prošla nedelja</label><input type="number" step="any" data-organic-previous="${def.key}" value="${state.report.organic[def.key].previous}" /></div>
-        <div class="field"><label>${def.label} – promjena %</label><input type="text" value="${fmt(pctChange(state.report.organic[def.key].current, state.report.organic[def.key].previous), 2)}%" disabled /></div>
-      `).join('');
-    }
-
-    function renderAdsInputs() {
-      const grid = document.getElementById('adsInputsGrid');
-      grid.innerHTML = adsMetricDefs.map(def => `
-        <div class="field"><label>${def.label} – Kampanja 1</label><input type="number" step="any" data-ads="${def.key}" data-campaign="0" value="${state.report.ads[def.key][0]}" /></div>
-        <div class="field"><label>${def.label} – Kampanja 2</label><input type="number" step="any" data-ads="${def.key}" data-campaign="1" value="${state.report.ads[def.key][1]}" /></div>
-        <div class="field"><label>${def.label} – Kampanja 3</label><input type="number" step="any" data-ads="${def.key}" data-campaign="2" value="${state.report.ads[def.key][2]}" /></div>
-      `).join('');
-    }
-
-    function postEntryTemplate(type, item = {}) {
-      return `
-        <div class="post-entry" data-post-type="${type}">
-          <div class="form-grid">
-            <div class="field"><label>Naziv objave</label><input type="text" data-field="title" value="${item.title || ''}" /></div>
-            <div class="field"><label>Link objave</label><input type="text" data-field="link" value="${item.link || ''}" /></div>
-            <div class="field"><label>${type === 'views' ? 'Views' : 'Lajkovi'}</label><input type="number" step="any" data-field="value" value="${item.value ?? ''}" /></div>
-            <div class="field"><label>Interactions</label><input type="number" step="any" data-field="interactions" value="${item.interactions ?? ''}" /></div>
-          </div>
-          <div class="field" style="margin-top:10px;"><label>Komentar</label><textarea data-field="comment">${item.comment || ''}</textarea></div>
-          <div style="margin-top:10px;"><button class="btn btn-ghost remove-post-btn" type="button">Obriši</button></div>
-        </div>
-      `;
-    }
-
-    function renderPostInputs() {
-      document.getElementById('topViewsInputs').innerHTML = state.report.topViews.map(item => postEntryTemplate('views', item)).join('');
-      document.getElementById('topLikesInputs').innerHTML = state.report.topLikes.map(item => postEntryTemplate('likes', item)).join('');
-    }
-
-    function syncBaseInputs() {
-      document.getElementById('ownerInput').value = state.report.owner;
-      document.getElementById('profileInput').value = state.report.profile;
-      document.getElementById('periodInput').value = state.report.period;
-      document.getElementById('topCountInput').value = state.report.topCount;
-    }
-
-    function collectFormData() {
-      state.report.owner = document.getElementById('ownerInput').value || '';
-      state.report.profile = document.getElementById('profileInput').value || '';
-      state.report.period = document.getElementById('periodInput').value || '';
-      state.report.topCount = Number(document.getElementById('topCountInput').value) || 0;
-
-      document.querySelectorAll('[data-organic-current]').forEach(input => {
-        const key = input.dataset.organicCurrent;
-        state.report.organic[key].current = Number(input.value) || 0;
-      });
-      document.querySelectorAll('[data-organic-previous]').forEach(input => {
-        const key = input.dataset.organicPrevious;
-        state.report.organic[key].previous = Number(input.value) || 0;
-      });
-      document.querySelectorAll('[data-ads]').forEach(input => {
-        const key = input.dataset.ads;
-        const campaign = Number(input.dataset.campaign);
-        state.report.ads[key][campaign] = Number(input.value) || 0;
-      });
-
-      function parsePostInputs(containerId) {
-        return Array.from(document.querySelectorAll(`#${containerId} .post-entry`)).map(entry => ({
-          title: entry.querySelector('[data-field="title"]').value || '',
-          link: entry.querySelector('[data-field="link"]').value || '',
-          value: Number(entry.querySelector('[data-field="value"]').value) || 0,
-          interactions: Number(entry.querySelector('[data-field="interactions"]').value) || 0,
-          comment: entry.querySelector('[data-field="comment"]').value || ''
-        })).filter(item => item.title || item.link || item.value || item.interactions || item.comment);
-      }
-
-      state.report.topViews = parsePostInputs('topViewsInputs');
-      state.report.topLikes = parsePostInputs('topLikesInputs');
-    }
-
-    function deltaClass(value) {
-      if (value > 0) return 'up';
-      if (value < 0) return 'down';
-      return 'flat';
-    }
-
-    function renderOrganicTable() {
-      const tbody = document.getElementById('organicTableBody');
-      tbody.innerHTML = organicMetricDefs.map(def => {
-        const current = state.report.organic[def.key].current;
-        const previous = state.report.organic[def.key].previous;
-        const delta = pctChange(current, previous);
-        return `
-          <tr>
-            <td>${def.label}</td>
-            <td>${fmt(current, 2).replace('.00','')}</td>
-            <td>${fmt(previous, 2).replace('.00','')}</td>
-            <td><span class="delta ${deltaClass(delta)}">${fmt(delta, 2)}%</span></td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function renderAdsTable() {
-      const tbody = document.getElementById('adsTableBody');
-      tbody.innerHTML = adsMetricDefs.map(def => `
-        <tr>
-          <td>${def.label}</td>
-          <td>${fmt(state.report.ads[def.key][0], 2).replace('.00','')}</td>
-          <td>${fmt(state.report.ads[def.key][1], 2).replace('.00','')}</td>
-          <td>${fmt(state.report.ads[def.key][2], 2).replace('.00','')}</td>
-        </tr>
-      `).join('');
-    }
-
-    function renderTopLists() {
-      function makeList(items, mode) {
-        if (!items.length) return '<div class="subtle">Nema unosa.</div>';
-        return items.map(item => `
-          <div class="top-post">
-            <div>
-              <div style="font-weight:700; margin-bottom:4px;">${item.title || 'Bez naziva'}</div>
-              ${item.link ? `<a class="post-link" href="${item.link}" target="_blank" rel="noreferrer">${item.link}</a>` : '<span class="subtle">Bez linka</span>'}
-              ${item.comment ? `<div class="subtle" style="margin-top:6px;">${item.comment}</div>` : ''}
-            </div>
-            <div><strong>${fmt(item.value)}</strong><div class="subtle">${mode}</div></div>
-            <div><strong>${fmt(item.interactions)}</strong><div class="subtle">interactions</div></div>
-          </div>
-        `).join('');
-      }
-      document.getElementById('topViewsList').innerHTML = makeList(state.report.topViews, 'views');
-      document.getElementById('topLikesList').innerHTML = makeList(state.report.topLikes, 'lajkovi');
-    }
-
-    function updateHeroAndSummary() {
-      const r = state.report;
-      document.getElementById('heroProfile').textContent = r.profile || 'Profil';
-      document.getElementById('heroPeriod').textContent = r.period || 'Period';
-      document.getElementById('heroOwner').textContent = r.owner || 'Osoba';
-      document.getElementById('profileName').textContent = r.profile || '-';
-      document.getElementById('ownerName').textContent = r.owner || '-';
-      document.getElementById('periodLabel').textContent = r.period || '-';
-      document.getElementById('postsCurrent').textContent = fmt(r.organic.posts.current).replace('.00','');
-      document.getElementById('reelsCurrent').textContent = fmt(r.organic.reels.current).replace('.00','');
-      document.getElementById('summaryOwner').textContent = r.owner || '-';
-      document.getElementById('summaryProfile').textContent = r.profile || '-';
-      document.getElementById('summaryPeriod').textContent = r.period || '-';
-      document.getElementById('summaryTopCount').textContent = fmt(r.topCount).replace('.00','');
-      document.getElementById('viewsCurrent').textContent = fmt(r.organic.views.current);
-      document.getElementById('viewsPrevious').textContent = fmt(r.organic.views.previous);
-      document.getElementById('followersNewCurrent').textContent = fmt(r.organic.newFollowers.current).replace('.00','');
-      document.getElementById('followersLostCurrent').textContent = fmt(r.organic.lostFollowers.current).replace('.00','');
-    }
-
-    function updateCalculatedBlocks() {
-      const r = state.report;
-      const topInteractions = (r.topViews[0]?.interactions || 0);
-      const engagementRate = safeRate(topInteractions, r.organic.views.current);
-      const ctr = safeRate(r.ads.clicks[0] + r.ads.clicks[1] + r.ads.clicks[2], r.ads.impressions[0] + r.ads.impressions[1] + r.ads.impressions[2]);
-      const leadRate = safeRate(r.organic.organicLeads.current, r.organic.views.current);
-      const viewsDelta = pctChange(r.organic.views.current, r.organic.views.previous);
-
-      document.getElementById('viewsDeltaPercent').textContent = `${fmt(viewsDelta, 2)}%`;
-      document.getElementById('engagementRateValue').textContent = `${fmt(engagementRate, 2)}%`;
-      document.getElementById('ctrValue').textContent = `${fmt(ctr, 2)}%`;
-      document.getElementById('leadRateValue').textContent = `${fmt(leadRate, 2)}%`;
-      document.getElementById('funnelViews').textContent = fmt(r.organic.views.current);
-      document.getElementById('funnelImpressions').textContent = fmt(r.organic.impressions.current);
-      document.getElementById('funnelInteractions').textContent = fmt(topInteractions);
-      document.getElementById('funnelFollowers').textContent = fmt(r.organic.newFollowers.current);
-
-      function setProgress(barId, labelId, current, target, color) {
-        const pct = target ? Math.min((current / target) * 100, 100) : 0;
-        document.getElementById(barId).style.width = `${pct}%`;
-        document.getElementById(barId).style.background = color;
-        document.getElementById(labelId).textContent = `${fmt(current).replace('.00','')} / ${fmt(target).replace('.00','')}`;
-      }
-
-      setProgress('postsProgressBar', 'postsProgressLabel', r.organic.posts.current, Math.max(r.organic.posts.current, 2), 'linear-gradient(90deg, var(--pink), #f260ae)');
-      setProgress('storiesProgressBar', 'storiesProgressLabel', r.organic.stories.current, Math.max(r.organic.stories.current, 3), 'linear-gradient(90deg, var(--orange), #ff9948)');
-      setProgress('followersProgressBar', 'followersProgressLabel', r.organic.newFollowers.current, Math.max(r.organic.newFollowers.current, 12), 'linear-gradient(90deg, var(--purple), #bf73ff)');
-
-      const summary = [];
-      const reelsDelta = pctChange(r.organic.reels.current, r.organic.reels.previous);
-      const storiesDelta = pctChange(r.organic.stories.current, r.organic.stories.previous);
-      const followersDelta = pctChange(r.organic.newFollowers.current, r.organic.newFollowers.previous);
-      const lostDelta = pctChange(r.organic.lostFollowers.current, r.organic.lostFollowers.previous);
-
-      summary.push(`Profil <span class="green">${r.profile}</span> u periodu <span class="green">${r.period}</span> vodila je <span class="green">${r.owner}</span>.`);
-      summary.push(`Views su iznosili <span class="green">${fmt(r.organic.views.current)}</span>, što je promjena od <span class="green">${fmt(viewsDelta, 2)}%</span> u odnosu na prošlu nedelju.`);
-      summary.push(`Broj reels/video objava promijenjen je za <span class="green">${fmt(reelsDelta, 2)}%</span>, a stories za <span class="green">${fmt(storiesDelta, 2)}%</span>.`);
-      summary.push(`Novi pratioci: <span class="green">${fmt(r.organic.newFollowers.current).replace('.00','')}</span> uz promjenu od <span class="green">${fmt(followersDelta, 2)}%</span>, dok su izgubljeni pratioci na <span class="green">${fmt(r.organic.lostFollowers.current).replace('.00','')}</span> (${fmt(lostDelta, 2)}%).`);
-      if (r.topViews[0]) {
-        summary.push(`Najjača objava po views bila je <span class="green">${r.topViews[0].title || 'objava bez naziva'}</span> sa <span class="green">${fmt(r.topViews[0].value)}</span> views i <span class="green">${fmt(r.topViews[0].interactions)}</span> interactions.`);
-      }
-      document.getElementById('autoSummary').innerHTML = summary.join(' ');
-    }
-
-    function setupCanvas(canvas) {
-      const ratio = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * ratio;
-      canvas.height = rect.height * ratio;
-      const ctx = canvas.getContext('2d');
-      ctx.scale(ratio, ratio);
-      return { ctx, width: rect.width, height: rect.height };
-    }
-
-    function drawAxes(ctx, width, height, labels) {
-      const m = { top: 20, right: 24, bottom: 34, left: 48 };
-      const plotW = width - m.left - m.right;
-      const plotH = height - m.top - m.bottom;
-      ctx.clearRect(0, 0, width, height);
-      ctx.strokeStyle = '#e6e7ee';
-      ctx.lineWidth = 1;
-      ctx.fillStyle = '#8a8a95';
-      ctx.font = '12px Inter, sans-serif';
-      for (let i = 0; i <= 4; i++) {
-        const y = m.top + (plotH / 4) * i;
-        ctx.beginPath();
-        ctx.moveTo(m.left, y);
-        ctx.lineTo(width - m.right, y);
-        ctx.stroke();
-      }
-      labels.forEach((label, i) => {
-        const x = m.left + (plotW * i) / Math.max(labels.length - 1, 1);
-        ctx.fillText(label, x - 10, height - 12);
-      });
-      return { m, plotW, plotH };
-    }
-
-    function drawLineChart(id, labels, datasets, maxValue) {
-      const canvas = document.getElementById(id);
-      const { ctx, width, height } = setupCanvas(canvas);
-      const { m, plotW, plotH } = drawAxes(ctx, width, height, labels);
-      const max = maxValue || Math.max(...datasets.flatMap(d => d.data), 1);
-      function xFor(i) { return m.left + (plotW * i) / Math.max(labels.length - 1, 1); }
-      function yFor(v) { return m.top + plotH - (v / max) * plotH; }
-      datasets.forEach(ds => {
-        ctx.beginPath();
-        ds.data.forEach((v, i) => {
-          const x = xFor(i);
-          const y = yFor(v);
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
-        ctx.strokeStyle = ds.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      });
-    }
-
-    function drawBarChart(id, labels, datasets, maxValue) {
-      const canvas = document.getElementById(id);
-      const { ctx, width, height } = setupCanvas(canvas);
-      const { m, plotW, plotH } = drawAxes(ctx, width, height, labels);
-      const max = maxValue || Math.max(...datasets.flatMap(d => d.data), 1);
-      const groups = labels.length;
-      const slot = plotW / Math.max(groups, 1);
-      const barW = slot / (datasets.length + 1);
-      datasets.forEach((ds, di) => {
-        ds.data.forEach((v, i) => {
-          const x = m.left + i * slot + di * barW + (slot - datasets.length * barW) / 2;
-          const y = m.top + plotH - (v / max) * plotH;
-          ctx.fillStyle = ds.color;
-          ctx.fillRect(x, y, barW - 4, m.top + plotH - y);
-        });
-      });
-    }
-
-    function renderCharts() {
-      const o = state.report.organic;
-      const labels = ['Objave', 'Reels', 'Stories', 'Views', 'Impressions', 'Novi'];
-      drawLineChart('weeklyChart', labels, [
-        { color: '#ef3d96', data: [o.posts.current, o.reels.current, o.stories.current, o.views.current, o.impressions.current, o.newFollowers.current] },
-        { color: '#ff7a1a', data: [o.posts.previous, o.reels.previous, o.stories.previous, o.views.previous, o.impressions.previous, o.newFollowers.previous] }
-      ], Math.max(o.views.current, o.views.previous, 10));
-
-      drawBarChart('organicBarsChart', ['Views', 'Impr.', 'Novi'], [
-        { color: '#ef3d96', data: [o.views.current, 0, 0] },
-        { color: '#a855f7', data: [0, o.impressions.current, 0] },
-        { color: '#27c7f3', data: [0, 0, o.newFollowers.current] }
-      ], Math.max(o.views.current, o.impressions.current, o.newFollowers.current, 10));
-    }
-
-    function renderAll() {
-      updateHeroAndSummary();
-      renderOrganicTable();
-      renderAdsTable();
-      renderTopLists();
-      updateCalculatedBlocks();
-      renderCharts();
-    }
-
-    function loadStateIntoForm() {
-      syncBaseInputs();
-      renderOrganicInputs();
-      renderAdsInputs();
-      renderPostInputs();
-      attachDynamicPostEvents();
-    }
-
-    function attachDynamicPostEvents() {
-      document.querySelectorAll('.remove-post-btn').forEach(btn => {
-        btn.onclick = (e) => {
-          e.target.closest('.post-entry').remove();
-        };
-      });
-    }
-
-    document.getElementById('openModalBtn').addEventListener('click', () => {
-      loadStateIntoForm();
-      openModal();
-    });
-
-    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-    document.getElementById('prevStepBtn').addEventListener('click', () => {
-      collectFormData();
-      state.step = Math.max(0, state.step - 1);
-      renderOrganicInputs();
-      renderAdsInputs();
-      renderStepper();
-    });
-
-    document.getElementById('nextStepBtn').addEventListener('click', () => {
-      collectFormData();
-      state.step = Math.min(steps.length - 1, state.step + 1);
-      renderOrganicInputs();
-      renderAdsInputs();
-      renderStepper();
-    });
-
-    document.getElementById('saveReportBtn').addEventListener('click', () => {
-      collectFormData();
-      renderAll();
-      closeModal();
-    });
-
-    document.getElementById('addTopViewsBtn').addEventListener('click', () => {
-      document.getElementById('topViewsInputs').insertAdjacentHTML('beforeend', postEntryTemplate('views'));
-      attachDynamicPostEvents();
-    });
-
-    document.getElementById('addTopLikesBtn').addEventListener('click', () => {
-      document.getElementById('topLikesInputs').insertAdjacentHTML('beforeend', postEntryTemplate('likes'));
-      attachDynamicPostEvents();
-    });
-
-    document.getElementById('loadDemoBtn').addEventListener('click', () => {
-      renderAll();
-    });
-
-    window.addEventListener('resize', renderCharts);
-
-    loadStateIntoForm();
-    renderStepper();
-    renderAll();
+    openModalBtn.onclick=()=>openModal(); closeModalBtn.onclick=closeModal; modal.onclick=e=>{if(e.target===modal) closeModal()}; loadDemoBtn.onclick=loadDemo; resetFiltersBtn.onclick=()=>{filterProfile.value='all'; filterOwner.value='all'; filterPeriod.value='all'; filterDateFrom.value=''; filterDateTo.value=''; applyFilters()}; applyFiltersBtn.onclick=applyFilters;
+    addCampaignBtn.onclick=()=>{state.report.campaigns.push(emptyCampaign(state.report.campaigns.length+1)); renderCampaignInputs()}; addTopViewsBtn.onclick=()=>{topViewsInputs.insertAdjacentHTML('beforeend',postTemplate('views')); bindDynamicButtons()}; addTopLikesBtn.onclick=()=>{topLikesInputs.insertAdjacentHTML('beforeend',postTemplate('likes')); bindDynamicButtons()};
+    prevStepBtn.onclick=()=>{collectForm(); state.step=Math.max(0,state.step-1); renderOrganicInputs(); renderStepper()}; nextStepBtn.onclick=()=>{collectForm(); state.step=Math.min(steps.length-1,state.step+1); renderOrganicInputs(); renderStepper()}; saveReportBtn.onclick=saveReport;
+    reportsTableBody.onclick=e=>{const show=e.target.dataset.show, edit=e.target.dataset.edit, del=e.target.dataset.delete; if(show){const r=state.allReports.find(x=>x.report_id===show); state.filteredReports=r?[r]:state.filteredReports; renderDashboard()} if(edit) openModal(edit); if(del) deleteReport(del)};
+    window.addEventListener('resize',()=>renderDashboard()); bootstrap();
   </script>
 </body>
 </html>
