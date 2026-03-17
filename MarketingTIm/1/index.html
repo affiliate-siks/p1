@@ -23,7 +23,6 @@
       --red:#f87171;
       --yellow:#facc15;
       --radius:22px;
-      --radiusSm:16px;
       --shadow:0 18px 50px rgba(0,0,0,.35);
       --max:1500px;
     }
@@ -39,20 +38,22 @@
         radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
         linear-gradient(180deg,#090b10,#0d1017);
     }
-    a{color:inherit}
-    .app{width:min(var(--max), calc(100vw - 20px)); margin:10px auto 28px}
+
+    .app{width:min(var(--max), calc(100vw - 20px));margin:10px auto 28px}
     .hidden{display:none!important}
     .section{margin-bottom:18px}
-    .grid{display:grid; gap:18px}
+    .grid{display:grid;gap:18px}
     .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
     .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
     .g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+
     .hero,.card,.modal{
       background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
       border:1px solid var(--line);
       box-shadow:var(--shadow);
     }
+
     .hero{
       border-radius:28px;
       padding:28px;
@@ -64,15 +65,18 @@
         radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
         linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
     }
+
     .hero h1{
       margin:0;
       font-size:clamp(28px,4vw,54px);
       font-weight:300;
       letter-spacing:-.05em;
     }
-    .hero p{margin:8px 0 0; color:rgba(255,255,255,.72); font-size:14px}
-    .hero-actions{display:flex; gap:10px; flex-wrap:wrap}
-    .chipRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+
+    .hero p{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
     .chip,.badge{
       display:inline-flex;
       align-items:center;
@@ -96,11 +100,11 @@
       white-space:nowrap;
     }
     .btn:hover{transform:translateY(-1px)}
-    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
-    .btn-primary{background:linear-gradient(90deg,var(--pink),var(--pink2)); color:#fff}
-    .btn-ghost{background:rgba(255,255,255,.05); border:1px solid var(--line)}
-    .btn-danger{background:rgba(248,113,113,.14); color:#ffd8d8; border:1px solid rgba(248,113,113,.18)}
-    .btn-success{background:rgba(34,197,94,.15); color:#d8ffe6; border:1px solid rgba(34,197,94,.18)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-primary{background:linear-gradient(90deg,var(--pink),var(--pink2));color:#fff}
+    .btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--line)}
+    .btn-danger{background:rgba(248,113,113,.14);color:#ffd8d8;border:1px solid rgba(248,113,113,.18)}
+    .btn-success{background:rgba(34,197,94,.15);color:#d8ffe6;border:1px solid rgba(34,197,94,.18)}
 
     .card{
       border-radius:var(--radius);
@@ -108,12 +112,10 @@
       overflow:hidden;
       position:relative;
     }
-    .card h2,.card h3{margin:0 0 14px}
-    .card h2{font-size:20px}
-    .card h3{font-size:18px}
-    .muted{color:var(--muted); font-size:13px}
-    .metric{font-size:38px; font-weight:800; line-height:1; margin-bottom:6px}
-    .metric-sm{font-size:28px; font-weight:800; line-height:1}
+    .card h3{margin:0 0 14px;font-size:18px}
+    .muted{color:var(--muted);font-size:13px}
+    .metric{font-size:38px;font-weight:800;line-height:1;margin-bottom:6px}
+    .metric-sm{font-size:28px;font-weight:800;line-height:1}
     .row{
       display:flex;
       justify-content:space-between;
@@ -122,15 +124,18 @@
       border-bottom:1px solid var(--line);
       font-size:14px;
     }
-    .row:last-child{border-bottom:0; padding-bottom:0}
+    .row:last-child{border-bottom:0;padding-bottom:0}
+
     .toolbar{
       display:grid;
       grid-template-columns:1.1fr 1.1fr 1fr 1fr 1fr auto;
       gap:12px;
       align-items:end;
     }
-    .field,.fieldInline{display:grid; gap:6px}
-    label{font-size:12px; color:var(--muted); font-weight:700}
+
+    .field,.fieldInline{display:grid;gap:6px}
+    label{font-size:12px;color:var(--muted);font-weight:700}
+
     input,select,textarea{
       width:100%;
       padding:12px 13px;
@@ -141,17 +146,21 @@
       font:inherit;
       outline:none;
     }
+
     input:focus,select:focus,textarea:focus{
       border-color:rgba(255,79,167,.45);
       box-shadow:0 0 0 3px rgba(255,79,167,.12);
     }
+
     select option{background:#0f1420}
-    textarea{min-height:90px; resize:vertical}
+    textarea{min-height:90px;resize:vertical}
+
     .cardList{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:16px;
     }
+
     .entityCard{
       padding:18px;
       border-radius:18px;
@@ -160,19 +169,18 @@
       cursor:pointer;
       transition:.18s ease;
     }
-    .entityCard:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.14)}
+    .entityCard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+
     .entityTitle{
       font-size:18px;
       font-weight:800;
       margin-bottom:8px;
       line-height:1.2;
     }
-    .entityMeta{
-      display:grid;
-      gap:8px;
-      margin-top:12px;
-    }
-    .entityMeta .row{padding:8px 0; font-size:13px}
+
+    .entityMeta{display:grid;gap:8px;margin-top:12px}
+    .entityMeta .row{padding:8px 0;font-size:13px}
+
     .status{
       display:inline-flex;
       align-items:center;
@@ -183,17 +191,18 @@
       border:1px solid var(--line);
       margin-top:10px;
     }
-    .status.good{background:rgba(34,197,94,.14); color:#d8ffe6}
-    .status.warn{background:rgba(250,204,21,.12); color:#fff2b3}
-    .status.bad{background:rgba(248,113,113,.14); color:#ffd8d8}
+    .status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
+    .status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
+    .status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
 
     .kpiWrap{overflow:auto}
-    table{width:100%; border-collapse:collapse; min-width:700px}
-    th,td{padding:11px 8px; text-align:left; border-bottom:1px solid var(--line); font-size:14px}
-    th{font-size:12px; color:var(--muted); text-transform:uppercase}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
+    th{font-size:12px;color:var(--muted);text-transform:uppercase}
     .delta.up{color:var(--green)}
     .delta.down{color:var(--red)}
     .delta.flat{color:var(--muted)}
+
     .reportActions a{
       color:#ffc7e2;
       text-decoration:none;
@@ -201,12 +210,14 @@
       margin-right:12px;
       cursor:pointer;
     }
+
     .stat{
       display:flex;
       align-items:center;
       gap:14px;
       min-height:110px;
     }
+
     .icon{
       width:52px;
       height:52px;
@@ -217,7 +228,8 @@
       background:rgba(255,79,167,.12);
       border:1px solid rgba(255,79,167,.16);
     }
-    .progress{display:grid; gap:14px}
+
+    .progress{display:grid;gap:14px}
     .track{
       height:12px;
       border-radius:999px;
@@ -226,7 +238,8 @@
       border:1px solid rgba(255,255,255,.03);
     }
     .fill{height:100%}
-    .labelLine{display:flex; justify-content:space-between; gap:12px; margin-bottom:6px; font-size:14px}
+    .labelLine{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:14px}
+
     .analysisBox,.noteBox{
       padding:16px;
       border-radius:16px;
@@ -234,7 +247,9 @@
       background:rgba(255,255,255,.02);
       line-height:1.65;
     }
-    .analysisGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px}
+
+    .analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+
     .topPost{
       display:grid;
       grid-template-columns:1fr auto auto;
@@ -244,9 +259,11 @@
       border-bottom:1px solid var(--line);
     }
     .topPost:last-child{border-bottom:0}
-    .postLink{color:#f8a5d0; word-break:break-word; text-decoration:none}
+
+    .postLink{color:#f8a5d0;word-break:break-word;text-decoration:none}
     .postLink:hover{text-decoration:underline}
-    .embeds{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px}
+
+    .embeds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
     .embedCard{
       border:1px solid var(--line);
       border-radius:16px;
@@ -254,11 +271,35 @@
       background:rgba(255,255,255,.02);
       min-height:160px;
     }
-    .embedHead{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:10px}
-    .legend{display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:13px; margin-bottom:10px}
-    .dot{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px}
+
+    .embedHead{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+
+    .legend{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:10px;
+    }
+
+    .dot{
+      display:inline-block;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      margin-right:6px;
+    }
+
     .canvasWrap{height:220px}
-    canvas{width:100%; height:100%; display:block}
+    canvas{width:100%;height:100%;display:block}
+
     .empty{
       padding:26px;
       text-align:center;
@@ -280,6 +321,7 @@
       z-index:50;
     }
     .modalBackdrop.open{display:flex}
+
     .modal{
       width:min(1080px,100%);
       max-height:94vh;
@@ -288,6 +330,7 @@
       display:grid;
       grid-template-rows:auto 1fr auto;
     }
+
     .modalHead,.modalFoot{
       padding:18px 22px;
       border-bottom:1px solid var(--line);
@@ -296,9 +339,11 @@
       align-items:center;
       gap:12px;
     }
-    .modalFoot{border-top:1px solid var(--line); border-bottom:0}
-    .modalBody{padding:20px; overflow:auto}
-    .stepper{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
+    .modalFoot{border-top:1px solid var(--line);border-bottom:0}
+
+    .modalBody{padding:20px;overflow:auto}
+
+    .stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
     .stepPill{
       padding:8px 12px;
       border-radius:999px;
@@ -313,8 +358,10 @@
       color:#ffd8ea;
       border-color:rgba(255,79,167,.24);
     }
+
     .step{display:none}
     .step.active{display:block}
+
     .stepCard{
       padding:16px;
       border:1px solid var(--line);
@@ -322,10 +369,13 @@
       background:rgba(255,255,255,.02);
       margin-bottom:16px;
     }
-    .stepTitle{font-size:18px; font-weight:800; margin:0 0 10px}
-    .helper{color:var(--muted); font-size:13px; margin-bottom:12px}
-    .form2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    .form3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+
+    .stepTitle{font-size:18px;font-weight:800;margin:0 0 10px}
+    .helper{color:var(--muted);font-size:13px;margin-bottom:12px}
+
+    .form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
     .entry{
       padding:14px;
       border:1px solid var(--line);
@@ -333,7 +383,8 @@
       background:rgba(255,255,255,.02);
       margin-bottom:12px;
     }
-    .previewGrid{display:grid; gap:12px}
+
+    .previewGrid{display:grid;gap:12px}
     .savingBadge{
       display:none;
       padding:8px 12px;
@@ -344,6 +395,7 @@
       color:var(--muted);
     }
     .savingBadge.show{display:inline-flex}
+
     .toast{
       position:fixed;
       right:18px;
@@ -358,6 +410,7 @@
       max-width:320px;
     }
     .toast.show{display:block}
+
     .viewHeader{
       display:flex;
       justify-content:space-between;
@@ -367,9 +420,33 @@
       flex-wrap:wrap;
     }
 
+    .skeleton{
+      position:relative;
+      overflow:hidden;
+      background:rgba(255,255,255,.06);
+      border-radius:12px;
+    }
+    .skeleton::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      transform:translateX(-100%);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+      animation:shimmer 1.2s infinite;
+    }
+    .sk-line{height:14px;margin-bottom:10px}
+    .sk-line:last-child{margin-bottom:0}
+    .sk-box{height:140px}
+    .sk-table{height:220px}
+    .sk-mini{height:52px}
+
+    @keyframes shimmer{
+      100%{transform:translateX(100%)}
+    }
+
     @media (max-width:1200px){
       .g5,.g4,.g3,.g2,.toolbar,.cardList,.embeds,.analysisGrid{grid-template-columns:1fr}
-      .hero{flex-direction:column; align-items:flex-start}
+      .hero{flex-direction:column;align-items:flex-start}
     }
     @media (max-width:760px){
       .app{width:calc(100vw - 12px)}
@@ -399,7 +476,6 @@
           <span class="savingBadge" id="savingBadge">Čuvanje u toku...</span>
           <button class="btn btn-ghost hidden" id="homeBtn">Početna</button>
           <button class="btn btn-ghost hidden" id="entityBackBtn">Nazad</button>
-          <button class="btn btn-ghost" id="loadDemoBtn">Demo</button>
           <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
           <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
         </div>
@@ -629,25 +705,29 @@
       <section class="section">
         <div class="card">
           <h3>Executive summary</h3>
-          <div class="analysisBox" id="reportSummaryBox">—</div>
+          <div id="reportSummaryContainer">
+            <div class="analysisBox" id="reportSummaryBox">—</div>
+          </div>
         </div>
       </section>
 
       <section class="section grid g2">
         <div class="card">
           <h3>KPI po profilu – organski rezultati</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metrika</th>
-                  <th>Tekuća</th>
-                  <th>Prošla</th>
-                  <th>Promjena</th>
-                </tr>
-              </thead>
-              <tbody id="reportOrganicTableBody"></tbody>
-            </table>
+          <div id="reportOrganicContainer">
+            <div class="kpiWrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Metrika</th>
+                    <th>Tekuća</th>
+                    <th>Prošla</th>
+                    <th>Promjena</th>
+                  </tr>
+                </thead>
+                <tbody id="reportOrganicTableBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -655,11 +735,13 @@
             <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
             <span class="badge"><span id="reportAdsCampaignCount">0</span> kampanja</span>
           </div>
-          <div class="kpiWrap">
-            <table>
-              <thead id="reportAdsHead"></thead>
-              <tbody id="reportAdsBody"></tbody>
-            </table>
+          <div id="reportAdsContainer">
+            <div class="kpiWrap">
+              <table>
+                <thead id="reportAdsHead"></thead>
+                <tbody id="reportAdsBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -695,18 +777,24 @@
       <section class="section grid g2">
         <div class="card">
           <h3>Top objave – po views</h3>
-          <div id="reportTopViews"></div>
+          <div id="reportTopViewsContainer">
+            <div id="reportTopViews"></div>
+          </div>
         </div>
         <div class="card">
           <h3>Top objave – po lajkovima</h3>
-          <div id="reportTopLikes"></div>
+          <div id="reportTopLikesContainer">
+            <div id="reportTopLikes"></div>
+          </div>
         </div>
       </section>
 
       <section class="section">
         <div class="card">
           <h3>Instagram embed top objava</h3>
-          <div class="embeds" id="reportEmbeds"></div>
+          <div id="reportEmbedsContainer">
+            <div class="embeds" id="reportEmbeds"></div>
+          </div>
         </div>
       </section>
 
@@ -734,11 +822,15 @@
         <div class="analysisGrid">
           <div class="card">
             <h3>Insights</h3>
-            <div class="analysisBox" id="reportInsightsBox">—</div>
+            <div id="reportInsightsContainer">
+              <div class="analysisBox" id="reportInsightsBox">—</div>
+            </div>
           </div>
           <div class="card">
             <h3>Recommendations</h3>
-            <div class="analysisBox" id="reportRecommendationsBox">—</div>
+            <div id="reportRecommendationsContainer">
+              <div class="analysisBox" id="reportRecommendationsBox">—</div>
+            </div>
           </div>
           <div class="card">
             <h3>Napomena / zaključak</h3>
@@ -748,7 +840,7 @@
       </section>
     </div>
 
-    <!-- ALWAYS VISIBLE: GLOBAL REPORT TABLE -->
+    <!-- ALWAYS VISIBLE -->
     <section class="section">
       <div class="card">
         <div class="viewHeader">
@@ -776,7 +868,6 @@
     </section>
   </div>
 
-  <!-- MODAL -->
   <div class="modalBackdrop" id="reportModal">
     <div class="modal">
       <div class="modalHead">
@@ -929,13 +1020,22 @@
 
     const state = {
       currentView: 'home',
-      entityType: null,   // 'profile' | 'owner'
+      entityType: null,
       entityValue: null,
       selectedReportId: null,
       allReports: [],
       filteredReports: [],
       report: createEmptyReport(),
-      isSaving: false
+      step: 0,
+      isSaving: false,
+      reportLoading: {
+        summary: false,
+        organic: false,
+        ads: false,
+        posts: false,
+        analysis: false,
+        embeds: false
+      }
     };
 
     const modal = document.getElementById('reportModal');
@@ -1019,7 +1119,7 @@
         owner: '',
         profile: '',
         period: 'pon-ned',
-        topCount: 2,
+        topCount: 0,
         notes: '',
         organic: {
           posts: { current: 0, previous: 0, target: 0 },
@@ -1031,7 +1131,7 @@
           lostFollowers: { current: 0, previous: 0, target: 0 },
           organicLeads: { current: 0, previous: 0, target: 0 }
         },
-        campaigns: [emptyCampaign(1), emptyCampaign(2), emptyCampaign(3)],
+        campaigns: [emptyCampaign(1)],
         topViews: [],
         topLikes: []
       };
@@ -1160,112 +1260,11 @@
         fillFilters();
         applyFilters();
       } catch (e) {
-        loadDemo();
+        state.allReports = [];
+        fillFilters();
+        applyFilters();
+        showToast('Greška pri učitavanju podataka.', true);
       }
-    }
-
-    function makeDemoReport(overrides = {}) {
-      const base = {
-        report_id: `demo-${Math.random().toString(36).slice(2,8)}`,
-        report_date: todayDate(),
-        week_start: todayDate(),
-        week_end: todayDate(),
-        period_label: 'pon-ned',
-        profile: 'Tea Mandić',
-        owner: 'Anđela Kontić',
-        notes: 'Svi rezultati prethodne nedelje ostvareni su dominantno organski, uz stabilan angažman publike.',
-        top_posts_count: 2,
-        organic: {
-          posts_current: 4,
-          posts_previous: 4,
-          posts_target: 4,
-          reels_current: 1,
-          reels_previous: 1,
-          reels_change_pct: 0,
-          stories_current: 10,
-          stories_previous: 7,
-          stories_target: 10,
-          views_current: 65000,
-          views_previous: 61304,
-          interactions_current: 3000,
-          interactions_previous: 2069,
-          new_followers_current: 140,
-          new_followers_previous: 128,
-          followers_target: 140,
-          lost_followers_current: 80,
-          lost_followers_previous: 120,
-          organic_leads_current: 0,
-          organic_leads_previous: 0,
-          engagement_rate_pct: safeRate(3000, 65000),
-          lead_rate_pct: 0
-        },
-        ads_totals: {
-          budget: 0,
-          impressions: 0,
-          clicks: 0,
-          ctr_pct: 0,
-          revenue: 0
-        },
-        ads: [
-          { campaign_no: 1, campaign_name: 'Kampanja 1', budget: 0, impressions: 0, cpm: 0, ctr_pct: 0, clicks: 0, cpc: 0, leads_registrations: 0, conversion_pct: 0, cpa: 0, revenue: 0, roas: 0 },
-          { campaign_no: 2, campaign_name: 'Kampanja 2', budget: 0, impressions: 0, cpm: 0, ctr_pct: 0, clicks: 0, cpc: 0, leads_registrations: 0, conversion_pct: 0, cpa: 0, revenue: 0, roas: 0 },
-          { campaign_no: 3, campaign_name: 'Kampanja 3', budget: 0, impressions: 0, cpm: 0, ctr_pct: 0, clicks: 0, cpc: 0, leads_registrations: 0, conversion_pct: 0, cpa: 0, revenue: 0, roas: 0 }
-        ],
-        topViews: [
-          { title: 'Porto Montenegro', link: 'https://www.instagram.com/', value: 29213, interactions: 733, comment: '' }
-        ],
-        topLikes: [
-          { title: 'Porto Montenegro', link: 'https://www.instagram.com/', value: 606, interactions: 733, comment: '' }
-        ]
-      };
-      return deepMerge(base, overrides);
-    }
-
-    function loadDemo() {
-      state.allReports = [
-        makeDemoReport({ profile: 'Tea Mandić', owner: 'Anđela Kontić' }),
-        makeDemoReport({
-          profile: 'Porto Montenegro',
-          owner: 'Anđela Mijatović',
-          report_date: '2026-03-10',
-          organic: {
-            views_current: 42000,
-            views_previous: 38200,
-            interactions_current: 2100,
-            interactions_previous: 1780,
-            new_followers_current: 92,
-            new_followers_previous: 80
-          }
-        }),
-        makeDemoReport({
-          profile: 'Siks Holding',
-          owner: 'Anđela Mijatović',
-          report_date: '2026-03-03',
-          organic: {
-            views_current: 18500,
-            views_previous: 21000,
-            interactions_current: 620,
-            interactions_previous: 700,
-            new_followers_current: 25,
-            new_followers_previous: 31
-          }
-        })
-      ];
-      fillFilters();
-      applyFilters();
-      showToast('Učitan demo prikaz.');
-    }
-
-    function deepMerge(target, source) {
-      const out = clone(target);
-      Object.keys(source || {}).forEach(key => {
-        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-          out[key] = deepMerge(out[key] || {}, source[key]);
-        } else {
-          out[key] = source[key];
-        }
-      });
-      return out;
     }
 
     function fillFilters() {
@@ -1335,13 +1334,9 @@
       document.getElementById('homeBtn').classList.toggle('hidden', view === 'home');
       document.getElementById('entityBackBtn').classList.toggle('hidden', view !== 'report');
 
-      if (view === 'home') {
-        document.getElementById('modeBadge').textContent = 'Home overview';
-      } else if (view === 'entity') {
-        document.getElementById('modeBadge').textContent = 'Entity overview';
-      } else {
-        document.getElementById('modeBadge').textContent = 'Single report';
-      }
+      if (view === 'home') document.getElementById('modeBadge').textContent = 'Home overview';
+      if (view === 'entity') document.getElementById('modeBadge').textContent = 'Entity overview';
+      if (view === 'report') document.getElementById('modeBadge').textContent = 'Single report';
     }
 
     function renderAll() {
@@ -1353,7 +1348,7 @@
       } else if (state.currentView === 'entity') {
         showView('entity');
         renderEntityView();
-      } else if (state.currentView === 'report') {
+      } else {
         showView('report');
         renderReportView();
       }
@@ -1510,25 +1505,108 @@
       `).join('');
     }
 
+    function showSectionSkeleton(sectionKey) {
+      const map = {
+        summary: { id: 'reportSummaryContainer', html: skeletonText(4) },
+        organic: { id: 'reportOrganicContainer', html: skeletonTable() },
+        ads: { id: 'reportAdsContainer', html: skeletonTable() },
+        postsViews: { id: 'reportTopViewsContainer', html: skeletonText(3) },
+        postsLikes: { id: 'reportTopLikesContainer', html: skeletonText(3) },
+        embeds: { id: 'reportEmbedsContainer', html: skeletonEmbeds() },
+        insights: { id: 'reportInsightsContainer', html: skeletonText(4) },
+        recommendations: { id: 'reportRecommendationsContainer', html: skeletonText(4) }
+      };
+      const cfg = map[sectionKey];
+      if (cfg) document.getElementById(cfg.id).innerHTML = cfg.html;
+    }
+
+    function skeletonText(lines = 4) {
+      return `<div class="analysisBox">${Array.from({length: lines}).map(() => `<div class="skeleton sk-line"></div>`).join('')}</div>`;
+    }
+
+    function skeletonTable() {
+      return `<div class="skeleton sk-table"></div>`;
+    }
+
+    function skeletonEmbeds() {
+      return `<div class="embeds"><div class="skeleton sk-box"></div><div class="skeleton sk-box"></div></div>`;
+    }
+
+    function primeReportShell(report) {
+      const r = report;
+      const o = r.organic || {};
+
+      heroContextA.textContent = r.profile || '-';
+      heroContextB.textContent = r.owner || '-';
+
+      reportProfileName.textContent = r.profile || '-';
+      reportOwnerName.textContent = r.owner || '-';
+      reportPeriodLabel.textContent = r.period_label || '-';
+      reportDateLabel.textContent = r.report_date || '-';
+
+      reportViewsCurrent.textContent = fmt(o.views_current || 0);
+      reportViewsPrevious.textContent = fmt(o.views_previous || 0);
+      reportInteractionsCurrent.textContent = fmt(o.interactions_current || 0);
+      reportInteractionsPrevious.textContent = fmt(o.interactions_previous || 0);
+
+      reportViewsDelta.textContent = `${fmt(pctChange(o.views_current, o.views_previous), 2)}%`;
+      reportInteractionsDelta.textContent = `${fmt(pctChange(o.interactions_current, o.interactions_previous), 2)}%`;
+      reportEngagementRate.textContent = `${fmt(safeRate(o.interactions_current, o.views_current), 2)}%`;
+      reportAdsCtr.textContent = `${fmt(r.ads_totals?.ctr_pct || 0, 2)}%`;
+
+      snapshotViews.textContent = fmt(o.views_current || 0);
+      snapshotImpressions.textContent = fmt(r.ads_totals?.impressions || 0);
+      snapshotInteractions.textContent = fmt(o.interactions_current || 0);
+      snapshotFollowers.textContent = fmt(o.new_followers_current || 0);
+      snapshotLeadRate.textContent = `${fmt(safeRate(o.organic_leads_current, o.views_current), 2)}%`;
+
+      setProgress(progressPostsBar, progressPostsLabel, o.posts_current, o.posts_target || o.posts_current || 0);
+      setProgress(progressStoriesBar, progressStoriesLabel, o.stories_current, o.stories_target || o.stories_current || 0);
+      setProgress(progressFollowersBar, progressFollowersLabel, o.new_followers_current, o.followers_target || o.new_followers_current || 0);
+
+      showSectionSkeleton('summary');
+      showSectionSkeleton('organic');
+      showSectionSkeleton('ads');
+      showSectionSkeleton('postsViews');
+      showSectionSkeleton('postsLikes');
+      showSectionSkeleton('embeds');
+      showSectionSkeleton('insights');
+      showSectionSkeleton('recommendations');
+    }
+
     async function openReport(reportId) {
+      const cached = state.allReports.find(r => r.report_id === reportId);
+      if (!cached) return;
+
+      state.selectedReportId = reportId;
+      state.currentView = 'report';
+      showView('report');
+      primeReportShell(cached);
+
+      requestAnimationFrame(() => {
+        reportSummaryBox.innerHTML = buildSingleSummary(cached);
+        reportOrganicContainer.innerHTML = getOrganicTableMarkup(cached);
+        reportInsightsBox.innerHTML = buildInsights(cached);
+        reportRecommendationsBox.innerHTML = buildRecommendations(cached);
+        reportNotesBox.textContent = cached.notes || '—';
+        drawReportCharts(cached);
+      });
+
       try {
         const res = await apiGet({ action: 'getReport', report_id: reportId });
         if (!res.ok) throw new Error(res.error || 'Greška pri učitavanju reporta');
         const full = res.report;
+
         const idx = state.allReports.findIndex(r => r.report_id === full.report_id);
         if (idx > -1) state.allReports[idx] = full;
+        else state.allReports.unshift(full);
+
         state.selectedReportId = reportId;
         state.currentView = 'report';
-        renderAll();
+        renderReportView();
       } catch (e) {
-        const fallback = state.allReports.find(r => r.report_id === reportId);
-        if (fallback) {
-          state.selectedReportId = reportId;
-          state.currentView = 'report';
-          renderAll();
-        } else {
-          showToast(e.message || 'Greška pri otvaranju reporta.', true);
-        }
+        renderReportView();
+        showToast(e.message || 'Greška pri otvaranju reporta.', true);
       }
     }
 
@@ -1580,21 +1658,20 @@
       setProgress(progressStoriesBar, progressStoriesLabel, o.stories_current, o.stories_target || o.stories_current || 0);
       setProgress(progressFollowersBar, progressFollowersLabel, o.new_followers_current, o.followers_target || o.new_followers_current || 0);
 
-      reportSummaryBox.innerHTML = buildSingleSummary(r);
-      reportInsightsBox.innerHTML = buildInsights(r);
-      reportRecommendationsBox.innerHTML = buildRecommendations(r);
-      reportNotesBox.textContent = r.notes || '—';
-
-      renderReportOrganicTable(r);
+      reportSummaryContainer.innerHTML = `<div class="analysisBox" id="reportSummaryBox">${buildSingleSummary(r)}</div>`;
+      reportOrganicContainer.innerHTML = getOrganicTableMarkup(r);
       renderReportAdsTable(r);
-      renderTopList(reportTopViews, r.topViews || [], 'views');
-      renderTopList(reportTopLikes, r.topLikes || [], 'lajkovi');
+      renderTopList(reportTopViewsContainer, 'reportTopViews', r.topViews || [], 'views');
+      renderTopList(reportTopLikesContainer, 'reportTopLikes', r.topLikes || [], 'lajkovi');
       renderEmbeds(r);
+      reportInsightsContainer.innerHTML = `<div class="analysisBox" id="reportInsightsBox">${buildInsights(r)}</div>`;
+      reportRecommendationsContainer.innerHTML = `<div class="analysisBox" id="reportRecommendationsBox">${buildRecommendations(r)}</div>`;
+      reportNotesBox.textContent = r.notes || '—';
 
       drawReportCharts(r);
     }
 
-    function renderReportOrganicTable(r) {
+    function getOrganicTableMarkup(r) {
       const o = r.organic || {};
       const map = {
         posts: ['posts_current', 'posts_previous'],
@@ -1607,7 +1684,7 @@
         organicLeads: ['organic_leads_current', 'organic_leads_previous']
       };
 
-      reportOrganicTableBody.innerHTML = organicMetricDefs.map(([k, l]) => {
+      const body = organicMetricDefs.map(([k, l]) => {
         const [ck, pk] = map[k];
         const c = +o[ck] || 0;
         const p = +o[pk] || 0;
@@ -1619,19 +1696,47 @@
           <td><span class="delta ${deltaClass(d)}">${fmt(d, 2)}%</span></td>
         </tr>`;
       }).join('');
+
+      return `
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th>Tekuća</th>
+                <th>Prošla</th>
+                <th>Promjena</th>
+              </tr>
+            </thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+      `;
     }
 
     function renderReportAdsTable(r) {
       const ads = r.ads || [];
       reportAdsCampaignCount.textContent = ads.length;
 
-      reportAdsHead.innerHTML = `<tr>
+      reportAdsContainer.innerHTML = `
+        <div class="kpiWrap">
+          <table>
+            <thead id="reportAdsHeadInner"></thead>
+            <tbody id="reportAdsBodyInner"></tbody>
+          </table>
+        </div>
+      `;
+
+      const head = document.getElementById('reportAdsHeadInner');
+      const body = document.getElementById('reportAdsBodyInner');
+
+      head.innerHTML = `<tr>
         <th>Metrika</th>
         ${ads.map((a, i) => `<th>${escapeHtml(a.campaign_name || `Kampanja ${i + 1}`)}</th>`).join('') || '<th>Nema</th>'}
       </tr>`;
 
       if (!ads.length) {
-        reportAdsBody.innerHTML = '<tr><td colspan="2">Nema dodatih kampanja.</td></tr>';
+                body.innerHTML = '<tr><td colspan="2">Nema dodatih kampanja.</td></tr>';
         return;
       }
 
@@ -1649,7 +1754,7 @@
         ['roas', 'ROAS']
       ];
 
-      reportAdsBody.innerHTML = rows.map(([k, l]) => `
+      body.innerHTML = rows.map(([k, l]) => `
         <tr>
           <td>${escapeHtml(l)}</td>
           ${ads.map(a => `<td>${fmt(a[k] || 0, 2).replace('.00', '')}</td>`).join('')}
@@ -1657,20 +1762,20 @@
       `).join('');
     }
 
-    function renderTopList(container, items, mode) {
-      container.innerHTML = !items.length
-        ? '<div class="empty">Nema unosa.</div>'
-        : items.map(i => `
-          <div class="topPost">
-            <div>
-              <div style="font-weight:700;margin-bottom:4px">${escapeHtml(i.title || 'Bez naziva')}</div>
-              ${i.link ? `<a class="postLink" href="${escapeAttr(i.link)}" target="_blank" rel="noreferrer">${escapeHtml(i.link)}</a>` : '<span class="muted">Bez linka</span>'}
-              ${i.comment ? `<div class="muted" style="margin-top:6px">${escapeHtml(i.comment)}</div>` : ''}
+    function renderTopList(containerEl, innerId, items, mode) {
+      containerEl.innerHTML = items.length
+        ? `<div id="${innerId}">${items.map(i => `
+            <div class="topPost">
+              <div>
+                <div style="font-weight:700;margin-bottom:4px">${escapeHtml(i.title || 'Bez naziva')}</div>
+                ${i.link ? `<a class="postLink" href="${escapeAttr(i.link)}" target="_blank" rel="noreferrer">${escapeHtml(i.link)}</a>` : '<span class="muted">Bez linka</span>'}
+                ${i.comment ? `<div class="muted" style="margin-top:6px">${escapeHtml(i.comment)}</div>` : ''}
+              </div>
+              <div><strong>${fmt(i.value || 0)}</strong><div class="muted">${escapeHtml(mode)}</div></div>
+              <div><strong>${fmt(i.interactions || 0)}</strong><div class="muted">interactions</div></div>
             </div>
-            <div><strong>${fmt(i.value || 0)}</strong><div class="muted">${escapeHtml(mode)}</div></div>
-            <div><strong>${fmt(i.interactions || 0)}</strong><div class="muted">interactions</div></div>
-          </div>
-        `).join('');
+          `).join('')}</div>`
+        : '<div class="empty">Nema unosa.</div>';
     }
 
     function renderEmbeds(report) {
@@ -1679,27 +1784,29 @@
         ...(report.topLikes || []).slice(0, 1)
       ];
 
-      reportEmbeds.innerHTML = items.length
-        ? items.map((item, idx) => {
-          const link = item.link || '';
-          const valid = /instagram\.com\/(p|reel|tv)\//i.test(link);
-          return `
-            <div class="embedCard">
-              <div class="embedHead">
-                <div>
-                  <div style="font-weight:700">${escapeHtml(item.title || 'Instagram objava')}</div>
-                  <div class="muted">${fmt(item.value || 0)} • ${fmt(item.interactions || 0)} interactions</div>
+      reportEmbedsContainer.innerHTML = items.length
+        ? `<div class="embeds" id="reportEmbedsInner">
+            ${items.map((item, idx) => {
+              const link = item.link || '';
+              const valid = /instagram\.com\/(p|reel|tv)\//i.test(link);
+              return `
+                <div class="embedCard">
+                  <div class="embedHead">
+                    <div>
+                      <div style="font-weight:700">${escapeHtml(item.title || 'Instagram objava')}</div>
+                      <div class="muted">${fmt(item.value || 0)} • ${fmt(item.interactions || 0)} interactions</div>
+                    </div>
+                    <span class="badge">${idx === 0 ? 'Top views' : 'Top likes'}</span>
+                  </div>
+                  ${
+                    valid
+                      ? `<blockquote class="instagram-media" data-instgrm-permalink="${escapeAttr(link)}" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:8px;margin:0 auto;max-width:540px;width:100%;"></blockquote>`
+                      : `<div class="empty">Embed nije dostupan.<br><a class="postLink" href="${escapeAttr(link || '#')}" target="_blank" rel="noreferrer">Otvori objavu</a></div>`
+                  }
                 </div>
-                <span class="badge">${idx === 0 ? 'Top views' : 'Top likes'}</span>
-              </div>
-              ${
-                valid
-                  ? `<blockquote class="instagram-media" data-instgrm-permalink="${escapeAttr(link)}" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:8px;margin:0 auto;max-width:540px;width:100%;"></blockquote>`
-                  : `<div class="empty">Embed nije dostupan.<br><a class="postLink" href="${escapeAttr(link || '#')}" target="_blank" rel="noreferrer">Otvori objavu</a></div>`
-              }
-            </div>
-          `;
-        }).join('')
+              `;
+            }).join('')}
+          </div>`
         : '<div class="empty">Nema objava za embed.</div>';
 
       if (window.instgrm && window.instgrm.Embeds) {
@@ -1885,7 +1992,7 @@
       }
 
       if (top) {
-        recs.push({ priority: 2, text: `Najbolja objava ("${top.title}") treba biti referenca — razviti sličan sadržaj ili serijal na tu temu.` });
+        recs.push({ priority: 2, text: `Najbolja objava ("${escapeHtml(top.title)}") treba biti referenca — razviti sličan sadržaj ili serijal na tu temu.` });
       }
 
       if ((+o.stories_target || 0) > 0 && (+o.stories_current || 0) < (+o.stories_target || 0)) {
@@ -1959,6 +2066,21 @@
       });
     }
 
+    function barChart(id, labels, sets, max) {
+      const canvas = document.getElementById(id);
+      const { ctx, w, h } = setupCanvas(canvas);
+      const { m, pw, ph } = axes(ctx, w, h, labels);
+      const M = max || Math.max(1, ...sets.flatMap(s => s.data));
+      const slot = pw / Math.max(labels.length, 1);
+      const bw = slot / (sets.length + 1);
+      sets.forEach((s, si) => s.data.forEach((v, i) => {
+        const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
+        const y = m.t + ph - (v / M) * ph;
+        ctx.fillStyle = s.color;
+        ctx.fillRect(x, y, bw - 4, m.t + ph - y);
+      }));
+    }
+
     function drawEntityTrendChart(reports) {
       const grouped = {};
       reports.forEach(r => {
@@ -1984,21 +2106,6 @@
         { color: '#8b5cf6', data: labels.map(l => grouped[l].interactions) },
         { color: '#22d3ee', data: labels.map(l => grouped[l].followers) }
       ]);
-    }
-
-    function barChart(id, labels, sets, max) {
-      const canvas = document.getElementById(id);
-      const { ctx, w, h } = setupCanvas(canvas);
-      const { m, pw, ph } = axes(ctx, w, h, labels);
-      const M = max || Math.max(1, ...sets.flatMap(s => s.data));
-      const slot = pw / Math.max(labels.length, 1);
-      const bw = slot / (sets.length + 1);
-      sets.forEach((s, si) => s.data.forEach((v, i) => {
-        const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
-        const y = m.t + ph - (v / M) * ph;
-        ctx.fillStyle = s.color;
-        ctx.fillRect(x, y, bw - 4, m.t + ph - y);
-      }));
     }
 
     function drawReportCharts(r) {
@@ -2292,6 +2399,7 @@
 
     document.getElementById('openModalBtn').onclick = () => openModal();
     document.getElementById('closeModalBtn').onclick = closeModal;
+
     document.getElementById('homeBtn').onclick = () => {
       state.currentView = 'home';
       state.entityType = null;
@@ -2299,6 +2407,7 @@
       state.selectedReportId = null;
       renderAll();
     };
+
     document.getElementById('entityBackBtn').onclick = () => {
       state.currentView = 'entity';
       state.selectedReportId = null;
@@ -2307,7 +2416,6 @@
 
     modal.onclick = e => { if (e.target === modal) closeModal(); };
 
-    document.getElementById('loadDemoBtn').onclick = loadDemo;
     document.getElementById('resetFiltersBtn').onclick = () => {
       filterProfile.value = 'all';
       filterOwner.value = 'all';
@@ -2316,16 +2424,19 @@
       filterDateTo.value = '';
       applyFilters();
     };
+
     document.getElementById('applyFiltersBtn').onclick = applyFilters;
 
     document.getElementById('addCampaignBtn').onclick = () => {
       state.report.campaigns.push(emptyCampaign(state.report.campaigns.length + 1));
       renderCampaignInputs();
     };
+
     document.getElementById('addTopViewsBtn').onclick = () => {
       topViewsInputs.insertAdjacentHTML('beforeend', postTemplate('views'));
       bindDynamicButtons();
     };
+
     document.getElementById('addTopLikesBtn').onclick = () => {
       topLikesInputs.insertAdjacentHTML('beforeend', postTemplate('likes'));
       bindDynamicButtons();
@@ -2336,11 +2447,13 @@
       state.step = Math.max(0, state.step - 1);
       renderStepper();
     };
+
     document.getElementById('nextStepBtn').onclick = () => {
       collectForm();
       state.step = Math.min(steps.length - 1, state.step + 1);
       renderStepper();
     };
+
     document.getElementById('saveReportBtn').onclick = saveReport;
 
     document.getElementById('globalReportsTableBody').onclick = async e => {
