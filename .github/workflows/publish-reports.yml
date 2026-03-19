@@ -2,14 +2,88 @@ name: Publish Reports
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 10 * * *"
+
+permissions:
+  contents: write
 
 jobs:
-  test:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Confirm workflow is working
-        run: echo "Workflow radi ispravno"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Ensure folders exist
+        run: |
+          mkdir -p "MarketingTIm/1/data"
+          mkdir -p "MarketingTIm/1/reports"
+          mkdir -p "MarketingTIm/1/owners"
+          mkdir -p "MarketingTIm/1/profiles"
+          mkdir -p "MarketingTIm/1/src"
+          mkdir -p "MarketingTIm/1/scripts"
+
+      - name: Fetch reports from Apps Script
+        env:
+          REPORTS_URL: ${{ secrets.REPORTS_URL }}
+        run: |
+          if [ -z "$REPORTS_URL" ]; then
+            echo "Missing REPORTS_URL secret"
+            exit 1
+          fi
+
+          curl -L "$REPORTS_URL?action=listReports" -o MarketingTIm/1/data/raw-response.json
+
+          node -e "
+          const fs = require('fs');
+          const p = 'MarketingTIm/1/data/raw-response.json';
+          const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
+          if (!raw.ok) {
+            console.error('Apps Script returned error:', raw.error || raw);
+            process.exit(1);
+          }
+          if (!Array.isArray(raw.reports)) {
+            console.error('Invalid response: reports is not an array');
+            process.exit(1);
+          }
+          fs.writeFileSync(
+            'MarketingTIm/1/data/reports.json',
+            JSON.stringify(raw.reports, null, 2),
+            'utf8'
+          );
+          console.log('Saved reports:', raw.reports.length);
+          "
+
+      - name: Build static pages
+        run: node MarketingTIm/1/scripts/build-reports.js
+
+      - name: Remove temporary raw response
+        run: rm -f MarketingTIm/1/data/raw-response.json
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add MarketingTIm/1/index.html
+          git add MarketingTIm/1/data/reports.json
+          git add MarketingTIm/1/reports
+          git add MarketingTIm/1/owners
+          git add MarketingTIm/1/profiles
+          git add MarketingTIm/1/src/template.css
+          git add MarketingTIm/1/scripts/build-reports.js
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Publish reports"
+          git push
