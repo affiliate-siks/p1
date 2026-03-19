@@ -36,12 +36,14 @@ body {
   z-index: 0;
 }
 
+/* FULL CLICK BACKGROUND */
 .full-link {
   position: fixed;
   inset: 0;
   z-index: 1;
 }
 
+/* CONTENT */
 .content-box {
   position: absolute;
   top: 15%;
@@ -91,19 +93,24 @@ body {
   .sub-text { font-size: 1.4rem; }
 }
 
-/* CTA FIXED CENTER */
+/* CTA PERFECT CENTER */
 .cta-wrapper {
   position: fixed;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   z-index: 999;
-  width: 90%;
-  max-width: 420px;
+  pointer-events: none;
 }
 
 .cta-button {
-  width: 100%;
+  pointer-events: auto;
+
+  width: 90%;
+  max-width: 420px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,7 +129,6 @@ body {
     0 0 25px rgba(255,212,0,0.9);
 }
 
-/* TAP EFFECT */
 .cta-button:active {
   transform: scale(0.96);
 }
