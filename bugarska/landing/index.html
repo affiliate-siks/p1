@@ -48,7 +48,6 @@ body {
   left: 6%;
   width: 40%;
   z-index: 2;
-  text-align: left;
 }
 
 @media (max-width: 768px) {
@@ -67,20 +66,10 @@ body {
   margin: 0;
   letter-spacing: 4px;
 
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #fff7c7 12%,
-    #ffe85a 28%,
-    #ffd000 44%,
-    #ffb800 62%,
-    #ff9900 78%,
-    #fff0a6 100%
-  );
-
+  background: linear-gradient(180deg,#fff,#fff7c7,#ffe85a,#ffd000,#ffb800,#ff9900,#fff0a6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 2px #ffffff;
+  -webkit-text-stroke: 2px #fff;
 
   text-shadow:
     0 4px 15px rgba(0,0,0,0.9),
@@ -93,100 +82,49 @@ body {
   font-size: 2.2rem;
   font-weight: 900;
   letter-spacing: 2px;
-  color: #ffffff;
+  color: #fff;
   text-shadow: 0 4px 20px rgba(0,0,0,0.9);
-  line-height: 1.3;
-}
-
-.limited-wrap {
-  margin-top: 3rem;
-  width: 100%;
-  max-width: 420px;
-}
-
-.bar-shell {
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.25);
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #ffe680, #ffd000, #ffb000);
-  animation: emptyBar 6s linear infinite;
-}
-
-@keyframes emptyBar {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
-}
-
-.limit-text {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  letter-spacing: 1.5px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.9);
-}
-
-/* CTA */
-.cta-wrapper {
-  position: fixed;
-  bottom: 5%;
-  right: 5%;
-  z-index: 2;
 }
 
 @media (max-width: 768px) {
-  .cta-wrapper {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    bottom: 20px;
-    width: 90%;
-  }
+  .main-heading { font-size: 3rem; }
+  .sub-text { font-size: 1.4rem; }
+}
+
+/* CTA FIXED CENTER */
+.cta-wrapper {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  width: 90%;
+  max-width: 420px;
 }
 
 .cta-button {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
 
-  padding: 1.2rem 3rem;
-  font-size: 1.5rem;
+  padding: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 900;
-  border-radius: 999px;
+  border-radius: 16px;
   text-decoration: none;
   color: #000;
 
   background: linear-gradient(180deg, #fff066, #ffd400);
+
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.6),
-    0 0 30px rgba(255,212,0,0.9);
+    0 10px 25px rgba(0,0,0,0.6),
+    0 0 25px rgba(255,212,0,0.9);
 }
 
-/* MOBILE OPTIMIZATION */
-@media (max-width: 768px) {
-  .main-heading { font-size: 3rem; }
-  .sub-text { font-size: 1.4rem; }
-
-  .cta-button {
-    width: 100%;
-    font-size: 1.3rem;
-    padding: 1.2rem;
-    border-radius: 16px;
-
-    box-shadow:
-      0 6px 20px rgba(0,0,0,0.5),
-      0 0 20px rgba(255,212,0,0.8);
-  }
-
-  .cta-button:active {
-    transform: scale(0.97);
-  }
+/* TAP EFFECT */
+.cta-button:active {
+  transform: scale(0.96);
 }
 </style>
 </head>
@@ -203,13 +141,6 @@ body {
   <div class="sub-text">
     ЈАК СТАРТ СО ДВОЕН БОНУС<br>
     Голема понуда. Брзо истекува – биди навреме.
-  </div>
-
-  <div class="limited-wrap">
-    <div class="bar-shell">
-      <div class="bar-fill"></div>
-    </div>
-    <div class="limit-text">ОГРАНИЧЕНА ПОНУДА</div>
   </div>
 </div>
 
