@@ -34,6 +34,8 @@ async function main() {
 function generateHTML(data) {
   const m = data.main;
   const o = data.overview || {};
+  const organic = data.organic_results || [];
+  const paid = data.paid_results || [];
   const insights = data.insights || [];
 
   return `
@@ -45,26 +47,32 @@ function generateHTML(data) {
 
 <style>
 body {
-  font-family: system-ui;
+  margin:0;
+  font-family:system-ui;
   background:#0b0b0d;
   color:#fff;
-  padding:20px;
 }
 
 .container {
-  max-width:1000px;
-  margin:auto;
+  max-width:1100px;
+  margin:40px auto;
+  padding:20px;
+}
+
+.header {
+  background: linear-gradient(135deg,#1a1a2e,#3a0f2f,#f36a2e);
+  padding:30px;
+  border-radius:20px;
+  margin-bottom:20px;
 }
 
 .card {
   background:#141418;
-  padding:20px;
-  border-radius:16px;
-  margin-bottom:20px;
   border:1px solid #2a2a31;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
 }
-
-h1 { margin:0; }
 
 .stats {
   display:flex;
@@ -72,7 +80,17 @@ h1 { margin:0; }
 }
 
 .stat {
-  font-size:24px;
+  font-size:18px;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th, td {
+  padding:10px;
+  border-bottom:1px solid #2a2a31;
 }
 
 </style>
@@ -82,13 +100,56 @@ h1 { margin:0; }
 
 <div class="container">
 
-<h1>${m.profile_name}</h1>
-<p>${m.period_start} → ${m.period_end}</p>
+<div class="header">
+  <h1>${m.profile_name}</h1>
+  <p>${m.period_start} → ${m.period_end}</p>
+</div>
 
 <div class="card stats">
   <div class="stat">Views: ${o.views || "-"}</div>
   <div class="stat">Reach: ${o.reach || "-"}</div>
   <div class="stat">Interactions: ${o.interactions || "-"}</div>
+  <div class="stat">Followers: ${o.follower_change || "-"}</div>
+</div>
+
+<div class="card">
+  <h3>Organic results</h3>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Followers</th>
+      <th>Posts</th>
+      <th>Reach</th>
+    </tr>
+    ${organic.map(i => `
+      <tr>
+        <td>${i.item_name}</td>
+        <td>${i.followers}</td>
+        <td>${i.posts}</td>
+        <td>${i.reach}</td>
+      </tr>
+    `).join("")}
+  </table>
+</div>
+
+<div class="card">
+  <h3>Paid campaigns</h3>
+  <table>
+    <tr>
+      <th>Campaign</th>
+      <th>Spend</th>
+      <th>Clicks</th>
+      <th>Conversions</th>
+    </tr>
+    ${paid.map(i => `
+      <tr>
+        <td>${i.campaign_name}</td>
+        <td>${i.spend}</td>
+        <td>${i.clicks}</td>
+        <td>${i.conversions}</td>
+      </tr>
+    `).join("")}
+  </table>
 </div>
 
 <div class="card">
