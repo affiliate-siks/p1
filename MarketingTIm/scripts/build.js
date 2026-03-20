@@ -3,165 +3,483 @@ import path from "path";
 import fetch from "node-fetch";
 
 const API = "https://script.google.com/macros/s/AKfycbwfjiqyD5GZVT0k5UOF20y6tYfEnMBHODuu2rYfoVZ0n_kUULmOb6K9tiCJqEm0GMU/exec";
-
 const REPORTS_DIR = "./MarketingTIm/reports";
 
 async function main() {
-  console.log("Fetching reports...");
+  ensureDir(REPORTS_DIR);
 
-  const res = await fetch(`${API}?action=listReports`);
-  const data = await res.json();
+  const listRes = await fetch(`${API}?action=listReports`);
+  const listData = await listRes.json();
+  const reports = Array.isArray(listData.reports) ? listData.reports : [];
 
-  const reports = data.reports || [];
+  for (const item of reports) {
+    const fullRes = await fetch(`${API}?action=getReport&report_id=${encodeURIComponent(item.report_id)}`);
+    const fullData = await fullRes.json();
 
-  for (const r of reports) {
-    const full = await fetch(`${API}?action=getReport&report_id=${r.report_id}`);
-    const reportData = await full.json();
+    if (!fullData.ok || !fullData.report) continue;
 
-    if (!reportData.ok) continue;
-
-    const html = generateHTML(reportData.report);
-
-    const filePath = path.join(REPORTS_DIR, `${r.slug}.html`);
-
-    fs.writeFileSync(filePath, html);
-    console.log(`Generated: ${r.slug}`);
+    const html = generateHTML(fullData.report);
+    const outPath = path.join(REPORTS_DIR, `${item.slug}.html`);
+    fs.writeFileSync(outPath, html, "utf8");
+    console.log(`Generated: ${outPath}`);
   }
 
   console.log("Done.");
 }
 
+function ensureDir(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+function fmt(v, d = 0) {
+  const n = Number(v || 0);
+  return n.toLocaleString("en-US", {
+    minimumFractionDigits: d,
+    maximumFractionDigits: d
+  });
+}
+
+function esc(v) {
+  return String(v ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function buildOrganicValue(row) {
+  const parts = [];
+  if (row.posts !== "" && row.posts != null) parts.push(`Posts: ${fmt(row.posts)}`);
+  if (row.followers !== "" && row.followers != null) parts.push(`Followers: ${fmt(row.followers)}`);
+  if (row.reach !== "" && row.reach != null) parts.push(`Reach: ${fmt(row.reach)}`);
+  if (row.impressions !== "" && row.impressions != null) parts.push(`Impressions: ${fmt(row.impressions)}`);
+  if (row.engagements !== "" && row.engagements != null) parts.push(`Engagements: ${fmt(row.engagements)}`);
+  if (row.growth_percent !== "" && row.growth_percent != null) parts.push(`Growth: ${fmt(row.growth_percent, 2)}%`);
+  return parts.join(" • ") || "-";
+}
+
+function metricCard(title, value, subtitle, icon) {
+  return `
+    <div class="card stat">
+      <div class="icon">${icon}</div>
+      <div>
+        <div class="muted">${esc(title)}</div>
+        <div class="metric-sm">${esc(value)}</div>
+        <div class="muted">${esc(subtitle || "")}</div>
+      </div>
+    </div>
+  `;
+}
+
 function generateHTML(data) {
-  const m = data.main;
+  const m = data.main || {};
   const o = data.overview || {};
   const organic = data.organic_results || [];
   const paid = data.paid_results || [];
+  const content = data.content || [];
   const insights = data.insights || [];
 
-  return `
-<!DOCTYPE html>
-<html>
+  const summaryText = insights.map(x => x.text).filter(Boolean).join("\n");
+  const topViews = content.filter(x => x.content_type === "top_view_post");
+  const topLikes = content.filter(x => x.content_type === "top_like_post");
+
+  const organicLabels = organic.length ? organic.map(x => x.item_name || "-") : ["-"];
+  const organicA = organic.length ? organic.map(x => Number(x.reach || x.posts || 0)) : [0];
+  const organicB = organic.length ? organic.map(x => Number(x.engagements || x.followers || 0)) : [0];
+  const organicC = organic.length ? organic.map(x => Number(x.growth_percent || 0)) : [0];
+
+  return `<!DOCTYPE html>
+<html lang="sr">
 <head>
 <meta charset="UTF-8">
-<title>${m.profile_name}</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(m.profile_name || "Report")}</title>
 <style>
-body {
+:root{
+  --bg:#0b0d12;
+  --bg2:#10141d;
+  --panel:#131925;
+  --panel2:#171f2d;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.12);
+  --text:#eef2ff;
+  --muted:#98a2b3;
+  --pink:#ff4fa7;
+  --pink2:#ff77bf;
+  --orange:#ff9a31;
+  --purple:#8b5cf6;
+  --cyan:#22d3ee;
+  --green:#22c55e;
+  --red:#f87171;
+  --yellow:#facc15;
+  --radius:22px;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --max:1500px;
+}
+*{box-sizing:border-box}
+body{
   margin:0;
-  font-family:system-ui;
-  background:#0b0b0d;
-  color:#fff;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255,79,167,.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
+    linear-gradient(180deg,#090b10,#0d1017);
 }
-
-.container {
-  max-width:1100px;
-  margin:40px auto;
-  padding:20px;
+a{color:inherit}
+.app{width:min(var(--max), calc(100vw - 20px)); margin:10px auto 28px}
+.section{margin-bottom:18px}
+.grid{display:grid; gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero,.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
 }
-
-.header {
-  background: linear-gradient(135deg,#1a1a2e,#3a0f2f,#f36a2e);
-  padding:30px;
-  border-radius:20px;
-  margin-bottom:20px;
-}
-
-.card {
-  background:#141418;
-  border:1px solid #2a2a31;
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:20px;
-}
-
-.stats {
+.hero{
+  border-radius:28px;
+  padding:28px;
   display:flex;
+  justify-content:space-between;
+  align-items:center;
   gap:20px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
+    linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
 }
-
-.stat {
-  font-size:18px;
+.hero h1{
+  margin:0;
+  font-size:clamp(28px,4vw,54px);
+  font-weight:300;
+  letter-spacing:-.05em;
 }
-
-table {
-  width:100%;
-  border-collapse:collapse;
+.hero p{margin:8px 0 0; color:rgba(255,255,255,.72); font-size:14px}
+.chipRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
 }
-
-th, td {
-  padding:10px;
-  border-bottom:1px solid #2a2a31;
+.btn{
+  display:inline-flex;
+  border:0;
+  border-radius:999px;
+  padding:11px 16px;
+  cursor:pointer;
+  font:700 14px inherit;
+  color:var(--text);
+  text-decoration:none;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
 }
-
+.card{
+  border-radius:var(--radius);
+  padding:22px;
+  overflow:hidden;
+  position:relative;
+}
+.card h3{margin:0 0 14px; font-size:18px}
+.metric{font-size:38px; font-weight:800; line-height:1; margin-bottom:6px}
+.metric-sm{font-size:28px; font-weight:800; line-height:1}
+.muted{color:var(--muted); font-size:13px}
+.stat{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:110px;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:rgba(255,79,167,.12);
+  border:1px solid rgba(255,79,167,.16);
+}
+.analysisBox,.noteBox{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  line-height:1.65;
+  white-space:pre-line;
+}
+.kpiWrap{overflow:auto}
+table{width:100%; border-collapse:collapse; min-width:700px}
+th,td{padding:11px 8px; text-align:left; border-bottom:1px solid var(--line); font-size:14px; vertical-align:top}
+th{font-size:12px; color:var(--muted); text-transform:uppercase}
+.topPost{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.topPost:last-child{border-bottom:0}
+.legend{display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:13px; margin-bottom:10px}
+.dot{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px}
+.canvasWrap{height:240px}
+canvas{width:100%; height:100%; display:block}
+.empty{
+  padding:26px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
+}
+@media (max-width:1200px){
+  .g4,.g2{grid-template-columns:1fr}
+  .hero{flex-direction:column; align-items:flex-start}
+}
+@media (max-width:760px){
+  .app{width:calc(100vw - 12px)}
+  .hero,.card{padding:18px}
+  .metric{font-size:32px}
+  .hero h1{font-size:30px}
+}
 </style>
 </head>
-
 <body>
+  <div class="app">
+    <section class="section">
+      <div class="hero">
+        <div>
+          <h1>${esc(m.profile_name || "Report")}</h1>
+          <p>Detaljan sedmični izvještaj za profil i kampanje.</p>
+          <div class="chipRow">
+            <span class="badge">Owner: ${esc(m.owner_name || "-")}</span>
+            <span class="badge">Period: ${esc((m.period_start || "-") + " → " + (m.period_end || "-"))}</span>
+            <span class="badge">Status: ${esc(m.status || "-")}</span>
+          </div>
+        </div>
+        <div>
+          <a class="btn" href="../dashboard.html">Nazad na dashboard</a>
+        </div>
+      </div>
+    </section>
 
-<div class="container">
+    <section class="section grid g4">
+      <div class="card">
+        <h3>Profil</h3>
+        <div class="metric">${esc(m.profile_name || "-")}</div>
+        <div class="muted">Osoba: <strong>${esc(m.owner_name || "-")}</strong></div>
+      </div>
+      <div class="card">
+        <h3>Views</h3>
+        <div class="metric">${fmt(o.views || 0)}</div>
+        <div class="muted">Overview metrics</div>
+      </div>
+      <div class="card">
+        <h3>Interactions</h3>
+        <div class="metric">${fmt(o.interactions || 0)}</div>
+        <div class="muted">Overview metrics</div>
+      </div>
+      <div class="card">
+        <h3>Paid spend</h3>
+        <div class="metric">${fmt(o.paid_spend || 0, 2)}</div>
+        <div class="muted">Total spend</div>
+      </div>
+    </section>
 
-<div class="header">
-  <h1>${m.profile_name}</h1>
-  <p>${m.period_start} → ${m.period_end}</p>
-</div>
+    <section class="section grid g4">
+      ${metricCard("Reach", fmt(o.reach || 0), "Overview metrics", "👁")}
+      ${metricCard("Impressions", fmt(o.impressions || 0), "Overview metrics", "📊")}
+      ${metricCard("Follower change", fmt(o.follower_change || 0), "Overview metrics", "📈")}
+      ${metricCard("Clicks / Conv.", `${fmt(o.clicks || 0)} / ${fmt(o.conversions || 0)}`, "Clicks i conversions", "🔗")}
+    </section>
 
-<div class="card stats">
-  <div class="stat">Views: ${o.views || "-"}</div>
-  <div class="stat">Reach: ${o.reach || "-"}</div>
-  <div class="stat">Interactions: ${o.interactions || "-"}</div>
-  <div class="stat">Followers: ${o.follower_change || "-"}</div>
-</div>
+    <section class="section">
+      <div class="card">
+        <h3>Executive summary</h3>
+        <div class="analysisBox">${summaryText ? esc(summaryText) : "—"}</div>
+      </div>
+    </section>
 
-<div class="card">
-  <h3>Organic results</h3>
-  <table>
-    <tr>
-      <th>Name</th>
-      <th>Followers</th>
-      <th>Posts</th>
-      <th>Reach</th>
-    </tr>
-    ${organic.map(i => `
-      <tr>
-        <td>${i.item_name}</td>
-        <td>${i.followers}</td>
-        <td>${i.posts}</td>
-        <td>${i.reach}</td>
-      </tr>
-    `).join("")}
-  </table>
-</div>
+    <section class="section grid g2">
+      <div class="card">
+        <h3>KPI po profilu – organski rezultati</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th>Vrijednost</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${organic.length ? organic.map(row => `
+                <tr>
+                  <td>${esc(row.item_name || "-")}</td>
+                  <td>${esc(buildOrganicValue(row))}</td>
+                </tr>
+              `).join("") : `<tr><td colspan="2">Nema organskih redova.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-<div class="card">
-  <h3>Paid campaigns</h3>
-  <table>
-    <tr>
-      <th>Campaign</th>
-      <th>Spend</th>
-      <th>Clicks</th>
-      <th>Conversions</th>
-    </tr>
-    ${paid.map(i => `
-      <tr>
-        <td>${i.campaign_name}</td>
-        <td>${i.spend}</td>
-        <td>${i.clicks}</td>
-        <td>${i.conversions}</td>
-      </tr>
-    `).join("")}
-  </table>
-</div>
+      <div class="card">
+        <h3>Plaćeni rezultati (ADS)</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kampanja</th>
+                <th>Spend</th>
+                <th>Clicks</th>
+                <th>Conversions</th>
+                <th>Impressions</th>
+                <th>CTR</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${paid.length ? paid.map(row => `
+                <tr>
+                  <td>${esc(row.campaign_name || "-")}</td>
+                  <td>${fmt(row.spend || 0, 2)}</td>
+                  <td>${fmt(row.clicks || 0)}</td>
+                  <td>${fmt(row.conversions || 0)}</td>
+                  <td>${fmt(row.impressions || 0)}</td>
+                  <td>${fmt(row.ctr || 0, 2)}</td>
+                </tr>
+              `).join("") : `<tr><td colspan="6">Nema kampanja.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-<div class="card">
-  <h3>Insights</h3>
-  ${insights.map(i => `<p>${i.text}</p>`).join("")}
-</div>
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Top objave – po views</h3>
+        ${topViews.length ? topViews.map(item => `
+          <div class="topPost">
+            <div>
+              <div style="font-weight:700;margin-bottom:4px">${esc(item.title || "Bez naziva")}</div>
+              <div class="muted">${esc(item.notes || "")}</div>
+            </div>
+            <div><strong>views</strong></div>
+          </div>
+        `).join("") : `<div class="empty">Nema unosa.</div>`}
+      </div>
 
-</div>
+      <div class="card">
+        <h3>Top objave – po lajkovima</h3>
+        ${topLikes.length ? topLikes.map(item => `
+          <div class="topPost">
+            <div>
+              <div style="font-weight:700;margin-bottom:4px">${esc(item.title || "Bez naziva")}</div>
+              <div class="muted">${esc(item.notes || "")}</div>
+            </div>
+            <div><strong>lajkovi</strong></div>
+          </div>
+        `).join("") : `<div class="empty">Nema unosa.</div>`}
+      </div>
+    </section>
 
-</body>
-</html>
-`;
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Weekly trend</h3>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--pink)"></span>Views / Reach</span>
+          <span><span class="dot" style="background:var(--purple)"></span>Engagements / Followers</span>
+          <span><span class="dot" style="background:var(--cyan)"></span>Growth %</span>
+        </div>
+        <div class="canvasWrap"><canvas id="reportTrendChart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <h3>Insights</h3>
+        <div class="analysisBox">
+          ${summaryText
+            ? `<ul>${insights.map(i => `<li>${esc(i.text || "")}</li>`).join("")}</ul>`
+            : "—"}
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+const labels = ${JSON.stringify(organicLabels)};
+const seriesA = ${JSON.stringify(organicA)};
+const seriesB = ${JSON.stringify(organicB)};
+const seriesC = ${JSON.stringify(organicC)};
+
+function setupCanvas(canvas) {
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(ratio, ratio);
+  return { ctx, w: rect.width, h: rect.height };
 }
 
-main();
+function axes(ctx, w, h, labels) {
+  const m = { t: 20, r: 18, b: 34, l: 42 };
+  const pw = w - m.l - m.r;
+  const ph = h - m.t - m.b;
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = 'rgba(255,255,255,.08)';
+  ctx.fillStyle = '#98a2b3';
+  ctx.font = '12px Inter';
+  for (let i = 0; i < 5; i++) {
+    const y = m.t + ph * i / 4;
+    ctx.beginPath();
+    ctx.moveTo(m.l, y);
+    ctx.lineTo(w - m.r, y);
+    ctx.stroke();
+  }
+  labels.forEach((lb, i) => ctx.fillText(lb, m.l + pw * (i / Math.max(labels.length - 1, 1)) - 10, h - 10));
+  return { m, pw, ph };
+}
+
+function lineChart(id, labels, sets, max) {
+  const canvas = document.getElementById(id);
+  const { ctx, w, h } = setupCanvas(canvas);
+  const { m, pw, ph } = axes(ctx, w, h, labels);
+  const M = max || Math.max(1, ...sets.flatMap(s => s.data), 10);
+  const x = i => m.l + pw * (i / Math.max(labels.length - 1, 1));
+  const y = v => m.t + ph - (v / M) * ph;
+  sets.forEach(s => {
+    ctx.beginPath();
+    s.data.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
+function draw() {
+  lineChart('reportTrendChart', labels, [
+    { color:'#ff4fa7', data:seriesA },
+    { color:'#8b5cf6', data:seriesB },
+    { color:'#22d3ee', data:seriesC }
+  ]);
+}
+
+draw();
+window.addEventListener('resize', draw);
+</script>
+</body>
+</html>`;
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
