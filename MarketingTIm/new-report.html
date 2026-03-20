@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novi izvještaj</title>
+<style>
+body{margin:0;font-family:system-ui;background:#0b0b0d;color:#fff}
+.container{max-width:900px;margin:40px auto;padding:20px}
+.card{background:#141418;border:1px solid #2a2a31;border-radius:16px;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,textarea,select{width:100%;padding:12px;border:none;border-radius:10px;background:#1a1a1f;color:#fff;box-sizing:border-box}
+textarea{min-height:120px;resize:vertical}
+button{padding:12px 18px;border:none;border-radius:12px;background:#f36a2e;color:#fff;cursor:pointer}
+.full{grid-column:1 / -1}
+.note{opacity:.7;font-size:14px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>Novi izvještaj</h1>
+    <p class="note">Popuni osnovna polja i pošalji report u Google Sheet.</p>
+
+    <div class="grid">
+      <div>
+        <label>Profil</label>
+        <input id="profile_name" placeholder="Poise bar">
+      </div>
+      <div>
+        <label>Profile code</label>
+        <input id="profile_code" placeholder="poise">
+      </div>
+
+      <div>
+        <label>Zadužena osoba</label>
+        <input id="owner_name" placeholder="Anđela Kontić">
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="owner_email" placeholder="">
+      </div>
+
+      <div>
+        <label>Market</label>
+        <input id="market" placeholder="ME">
+      </div>
+      <div>
+        <label>Kanal</label>
+        <input id="channel" placeholder="Instagram">
+      </div>
+
+      <div>
+        <label>Početak perioda</label>
+        <input id="period_start" type="date">
+      </div>
+      <div>
+        <label>Kraj perioda</label>
+        <input id="period_end" type="date">
+      </div>
+
+      <div>
+        <label>Status</label>
+        <select id="status">
+          <option value="draft">draft</option>
+          <option value="published">published</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Views</label>
+        <input id="views" type="number" placeholder="10000">
+      </div>
+      <div>
+        <label>Reach</label>
+        <input id="reach" type="number" placeholder="40564">
+      </div>
+      <div>
+        <label>Impressions</label>
+        <input id="impressions" type="number" placeholder="40564">
+      </div>
+      <div>
+        <label>Interactions</label>
+        <input id="interactions" type="number" placeholder="150">
+      </div>
+      <div>
+        <label>Follower change</label>
+        <input id="follower_change" type="number" placeholder="-3">
+      </div>
+      <div>
+        <label>Paid spend</label>
+        <input id="paid_spend" type="number" step="0.01" placeholder="46.97">
+      </div>
+      <div>
+        <label>Clicks</label>
+        <input id="clicks" type="number" placeholder="721">
+      </div>
+      <div>
+        <label>Conversions</label>
+        <input id="conversions" type="number" placeholder="0">
+      </div>
+
+      <div class="full">
+        <label>Insights</label>
+        <textarea id="insights" placeholder="Jedan insight po redu"></textarea>
+      </div>
+
+      <div class="full">
+        <button id="submitBtn">Sačuvaj report</button>
+      </div>
+
+      <div class="full">
+        <div id="result" class="note"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwfjiqyD5GZVT0k5UOF20y6tYfEnMBHODuu2rYfoVZ0n_kUULmOb6K9tiCJqEm0GMU/exec";
+
+document.getElementById("submitBtn").addEventListener("click", submitReport);
+
+async function submitReport() {
+  const result = document.getElementById("result");
+  result.textContent = "Šaljem...";
+
+  const insightLines = document.getElementById("insights").value
+    .split("\n")
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map((text) => ({ insight_type: "summary", text }));
+
+  const payload = {
+    action: "submitReport",
+    profile_name: document.getElementById("profile_name").value,
+    profile_code: document.getElementById("profile_code").value,
+    owner_name: document.getElementById("owner_name").value,
+    owner_email: document.getElementById("owner_email").value,
+    market: document.getElementById("market").value,
+    channel: document.getElementById("channel").value,
+    period_start: document.getElementById("period_start").value,
+    period_end: document.getElementById("period_end").value,
+    status: document.getElementById("status").value,
+    overview: {
+      views: Number(document.getElementById("views").value || 0),
+      reach: Number(document.getElementById("reach").value || 0),
+      impressions: Number(document.getElementById("impressions").value || 0),
+      interactions: Number(document.getElementById("interactions").value || 0),
+      follower_change: Number(document.getElementById("follower_change").value || 0),
+      paid_spend: Number(document.getElementById("paid_spend").value || 0),
+      clicks: Number(document.getElementById("clicks").value || 0),
+      conversions: Number(document.getElementById("conversions").value || 0)
+    },
+    organic_results: [],
+    paid_results: [],
+    content: [],
+    insights: insightLines
+  };
+
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+      result.textContent = `Sačuvano. Report ID: ${data.report_id}`;
+    } else {
+      result.textContent = data.error || "Greška.";
+    }
+  } catch (e) {
+    result.textContent = "Greška pri slanju.";
+  }
+}
+</script>
+</body>
+</html>
