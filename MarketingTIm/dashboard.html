@@ -1,986 +1,286 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instagram Reporting Dashboard</title>
-  <link rel="stylesheet" href="./src/template.css" />
-  <style>
-    .app{width:min(1500px, calc(100vw - 20px));margin:10px auto 28px}
-    .hidden{display:none!important}
-    .section{margin-bottom:18px}
-    .grid{display:grid;gap:18px}
-    .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-    .g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Dashboard</title>
 
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      font-size:12px;
-      font-weight:700;
-      color:var(--text);
-    }
+<style>
+body {
+  margin:0;
+  font-family:system-ui;
+  background:#0b0b0d;
+  color:#fff;
+}
 
-    .toolbar{
-      display:grid;
-      grid-template-columns:1.1fr 1.1fr 1fr 1fr 1fr auto;
-      gap:12px;
-      align-items:end;
-    }
+.container {
+  max-width:1200px;
+  margin:40px auto;
+  padding:20px;
+}
 
-    .fieldInline,.field{display:grid;gap:6px}
-    label{font-size:12px;color:var(--muted);font-weight:700}
+/* HEADER */
+.header {
+  background: linear-gradient(135deg,#1a1a2e,#3a0f2f,#f36a2e);
+  padding:30px;
+  border-radius:20px;
+}
 
-    input,select,textarea{
-      width:100%;
-      padding:12px 13px;
-      border-radius:14px;
-      border:1px solid var(--line2);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      font:inherit;
-      outline:none;
-    }
+.header h1 {
+  margin:0;
+}
 
-    select option{background:#0f1420}
+.header-buttons {
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
-    .cardList{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-    }
+.btn {
+  padding:10px 16px;
+  border-radius:20px;
+  background:#1a1a1f;
+  border:1px solid #2a2a31;
+  cursor:pointer;
+}
 
-    .entityCard{
-      padding:18px;
-      border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
-      border:1px solid var(--line);
-      cursor:pointer;
-      transition:.18s ease;
-    }
+.btn.primary {
+  background:#f36a2e;
+}
 
-    .entityCard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
-    .entityTitle{font-size:18px;font-weight:800;margin-bottom:8px;line-height:1.2}
-    .entityMeta{display:grid;gap:8px;margin-top:12px}
-    .entityMeta .row{padding:8px 0;font-size:13px}
+/* CARDS */
+.card {
+  background:#141418;
+  border:1px solid #2a2a31;
+  border-radius:16px;
+  padding:20px;
+  margin-top:20px;
+}
 
-    .status{
-      display:inline-flex;
-      align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:800;
-      border:1px solid var(--line);
-      margin-top:10px;
-    }
-    .status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
-    .status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
-    .status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
+/* FILTERS */
+.filters {
+  display:grid;
+  gap:10px;
+}
 
-    .kpiWrap{overflow:auto}
-    table{width:100%;border-collapse:collapse;min-width:700px}
-    th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}
-    th{font-size:12px;color:var(--muted);text-transform:uppercase}
-    .delta.up{color:var(--green)}
-    .delta.down{color:var(--red)}
-    .delta.flat{color:var(--muted)}
+input {
+  padding:12px;
+  background:#1a1a1f;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+}
 
-    .reportActions a{
-      color:#ffc7e2;
-      text-decoration:none;
-      font-weight:700;
-      margin-right:12px;
-      cursor:pointer;
-    }
+/* STATS */
+.stats {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-top:20px;
+}
 
-    .analysisBox,.noteBox{
-      padding:16px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.02);
-      line-height:1.65;
-    }
+.stat {
+  background:#141418;
+  padding:20px;
+  border-radius:16px;
+  border:1px solid #2a2a31;
+}
 
-    .analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.stat h2 {
+  margin:0;
+}
 
-    .topPost{
-      display:grid;
-      grid-template-columns:1fr auto auto;
-      gap:12px;
-      align-items:center;
-      padding:12px 0;
-      border-bottom:1px solid var(--line);
-    }
-    .topPost:last-child{border-bottom:0}
+/* TABLE */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
 
-    .postLink{color:#f8a5d0;word-break:break-word;text-decoration:none}
-    .postLink:hover{text-decoration:underline}
+th, td {
+  padding:12px;
+  border-bottom:1px solid #2a2a31;
+}
 
-    .empty{
-      padding:26px;
-      text-align:center;
-      color:var(--muted);
-      border:1px dashed rgba(255,255,255,.12);
-      border-radius:16px;
-      background:rgba(255,255,255,.02);
-    }
+tr:hover {
+  background:#1a1a1f;
+  cursor:pointer;
+}
 
-    @media (max-width:1200px){
-      .g5,.g4,.g3,.g2,.toolbar,.cardList,.analysisGrid{grid-template-columns:1fr}
-      .hero{flex-direction:column;align-items:flex-start}
-    }
-    @media (max-width:760px){
-      .app{width:calc(100vw - 12px)}
-      .hero,.card{padding:18px}
-      table{min-width:560px}
-      .metric{font-size:32px}
-      .hero h1{font-size:30px}
-      .topPost{grid-template-columns:1fr}
-    }
-  </style>
+/* EMPLOYEE */
+.employee {
+  padding:12px;
+  border-bottom:1px solid #2a2a31;
+  cursor:pointer;
+}
+
+.employee:hover {
+  background:#1a1a1f;
+}
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <section class="section">
-      <div class="hero">
-        <div>
-          <h1>Instagram Reporting Dashboard</h1>
-          <p>Static dashboard sa pregledom profila, zaposlenih, izvještaja i detaljnim report view-om.</p>
-          <div class="chipRow">
-            <span class="badge" id="modeBadge">Home overview</span>
-            <span class="badge" id="heroContextA">Svi profili</span>
-            <span class="badge" id="heroContextB">Sve osobe</span>
-          </div>
-        </div>
-        <div class="hero-actions">
-          <button class="btn" id="homeBtn" style="display:none">Početna</button>
-          <button class="btn" id="entityBackBtn" style="display:none">Nazad</button>
-          <button class="btn" id="resetFiltersBtn">Reset filtera</button>
-        </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="card">
-        <h3>Filteri</h3>
-        <div class="toolbar">
-          <div class="fieldInline">
-            <label>Profil</label>
-            <select id="filterProfile"></select>
-          </div>
-          <div class="fieldInline">
-            <label>Zadužena osoba</label>
-            <select id="filterOwner"></select>
-          </div>
-          <div class="fieldInline">
-            <label>Period</label>
-            <select id="filterPeriod"></select>
-          </div>
-          <div class="fieldInline">
-            <label>Od datuma</label>
-            <input id="filterDateFrom" type="date" />
-          </div>
-          <div class="fieldInline">
-            <label>Do datuma</label>
-            <input id="filterDateTo" type="date" />
-          </div>
-          <div class="fieldInline">
-            <button class="btn" id="applyFiltersBtn">Primijeni</button>
-          </div>
-        </div>
-      </div>
-    </section>
+<div class="container">
 
-    <div id="homeView">
-      <section class="section grid g5">
-        <div class="card">
-          <h3>Ukupno reporta</h3>
-          <div class="metric" id="homeReportsCount">0</div>
-          <div class="muted">U aktivnoj selekciji</div>
-        </div>
-        <div class="card">
-          <h3>Ukupno profila</h3>
-          <div class="metric" id="homeProfilesCount">0</div>
-          <div class="muted">Jedinstveni profili</div>
-        </div>
-        <div class="card">
-          <h3>Ukupno osoba</h3>
-          <div class="metric" id="homeOwnersCount">0</div>
-          <div class="muted">Jedinstvene osobe</div>
-        </div>
-        <div class="card">
-          <h3>Ukupni views</h3>
-          <div class="metric" id="homeViewsTotal">0</div>
-          <div class="muted">Interactions: <span id="homeInteractionsTotal">0</span></div>
-        </div>
-        <div class="card">
-          <h3>Novi pratioci</h3>
-          <div class="metric" id="homeFollowersTotal">0</div>
-          <div class="muted">Ads CTR: <span id="homeAdsCtr">0.00%</span></div>
-        </div>
-      </section>
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Instagram Reporting Dashboard</h1>
 
-      <section class="section">
-        <div class="card">
-          <div class="viewHeader">
-            <h3>Profili</h3>
-            <span class="muted">Klik na karticu otvara pregled profila i njegovih izvještaja.</span>
-          </div>
-          <div class="cardList" id="profilesCards"></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <div class="viewHeader">
-            <h3>Zadužene osobe</h3>
-            <span class="muted">Klik na karticu otvara pregled osobe i svih povezanih izvještaja.</span>
-          </div>
-          <div class="cardList" id="ownersCards"></div>
-        </div>
-      </section>
+    <div class="header-buttons">
+      <div class="btn" onclick="resetFilters()">Reset filtera</div>
+      <div class="btn primary">Novi izvještaj</div>
     </div>
-
-    <div id="entityView" class="hidden">
-      <section class="section grid g5">
-        <div class="card">
-          <h3>Entitet</h3>
-          <div class="metric" id="entityTitleMetric">-</div>
-          <div class="muted" id="entityTypeLabel">-</div>
-        </div>
-        <div class="card">
-          <h3>Broj reporta</h3>
-          <div class="metric" id="entityReportsCount">0</div>
-          <div class="muted">U ovoj selekciji</div>
-        </div>
-        <div class="card">
-          <h3>Ukupni views</h3>
-          <div class="metric" id="entityViewsTotal">0</div>
-          <div class="muted">Promjena: <span id="entityViewsChange">0.00%</span></div>
-        </div>
-        <div class="card">
-          <h3>Ukupne interactions</h3>
-          <div class="metric" id="entityInteractionsTotal">0</div>
-          <div class="muted">Promjena: <span id="entityInteractionsChange">0.00%</span></div>
-        </div>
-        <div class="card">
-          <h3>Novi pratioci</h3>
-          <div class="metric" id="entityFollowersTotal">0</div>
-          <div class="muted">Ads CTR: <span id="entityAdsCtr">0.00%</span></div>
-        </div>
-      </section>
-
-      <section class="section grid g2">
-        <div class="card">
-          <h3>Agregirani KPI</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metrika</th>
-                  <th>Tekuća</th>
-                  <th>Prošla</th>
-                  <th>Promjena</th>
-                </tr>
-              </thead>
-              <tbody id="entityOrganicTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Izvještaji</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Datum</th>
-                  <th>Profil</th>
-                  <th>Osoba</th>
-                  <th>Period</th>
-                  <th>Views</th>
-                  <th>Interactions</th>
-                  <th>Akcije</th>
-                </tr>
-              </thead>
-              <tbody id="entityReportsTableBody"></tbody>
-            </table>
-          </div>
-          <div id="entityReportsEmpty" class="empty hidden">Nema izvještaja za ovaj entitet.</div>
-        </div>
-      </section>
-    </div>
-
-    <div id="reportView" class="hidden">
-      <section class="section grid g4">
-        <div class="card">
-          <h3>Profil</h3>
-          <div class="metric" id="reportProfileName">-</div>
-          <div class="muted">Osoba: <strong id="reportOwnerName">-</strong></div>
-        </div>
-        <div class="card">
-          <h3>Period</h3>
-          <div class="metric" id="reportPeriodLabel">-</div>
-          <div class="muted">Datum: <span id="reportDateLabel">-</span></div>
-        </div>
-        <div class="card">
-          <h3>Views</h3>
-          <div class="metric" id="reportViewsCurrent">0</div>
-          <div class="muted">Prošla nedelja: <span id="reportViewsPrevious">0</span></div>
-        </div>
-        <div class="card">
-          <h3>Interactions</h3>
-          <div class="metric" id="reportInteractionsCurrent">0</div>
-          <div class="muted">Prošla nedelja: <span id="reportInteractionsPrevious">0</span></div>
-        </div>
-      </section>
-
-      <section class="section grid g2">
-        <div class="card">
-          <h3>Executive summary</h3>
-          <div class="analysisBox" id="reportSummaryBox">—</div>
-        </div>
-        <div class="card">
-          <h3>Napomena / zaključak</h3>
-          <div class="noteBox" id="reportNotesBox">—</div>
-        </div>
-      </section>
-
-      <section class="section grid g2">
-        <div class="card">
-          <h3>KPI po profilu – organski rezultati</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metrika</th>
-                  <th>Tekuća</th>
-                  <th>Prošla</th>
-                  <th>Promjena</th>
-                </tr>
-              </thead>
-              <tbody id="reportOrganicTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <div class="viewHeader">
-            <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
-            <span class="badge"><span id="reportAdsCampaignCount">0</span> kampanja</span>
-          </div>
-          <div class="kpiWrap">
-            <table>
-              <thead id="reportAdsHead"></thead>
-              <tbody id="reportAdsBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="section grid g2">
-        <div class="card">
-          <h3>Top objave – po views</h3>
-          <div id="reportTopViews"></div>
-        </div>
-        <div class="card">
-          <h3>Top objave – po lajkovima</h3>
-          <div id="reportTopLikes"></div>
-        </div>
-      </section>
-    </div>
-
-    <section class="section">
-      <div class="card">
-        <div class="viewHeader">
-          <h3 style="margin:0">Sačuvani izvještaji</h3>
-          <span class="badge"><span id="reportsCountLabel">0</span> zapis</span>
-        </div>
-        <div class="kpiWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Datum</th>
-                <th>Profil</th>
-                <th>Osoba</th>
-                <th>Period</th>
-                <th>Views</th>
-                <th>Interactions</th>
-                <th>Akcije</th>
-              </tr>
-            </thead>
-            <tbody id="globalReportsTableBody"></tbody>
-          </table>
-        </div>
-        <div id="globalReportsEmpty" class="empty hidden">Nema izvještaja za aktivne filtere.</div>
-      </div>
-    </section>
   </div>
 
-  <script>
-    const REPORTS_JSON_URL = './data/reports.json';
+  <!-- FILTERS -->
+  <div class="card">
+    <h3>Filteri</h3>
+    <div class="filters">
+      <input id="profileFilter" placeholder="Profil">
+      <input id="ownerFilter" placeholder="Osoba">
+      <input type="date" id="fromDate">
+      <input type="date" id="toDate">
+      <button class="btn primary" onclick="applyFilters()">Primijeni</button>
+    </div>
+  </div>
 
-    const organicMetricDefs = [
-      ['posts', 'Objave'],
-      ['reels', 'Reels / video'],
-      ['stories', 'Stories'],
-      ['views', 'Views'],
-      ['interactions', 'Interactions'],
-      ['newFollowers', 'Novi pratioci'],
-      ['lostFollowers', 'Izgubljeni pratioci'],
-      ['organicLeads', 'Leads iz organika']
-    ];
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><h2 id="totalReports">0</h2><p>Ukupno reporta</p></div>
+    <div class="stat"><h2 id="totalProfiles">0</h2><p>Ukupno profila</p></div>
+    <div class="stat"><h2 id="totalOwners">0</h2><p>Ukupno osoba</p></div>
+  </div>
 
-    const state = {
-      currentView: 'home',
-      entityType: null,
-      entityValue: null,
-      selectedReportId: null,
-      allReports: [],
-      filteredReports: []
-    };
-
-    function fmt(v, d = 0) {
-      return (Number(v) || 0).toLocaleString('en-US', {
-        minimumFractionDigits: d,
-        maximumFractionDigits: d
-      });
-    }
-
-    function pctChange(c, p) {
-      c = +c || 0;
-      p = +p || 0;
-      return p === 0 ? (c === 0 ? 0 : 100) : ((c - p) / p) * 100;
-    }
-
-    function safeRate(n, d) {
-      n = +n || 0;
-      d = +d || 0;
-      return d ? (n / d) * 100 : 0;
-    }
-
-    function escapeHtml(v) {
-      return String(v ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
-
-    function setSelect(id, data) {
-      const el = document.getElementById(id);
-      const current = el.value || 'all';
-      el.innerHTML = data.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join('');
-      if ([...el.options].some(o => o.value === current)) el.value = current;
-    }
-
-    function groupReportsBy(reports, key) {
-      return reports.reduce((acc, r) => {
-        const group = String(r[key] || '').trim();
-        if (!group) return acc;
-        if (!acc[group]) acc[group] = [];
-        acc[group].push(r);
-        return acc;
-      }, {});
-    }
-
-    function getLastReportDate(reports) {
-      return reports.map(r => r.report_date).filter(Boolean).sort().reverse()[0] || '';
-    }
-
-    function summarizeReports(reports) {
-      const s = {
-        reports_count: reports.length,
-        posts_current_total: 0,
-        posts_previous_total: 0,
-        reels_current_total: 0,
-        reels_previous_total: 0,
-        stories_current_total: 0,
-        stories_previous_total: 0,
-        views_current_total: 0,
-        views_previous_total: 0,
-        interactions_current_total: 0,
-        interactions_previous_total: 0,
-        new_followers_current_total: 0,
-        new_followers_previous_total: 0,
-        lost_followers_current_total: 0,
-        lost_followers_previous_total: 0,
-        organic_leads_current_total: 0,
-        organic_leads_previous_total: 0,
-        ads_budget_total: 0,
-        ads_impressions_total: 0,
-        ads_clicks_total: 0,
-        ads_revenue_total: 0
-      };
-
-      reports.forEach(r => {
-        const o = r.organic || {};
-        s.posts_current_total += +o.posts_current || 0;
-        s.posts_previous_total += +o.posts_previous || 0;
-        s.reels_current_total += +o.reels_current || 0;
-        s.reels_previous_total += +o.reels_previous || 0;
-        s.stories_current_total += +o.stories_current || 0;
-        s.stories_previous_total += +o.stories_previous || 0;
-        s.views_current_total += +o.views_current || 0;
-        s.views_previous_total += +o.views_previous || 0;
-        s.interactions_current_total += +o.interactions_current || 0;
-        s.interactions_previous_total += +o.interactions_previous || 0;
-        s.new_followers_current_total += +o.new_followers_current || 0;
-        s.new_followers_previous_total += +o.new_followers_previous || 0;
-        s.lost_followers_current_total += +o.lost_followers_current || 0;
-        s.lost_followers_previous_total += +o.lost_followers_previous || 0;
-        s.organic_leads_current_total += +o.organic_leads_current || 0;
-        s.organic_leads_previous_total += +o.organic_leads_previous || 0;
-
-        (r.ads || []).forEach(a => {
-          s.ads_budget_total += +a.budget || 0;
-          s.ads_impressions_total += +a.impressions || 0;
-          s.ads_clicks_total += +a.clicks || 0;
-          s.ads_revenue_total += +a.revenue || 0;
-        });
-      });
-
-      s.posts_change_pct = pctChange(s.posts_current_total, s.posts_previous_total);
-      s.reels_change_pct = pctChange(s.reels_current_total, s.reels_previous_total);
-      s.stories_change_pct = pctChange(s.stories_current_total, s.stories_previous_total);
-      s.views_change_pct = pctChange(s.views_current_total, s.views_previous_total);
-      s.interactions_change_pct = pctChange(s.interactions_current_total, s.interactions_previous_total);
-      s.new_followers_change_pct = pctChange(s.new_followers_current_total, s.new_followers_previous_total);
-      s.lost_followers_change_pct = pctChange(s.lost_followers_current_total, s.lost_followers_previous_total);
-      s.organic_leads_change_pct = pctChange(s.organic_leads_current_total, s.organic_leads_previous_total);
-      s.ads_ctr_pct = safeRate(s.ads_clicks_total, s.ads_impressions_total);
-
-      return s;
-    }
-
-    function computeStatus(summary) {
-      const good = summary.views_change_pct > 0 && summary.interactions_change_pct > 0 && summary.new_followers_change_pct > 0;
-      const bad = summary.views_change_pct < 0 || summary.interactions_change_pct < 0;
-      if (good) return { label: 'Strong growth', className: 'good' };
-      if (bad) return { label: 'Needs attention', className: 'bad' };
-      return { label: 'Stable', className: 'warn' };
-    }
-
-    function fillFilters() {
-      const reports = state.allReports;
-      const profiles = [...new Set(reports.map(r => r.profile).filter(Boolean))];
-      const owners = [...new Set(reports.map(r => r.owner).filter(Boolean))];
-      const periods = [...new Set(reports.map(r => r.period_label).filter(Boolean))];
-
-      setSelect('filterProfile', [['all', 'Svi profili'], ...profiles.map(v => [v, v])]);
-      setSelect('filterOwner', [['all', 'Sve osobe'], ...owners.map(v => [v, v])]);
-      setSelect('filterPeriod', [['all', 'Svi periodi'], ...periods.map(v => [v, v])]);
-    }
-
-    function applyFilters() {
-      const profile = document.getElementById('filterProfile').value;
-      const owner = document.getElementById('filterOwner').value;
-      const period = document.getElementById('filterPeriod').value;
-      const from = document.getElementById('filterDateFrom').value;
-      const to = document.getElementById('filterDateTo').value;
-
-      state.filteredReports = state.allReports.filter(r =>
-        (profile === 'all' || r.profile === profile) &&
-        (owner === 'all' || r.owner === owner) &&
-        (period === 'all' || r.period_label === period) &&
-        (!from || !r.report_date || r.report_date >= from) &&
-        (!to || !r.report_date || r.report_date <= to)
-      );
-
-      state.currentView = 'home';
-      state.entityType = null;
-      state.entityValue = null;
-      state.selectedReportId = null;
-      renderAll();
-    }
-
-    function showView(view) {
-      state.currentView = view;
-      document.getElementById('homeView').classList.toggle('hidden', view !== 'home');
-      document.getElementById('entityView').classList.toggle('hidden', view !== 'entity');
-      document.getElementById('reportView').classList.toggle('hidden', view !== 'report');
-
-      document.getElementById('homeBtn').style.display = view === 'home' ? 'none' : 'inline-flex';
-      document.getElementById('entityBackBtn').style.display = view === 'report' ? 'inline-flex' : 'none';
-
-      document.getElementById('modeBadge').textContent =
-        view === 'home' ? 'Home overview' :
-        view === 'entity' ? 'Entity overview' :
-        'Single report';
-    }
-
-    function renderHomeView() {
-      const reports = state.filteredReports;
-      const summary = summarizeReports(reports);
-
-      document.getElementById('heroContextA').textContent =
-        document.getElementById('filterProfile').value === 'all'
-          ? 'Svi profili'
-          : document.getElementById('filterProfile').value;
-
-      document.getElementById('heroContextB').textContent =
-        document.getElementById('filterOwner').value === 'all'
-          ? 'Sve osobe'
-          : document.getElementById('filterOwner').value;
-
-      document.getElementById('homeReportsCount').textContent = fmt(summary.reports_count);
-      document.getElementById('homeProfilesCount').textContent = fmt([...new Set(reports.map(r => r.profile))].length);
-      document.getElementById('homeOwnersCount').textContent = fmt([...new Set(reports.map(r => r.owner))].length);
-      document.getElementById('homeViewsTotal').textContent = fmt(summary.views_current_total);
-      document.getElementById('homeInteractionsTotal').textContent = fmt(summary.interactions_current_total);
-      document.getElementById('homeFollowersTotal').textContent = fmt(summary.new_followers_current_total);
-      document.getElementById('homeAdsCtr').textContent = `${fmt(summary.ads_ctr_pct, 2)}%`;
-
-      renderProfileCards(reports);
-      renderOwnerCards(reports);
-    }
-
-    function renderProfileCards(reports) {
-      const groups = groupReportsBy(reports, 'profile');
-      const entries = Object.keys(groups).sort().map(profile => {
-        const rs = groups[profile];
-        const s = summarizeReports(rs);
-        const status = computeStatus(s);
-        return { name: profile, reports: rs, summary: s, status };
-      });
-
-      document.getElementById('profilesCards').innerHTML = entries.length
-        ? entries.map(item => `
-          <div class="entityCard" data-entity-type="profile" data-entity-value="${escapeHtml(item.name)}">
-            <div class="entityTitle">${escapeHtml(item.name)}</div>
-            <div class="muted">${fmt(item.summary.reports_count)} reporta • poslednji: ${escapeHtml(getLastReportDate(item.reports) || '-')}</div>
-            <div class="entityMeta">
-              <div class="row"><span>Views</span><strong>${fmt(item.summary.views_current_total)}</strong></div>
-              <div class="row"><span>Interactions</span><strong>${fmt(item.summary.interactions_current_total)}</strong></div>
-              <div class="row"><span>Novi pratioci</span><strong>${fmt(item.summary.new_followers_current_total)}</strong></div>
-            </div>
-            <div class="status ${item.status.className}">${item.status.label}</div>
-          </div>
-        `).join('')
-        : '<div class="empty">Nema profila u aktivnim filterima.</div>';
-
-      document.querySelectorAll('#profilesCards .entityCard').forEach(card => {
-        card.onclick = () => openEntity('profile', card.dataset.entityValue);
-      });
-    }
-
-    function renderOwnerCards(reports) {
-      const groups = groupReportsBy(reports, 'owner');
-      const entries = Object.keys(groups).sort().map(owner => {
-        const rs = groups[owner];
-        const s = summarizeReports(rs);
-        const status = computeStatus(s);
-        const profilesCount = new Set(rs.map(r => r.profile)).size;
-        return { name: owner, reports: rs, summary: s, status, profilesCount };
-      });
-
-      document.getElementById('ownersCards').innerHTML = entries.length
-        ? entries.map(item => `
-          <div class="entityCard" data-entity-type="owner" data-entity-value="${escapeHtml(item.name)}">
-            <div class="entityTitle">${escapeHtml(item.name)}</div>
-            <div class="muted">${fmt(item.profilesCount)} profila • ${fmt(item.summary.reports_count)} reporta</div>
-            <div class="entityMeta">
-              <div class="row"><span>Views</span><strong>${fmt(item.summary.views_current_total)}</strong></div>
-              <div class="row"><span>Interactions</span><strong>${fmt(item.summary.interactions_current_total)}</strong></div>
-              <div class="row"><span>Novi pratioci</span><strong>${fmt(item.summary.new_followers_current_total)}</strong></div>
-            </div>
-            <div class="status ${item.status.className}">${item.status.label}</div>
-          </div>
-        `).join('')
-        : '<div class="empty">Nema osoba u aktivnim filterima.</div>';
-
-      document.querySelectorAll('#ownersCards .entityCard').forEach(card => {
-        card.onclick = () => openEntity('owner', card.dataset.entityValue);
-      });
-    }
-
-    function openEntity(type, value) {
-      state.entityType = type;
-      state.entityValue = value;
-      state.selectedReportId = null;
-      state.currentView = 'entity';
-      renderAll();
-    }
-
-    function getEntityReports() {
-      if (!state.entityType || !state.entityValue) return [];
-      return state.filteredReports.filter(r => state.entityType === 'profile'
-        ? r.profile === state.entityValue
-        : r.owner === state.entityValue);
-    }
-
-    function renderEntityView() {
-      const reports = getEntityReports();
-      const summary = summarizeReports(reports);
-
-      document.getElementById('heroContextA').textContent =
-        state.entityType === 'profile' ? state.entityValue : 'Pregled osobe';
-      document.getElementById('heroContextB').textContent =
-        state.entityType === 'owner' ? state.entityValue : 'Pregled profila';
-
-      document.getElementById('entityTitleMetric').textContent = state.entityValue || '-';
-      document.getElementById('entityTypeLabel').textContent = state.entityType === 'profile' ? 'Profil' : 'Zadužena osoba';
-      document.getElementById('entityReportsCount').textContent = fmt(summary.reports_count);
-      document.getElementById('entityViewsTotal').textContent = fmt(summary.views_current_total);
-      document.getElementById('entityViewsChange').textContent = `${fmt(summary.views_change_pct, 2)}%`;
-      document.getElementById('entityInteractionsTotal').textContent = fmt(summary.interactions_current_total);
-      document.getElementById('entityInteractionsChange').textContent = `${fmt(summary.interactions_change_pct, 2)}%`;
-      document.getElementById('entityFollowersTotal').textContent = fmt(summary.new_followers_current_total);
-      document.getElementById('entityAdsCtr').textContent = `${fmt(summary.ads_ctr_pct, 2)}%`;
-
-      const rows = [
-        ['Objave', summary.posts_current_total, summary.posts_previous_total, summary.posts_change_pct],
-        ['Reels / video', summary.reels_current_total, summary.reels_previous_total, summary.reels_change_pct],
-        ['Stories', summary.stories_current_total, summary.stories_previous_total, summary.stories_change_pct],
-        ['Views', summary.views_current_total, summary.views_previous_total, summary.views_change_pct],
-        ['Interactions', summary.interactions_current_total, summary.interactions_previous_total, summary.interactions_change_pct],
-        ['Novi pratioci', summary.new_followers_current_total, summary.new_followers_previous_total, summary.new_followers_change_pct],
-        ['Izgubljeni pratioci', summary.lost_followers_current_total, summary.lost_followers_previous_total, summary.lost_followers_change_pct],
-        ['Leads iz organika', summary.organic_leads_current_total, summary.organic_leads_previous_total, summary.organic_leads_change_pct]
-      ];
-
-      document.getElementById('entityOrganicTableBody').innerHTML = rows.map(([label, c, p, d]) => `
+  <!-- TABLE -->
+  <div class="card">
+    <h3>Sačuvani izvještaji</h3>
+    <table>
+      <thead>
         <tr>
-          <td>${escapeHtml(label)}</td>
-          <td>${fmt(c)}</td>
-          <td>${fmt(p)}</td>
-          <td><span class="delta ${d > 0 ? 'up' : d < 0 ? 'down' : 'flat'}">${fmt(d, 2)}%</span></td>
+          <th>Datum</th>
+          <th>Profil</th>
+          <th>Osoba</th>
+          <th>Period</th>
+          <th>Status</th>
         </tr>
-      `).join('');
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 
-      document.getElementById('entityReportsEmpty').classList.toggle('hidden', reports.length > 0);
-      document.getElementById('entityReportsTableBody').innerHTML = reports.map(r => `
-        <tr>
-          <td>${escapeHtml(r.report_date || '-')}</td>
-          <td>${escapeHtml(r.profile || '-')}</td>
-          <td>${escapeHtml(r.owner || '-')}</td>
-          <td>${escapeHtml(r.period_label || '-')}</td>
-          <td>${fmt(r.organic?.views_current || 0)}</td>
-          <td>${fmt(r.organic?.interactions_current || 0)}</td>
-          <td class="reportActions">
-            <a data-show="${escapeHtml(r.report_id)}">Prikaži</a>
-            ${r.report_id ? `<a href="./reports/${escapeHtml(r.report_id)}.html" target="_blank" rel="noreferrer">Static page</a>` : ''}
-          </td>
-        </tr>
-      `).join('');
+  <!-- EMPLOYEE OVERVIEW -->
+  <div class="card">
+    <h3>Overview po zaposlenima</h3>
+    <div id="employeeOverview"></div>
+  </div>
+
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwfjiqyD5GZVT0k5UOF20y6tYfEnMBHODuu2rYfoVZ0n_kUULmOb6K9tiCJqEm0GMU/exec";
+
+let reports = [];
+
+async function loadReports() {
+  const res = await fetch(API + "?action=listReports");
+  const data = await res.json();
+
+  reports = data.reports || [];
+  render();
+}
+
+function render(filtered = reports) {
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+
+  let profiles = new Set();
+  let owners = new Set();
+  let employeeMap = {};
+
+  filtered.forEach(r => {
+    profiles.add(r.profile_name);
+    owners.add(r.owner_name);
+
+    if (!employeeMap[r.owner_name]) {
+      employeeMap[r.owner_name] = { count: 0 };
     }
+    employeeMap[r.owner_name].count++;
 
-    function buildSingleSummary(report) {
-      const o = report.organic || {};
-      const viewsChange = pctChange(o.views_current, o.views_previous);
-      const intChange = pctChange(o.interactions_current, o.interactions_previous);
-      const followersChange = pctChange(o.new_followers_current, o.new_followers_previous);
-      const topPost = (report.topViews || [])[0];
-      const paidActive = (report.ads || []).some(a => (+a.impressions || 0) > 0);
+    const tr = document.createElement("tr");
 
-      const parts = [];
-      parts.push(`Profil <strong>${escapeHtml(report.profile || '-')}</strong> u periodu <strong>${escapeHtml(report.period_label || '-')}</strong> vodila je <strong>${escapeHtml(report.owner || '-')}</strong>.`);
-      parts.push(`Views su promijenjeni za <strong>${fmt(viewsChange, 2)}%</strong>, a interactions za <strong>${fmt(intChange, 2)}%</strong>.`);
-      parts.push(`Novi pratioci iznose <strong>${fmt(o.new_followers_current || 0)}</strong>, uz promjenu od <strong>${fmt(followersChange, 2)}%</strong>.`);
-      if (topPost) parts.push(`Najjača objava po views bila je <strong>${escapeHtml(topPost.title || 'objava bez naziva')}</strong>.`);
-      parts.push(paidActive ? `Paid kampanje su bile aktivne u ovom periodu.` : `Rezultat ovog perioda ostvaren je bez značajnog paid doprinosa.`);
-      return parts.join(' ');
-    }
-
-    function renderReportView() {
-      const r = state.allReports.find(x => x.report_id === state.selectedReportId);
-      if (!r) {
-        state.currentView = state.entityType ? 'entity' : 'home';
-        renderAll();
-        return;
-      }
-
-      const o = r.organic || {};
-      const ads = r.ads || [];
-
-      document.getElementById('heroContextA').textContent = r.profile || '-';
-      document.getElementById('heroContextB').textContent = r.owner || '-';
-      document.getElementById('reportProfileName').textContent = r.profile || '-';
-      document.getElementById('reportOwnerName').textContent = r.owner || '-';
-      document.getElementById('reportPeriodLabel').textContent = r.period_label || '-';
-      document.getElementById('reportDateLabel').textContent = r.report_date || '-';
-      document.getElementById('reportViewsCurrent').textContent = fmt(o.views_current || 0);
-      document.getElementById('reportViewsPrevious').textContent = fmt(o.views_previous || 0);
-      document.getElementById('reportInteractionsCurrent').textContent = fmt(o.interactions_current || 0);
-      document.getElementById('reportInteractionsPrevious').textContent = fmt(o.interactions_previous || 0);
-      document.getElementById('reportSummaryBox').innerHTML = buildSingleSummary(r);
-      document.getElementById('reportNotesBox').textContent = r.notes || '—';
-
-      const map = {
-        posts: ['posts_current', 'posts_previous'],
-        reels: ['reels_current', 'reels_previous'],
-        stories: ['stories_current', 'stories_previous'],
-        views: ['views_current', 'views_previous'],
-        interactions: ['interactions_current', 'interactions_previous'],
-        newFollowers: ['new_followers_current', 'new_followers_previous'],
-        lostFollowers: ['lost_followers_current', 'lost_followers_previous'],
-        organicLeads: ['organic_leads_current', 'organic_leads_previous']
-      };
-
-      document.getElementById('reportOrganicTableBody').innerHTML = organicMetricDefs.map(([k, l]) => {
-        const [ck, pk] = map[k];
-        const c = +o[ck] || 0;
-        const p = +o[pk] || 0;
-        const d = pctChange(c, p);
-        return `<tr>
-          <td>${escapeHtml(l)}</td>
-          <td>${fmt(c)}</td>
-          <td>${fmt(p)}</td>
-          <td><span class="delta ${d > 0 ? 'up' : d < 0 ? 'down' : 'flat'}">${fmt(d, 2)}%</span></td>
-        </tr>`;
-      }).join('');
-
-      document.getElementById('reportAdsCampaignCount').textContent = ads.length;
-      document.getElementById('reportAdsHead').innerHTML = `<tr>
-        <th>Metrika</th>
-        ${ads.map((a, i) => `<th>${escapeHtml(a.campaign_name || `Kampanja ${i + 1}`)}</th>`).join('') || '<th>Nema</th>'}
-      </tr>`;
-
-      if (!ads.length) {
-        document.getElementById('reportAdsBody').innerHTML = '<tr><td colspan="2">Nema dodatih kampanja.</td></tr>';
-      } else {
-        const rows = [
-          ['budget', 'Budžet'],
-          ['impressions', 'Impresije'],
-          ['cpm', 'CPM'],
-          ['ctr_pct', 'CTR (%)'],
-          ['clicks', 'Klikovi'],
-          ['cpc', 'CPC'],
-          ['leads_registrations', 'Leads / Registracije'],
-          ['conversion_pct', 'Konverzija (%)'],
-          ['cpa', 'CPA'],
-          ['revenue', 'Prihod'],
-          ['roas', 'ROAS']
-        ];
-        document.getElementById('reportAdsBody').innerHTML = rows.map(([k, l]) => `
-          <tr>
-            <td>${escapeHtml(l)}</td>
-            ${ads.map(a => `<td>${fmt(a[k] || 0, 2).replace('.00', '')}</td>`).join('')}
-          </tr>
-        `).join('');
-      }
-
-      renderTopList('reportTopViews', r.topViews || [], 'views');
-      renderTopList('reportTopLikes', r.topLikes || [], 'lajkovi');
-    }
-
-    function renderTopList(id, items, mode) {
-      document.getElementById(id).innerHTML = items.length
-        ? items.map(i => `
-          <div class="topPost">
-            <div>
-              <div style="font-weight:700;margin-bottom:4px">${escapeHtml(i.title || 'Bez naziva')}</div>
-              ${i.link ? `<a class="postLink" href="${escapeHtml(i.link)}" target="_blank" rel="noreferrer">${escapeHtml(i.link)}</a>` : '<span class="muted">Bez linka</span>'}
-              ${i.comment ? `<div class="muted" style="margin-top:6px">${escapeHtml(i.comment)}</div>` : ''}
-            </div>
-            <div><strong>${fmt(i.value || 0)}</strong><div class="muted">${escapeHtml(mode)}</div></div>
-            <div><strong>${fmt(i.interactions || 0)}</strong><div class="muted">interactions</div></div>
-          </div>
-        `).join('')
-        : '<div class="empty">Nema unosa.</div>';
-    }
-
-    function renderGlobalReportsTable() {
-      document.getElementById('reportsCountLabel').textContent = state.filteredReports.length;
-      document.getElementById('globalReportsEmpty').classList.toggle('hidden', state.filteredReports.length > 0);
-
-      document.getElementById('globalReportsTableBody').innerHTML = state.filteredReports.map(r => `
-        <tr>
-          <td>${escapeHtml(r.report_date || '-')}</td>
-          <td>${escapeHtml(r.profile || '-')}</td>
-          <td>${escapeHtml(r.owner || '-')}</td>
-          <td>${escapeHtml(r.period_label || '-')}</td>
-          <td>${fmt(r.organic?.views_current || 0)}</td>
-          <td>${fmt(r.organic?.interactions_current || 0)}</td>
-          <td class="reportActions">
-            <a data-show="${escapeHtml(r.report_id)}">Prikaži</a>
-            ${r.report_id ? `<a href="./reports/${escapeHtml(r.report_id)}.html" target="_blank" rel="noreferrer">Static page</a>` : ''}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderAll() {
-      renderGlobalReportsTable();
-
-      if (state.currentView === 'home') {
-        showView('home');
-        renderHomeView();
-      } else if (state.currentView === 'entity') {
-        showView('entity');
-        renderEntityView();
-      } else {
-        showView('report');
-        renderReportView();
-      }
-    }
-
-    async function bootstrap() {
-      try {
-        const res = await fetch(REPORTS_JSON_URL, { cache: 'no-store' });
-        const reports = await res.json();
-        state.allReports = Array.isArray(reports) ? reports : [];
-      } catch (e) {
-        state.allReports = [];
-      }
-
-      fillFilters();
-      applyFilters();
-    }
-
-    document.getElementById('applyFiltersBtn').onclick = applyFilters;
-
-    document.getElementById('resetFiltersBtn').onclick = () => {
-      document.getElementById('filterProfile').value = 'all';
-      document.getElementById('filterOwner').value = 'all';
-      document.getElementById('filterPeriod').value = 'all';
-      document.getElementById('filterDateFrom').value = '';
-      document.getElementById('filterDateTo').value = '';
-      applyFilters();
+    tr.onclick = () => {
+      window.location.href = `reports/${r.slug}.html`;
     };
 
-    document.getElementById('homeBtn').onclick = () => {
-      state.currentView = 'home';
-      state.entityType = null;
-      state.entityValue = null;
-      state.selectedReportId = null;
-      renderAll();
+    tr.innerHTML = `
+      <td>${r.created_at ? r.created_at.split("T")[0] : "-"}</td>
+      <td>${r.profile_name}</td>
+      <td>${r.owner_name || "-"}</td>
+      <td>${r.period_start} → ${r.period_end}</td>
+      <td>${r.status}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("totalReports").innerText = filtered.length;
+  document.getElementById("totalProfiles").innerText = profiles.size;
+  document.getElementById("totalOwners").innerText = owners.size;
+
+  // EMPLOYEE OVERVIEW
+  const container = document.getElementById("employeeOverview");
+  container.innerHTML = "";
+
+  Object.keys(employeeMap).forEach(name => {
+    const div = document.createElement("div");
+    div.className = "employee";
+
+    div.innerHTML = `
+      <strong>${name || "N/A"}</strong>
+      ${employeeMap[name].count} reporta
+    `;
+
+    div.onclick = () => {
+      window.location.href = `employee.html?name=${encodeURIComponent(name)}`;
     };
 
-    document.getElementById('entityBackBtn').onclick = () => {
-      state.currentView = 'entity';
-      state.selectedReportId = null;
-      renderAll();
-    };
+    container.appendChild(div);
+  });
+}
 
-    document.getElementById('globalReportsTableBody').onclick = e => {
-      const show = e.target.dataset.show;
-      if (show) {
-        state.selectedReportId = show;
-        state.currentView = 'report';
-        renderAll();
-      }
-    };
+function applyFilters() {
+  const p = document.getElementById("profileFilter").value.toLowerCase();
+  const o = document.getElementById("ownerFilter").value.toLowerCase();
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
 
-    document.getElementById('entityReportsTableBody').onclick = e => {
-      const show = e.target.dataset.show;
-      if (show) {
-        state.selectedReportId = show;
-        state.currentView = 'report';
-        renderAll();
-      }
-    };
+  const filtered = reports.filter(r => {
+    const matchProfile = r.profile_name.toLowerCase().includes(p);
+    const matchOwner = (r.owner_name || "").toLowerCase().includes(o);
 
-    bootstrap();
-  </script>
+    const date = r.created_at ? r.created_at.split("T")[0] : "";
+
+    const matchFrom = from ? date >= from : true;
+    const matchTo = to ? date <= to : true;
+
+    return matchProfile && matchOwner && matchFrom && matchTo;
+  });
+
+  render(filtered);
+}
+
+function resetFilters() {
+  document.getElementById("profileFilter").value = "";
+  document.getElementById("ownerFilter").value = "";
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  render();
+}
+
+loadReports();
+</script>
+
 </body>
 </html>
