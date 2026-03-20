@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 
 const API = "https://script.google.com/macros/s/AKfycbwfjiqyD5GZVT0k5UOF20y6tYfEnMBHODuu2rYfoVZ0n_kUULmOb6K9tiCJqEm0GMU/exec";
 
-const REPORTS_DIR = "./reports";
+const REPORTS_DIR = "./MarketingTIm/reports";
 
 async function main() {
   console.log("Fetching reports...");
