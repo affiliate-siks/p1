@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Instagram Reporting Dashboard</title>
+<style>
+:root{
+  --bg:#0b0d12;
+  --panel:#131925;
+  --panel-soft:#171e2b;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.12);
+  --text:#eef2ff;
+  --muted:#98a2b3;
+  --pink:#ff4fa7;
+  --pink2:#ff77bf;
+  --orange:#ff9a31;
+  --purple:#8b5cf6;
+  --cyan:#22d3ee;
+  --green:#22c55e;
+  --red:#f87171;
+  --yellow:#facc15;
+  --radius:22px;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --max:1560px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255,79,167,.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
+    linear-gradient(180deg,#090b10,#0d1017);
+}
+a{color:inherit}
+.hidden{display:none!important}
+.app{width:min(var(--max), calc(100vw - 20px));margin:10px auto 28px}
+.section{margin-bottom:18px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.hero,.card,.modal{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.hero{
+  border-radius:28px;
+  padding:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
+    linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
+}
+.hero h1{
+  margin:0;
+  font-size:clamp(28px,4vw,54px);
+  font-weight:700;
+  letter-spacing:-.05em;
+  line-height:1.02;
+  max-width:860px;
+}
+.hero p{
+  margin:10px 0 0;
+  color:rgba(255,255,255,.74);
+  font-size:14px;
+  line-height:1.55;
+  max-width:780px;
+}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:34px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.btn{
+  border:0;
+  border-radius:999px;
+  min-height:42px;
+  padding:11px 16px;
+  cursor:pointer;
+  font:700 14px inherit;
+  color:var(--text);
+  transition:.18s ease;
+  white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(90deg,var(--pink),var(--pink2));color:#fff}
+.btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.btn-danger{background:rgba(248,113,113,.14);color:#ffd8d8;border:1px solid rgba(248,113,113,.18)}
+.btn-success{background:rgba(34,197,94,.15);color:#d8ffe6;border:1px solid rgba(34,197,94,.18)}
+.card{
+  border-radius:var(--radius);
+  padding:22px;
+  overflow:hidden;
+  position:relative;
+}
+.card h3{
+  margin:0 0 14px;
+  font-size:18px;
+  line-height:1.28;
+  letter-spacing:-.01em;
+}
+.muted{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+.metric{
+  font-size:38px;
+  font-weight:800;
+  line-height:1.02;
+  margin-bottom:6px;
+  letter-spacing:-.03em;
+  word-break:break-word;
+}
+.metric-sm{
+  font-size:28px;
+  font-weight:800;
+  line-height:1.04;
+  letter-spacing:-.02em;
+  word-break:break-word;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+.row > *{
+  min-width:0;
+  word-break:break-word;
+}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.toolbar{
+  display:grid;
+  grid-template-columns:1.1fr 1.1fr 1fr 1fr auto;
+  gap:12px;
+  align-items:end;
+}
+.field,.fieldInline{display:grid;gap:6px;min-width:0}
+label{font-size:12px;color:var(--muted);font-weight:700;line-height:1.35}
+input,select,textarea{
+  width:100%;
+  min-width:0;
+  padding:12px 13px;
+  border-radius:14px;
+  border:1px solid var(--line2);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font:inherit;
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:rgba(255,79,167,.45);
+  box-shadow:0 0 0 3px rgba(255,79,167,.12);
+}
+input::placeholder,textarea::placeholder{color:#8d97aa}
+select option{background:#0f1420}
+textarea{min-height:90px;resize:vertical}
+.cardList{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.entityCard{
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  cursor:pointer;
+  transition:.18s ease;
+  min-width:0;
+}
+.entityCard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+.entityTitle{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:8px;
+  line-height:1.25;
+  word-break:break-word;
+}
+.entityMeta{display:grid;gap:8px;margin-top:12px}
+.entityMeta .row{padding:8px 0;font-size:13px}
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  border:1px solid var(--line);
+  margin-top:10px;
+}
+.status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
+.status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
+.status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
+.status.empty{background:rgba(255,255,255,.06);color:#d9dfed}
+.kpiWrap{
+  overflow:auto;
+  border-radius:16px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:820px;
+}
+th,td{
+  padding:12px 10px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+  vertical-align:top;
+  line-height:1.45;
+  word-break:break-word;
+}
+th{
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  background:rgba(255,255,255,.01);
+}
+.delta.up{color:var(--green)}
+.delta.down{color:var(--red)}
+.delta.flat{color:var(--muted)}
+.reportActions a{
+  color:#ffc7e2;
+  text-decoration:none;
+  font-weight:700;
+  margin-right:12px;
+  cursor:pointer;
+}
+.stat{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:110px;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:rgba(255,79,167,.12);
+  border:1px solid rgba(255,79,167,.16);
+  flex:0 0 52px;
+}
+.analysisBox,.noteBox{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  line-height:1.65;
+  overflow-wrap:anywhere;
+}
+.analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.topPost{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.topPost > div{min-width:0;word-break:break-word}
+.topPost:last-child{border-bottom:0}
+.canvasWrap{
+  height:250px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01));
+  padding:10px;
+}
+canvas{width:100%;height:100%;display:block}
+.empty{
+  padding:26px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
+  line-height:1.6;
+}
+.modalBackdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(4,6,10,.74);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:50;
+}
+.modalBackdrop.open{display:flex}
+.modal{
+  width:min(1180px,100%);
+  max-height:94vh;
+  border-radius:26px;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+}
+.modalHead,.modalFoot{
+  padding:18px 22px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.modalHead > div,
+.modalFoot > div{min-width:0}
+.modalFoot{border-top:1px solid var(--line);border-bottom:0}
+.modalBody{padding:20px;overflow:auto}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stepPill{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+  line-height:1.35;
+}
+.stepPill.active{
+  background:rgba(255,79,167,.14);
+  color:#ffd8ea;
+  border-color:rgba(255,79,167,.24);
+}
+.step{display:none}
+.step.active{display:block}
+.stepCard{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.02);
+  margin-bottom:16px;
+}
+.stepTitle{font-size:18px;font-weight:800;margin:0 0 10px;line-height:1.3}
+.helper{color:var(--muted);font-size:13px;margin-bottom:12px;line-height:1.5}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.entry{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
+  margin-bottom:12px;
+}
+.previewGrid{display:grid;gap:12px}
+.savingBadge{
+  display:none;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+}
+.savingBadge.show{display:inline-flex}
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:70;
+  background:#121722;
+  border:1px solid var(--line);
+  padding:12px 14px;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  display:none;
+  max-width:320px;
+  line-height:1.5;
+}
+.toast.show{display:block}
+.viewHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.viewHeader > *{min-width:0}
+.list{
+  margin:0;
+  padding-left:18px;
+}
+.list li{
+  margin:0 0 8px;
+  line-height:1.65;
+}
+
+@media (max-width:1200px){
+  .g6,.g5,.g4,.g3,.g2,.toolbar,.cardList,.analysisGrid{grid-template-columns:1fr}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:760px){
+  .app{width:calc(100vw - 12px)}
+  .hero,.card{padding:18px}
+  .form2,.form3{grid-template-columns:1fr}
+  .topPost{grid-template-columns:1fr}
+  table{min-width:620px}
+  .metric{font-size:32px}
+  .hero h1{font-size:30px}
+  .canvasWrap{height:270px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="section">
+    <div class="hero">
+      <div>
+        <h1>Instagram Reporting Dashboard</h1>
+        <p>Unos sedmičnih izvještaja, pregled po profilu i pregled po osobi uz organske i paid metrike.</p>
+        <div class="chipRow">
+          <span class="badge" id="modeBadge">Home overview</span>
+          <span class="badge" id="heroContextA">Svi profili</span>
+          <span class="badge" id="heroContextB">Sve osobe</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <span class="savingBadge" id="savingBadge">Čuvanje u toku...</span>
+        <button class="btn btn-ghost hidden" id="homeBtn">Početna</button>
+        <button class="btn btn-ghost hidden" id="entityBackBtn">Nazad</button>
+        <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
+        <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Filteri</h3>
+      <div class="toolbar">
+        <div class="fieldInline">
+          <label>Profil</label>
+          <select id="filterProfile"></select>
+        </div>
+        <div class="fieldInline">
+          <label>Zadužena osoba</label>
+          <select id="filterOwner"></select>
+        </div>
+        <div class="fieldInline">
+          <label>Od datuma</label>
+          <input id="filterDateFrom" type="date" />
+        </div>
+        <div class="fieldInline">
+          <label>Do datuma</label>
+          <input id="filterDateTo" type="date" />
+        </div>
+        <div class="fieldInline">
+          <button class="btn btn-primary" id="applyFiltersBtn">Primijeni</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="homeView">
+    <section class="section grid g6">
+      <div class="card"><h3>Ukupno reporta</h3><div class="metric" id="homeReportsCount">0</div><div class="muted">U aktivnoj selekciji</div></div>
+      <div class="card"><h3>Ukupno profila</h3><div class="metric" id="homeProfilesCount">0</div><div class="muted">Jedinstveni profili</div></div>
+      <div class="card"><h3>Ukupno osoba</h3><div class="metric" id="homeOwnersCount">0</div><div class="muted">Jedinstvene osobe</div></div>
+      <div class="card"><h3>Ukupni views</h3><div class="metric" id="homeViewsTotal">0</div><div class="muted">Organski views</div></div>
+      <div class="card"><h3>Novi pratioci</h3><div class="metric" id="homeFollowersTotal">0</div><div class="muted">Ukupno</div></div>
+      <div class="card"><h3>ADS impressions</h3><div class="metric" id="homeImpressionsTotal">0</div><div class="muted">Ukupno iz oglasa</div></div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="viewHeader">
+          <h3>Profili</h3>
+          <span class="muted">Klik na karticu otvara pregled profila i njegovih izvještaja.</span>
+        </div>
+        <div class="cardList" id="profilesCards"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="viewHeader">
+          <h3>Zadužene osobe</h3>
+          <span class="muted">Klik na karticu otvara pregled osobe i svih povezanih izvještaja.</span>
+        </div>
+        <div class="cardList" id="ownersCards"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="entityView" class="hidden">
+    <section class="section grid g5">
+      <div class="card">
+        <h3>Entitet</h3>
+        <div class="metric" id="entityTitleMetric">-</div>
+        <div class="muted" id="entityTypeLabel">-</div>
+      </div>
+      <div class="card">
+        <h3>Broj reporta</h3>
+        <div class="metric" id="entityReportsCount">0</div>
+        <div class="muted">U ovoj selekciji</div>
+      </div>
+      <div class="card">
+        <h3>Ukupni views</h3>
+        <div class="metric" id="entityViewsTotal">0</div>
+        <div class="muted">Organski views</div>
+      </div>
+      <div class="card">
+        <h3>Novi pratioci</h3>
+        <div class="metric" id="entityFollowersTotal">0</div>
+        <div class="muted">Ukupno</div>
+      </div>
+      <div class="card">
+        <h3>ADS impressions</h3>
+        <div class="metric" id="entityImpressionsTotal">0</div>
+        <div class="muted">Ukupno iz oglasa</div>
+      </div>
+    </section>
+
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Agregirani KPI</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th>Tekuća</th>
+                <th>Prošla</th>
+                <th>Promjena</th>
+              </tr>
+            </thead>
+            <tbody id="entityOrganicTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Trend kroz vrijeme</h3>
+        <div class="canvasWrap"><canvas id="entityTrendChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h3>Izvještaji</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Profil</th>
+                <th>Osoba</th>
+                <th>Period</th>
+                <th>Views</th>
+                <th>Interactions</th>
+                <th>Impressions</th>
+                <th>Akcije</th>
+              </tr>
+            </thead>
+            <tbody id="entityReportsTableBody"></tbody>
+          </table>
+        </div>
+        <div id="entityReportsEmpty" class="empty hidden">Nema izvještaja za ovaj entitet.</div>
+      </div>
+    </section>
+  </div>
+
+  <div id="reportView" class="hidden">
+    <section class="section grid g4">
+      <div class="card">
+        <h3>Profil</h3>
+        <div class="metric" id="reportProfileName">-</div>
+        <div class="muted">Osoba: <strong id="reportOwnerName">-</strong></div>
+      </div>
+      <div class="card">
+        <h3>Period</h3>
+        <div class="metric" id="reportPeriodLabel">-</div>
+        <div class="muted">Datum reporta: <span id="reportDateLabel">-</span></div>
+      </div>
+      <div class="card">
+        <h3>Views</h3>
+        <div class="metric" id="reportViewsCurrent">0</div>
+        <div class="muted">Prošla: <span id="reportViewsPrevious">0</span></div>
+      </div>
+      <div class="card">
+        <h3>ADS impressions</h3>
+        <div class="metric" id="reportImpressionsCurrent">0</div>
+        <div class="muted">Ukupno iz kampanja</div>
+      </div>
+    </section>
+
+    <section class="section grid g4">
+      <div class="card stat"><div class="icon">👁</div><div><div class="muted">Views promjena</div><div class="metric-sm" id="reportViewsDelta">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">⚡</div><div><div class="muted">Interactions promjena</div><div class="metric-sm" id="reportInteractionsDelta">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">📈</div><div><div class="muted">Engagement rate</div><div class="metric-sm" id="reportEngagementRate">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">🔗</div><div><div class="muted">Ads CTR</div><div class="metric-sm" id="reportAdsCtr">0.00%</div></div></div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h3>Executive summary</h3>
+        <div class="analysisBox" id="reportSummaryBox">—</div>
+      </div>
+    </section>
+
+    <section class="section grid g2">
+      <div class="card">
+        <h3>KPI po profilu – organski rezultati</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th>Tekuća</th>
+                <th>Prošla</th>
+                <th>Promjena</th>
+              </tr>
+            </thead>
+            <tbody id="reportOrganicTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="viewHeader">
+          <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
+          <span class="badge"><span id="reportAdsCampaignCount">0</span> kampanja</span>
+        </div>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th id="reportAdsHeadCols"></th>
+              </tr>
+            </thead>
+            <tbody id="reportAdsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Top objave – po views</h3>
+        <div id="reportTopViews"></div>
+      </div>
+      <div class="card">
+        <h3>Top objave – po lajkovima</h3>
+        <div id="reportTopLikes"></div>
+      </div>
+    </section>
+
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Weekly trend</h3>
+        <div class="canvasWrap"><canvas id="reportTrendChart"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Organske metrike</h3>
+        <div class="canvasWrap"><canvas id="reportBarsChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="analysisGrid">
+        <div class="card">
+          <h3>Insights</h3>
+          <div class="analysisBox" id="reportInsightsBox">—</div>
+        </div>
+        <div class="card">
+          <h3>Recommendations</h3>
+          <div class="analysisBox" id="reportRecommendationsBox">—</div>
+        </div>
+        <div class="card">
+          <h3>Napomena / zaključak</h3>
+          <div class="noteBox" id="reportNotesBox">—</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="viewHeader">
+        <h3 style="margin:0">Sačuvani izvještaji</h3>
+        <span class="badge"><span id="reportsCountLabel">0</span> zapis</span>
+      </div>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Profil</th>
+              <th>Osoba</th>
+              <th>Period</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody id="globalReportsTableBody"></tbody>
+        </table>
+      </div>
+      <div id="globalReportsEmpty" class="empty hidden">Nema izvještaja za aktivne filtere.</div>
+    </div>
+  </section>
+</div>
+
+<div class="modalBackdrop" id="reportModal">
+  <div class="modal">
+    <div class="modalHead">
+      <div>
+        <div style="font-size:22px;font-weight:800">Unos sedmičnog izvještaja</div>
+        <div class="muted">Forma je usklađena sa postojećim Apps Script backendom.</div>
+      </div>
+      <button class="btn btn-ghost" id="closeModalBtn">Zatvori</button>
+    </div>
+
+    <div class="modalBody">
+      <div class="stepper" id="stepper"></div>
+
+      <div class="step active" data-step="0">
+        <div class="stepCard">
+          <div class="stepTitle">1. Osnovni podaci</div>
+          <div class="helper">Profil, osoba, datum reporta i period.</div>
+
+          <div class="form3">
+            <div class="field">
+              <label>Datum reporta</label>
+              <input id="reportDateInput" type="date" />
+            </div>
+            <div class="field">
+              <label>Početak perioda</label>
+              <input id="weekStartInput" type="date" />
+            </div>
+            <div class="field">
+              <label>Kraj perioda</label>
+              <input id="weekEndInput" type="date" />
+            </div>
+          </div>
+
+          <div class="form2" style="margin-top:14px">
+            <div class="field"><label>Zadužena osoba</label><input id="ownerInput" list="ownersList" /></div>
+            <div class="field"><label>Profil</label><input id="profileInput" list="profilesList" /></div>
+            <div class="field"><label>Period label</label><input id="periodLabelInput" value="pon-ned" /></div>
+            <div class="field"><label>Napomena</label><input id="notesShortInput" placeholder="Kratka napomena za lakši pregled" /></div>
+          </div>
+
+          <datalist id="ownersList"></datalist>
+          <datalist id="profilesList"></datalist>
+        </div>
+      </div>
+
+      <div class="step" data-step="1">
+        <div class="stepCard">
+          <div class="stepTitle">2. KPI po profilu – organski rezultati</div>
+          <div class="helper">Unosiš tekuću i prošlu nedelju. Promjena se računa automatski.</div>
+          <div class="form3" id="organicMetricsGrid"></div>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <div class="stepCard">
+          <div class="viewHeader">
+            <div>
+              <div class="stepTitle" style="margin-bottom:4px">3. Plaćeni rezultati (ADS)</div>
+              <div class="helper" style="margin:0">Unosiš budžet, impresije, klikove, leads i prihod. Ostalo se računa automatski.</div>
+            </div>
+            <button class="btn btn-primary" id="addCampaignBtn" type="button">Dodaj kampanju</button>
+          </div>
+          <div id="campaignsContainer"></div>
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <div class="stepCard">
+          <div class="stepTitle">4. Top objave + zaključak</div>
+          <div class="helper">Top objave po views i lajkovima.</div>
+
+          <div style="margin:16px 0 8px;font-weight:700">Top objave – po views</div>
+          <div id="topViewsInputs"></div>
+          <button class="btn btn-ghost" id="addTopViewsBtn" type="button">Dodaj objavu po views</button>
+
+          <div style="margin:18px 0 8px;font-weight:700">Top objave – po lajkovima</div>
+          <div id="topLikesInputs"></div>
+          <button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu po lajkovima</button>
+
+          <div class="field" style="margin-top:18px">
+            <label>Komentar / zaključak</label>
+            <textarea id="notesInput"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="4">
+        <div class="stepCard">
+          <div class="stepTitle">5. Preview</div>
+          <div class="helper">Provjeri unos prije čuvanja.</div>
+          <div class="previewGrid" id="previewBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modalFoot">
+      <div class="muted" id="stepStatus">Korak 1 od 5</div>
+      <div class="hero-actions">
+        <button class="btn btn-ghost" id="prevStepBtn">Nazad</button>
+        <button class="btn btn-primary" id="nextStepBtn">Dalje</button>
+        <button class="btn btn-success hidden" id="saveReportBtn">Sačuvaj</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzVkNkYx0fdfcZahJJ3f8H7uqdeoiFqYAwKtlY64Mw6WnKLMedeuVKU_Jlj9fk7fSTzzA/exec";
+
+const ORGANIC_METRICS = [
+  { key: "posts", label: "Objave (post)", targetKey: "posts_target" },
+  { key: "reels", label: "Reels / video" },
+  { key: "stories", label: "Stories (broj)", targetKey: "stories_target" },
+  { key: "views", label: "Views" },
+  { key: "interactions", label: "Interactions" },
+  { key: "new_followers", label: "Novi pratioci", targetKey: "followers_target" },
+  { key: "lost_followers", label: "Izgubljeni pratioci" },
+  { key: "organic_leads", label: "Leads iz organika" }
+];
+
+const ADS_METRICS = [
+  { key:"budget", label:"Budžet" },
+  { key:"impressions", label:"Impresije" },
+  { key:"cpm", label:"CPM" },
+  { key:"ctr", label:"CTR (%)" },
+  { key:"clicks", label:"Klikovi" },
+  { key:"cpc", label:"CPC" },
+  { key:"leads", label:"Leads / Registracije" },
+  { key:"conversion", label:"Konverzija (%)" },
+  { key:"cpa", label:"CPA" },
+  { key:"revenue", label:"Prihod" },
+  { key:"roas", label:"ROAS" }
+];
+
+const state = {
+  currentView: "home",
+  entityType: null,
+  entityValue: null,
+  selectedReportId: null,
+  allReports: [],
+  filteredReports: [],
+  step: 0
+};
+
+function fmt(v, d=0){
+  return (Number(v) || 0).toLocaleString("en-US", {
+    minimumFractionDigits:d,
+    maximumFractionDigits:d
+  });
+}
+function esc(v){
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+function todayDate(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function pctChange(current, previous){
+  current = Number(current || 0);
+  previous = Number(previous || 0);
+  if (previous === 0) return current === 0 ? 0 : 100;
+  return ((current - previous) / previous) * 100;
+}
+function safeRate(numerator, denominator){
+  numerator = Number(numerator || 0);
+  denominator = Number(denominator || 0);
+  return denominator ? (numerator / denominator) * 100 : 0;
+}
+function deltaClass(v){
+  return v > 0 ? "up" : v < 0 ? "down" : "flat";
+}
+function showToast(message, isError=false){
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.style.borderColor = isError ? "rgba(248,113,113,.18)" : "var(--line)";
+  el.style.color = isError ? "#ffd8d8" : "var(--text)";
+  el.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove("show"), 2600);
+}
+function setSaving(on){
+  document.getElementById("savingBadge").classList.toggle("show", on);
+  document.getElementById("saveReportBtn").disabled = on;
+}
+async function apiGet(params = {}){
+  const q = new URLSearchParams(params).toString();
+  const res = await fetch(`${API}?${q}`);
+  return res.json();
+}
+async function apiPost(body){
+  const res = await fetch(API, {
+    method:"POST",
+    headers:{ "Content-Type":"text/plain" },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+function emptyCampaign(){
+  return { name:"", budget:"", impressions:"", clicks:"", leads:"", revenue:"" };
+}
+function emptyTopPost(){
+  return { title:"", link:"", value:"", interactions:"", comment:"" };
+}
+
+function getOrganicInputValue(key, type){
+  const el = document.querySelector(`[data-organic-key="${key}"][data-type="${type}"]`);
+  return el ? Number(el.value || 0) : 0;
+}
+function getOrganicTargetValue(key){
+  const el = document.querySelector(`[data-organic-key="${key}"][data-type="target"]`);
+  return el ? Number(el.value || 0) : 0;
+}
+
+function renderOrganicMetricsGrid(){
+  const html = ORGANIC_METRICS.map(m => `
+    <div class="field">
+      <label>${esc(m.label)} – Tekuća nedelja</label>
+      <input type="number" step="any" data-organic-key="${esc(m.key)}" data-type="current" />
+    </div>
+    <div class="field">
+      <label>${esc(m.label)} – Prošla nedelja</label>
+      <input type="number" step="any" data-organic-key="${esc(m.key)}" data-type="previous" />
+    </div>
+    <div class="field">
+      <label>${esc(m.label)} – Promjena (%)</label>
+      <input type="text" disabled data-organic-key="${esc(m.key)}" data-type="change" value="0.00%" />
+    </div>
+    ${m.targetKey ? `
+      <div class="field">
+        <label>${esc(m.label)} – Target</label>
+        <input type="number" step="any" data-organic-key="${esc(m.key)}" data-type="target" />
+      </div>
+    ` : `<div class="field"></div>`}
+  `).join("");
+  document.getElementById("organicMetricsGrid").innerHTML = html;
+
+  document.querySelectorAll("[data-organic-key][data-type='current'], [data-organic-key][data-type='previous'], [data-organic-key][data-type='target']").forEach(input => {
+    input.addEventListener("input", updateOrganicChanges);
+  });
+}
+function updateOrganicChanges(){
+  ORGANIC_METRICS.forEach(m => {
+    const current = getOrganicInputValue(m.key, "current");
+    const previous = getOrganicInputValue(m.key, "previous");
+    const change = pctChange(current, previous);
+    const out = document.querySelector(`[data-organic-key="${m.key}"][data-type="change"]`);
+    if (out) out.value = `${fmt(change, 2)}%`;
+  });
+  renderPreview();
+}
+
+function campaignTemplate(index, data={}){
+  const budget = Number(data.budget || 0);
+  const impressions = Number(data.impressions || 0);
+  const clicks = Number(data.clicks || 0);
+  const leads = Number(data.leads || 0);
+  const revenue = Number(data.revenue || 0);
+
+  const cpm = impressions ? (budget / impressions) * 1000 : 0;
+  const ctr = impressions ? (clicks / impressions) * 100 : 0;
+  const cpc = clicks ? (budget / clicks) : 0;
+  const conversion = clicks ? (leads / clicks) * 100 : 0;
+  const cpa = leads ? (budget / leads) : 0;
+  const roas = budget ? (revenue / budget) : 0;
+
+  return `
+    <div class="entry campaignEntry" data-index="${index}">
+      <div class="viewHeader">
+        <strong>Kampanja ${index + 1}</strong>
+        <button class="btn btn-danger remove-campaign-btn" type="button">Obriši</button>
+      </div>
+      <div class="form3">
+        <div class="field"><label>Naziv kampanje</label><input data-key="name" value="${esc(data.name || "")}" /></div>
+        <div class="field"><label>Budžet</label><input type="number" step="0.01" data-key="budget" value="${budget || ""}" /></div>
+        <div class="field"><label>Impresije</label><input type="number" step="any" data-key="impressions" value="${impressions || ""}" /></div>
+        <div class="field"><label>Klikovi</label><input type="number" step="any" data-key="clicks" value="${clicks || ""}" /></div>
+        <div class="field"><label>Leads / Registracije</label><input type="number" step="any" data-key="leads" value="${leads || ""}" /></div>
+        <div class="field"><label>Prihod</label><input type="number" step="0.01" data-key="revenue" value="${revenue || ""}" /></div>
+
+        <div class="field"><label>CPM</label><input disabled value="${fmt(cpm, 2)}" /></div>
+        <div class="field"><label>CTR (%)</label><input disabled value="${fmt(ctr, 2)}%" /></div>
+        <div class="field"><label>CPC</label><input disabled value="${fmt(cpc, 2)}" /></div>
+        <div class="field"><label>Konverzija (%)</label><input disabled value="${fmt(conversion, 2)}%" /></div>
+        <div class="field"><label>CPA</label><input disabled value="${fmt(cpa, 2)}" /></div>
+        <div class="field"><label>ROAS</label><input disabled value="${fmt(roas, 2)}" /></div>
+      </div>
+    </div>
+  `;
+}
+function renderCampaigns(campaigns=[emptyCampaign()]){
+  document.getElementById("campaignsContainer").innerHTML = campaigns.map((c, i) => campaignTemplate(i, c)).join("");
+  bindCampaignEvents();
+}
+function bindCampaignEvents(){
+  document.querySelectorAll(".campaignEntry [data-key]").forEach(input => {
+    input.addEventListener("input", () => {
+      const campaigns = collectCampaigns();
+      renderCampaigns(campaigns.length ? campaigns : [emptyCampaign()]);
+      renderPreview();
+    });
+  });
+  document.querySelectorAll(".remove-campaign-btn").forEach(btn => {
+    btn.onclick = () => {
+      btn.closest(".campaignEntry").remove();
+      const campaigns = collectCampaigns();
+      renderCampaigns(campaigns.length ? campaigns : [emptyCampaign()]);
+      renderPreview();
+    };
+  });
+}
+function collectCampaigns(){
+  return [...document.querySelectorAll(".campaignEntry")].map(entry => ({
+    name: entry.querySelector('[data-key="name"]').value || "",
+    budget: Number(entry.querySelector('[data-key="budget"]').value || 0),
+    impressions: Number(entry.querySelector('[data-key="impressions"]').value || 0),
+    clicks: Number(entry.querySelector('[data-key="clicks"]').value || 0),
+    leads: Number(entry.querySelector('[data-key="leads"]').value || 0),
+    revenue: Number(entry.querySelector('[data-key="revenue"]').value || 0)
+  })).filter(c => c.name || c.budget || c.impressions || c.clicks || c.leads || c.revenue);
+}
+
+function topPostTemplate(type, data={}){
+  return `
+    <div class="entry topPostEntry" data-type="${type}">
+      <div class="form3">
+        <div class="field"><label>Naziv objave</label><input data-key="title" value="${esc(data.title || "")}" /></div>
+        <div class="field"><label>Link objave</label><input data-key="link" value="${esc(data.link || "")}" /></div>
+        <div class="field"><label>${type === "views" ? "Views" : "Lajkovi"}</label><input type="number" step="any" data-key="value" value="${esc(data.value || "")}" /></div>
+        <div class="field"><label>Interactions</label><input type="number" step="any" data-key="interactions" value="${esc(data.interactions || "")}" /></div>
+        <div class="field" style="grid-column:span 2"><label>Komentar</label><input data-key="comment" value="${esc(data.comment || "")}" /></div>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn btn-danger remove-post-btn" type="button">Obriši objavu</button>
+      </div>
+    </div>
+  `;
+}
+function renderTopPostInputs(containerId, type, items=[emptyTopPost()]){
+  document.getElementById(containerId).innerHTML = items.map(i => topPostTemplate(type, i)).join("");
+  bindTopPostEvents(containerId, type);
+}
+function bindTopPostEvents(containerId, type){
+  document.querySelectorAll(`#${containerId} .topPostEntry input`).forEach(input => {
+    input.addEventListener("input", renderPreview);
+  });
+  document.querySelectorAll(`#${containerId} .remove-post-btn`).forEach(btn => {
+    btn.onclick = () => {
+      btn.closest(".topPostEntry").remove();
+      const remaining = collectTopPosts(containerId);
+      renderTopPostInputs(containerId, type, remaining.length ? remaining : [emptyTopPost()]);
+      renderPreview();
+    };
+  });
+}
+function collectTopPosts(containerId){
+  return [...document.querySelectorAll(`#${containerId} .topPostEntry`)].map(entry => ({
+    title: entry.querySelector('[data-key="title"]').value || "",
+    link: entry.querySelector('[data-key="link"]').value || "",
+    value: Number(entry.querySelector('[data-key="value"]').value || 0),
+    interactions: Number(entry.querySelector('[data-key="interactions"]').value || 0),
+    comment: entry.querySelector('[data-key="comment"]').value || ""
+  })).filter(p => p.title || p.link || p.value || p.interactions || p.comment);
+}
+
+function openModal(){
+  document.getElementById("reportDateInput").value = todayDate();
+  document.getElementById("weekStartInput").value = todayDate();
+  document.getElementById("weekEndInput").value = todayDate();
+  document.getElementById("ownerInput").value = "";
+  document.getElementById("profileInput").value = "";
+  document.getElementById("periodLabelInput").value = "pon-ned";
+  document.getElementById("notesShortInput").value = "";
+  document.getElementById("notesInput").value = "";
+  renderOrganicMetricsGrid();
+  renderCampaigns([emptyCampaign()]);
+  renderTopPostInputs("topViewsInputs", "views", [emptyTopPost()]);
+  renderTopPostInputs("topLikesInputs", "likes", [emptyTopPost()]);
+  state.step = 0;
+  renderStepper();
+  renderPreview();
+  document.getElementById("reportModal").classList.add("open");
+}
+function closeModal(){
+  document.getElementById("reportModal").classList.remove("open");
+}
+function renderStepper(){
+  const labels = ["Osnovno", "Organski KPI", "ADS", "Top objave", "Preview"];
+  document.getElementById("stepper").innerHTML = labels.map((l, i) => `
+    <div class="stepPill ${i === state.step ? "active" : ""}">${i + 1}. ${esc(l)}</div>
+  `).join("");
+  document.querySelectorAll(".step").forEach((step, i) => {
+    step.classList.toggle("active", i === state.step);
+  });
+  document.getElementById("stepStatus").textContent = `Korak ${state.step + 1} od 5`;
+  document.getElementById("prevStepBtn").classList.toggle("hidden", state.step === 0);
+  document.getElementById("nextStepBtn").classList.toggle("hidden", state.step === 4);
+  document.getElementById("saveReportBtn").classList.toggle("hidden", state.step !== 4);
+}
+
+function buildReportPayloadFromForm(){
+  const campaigns = collectCampaigns();
+  const topViews = collectTopPosts("topViewsInputs");
+  const topLikes = collectTopPosts("topLikesInputs");
+
+  const organic = {
+    posts_current: getOrganicInputValue("posts", "current"),
+    posts_previous: getOrganicInputValue("posts", "previous"),
+    posts_target: getOrganicTargetValue("posts"),
+
+    reels_current: getOrganicInputValue("reels", "current"),
+    reels_previous: getOrganicInputValue("reels", "previous"),
+
+    stories_current: getOrganicInputValue("stories", "current"),
+    stories_previous: getOrganicInputValue("stories", "previous"),
+    stories_target: getOrganicTargetValue("stories"),
+
+    views_current: getOrganicInputValue("views", "current"),
+    views_previous: getOrganicInputValue("views", "previous"),
+
+    interactions_current: getOrganicInputValue("interactions", "current"),
+    interactions_previous: getOrganicInputValue("interactions", "previous"),
+
+    new_followers_current: getOrganicInputValue("new_followers", "current"),
+    new_followers_previous: getOrganicInputValue("new_followers", "previous"),
+    followers_target: getOrganicTargetValue("new_followers"),
+
+    lost_followers_current: getOrganicInputValue("lost_followers", "current"),
+    lost_followers_previous: getOrganicInputValue("lost_followers", "previous"),
+
+    organic_leads_current: getOrganicInputValue("organic_leads", "current"),
+    organic_leads_previous: getOrganicInputValue("organic_leads", "previous")
+  };
+
+  const ads = campaigns.map(c => {
+    const budget = Number(c.budget || 0);
+    const impressions = Number(c.impressions || 0);
+    const clicks = Number(c.clicks || 0);
+    const leads = Number(c.leads || 0);
+    const revenue = Number(c.revenue || 0);
+
+    return {
+      campaign_name: c.name,
+      budget,
+      impressions,
+      cpm: impressions ? (budget / impressions) * 1000 : 0,
+      ctr_pct: safeRate(clicks, impressions),
+      clicks,
+      cpc: clicks ? (budget / clicks) : 0,
+      leads_registrations: leads,
+      conversion_pct: safeRate(leads, clicks),
+      cpa: leads ? (budget / leads) : 0,
+      revenue,
+      roas: budget ? (revenue / budget) : 0
+    };
+  });
+
+  return {
+    report_date: document.getElementById("reportDateInput").value,
+    week_start: document.getElementById("weekStartInput").value,
+    week_end: document.getElementById("weekEndInput").value,
+    period_label: document.getElementById("periodLabelInput").value,
+    profile: document.getElementById("profileInput").value,
+    owner: document.getElementById("ownerInput").value,
+    notes: [document.getElementById("notesShortInput").value, document.getElementById("notesInput").value].filter(Boolean).join("\n"),
+    organic,
+    ads,
+    topViews: topViews.map(p => ({
+      title: p.title,
+      link: p.link,
+      value: p.value,
+      interactions: p.interactions,
+      comment: p.comment
+    })),
+    topLikes: topLikes.map(p => ({
+      title: p.title,
+      link: p.link,
+      value: p.value,
+      interactions: p.interactions,
+      comment: p.comment
+    })),
+    top_posts_count: topViews.length + topLikes.length
+  };
+}
+
+function renderPreview(){
+  const report = buildReportPayloadFromForm();
+  const impressionsTotal = (report.ads || []).reduce((s, a) => s + Number(a.impressions || 0), 0);
+
+  document.getElementById("previewBox").innerHTML = `
+    <div class="row"><span>Profil</span><strong>${esc(report.profile || "-")}</strong></div>
+    <div class="row"><span>Osoba</span><strong>${esc(report.owner || "-")}</strong></div>
+    <div class="row"><span>Datum reporta</span><strong>${esc(report.report_date || "-")}</strong></div>
+    <div class="row"><span>Period</span><strong>${esc(report.week_start || "-")} → ${esc(report.week_end || "-")}</strong></div>
+    <div class="row"><span>Views</span><strong>${fmt(report.organic.views_current || 0)}</strong></div>
+    <div class="row"><span>Interactions</span><strong>${fmt(report.organic.interactions_current || 0)}</strong></div>
+    <div class="row"><span>Novi pratioci</span><strong>${fmt(report.organic.new_followers_current || 0)}</strong></div>
+    <div class="row"><span>ADS impressions</span><strong>${fmt(impressionsTotal)}</strong></div>
+    <div class="row"><span>Broj kampanja</span><strong>${fmt((report.ads || []).length)}</strong></div>
+    <div class="row"><span>Top views objava</span><strong>${fmt((report.topViews || []).length)}</strong></div>
+    <div class="row"><span>Top likes objava</span><strong>${fmt((report.topLikes || []).length)}</strong></div>
+  `;
+}
+
+function normalizeReport(full){
+  const organic = full.organic || {};
+  const adsTotals = full.ads_totals || {};
+  const notes = full.notes || "";
+
+  const organicRows = [
+    { label:"Objave (post)", current:Number(organic.posts_current || 0), previous:Number(organic.posts_previous || 0), change:Number(organic.posts_change_pct || 0) },
+    { label:"Reels / video", current:Number(organic.reels_current || 0), previous:Number(organic.reels_previous || 0), change:Number(organic.reels_change_pct || 0) },
+    { label:"Stories (broj)", current:Number(organic.stories_current || 0), previous:Number(organic.stories_previous || 0), change:Number(organic.stories_change_pct || 0) },
+    { label:"Views", current:Number(organic.views_current || 0), previous:Number(organic.views_previous || 0), change:Number(organic.views_change_pct || 0) },
+    { label:"Interactions", current:Number(organic.interactions_current || 0), previous:Number(organic.interactions_previous || 0), change:Number(organic.interactions_change_pct || 0) },
+    { label:"Novi pratioci", current:Number(organic.new_followers_current || 0), previous:Number(organic.new_followers_previous || 0), change:Number(organic.new_followers_change_pct || 0) },
+    { label:"Izgubljeni pratioci", current:Number(organic.lost_followers_current || 0), previous:Number(organic.lost_followers_previous || 0), change:Number(organic.lost_followers_change_pct || 0) },
+    { label:"Leads iz organika", current:Number(organic.organic_leads_current || 0), previous:Number(organic.organic_leads_previous || 0), change:Number(organic.organic_leads_change_pct || 0) }
+  ];
+
+  return {
+    report_id: full.report_id || "",
+    profile: full.profile || "",
+    owner: full.owner || "",
+    report_date: full.report_date || "",
+    period_start: full.week_start || "",
+    period_end: full.week_end || "",
+    period_label: full.period_label || `${full.week_start || ""} → ${full.week_end || ""}`,
+    created_at: full.created_at || "",
+    updated_at: full.updated_at || "",
+    notes,
+    overview: {
+      views: Number(organic.views_current || 0),
+      views_previous: Number(organic.views_previous || 0),
+      interactions: Number(organic.interactions_current || 0),
+      interactions_previous: Number(organic.interactions_previous || 0),
+      follower_change: Number(organic.new_followers_current || 0),
+      impressions: Number(adsTotals.impressions || 0),
+      paid_spend: Number(adsTotals.budget || 0),
+      clicks: Number(adsTotals.clicks || 0),
+      revenue: Number(adsTotals.revenue || 0)
+    },
+    organic_rows: organicRows,
+    ads: (full.ads || []).map(c => ({
+      campaign_name: c.campaign_name || "",
+      budget: Number(c.budget || 0),
+      impressions: Number(c.impressions || 0),
+      clicks: Number(c.clicks || 0),
+      leads: Number(c.leads_registrations || 0),
+      revenue: Number(c.revenue || 0),
+      cpm: Number(c.cpm || 0),
+      ctr: Number(c.ctr_pct || 0),
+      cpc: Number(c.cpc || 0),
+      cpa: Number(c.cpa || 0),
+      roas: Number(c.roas || 0),
+      conversion: Number(c.conversion_pct || 0)
+    })),
+    topViews: (full.topViews || []).map(p => ({
+      title: p.title || "",
+      link: p.link || "",
+      value: Number(p.value || 0),
+      interactions: Number(p.interactions || 0),
+      comment: p.comment || ""
+    })),
+    topLikes: (full.topLikes || []).map(p => ({
+      title: p.title || "",
+      link: p.link || "",
+      value: Number(p.value || 0),
+      interactions: Number(p.interactions || 0),
+      comment: p.comment || ""
+    }))
+  };
+}
+
+async function bootstrap(){
+  try {
+    const list = await apiGet({ action: "listReports" });
+    if (!list.ok) throw new Error(list.error || "Greška pri učitavanju.");
+
+    const base = Array.isArray(list.reports) ? list.reports : [];
+    state.allReports = base.map(normalizeReport);
+    fillFilters(list.lookups || null);
+    applyFilters();
+  } catch (e) {
+    showToast(e.message || "Greška pri učitavanju podataka.", true);
+  }
+}
+
+function fillFilters(lookups = null){
+  const profiles = lookups && Array.isArray(lookups.profiles)
+    ? [...new Set(lookups.profiles.filter(Boolean))].sort()
+    : [...new Set(state.allReports.map(r => r.profile).filter(Boolean))].sort();
+
+  const owners = lookups && Array.isArray(lookups.owners)
+    ? [...new Set(lookups.owners.filter(Boolean))].sort()
+    : [...new Set(state.allReports.map(r => r.owner).filter(Boolean))].sort();
+
+  const profileSelect = document.getElementById("filterProfile");
+  const ownerSelect = document.getElementById("filterOwner");
+  profileSelect.innerHTML = `<option value="all">Svi profili</option>` + profiles.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join("");
+  ownerSelect.innerHTML = `<option value="all">Sve osobe</option>` + owners.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
+
+  document.getElementById("ownersList").innerHTML = owners.map(o => `<option value="${esc(o)}"></option>`).join("");
+  document.getElementById("profilesList").innerHTML = profiles.map(p => `<option value="${esc(p)}"></option>`).join("");
+}
+
+function applyFilters(){
+  const profile = document.getElementById("filterProfile").value;
+  const owner = document.getElementById("filterOwner").value;
+  const from = document.getElementById("filterDateFrom").value;
+  const to = document.getElementById("filterDateTo").value;
+
+  state.filteredReports = state.allReports.filter(r =>
+    (profile === "all" || r.profile === profile) &&
+    (owner === "all" || r.owner === owner) &&
+    (!from || !r.period_start || r.period_start >= from) &&
+    (!to || !r.period_end || r.period_end <= to)
+  );
+
+  state.currentView = "home";
+  state.entityType = null;
+  state.entityValue = null;
+  state.selectedReportId = null;
+  renderAll();
+}
+
+function showView(view){
+  state.currentView = view;
+  document.getElementById("homeView").classList.toggle("hidden", view !== "home");
+  document.getElementById("entityView").classList.toggle("hidden", view !== "entity");
+  document.getElementById("reportView").classList.toggle("hidden", view !== "report");
+  document.getElementById("homeBtn").classList.toggle("hidden", view === "home");
+  document.getElementById("entityBackBtn").classList.toggle("hidden", view !== "report");
+
+  document.getElementById("modeBadge").textContent =
+    view === "home" ? "Home overview" :
+    view === "entity" ? "Entity overview" : "Single report";
+}
+
+function renderAll(){
+  renderGlobalReportsTable();
+
+  if (state.currentView === "home") {
+    showView("home");
+    renderHomeView();
+  } else if (state.currentView === "entity") {
+    showView("entity");
+    renderEntityView();
+  } else {
+    showView("report");
+    renderReportView();
+  }
+}
+
+function summarizeReports(reports){
+  return reports.reduce((acc, r) => {
+    acc.reports += 1;
+    acc.views += r.overview.views || 0;
+    acc.interactions += r.overview.interactions || 0;
+    acc.followers += getOrganicValue(r, "Novi pratioci", "current");
+    acc.impressions += r.overview.impressions || 0;
+    return acc;
+  }, { reports:0, views:0, interactions:0, followers:0, impressions:0 });
+}
+
+function getOrganicValue(report, label, kind){
+  const row = (report.organic_rows || []).find(r => r.label === label);
+  return row ? Number(row[kind] || 0) : 0;
+}
+
+function renderHomeView(){
+  const summary = summarizeReports(state.filteredReports);
+  document.getElementById("heroContextA").textContent =
+    document.getElementById("filterProfile").value === "all" ? "Svi profili" : document.getElementById("filterProfile").value;
+  document.getElementById("heroContextB").textContent =
+    document.getElementById("filterOwner").value === "all" ? "Sve osobe" : document.getElementById("filterOwner").value;
+
+  document.getElementById("homeReportsCount").textContent = fmt(summary.reports);
+  document.getElementById("homeProfilesCount").textContent = fmt(new Set(state.filteredReports.map(r => r.profile)).size);
+  document.getElementById("homeOwnersCount").textContent = fmt(new Set(state.filteredReports.map(r => r.owner)).size);
+  document.getElementById("homeViewsTotal").textContent = fmt(summary.views);
+  document.getElementById("homeFollowersTotal").textContent = fmt(summary.followers);
+  document.getElementById("homeImpressionsTotal").textContent = fmt(summary.impressions);
+
+  renderEntityCards("profilesCards", groupReportsBy(state.filteredReports, "profile"), "profile");
+  renderEntityCards("ownersCards", groupReportsBy(state.filteredReports, "owner"), "owner");
+}
+
+function groupReportsBy(reports, key){
+  return reports.reduce((acc, r) => {
+    const val = r[key];
+    if (!val) return acc;
+    if (!acc[val]) acc[val] = [];
+    acc[val].push(r);
+    return acc;
+  }, {});
+}
+
+function renderEntityCards(containerId, groups, type){
+  const container = document.getElementById(containerId);
+  const html = Object.entries(groups).map(([name, reports]) => {
+    const s = summarizeReports(reports);
+    let status;
+
+    if (s.reports === 0) {
+      status = "empty";
+    } else if (s.views_change_pct < -20 || s.interactions_change_pct < -20) {
+      status = "bad";
+    } else if (s.views_change_pct < 0 || s.interactions_change_pct < 0) {
+      status = "warn";
+    } else {
+      status = "good";
+    }
+
+    const statusText =
+      status === "good" ? "OK" :
+      status === "warn" ? "Obratiti pažnju" :
+      status === "bad" ? "Kritično" :
+      "Nema podataka";
+
+    return `
+      <div class="entityCard" data-type="${esc(type)}" data-name="${esc(name)}">
+        <div class="entityTitle">${esc(name)}</div>
+        <div class="muted">${fmt(s.reports)} reporta</div>
+        <div class="entityMeta">
+          <div class="row"><span>Views</span><strong>${fmt(s.views)}</strong></div>
+          <div class="row"><span>Novi pratioci</span><strong>${fmt(s.followers)}</strong></div>
+          <div class="row"><span>ADS impressions</span><strong>${fmt(s.impressions)}</strong></div>
+        </div>
+        <div class="status ${status}">${statusText}</div>
+      </div>
+    `;
+  }).join("");
+  container.innerHTML = html || `<div class="empty">Nema podataka.</div>`;
+
+  container.querySelectorAll(".entityCard").forEach(card => {
+    card.onclick = () => openEntity(card.dataset.type, card.dataset.name);
+  });
+}
+
+function openEntity(type, value){
+  state.entityType = type;
+  state.entityValue = value;
+  state.selectedReportId = null;
+  state.currentView = "entity";
+  renderAll();
+}
+
+function getEntityReports(){
+  if (!state.entityType || !state.entityValue) return [];
+  return state.filteredReports.filter(r => (state.entityType === "profile" ? r.profile : r.owner) === state.entityValue);
+}
+
+function aggregateOrganicRows(reports){
+  return ORGANIC_METRICS.map(m => {
+    const current = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "current"), 0);
+    const previous = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "previous"), 0);
+    return {
+      label: m.label,
+      current,
+      previous,
+      change: pctChange(current, previous)
+    };
+  });
+}
+
+function renderEntityView(){
+  const reports = getEntityReports();
+  const summary = summarizeReports(reports);
+  document.getElementById("entityTitleMetric").textContent = state.entityValue || "-";
+  document.getElementById("entityTypeLabel").textContent = state.entityType === "profile" ? "Profil" : "Zadužena osoba";
+  document.getElementById("entityReportsCount").textContent = fmt(summary.reports);
+  document.getElementById("entityViewsTotal").textContent = fmt(summary.views);
+  document.getElementById("entityFollowersTotal").textContent = fmt(summary.followers);
+  document.getElementById("entityImpressionsTotal").textContent = fmt(summary.impressions);
+
+  const rows = aggregateOrganicRows(reports);
+  document.getElementById("entityOrganicTableBody").innerHTML = rows.map(r => `
+    <tr>
+      <td>${esc(r.label)}</td>
+      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.previous)}</td>
+      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
+    </tr>
+  `).join("");
+
+  document.getElementById("entityReportsEmpty").classList.toggle("hidden", reports.length > 0);
+  document.getElementById("entityReportsTableBody").innerHTML = reports.map(r => `
+    <tr>
+      <td>${esc(r.report_date || "-")}</td>
+      <td>${esc(r.profile)}</td>
+      <td>${esc(r.owner)}</td>
+      <td>${esc(r.period_label)}</td>
+      <td>${fmt(r.overview.views)}</td>
+      <td>${fmt(r.overview.interactions)}</td>
+      <td>${fmt(r.overview.impressions)}</td>
+      <td class="reportActions"><a data-show="${esc(r.report_id)}">Prikaži</a></td>
+    </tr>
+  `).join("");
+
+  drawEntityTrendChart(reports);
+}
+
+function getSelectedReport(){
+  return state.allReports.find(r => r.report_id === state.selectedReportId) || null;
+}
+
+function openReport(reportId){
+  state.selectedReportId = reportId;
+  state.currentView = "report";
+  renderAll();
+}
+
+function buildInsights(report){
+  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const newFollowers = getOrganicValue(report, "Novi pratioci", "current");
+  const lostFollowers = getOrganicValue(report, "Izgubljeni pratioci", "current");
+  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
+  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
+  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
+  const paidImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
+
+  const insights = [];
+  if (interactionsChange > viewsChange) insights.push("Angažman raste brže od dosega, što ukazuje na kvalitetniji odziv publike.");
+  if (storiesChange > 0 && viewsChange > 0) insights.push("Povećana stories aktivnost prati rast vidljivosti sadržaja.");
+  if (newFollowers > lostFollowers) insights.push("Profil ostvaruje pozitivan net growth u broju pratilaca.");
+  if (paidImpressions === 0) insights.push("Rezultat ovog perioda dominantno dolazi iz organskog sadržaja.");
+  if ((report.topViews || [])[0]) insights.push(`Najjača objava po views trenutno je "${report.topViews[0].title}".`);
+  return insights;
+}
+
+function buildRecommendations(report){
+  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
+  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
+  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
+
+  const adsImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
+  const adsClicks = report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0);
+  const adsCtr = safeRate(adsClicks, adsImpressions);
+  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
+
+  const recs = [];
+  if (viewsChange <= 0) recs.push("Views stagniraju ili opadaju — testirati više reels/video formata i jači hook u prvim sekundama sadržaja.");
+  if (interactionsChange > 0 && report.ads.reduce((s,a)=>s+Number(a.leads||0),0) === 0) recs.push("Angažman raste, ali nema konverzija — dodati jasniji CTA i sadržaj usmjeriti ka akciji.");
+  if (adsImpressions > 0 && adsCtr < 0.8) recs.push("Paid kampanje imaju nizak CTR — testirati novu kreativu, headline i targetiranje.");
+  if ((report.topViews || [])[0]) recs.push(`Najbolju objavu "${report.topViews[0].title}" iskoristiti kao referencu za sličan format.`);
+  if (storiesChange <= 0) recs.push("Stories output ne raste — povećati frekvenciju za bolju dnevnu vidljivost.");
+  if (engagementRate < 2 && report.overview.views > 0) recs.push("Engagement rate je nizak — uključiti više pitanja, CTA i interaktivnih elemenata.");
+  return recs.slice(0, 4);
+}
+
+function renderAdsTable(report){
+  const ads = report.ads || [];
+  document.getElementById("reportAdsCampaignCount").textContent = fmt(ads.length);
+  document.getElementById("reportAdsHeadCols").textContent = ads.map(a => a.campaign_name || "Kampanja").join(" / ");
+
+  if (!ads.length) {
+    document.getElementById("reportAdsBody").innerHTML = `<tr><td colspan="2">Nema kampanja.</td></tr>`;
+    return;
+  }
+
+  document.getElementById("reportAdsBody").innerHTML = ADS_METRICS.map(metric => `
+    <tr>
+      <td>${esc(metric.label)}</td>
+      <td>${ads.map(a => {
+        const val = (() => {
+          if (metric.key === "budget") return fmt(a.budget, 2);
+          if (metric.key === "impressions") return fmt(a.impressions);
+          if (metric.key === "clicks") return fmt(a.clicks);
+          if (metric.key === "leads") return fmt(a.leads);
+          if (metric.key === "revenue") return fmt(a.revenue, 2);
+          if (metric.key === "cpm") return fmt(a.cpm, 2);
+          if (metric.key === "ctr") return `${fmt(a.ctr, 2)}%`;
+          if (metric.key === "cpc") return fmt(a.cpc, 2);
+          if (metric.key === "conversion") return `${fmt(a.conversion, 2)}%`;
+          if (metric.key === "cpa") return fmt(a.cpa, 2);
+          if (metric.key === "roas") return fmt(a.roas, 2);
+          return "-";
+        })();
+        return `<div>${esc(val)}</div>`;
+      }).join("")}</td>
+    </tr>
+  `).join("");
+}
+
+function renderTopPosts(containerId, items, metricLabel){
+  const container = document.getElementById(containerId);
+  container.innerHTML = items.length ? items.map(item => `
+    <div class="topPost">
+      <div>
+        <strong>${esc(item.title || "-")}</strong>
+        ${item.comment ? `<div class="muted" style="margin-top:4px">${esc(item.comment)}</div>` : ""}
+      </div>
+      <div>${fmt(item.value || 0)} ${esc(metricLabel)}</div>
+      <div>${fmt(item.interactions || 0)} interactions</div>
+    </div>
+  `).join("") : `<div class="empty">Nema unosa.</div>`;
+}
+
+function renderReportView(){
+  const report = getSelectedReport();
+  if (!report) {
+    state.currentView = state.entityType ? "entity" : "home";
+    renderAll();
+    return;
+  }
+
+  document.getElementById("reportProfileName").textContent = report.profile || "-";
+  document.getElementById("reportOwnerName").textContent = report.owner || "-";
+  document.getElementById("reportPeriodLabel").textContent = report.period_label || "-";
+  document.getElementById("reportDateLabel").textContent = report.report_date || "-";
+
+  document.getElementById("reportViewsCurrent").textContent = fmt(report.overview.views);
+  document.getElementById("reportViewsPrevious").textContent = fmt(report.overview.views_previous);
+  document.getElementById("reportImpressionsCurrent").textContent = fmt(report.overview.impressions);
+
+  const viewsDelta = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsDelta = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
+  const adsCtr = safeRate(
+    report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0),
+    report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0)
+  );
+
+  document.getElementById("reportViewsDelta").textContent = `${fmt(viewsDelta, 2)}%`;
+  document.getElementById("reportInteractionsDelta").textContent = `${fmt(interactionsDelta, 2)}%`;
+  document.getElementById("reportEngagementRate").textContent = `${fmt(engagementRate, 2)}%`;
+  document.getElementById("reportAdsCtr").textContent = `${fmt(adsCtr, 2)}%`;
+
+  document.getElementById("reportSummaryBox").textContent = report.notes || "—";
+
+  document.getElementById("reportOrganicTableBody").innerHTML = (report.organic_rows || []).map(r => `
+    <tr>
+      <td>${esc(r.label)}</td>
+      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.previous)}</td>
+      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
+    </tr>
+  `).join("");
+
+  renderAdsTable(report);
+  renderTopPosts("reportTopViews", report.topViews || [], "views");
+  renderTopPosts("reportTopLikes", report.topLikes || [], "lajkova");
+
+  const insights = buildInsights(report);
+  const recommendations = buildRecommendations(report);
+
+  document.getElementById("reportInsightsBox").innerHTML = insights.length ? `<ul class="list">${insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
+  document.getElementById("reportRecommendationsBox").innerHTML = recommendations.length ? `<ul class="list">${recommendations.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
+  document.getElementById("reportNotesBox").textContent = report.notes || "—";
+
+  drawReportCharts(report);
+}
+
+function renderGlobalReportsTable(){
+  const reports = state.filteredReports;
+  document.getElementById("reportsCountLabel").textContent = fmt(reports.length);
+  document.getElementById("globalReportsEmpty").classList.toggle("hidden", reports.length > 0);
+
+  document.getElementById("globalReportsTableBody").innerHTML = reports.map(r => `
+    <tr>
+      <td>${esc(r.report_date || "-")}</td>
+      <td>${esc(r.profile)}</td>
+      <td>${esc(r.owner)}</td>
+      <td>${esc(r.period_label)}</td>
+      <td class="reportActions"><a data-show="${esc(r.report_id)}">Prikaži</a></td>
+    </tr>
+  `).join("");
+}
+
+function setupCanvas(canvas){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return { ctx, w: rect.width, h: rect.height };
+}
+function clipLabel(text, max=14){
+  const t = String(text ?? "");
+  return t.length > max ? t.slice(0, max - 1) + "…" : t;
+}
+function axes(ctx, w, h, labels){
+  const longLabels = labels.some(lb => String(lb).length > 10);
+  const manyLabels = labels.length > 6;
+  const rotate = longLabels || manyLabels;
+  const m = { t:20, r:18, b:rotate ? 82 : 40, l:50 };
+  const pw = w - m.l - m.r;
+  const ph = h - m.t - m.b;
+
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = "rgba(255,255,255,.08)";
+  ctx.fillStyle = "#98a2b3";
+  ctx.font = "12px Inter, sans-serif";
+
+  for (let i = 0; i < 5; i++) {
+    const y = m.t + ph * i / 4;
+    ctx.beginPath();
+    ctx.moveTo(m.l, y);
+    ctx.lineTo(w - m.r, y);
+    ctx.stroke();
+  }
+
+  labels.forEach((lb, i) => {
+    const x = labels.length === 1
+      ? m.l + pw / 2
+      : m.l + pw * (i / Math.max(labels.length - 1, 1));
+
+    ctx.save();
+    ctx.translate(x, h - 12);
+    if (rotate) {
+      ctx.rotate(-Math.PI / 4);
+      ctx.textAlign = "right";
+      ctx.fillText(clipLabel(lb, 18), 0, 0);
+    } else {
+      ctx.textAlign = "center";
+      ctx.fillText(clipLabel(lb, 12), 0, 0);
+    }
+    ctx.restore();
+  });
+
+  return { m, pw, ph };
+}
+function lineChart(id, labels, sets, max){
+  const canvas = document.getElementById(id);
+  const { ctx, w, h } = setupCanvas(canvas);
+  const { m, pw, ph } = axes(ctx, w, h, labels);
+  const M = max || Math.max(1, ...sets.flatMap(s => s.data), 10);
+  const x = i => labels.length === 1 ? m.l + pw / 2 : m.l + pw * (i / Math.max(labels.length - 1, 1));
+  const y = v => m.t + ph - (v / M) * ph;
+
+  sets.forEach(s => {
+    ctx.beginPath();
+    s.data.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    s.data.forEach((v, i) => {
+      ctx.beginPath();
+      ctx.arc(x(i), y(v), 3, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+    });
+  });
+}
+function barChart(id, labels, sets){
+  const canvas = document.getElementById(id);
+  const { ctx, w, h } = setupCanvas(canvas);
+
+  const allValues = sets.flatMap(s => s.data);
+  const minVal = Math.min(...allValues, 0);
+  const maxVal = Math.max(...allValues, 0);
+  const range = Math.max(1, maxVal - minVal);
+
+  const { m, pw, ph } = axes(ctx, w, h, labels);
+  const yScale = v => m.t + ((maxVal - v) / range) * ph;
+  const zeroY = yScale(0);
+
+  ctx.strokeStyle = "rgba(255,255,255,.16)";
+  ctx.beginPath();
+  ctx.moveTo(m.l, zeroY);
+  ctx.lineTo(w - m.r, zeroY);
+  ctx.stroke();
+
+  const slot = pw / Math.max(labels.length, 1);
+  const bw = Math.max(12, Math.min(34, slot / (sets.length + 1)));
+
+  sets.forEach((s, si) => s.data.forEach((v, i) => {
+    const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
+    const y = yScale(v);
+    const barTop = Math.min(y, zeroY);
+    const barHeight = Math.max(2, Math.abs(zeroY - y));
+
+    ctx.fillStyle = s.color;
+    ctx.fillRect(x, barTop, bw - 4, barHeight);
+  }));
+}
+function drawEntityTrendChart(reports){
+  const labels = reports.map((r, i) => r.period_end || r.period_start || `R${i+1}`);
+  const views = reports.map(r => r.overview.views || 0);
+  const interactions = reports.map(r => r.overview.interactions || 0);
+  const followers = reports.map(r => getOrganicValue(r, "Novi pratioci", "current"));
+  lineChart("entityTrendChart", labels.length ? labels : ["-"], [
+    { color:"#ff4fa7", data:labels.length ? views : [0] },
+    { color:"#8b5cf6", data:labels.length ? interactions : [0] },
+    { color:"#22d3ee", data:labels.length ? followers : [0] }
+  ]);
+}
+function drawReportCharts(report){
+  const labels = (report.organic_rows || []).map(r => r.label);
+  const current = (report.organic_rows || []).map(r => r.current);
+  const previous = (report.organic_rows || []).map(r => r.previous);
+  const growth = (report.organic_rows || []).map(r => r.change);
+
+  lineChart("reportTrendChart", labels.length ? labels : ["-"], [
+    { color:"#ff4fa7", data:labels.length ? current : [0] },
+    { color:"#ff9a31", data:labels.length ? previous : [0] }
+  ]);
+  barChart("reportBarsChart", labels.length ? labels : ["-"], [
+    { color:"#8b5cf6", data:labels.length ? growth : [0] }
+  ]);
+}
+
+document.getElementById("openModalBtn").onclick = openModal;
+document.getElementById("closeModalBtn").onclick = closeModal;
+document.getElementById("applyFiltersBtn").onclick = applyFilters;
+document.getElementById("resetFiltersBtn").onclick = () => {
+  document.getElementById("filterProfile").value = "all";
+  document.getElementById("filterOwner").value = "all";
+  document.getElementById("filterDateFrom").value = "";
+  document.getElementById("filterDateTo").value = "";
+  applyFilters();
+};
+document.getElementById("homeBtn").onclick = () => {
+  state.currentView = "home";
+  state.entityType = null;
+  state.entityValue = null;
+  state.selectedReportId = null;
+  renderAll();
+};
+document.getElementById("entityBackBtn").onclick = () => {
+  state.currentView = "entity";
+  state.selectedReportId = null;
+  renderAll();
+};
+
+document.getElementById("reportModal").onclick = (e) => {
+  if (e.target.id === "reportModal") closeModal();
+};
+
+document.getElementById("addCampaignBtn").onclick = () => {
+  const campaigns = collectCampaigns();
+  campaigns.push(emptyCampaign());
+  renderCampaigns(campaigns);
+  renderPreview();
+};
+document.getElementById("addTopViewsBtn").onclick = () => {
+  const posts = collectTopPosts("topViewsInputs");
+  posts.push(emptyTopPost());
+  renderTopPostInputs("topViewsInputs", "views", posts);
+  renderPreview();
+};
+document.getElementById("addTopLikesBtn").onclick = () => {
+  const posts = collectTopPosts("topLikesInputs");
+  posts.push(emptyTopPost());
+  renderTopPostInputs("topLikesInputs", "likes", posts);
+  renderPreview();
+};
+document.getElementById("prevStepBtn").onclick = () => {
+  state.step = Math.max(0, state.step - 1);
+  renderStepper();
+  renderPreview();
+};
+document.getElementById("nextStepBtn").onclick = () => {
+  state.step = Math.min(4, state.step + 1);
+  renderStepper();
+  renderPreview();
+};
+
+document.getElementById("saveReportBtn").onclick = async () => {
+  const report = buildReportPayloadFromForm();
+
+  if (!report.profile || !report.owner || !report.report_date || !report.week_start || !report.week_end) {
+    showToast("Popuni profil, osobu, datum reporta i period.", true);
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    const res = await apiPost({
+      action: "saveReport",
+      report
+    });
+
+    if (!res.ok) throw new Error(res.error || "Greška pri čuvanju.");
+
+    const normalized = normalizeReport(res.report);
+    const idx = state.allReports.findIndex(r => r.report_id === normalized.report_id);
+    if (idx > -1) state.allReports[idx] = normalized;
+    else state.allReports.unshift(normalized);
+
+    fillFilters();
+    applyFilters();
+    closeModal();
+    showToast("Izvještaj je sačuvan.");
+  } catch (e) {
+    showToast(e.message || "Greška pri čuvanju.", true);
+  } finally {
+    setSaving(false);
+  }
+};
+
+document.getElementById("globalReportsTableBody").onclick = (e) => {
+  const show = e.target.dataset.show;
+  if (show) openReport(show);
+};
+document.getElementById("entityReportsTableBody").onclick = (e) => {
+  const show = e.target.dataset.show;
+  if (show) openReport(show);
+};
+
+window.addEventListener("resize", () => {
+  if (state.currentView === "entity") renderEntityView();
+  if (state.currentView === "report") renderReportView();
+});
+
+bootstrap();
+</script>
+</body>
+</html>
