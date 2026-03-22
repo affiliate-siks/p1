@@ -433,7 +433,7 @@ canvas{width:100%;height:100%;display:block}
   </div>
 
   <div id="entityView" class="hidden">
-    <section class="section grid g6">
+    <section class="section grid g5">
       <div class="card">
         <h3>Entitet</h3>
         <div class="metric" id="entityTitleMetric">-</div>
@@ -448,11 +448,6 @@ canvas{width:100%;height:100%;display:block}
         <h3>Ukupni views</h3>
         <div class="metric" id="entityViewsTotal">0</div>
         <div class="muted">Organski views</div>
-      </div>
-      <div class="card">
-        <h3>Ukupne interactions</h3>
-        <div class="metric" id="entityInteractionsTotal">0</div>
-        <div class="muted">Organski interactions</div>
       </div>
       <div class="card">
         <h3>Novi pratioci</h3>
@@ -515,7 +510,7 @@ canvas{width:100%;height:100%;display:block}
   </div>
 
   <div id="reportView" class="hidden">
-    <section class="section grid g5">
+    <section class="section grid g4">
       <div class="card">
         <h3>Profil</h3>
         <div class="metric" id="reportProfileName">-</div>
@@ -530,11 +525,6 @@ canvas{width:100%;height:100%;display:block}
         <h3>Views</h3>
         <div class="metric" id="reportViewsCurrent">0</div>
         <div class="muted">Prošla: <span id="reportViewsPrevious">0</span></div>
-      </div>
-      <div class="card">
-        <h3>Interactions</h3>
-        <div class="metric" id="reportInteractionsCurrent">0</div>
-        <div class="muted">Prošla: <span id="reportInteractionsPrevious">0</span></div>
       </div>
       <div class="card">
         <h3>ADS impressions</h3>
@@ -1378,7 +1368,7 @@ function renderEntityCards(containerId, groups, type){
         <div class="muted">${fmt(s.reports)} reporta</div>
         <div class="entityMeta">
           <div class="row"><span>Views</span><strong>${fmt(s.views)}</strong></div>
-          <div class="row"><span>Interactions</span><strong>${fmt(s.interactions)}</strong></div>
+          
           <div class="row"><span>Novi pratioci</span><strong>${fmt(s.followers)}</strong></div>
           <div class="row"><span>ADS impressions</span><strong>${fmt(s.impressions)}</strong></div>
         </div>
@@ -1426,7 +1416,6 @@ function renderEntityView(){
   document.getElementById("entityTypeLabel").textContent = state.entityType === "profile" ? "Profil" : "Zadužena osoba";
   document.getElementById("entityReportsCount").textContent = fmt(summary.reports);
   document.getElementById("entityViewsTotal").textContent = fmt(summary.views);
-  document.getElementById("entityInteractionsTotal").textContent = fmt(summary.interactions);
   document.getElementById("entityFollowersTotal").textContent = fmt(summary.followers);
   document.getElementById("entityImpressionsTotal").textContent = fmt(summary.impressions);
 
@@ -1571,8 +1560,6 @@ function renderReportView(){
 
   document.getElementById("reportViewsCurrent").textContent = fmt(report.overview.views);
   document.getElementById("reportViewsPrevious").textContent = fmt(report.overview.views_previous);
-  document.getElementById("reportInteractionsCurrent").textContent = fmt(report.overview.interactions);
-  document.getElementById("reportInteractionsPrevious").textContent = fmt(report.overview.interactions_previous);
   document.getElementById("reportImpressionsCurrent").textContent = fmt(report.overview.impressions);
 
   const viewsDelta = pctChange(report.overview.views, report.overview.views_previous);
