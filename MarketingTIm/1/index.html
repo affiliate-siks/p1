@@ -1360,8 +1360,23 @@ function renderEntityCards(containerId, groups, type){
   const container = document.getElementById(containerId);
   const html = Object.entries(groups).map(([name, reports]) => {
     const s = summarizeReports(reports);
-    const status = s.views > 0 && s.interactions > 0 ? "good" : s.reports > 0 ? "warn" : "bad";
-    const statusText = status === "good" ? "Active" : status === "warn" ? "Needs data" : "Empty";
+   let status;
+
+if (s.reports === 0) {
+  status = "empty";
+} else if (s.views_change_pct < -20 || s.interactions_change_pct < -20) {
+  status = "bad";
+} else if (s.views_change_pct < 0 || s.interactions_change_pct < 0) {
+  status = "warn";
+} else {
+  status = "good";
+}
+
+const statusText =
+  status === "good" ? "OK" :
+  status === "warn" ? "Obratiti pažnju" :
+  status === "bad" ? "Kritično" :
+  "Nema podataka";
     return `
       <div class="entityCard" data-type="${esc(type)}" data-name="${esc(name)}">
         <div class="entityTitle">${esc(name)}</div>
@@ -1661,18 +1676,40 @@ function lineChart(id, labels, sets, max){
     ctx.stroke();
   });
 }
-function barChart(id, labels, sets, max){
+function barChart(id, labels, sets){
   const canvas = document.getElementById(id);
   const { ctx, w, h } = setupCanvas(canvas);
-  const { m, pw, ph } = axes(ctx, w, h, labels);
-  const M = max || Math.max(1, ...sets.flatMap(s => s.data), 10);
+
+  const allValues = sets.flatMap(s => s.data);
+  const minVal = Math.min(...allValues, 0);
+  const maxVal = Math.max(...allValues, 0);
+
+  const range = Math.max(1, maxVal - minVal);
+
+  const { m, pw, ph } = axes(ctx, w, h, labels, maxVal);
+
+  const yScale = v => m.t + ((maxVal - v) / range) * ph;
+  const zeroY = yScale(0);
+
+  // zero line
+  ctx.strokeStyle = "rgba(255,255,255,.16)";
+  ctx.beginPath();
+  ctx.moveTo(m.l, zeroY);
+  ctx.lineTo(w - m.r, zeroY);
+  ctx.stroke();
+
   const slot = pw / Math.max(labels.length, 1);
-  const bw = slot / (sets.length + 1);
+  const bw = Math.max(12, Math.min(34, slot / (sets.length + 1)));
+
   sets.forEach((s, si) => s.data.forEach((v, i) => {
     const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
-    const y = m.t + ph - (v / M) * ph;
+    const y = yScale(v);
+
+    const barTop = Math.min(y, zeroY);
+    const barHeight = Math.max(2, Math.abs(zeroY - y));
+
     ctx.fillStyle = s.color;
-    ctx.fillRect(x, y, bw - 4, m.t + ph - y);
+    ctx.fillRect(x, barTop, bw - 4, barHeight);
   }));
 }
 function drawEntityTrendChart(reports){
