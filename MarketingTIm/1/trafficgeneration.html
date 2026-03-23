@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Traffic Generation Team Report</title>
+<style>
+:root{
+  --bg:#0b0d12;
+  --panel:#131925;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.12);
+  --text:#eef2ff;
+  --muted:#98a2b3;
+  --pink:#ff4fa7;
+  --pink2:#ff77bf;
+  --orange:#ff9a31;
+  --purple:#8b5cf6;
+  --cyan:#22d3ee;
+  --green:#22c55e;
+  --red:#f87171;
+  --yellow:#facc15;
+  --radius:22px;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --max:1560px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255,79,167,.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
+    linear-gradient(180deg,#090b10,#0d1017);
+}
+a{color:inherit}
+.app{width:min(var(--max), calc(100vw - 20px));margin:10px auto 28px}
+.section{margin-bottom:18px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.hero,.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.hero{
+  border-radius:28px;
+  padding:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
+    linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
+}
+.hero h1{
+  margin:0;
+  font-size:clamp(28px,4vw,54px);
+  font-weight:300;
+  letter-spacing:-.05em;
+}
+.hero p{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+}
+.card{
+  border-radius:var(--radius);
+  padding:22px;
+  overflow:hidden;
+  position:relative;
+}
+.card h3{margin:0 0 14px;font-size:18px}
+.muted{color:var(--muted);font-size:13px}
+.metric{font-size:38px;font-weight:800;line-height:1;margin-bottom:6px}
+.metric-sm{font-size:28px;font-weight:800;line-height:1}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.kpiWrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-size:12px;color:var(--muted);text-transform:uppercase}
+.stat{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:110px;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:rgba(255,79,167,.12);
+  border:1px solid rgba(255,79,167,.16);
+}
+.analysisBox,.noteBox{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  line-height:1.7;
+}
+.analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.list{margin:0;padding-left:18px}
+.list li{margin:0 0 8px}
+.topPost{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.topPost:last-child{border-bottom:0}
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  border:1px solid var(--line);
+}
+.status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
+.status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
+.status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
+.splitStat{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.splitLabel{
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.note{
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid rgba(250,204,21,.18);
+  background:rgba(250,204,21,.06);
+  color:#fff2b3;
+  line-height:1.65;
+}
+.small{font-size:12px}
+.nowrap{white-space:nowrap}
+@media (max-width:1200px){
+  .g6,.g5,.g4,.g3,.g2,.analysisGrid{grid-template-columns:1fr}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:760px){
+  .app{width:calc(100vw - 12px)}
+  .hero,.card{padding:18px}
+  .topPost{grid-template-columns:1fr}
+  table{min-width:620px}
+  .metric{font-size:32px}
+  .hero h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section class="section">
+    <div class="hero">
+      <div>
+        <h1>Traffic Generation Team Report</h1>
+        <p>Sedmični pregled spend & delivery rezultata, optimizacija i utrošenog vremena po aktivnostima.</p>
+        <div class="chipRow">
+          <span class="badge">Zadužena osoba: Maja Veličković</span>
+          <span class="badge">Tržište: Bugarska / Crna Gora</span>
+          <span class="badge">Period: 16.03–22.03.</span>
+          <span class="badge">Kanali: PropellerAds / Adsterra / Hilltop Ads</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <span class="badge">Traffic Generation</span>
+        <span class="badge">Media Buying / Programmatic</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g6">
+    <div class="card">
+      <h3>Ukupan spend</h3>
+      <div class="metric">2,830.18</div>
+      <div class="muted">Ukupno potrošeno kroz sve kampanje</div>
+    </div>
+    <div class="card">
+      <h3>Ukupne impresije</h3>
+      <div class="metric">1,227,913</div>
+      <div class="muted">Push + prikazani delivery volumen</div>
+    </div>
+    <div class="card">
+      <h3>Ukupno klikova</h3>
+      <div class="metric">77,243</div>
+      <div class="muted">Klikovi prikazani samo gdje su dostupni</div>
+    </div>
+    <div class="card">
+      <h3>Prosječan CPM</h3>
+      <div class="metric">2.30</div>
+      <div class="muted">Računat iz ukupnog spend / impresije</div>
+    </div>
+    <div class="card">
+      <h3>Prosječan CTR</h3>
+      <div class="metric">6.29%</div>
+      <div class="muted">Samo na kampanjama sa dostupnim klikovima</div>
+    </div>
+    <div class="card">
+      <h3>Status</h3>
+      <div class="metric-sm">Stabilno</div>
+      <div class="status good" style="margin-top:10px">Adsterra dominantan kanal</div>
+    </div>
+  </section>
+
+  <section class="section grid g4">
+    <div class="card stat">
+      <div class="icon">💸</div>
+      <div>
+        <div class="muted">Top spend kampanja</div>
+        <div class="metric-sm">DoubleBoost - Adsterra</div>
+        <div class="muted">1,387.79 USD</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">👁</div>
+      <div>
+        <div class="muted">Top delivery kampanja</div>
+        <div class="metric-sm">DoubleBoost - Adsterra</div>
+        <div class="muted">722,833 impresija</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">🖱</div>
+      <div>
+        <div class="muted">Najveći CTR</div>
+        <div class="metric-sm">DoubleBoost - Adsterra</div>
+        <div class="muted">9.05%</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">⏱</div>
+      <div>
+        <div class="muted">Ukupno sati</div>
+        <div class="metric-sm">37h</div>
+        <div class="muted">Najviše: Analiza i reporting</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Spend & Delivery po kampanji</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>KPI</th>
+              <th>DoubleBoost - PropellerAds</th>
+              <th>Registration campaign - Adsterra</th>
+              <th>DoubleBoost - Adsterra</th>
+              <th>DoubleBoost - Hilltop Ads</th>
+              <th>LuckyWheel - Adsterra</th>
+              <th>LuckyWheel - Hilltop Ads</th>
+              <th>GLC / Sedmične Nagrade - Adsterra</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Budžet potrošen ($)</td>
+              <td>366.12</td>
+              <td>56.64</td>
+              <td>1387.79</td>
+              <td>683.54</td>
+              <td>49.65</td>
+              <td>12.66</td>
+              <td>273.78</td>
+            </tr>
+            <tr>
+              <td>Impresije</td>
+              <td>117,441</td>
+              <td>52,961</td>
+              <td>722,833</td>
+              <td>140,529</td>
+              <td>23,920</td>
+              <td>9,592</td>
+              <td>160,637</td>
+            </tr>
+            <tr>
+              <td>CPM</td>
+              <td>3.12</td>
+              <td>1.07</td>
+              <td>2.24</td>
+              <td>2.64</td>
+              <td>2.08</td>
+              <td>1.32</td>
+              <td>1.70</td>
+            </tr>
+            <tr>
+              <td>Klikovi</td>
+              <td>3,700</td>
+              <td>/</td>
+              <td>70,310</td>
+              <td>39</td>
+              <td>1,214</td>
+              <td>101</td>
+              <td>5,576</td>
+            </tr>
+            <tr>
+              <td>CTR (%)</td>
+              <td>3.15%</td>
+              <td>/</td>
+              <td>9.05%</td>
+              <td>2.34%</td>
+              <td>5.08%</td>
+              <td>1.05%</td>
+              <td>3.47%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:16px">
+        Na svim platformama su paralelno aktivne i POP kampanje, za koje platforme ne prikazuju podatke o klikovima već samo impresije. Zato klikovi i CTR u tabeli predstavljaju samo push saobraćaj, dok značajan dio ukupnog traffica dolazi iz POP formata i vidi se kroz delivery i cost.
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g2">
+    <div class="card">
+      <h3>Performance</h3>
+      <div class="analysisBox">
+        <div class="row"><span>Leads</span><strong>/</strong></div>
+        <div class="row"><span>Konverzija tip 1</span><strong>/</strong></div>
+        <div class="row"><span>Konverzija tip 2</span><strong>/</strong></div>
+        <div class="row"><span>CPA</span><strong>/</strong></div>
+        <div class="row"><span>Prihod</span><strong>/</strong></div>
+        <div class="row"><span>ROAS</span><strong>/</strong></div>
+      </div>
+      <div class="muted" style="margin-top:12px">
+        Performance podaci nijesu dostavljeni za ovaj period, pa je fokus izvještaja na spend, delivery i kvalitetu distribucije po mrežama.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Kanal summary</h3>
+      <div class="analysisBox">
+        <div class="row"><span>Adsterra</span><strong>Najveći volumen i najjači CTR</strong></div>
+        <div class="row"><span>PropellerAds</span><strong>Stabilan, ali manji obim</strong></div>
+        <div class="row"><span>Hilltop Ads</span><strong>Slabiji push, veći značaj kroz POP</strong></div>
+      </div>
+      <div class="muted" style="margin-top:12px">
+        Glavna optimizacija u ovom ciklusu bila je redistribucija budžeta prema izvoru koji daje kvalitetniji i skalabilniji saobraćaj.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Optimizacije</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Test / promjena</th>
+              <th>Rezultat</th>
+              <th>KPI koji se poboljšava</th>
+              <th>Očekivani efekat</th>
+              <th>Napomena</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Smanjenje budžeta i redistribucija ka Adsterra - DoubleBoost</td>
+              <td>
+                Ukupan budžet je smanjen na Propelleru i Hilltopu, dok Adsterra preuzima najveći volumen
+                sa 722k impresija i zadržava visok CTR od 9.05%.
+              </td>
+              <td>Efikasnost budžeta, CTR, kvalitet saobraćaja</td>
+              <td>Veći udio kvalitetnog traffica uz manje rasipanje na slabije izvore</td>
+              <td>
+                Blacklistovani loši izvori, whitelistovani oni koji donose bolji kvalitet.
+                Pad volumena je posljedica smanjenog budžeta, ne lošijih performansi.
+              </td>
+            </tr>
+            <tr>
+              <td>Zadržavanje kampanje uz smanjen budžet i fokus na Adsterra push</td>
+              <td>
+                Adsterra zadržava stabilan CTR oko 5%, ali uz pad volumena sa 72k na 23k impresija.
+                Hilltop ostaje slab u push segmentu.
+              </td>
+              <td>CTR, fokus na kvalitet, kontrola troška</td>
+              <td>Bolji kvalitet saobraćaja uz manji volumen i manji waste</td>
+              <td>
+                Hilltop je i dalje više oslonjen na POP format traffic po preporuci account managera platforme.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g2">
+    <div class="card">
+      <h3>Executive summary</h3>
+      <div class="analysisBox">
+        U odnosu na prethodnu nedelju, vidi se smanjenje ukupnog budžeta na svim mrežama, što je direktno
+        uticalo na pad volumena impresija i klikova. Ipak, performanse kampanja ostale su stabilne, što
+        ukazuje da je optimizacija urađena efikasno i da je alokacija budžeta poboljšana.
+        <br><br>
+        Adsterra se i dalje izdvaja kao najefikasniji kanal, sa najvećim volumenom i najvišim CTR-om, što
+        potvrđuje kvalitet ovog saobraćaja. PropellerAds zadržava stabilne rezultate uz manji obim, dok
+        Hilltop nastavlja da doprinosi delivery volumenu dominantno kroz POP format, ali sa slabijim push rezultatima.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Komentar</h3>
+      <div class="noteBox">
+        Budžetska disciplina i redistribucija prema efikasnijim izvorima daju smislen rezultat: manji spend
+        ne vodi automatski slabijem kvalitetu. Fokus je bio na tome da se saobraćaj pročisti i da budžet
+        ide ka mrežama i source-ovima koji pokazuju bolju stabilnost i bolji engagement.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="analysisGrid">
+      <div class="card">
+        <h3>Insights</h3>
+        <div class="analysisBox">
+          <ul class="list">
+            <li>Adsterra je glavni nosilac volumena i kvaliteta u ovom periodu.</li>
+            <li>DoubleBoost - Adsterra ima i najveći spend i najveći delivery, uz najjači CTR.</li>
+            <li>Hilltop push ostaje slab, ali kanal i dalje ima ulogu kroz POP distribuciju.</li>
+            <li>Smanjenje ukupnog budžeta nije narušilo stabilnost rezultata.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recommendations</h3>
+        <div class="analysisBox">
+          <ul class="list">
+            <li>Nastaviti sa fokusom na Adsterra za kampanje koje traže i volumen i kvalitet.</li>
+            <li>Hilltop koristiti selektivno i više kao dodatni POP layer nego core push kanal.</li>
+            <li>Dalje širiti whitelist najboljih source-ova i agresivnije čistiti slabije placement-e.</li>
+            <li>Za naredni period dodati jasnije performance metrike kako bi se povezali delivery i stvarni outcome-i.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Napomena / zaključak</h3>
+        <div class="noteBox">
+          Klikovi i CTR ne pokazuju punu sliku ukupnog traffica jer se POP delivery ne reflektuje kroz te metrike.
+          Zato ovaj izvještaj treba čitati kroz kombinaciju spend-a, impresija, strukture mreža i optimizacionih odluka,
+          a ne samo kroz push engagement.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Time Sheet</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aktivnost</th>
+              <th>Sati utrošeni</th>
+              <th>% ukupnog vremena</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Kreiranje sadržaja</td><td>2</td><td>5%</td></tr>
+            <tr><td>Planiranje / strategija</td><td>7</td><td>18%</td></tr>
+            <tr><td>Community management (grupe, odgovori...)</td><td>4</td><td>10%</td></tr>
+            <tr><td>Analiza i reporting</td><td>10</td><td>25%</td></tr>
+            <tr><td>Ads optimizacija</td><td>5</td><td>13%</td></tr>
+            <tr><td>Testiranje / A/B</td><td>4</td><td>10%</td></tr>
+            <tr><td>Ostalo</td><td>5</td><td>13%</td></tr>
+            <tr><td><strong>Ukupno sati</strong></td><td><strong>37</strong></td><td><strong>100%</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
