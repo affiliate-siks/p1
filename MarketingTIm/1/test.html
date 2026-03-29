@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Marketing Dashboard</title>
+<title>Marketing Team Reporting Dashboard</title>
 <style>
 :root{
   --bg:#0b0d12;
   --panel:#131925;
   --line:rgba(255,255,255,.08);
-  --line2:rgba(255,255,255,.14);
+  --line2:rgba(255,255,255,.12);
   --text:#eef2ff;
   --muted:#98a2b3;
   --pink:#ff4fa7;
   --pink2:#ff77bf;
+  --orange:#ff9a31;
   --purple:#8b5cf6;
   --cyan:#22d3ee;
   --green:#22c55e;
   --red:#f87171;
+  --yellow:#facc15;
   --radius:22px;
   --shadow:0 18px 50px rgba(0,0,0,.35);
-  --max:1380px;
+  --max:1480px;
 }
 *{box-sizing:border-box}
 body{
@@ -28,11 +30,13 @@ body{
   font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--text);
   background:
-    radial-gradient(circle at top left, rgba(255,79,167,.12), transparent 22%),
+    radial-gradient(circle at top left, rgba(255,79,167,.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
     linear-gradient(180deg,#090b10,#0d1017);
 }
+a{color:inherit}
 .hidden{display:none!important}
-.app{width:min(var(--max),calc(100vw - 20px));margin:10px auto 28px}
+.app{width:min(var(--max), calc(100vw - 20px));margin:10px auto 28px}
 .section{margin-bottom:18px}
 .grid{display:grid;gap:18px}
 .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -40,36 +44,50 @@ body{
 .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .g5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .hero,.card,.modal{
-  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
   border:1px solid var(--line);
   box-shadow:var(--shadow);
 }
 .hero{
   border-radius:28px;
-  padding:24px;
+  padding:28px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:18px;
+  gap:20px;
   background:
-    radial-gradient(circle at 85% 20%, rgba(255,255,255,.13), transparent 22%),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
     linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
 }
-.hero h1{margin:0;font-size:clamp(26px,4vw,46px);font-weight:300;letter-spacing:-.05em}
-.hero p{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px}
-.hero-actions,.chipRow{display:flex;gap:10px;flex-wrap:wrap}
-.badge{
-  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
-  background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px;font-weight:700
+.hero h1{
+  margin:0;
+  font-size:clamp(28px,4vw,54px);
+  font-weight:300;
+  letter-spacing:-.05em;
 }
-.card{border-radius:var(--radius);padding:20px;overflow:hidden}
-.card h3{margin:0 0 12px;font-size:18px}
-.metric{font-size:34px;font-weight:800;line-height:1}
-.metric-sm{font-size:24px;font-weight:800;line-height:1}
-.muted{color:var(--muted);font-size:13px}
+.hero p{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+}
 .btn{
-  border:0;border-radius:999px;padding:11px 16px;cursor:pointer;font:700 14px inherit;
-  color:var(--text);transition:.18s ease;white-space:nowrap
+  border:0;
+  border-radius:999px;
+  padding:11px 16px;
+  cursor:pointer;
+  font:700 14px inherit;
+  color:var(--text);
+  transition:.18s ease;
+  white-space:nowrap;
 }
 .btn:hover{transform:translateY(-1px)}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
@@ -77,81 +95,223 @@ body{
 .btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--line)}
 .btn-danger{background:rgba(248,113,113,.14);color:#ffd8d8;border:1px solid rgba(248,113,113,.18)}
 .btn-success{background:rgba(34,197,94,.15);color:#d8ffe6;border:1px solid rgba(34,197,94,.18)}
-.toolbar{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto auto;gap:12px;align-items:end}
-.field{display:grid;gap:6px}
+.card{
+  border-radius:var(--radius);
+  padding:22px;
+  overflow:hidden;
+  position:relative;
+}
+.card h3{margin:0 0 14px;font-size:18px}
+.muted{color:var(--muted);font-size:13px}
+.metric{font-size:38px;font-weight:800;line-height:1;margin-bottom:6px}
+.metric-sm{font-size:28px;font-weight:800;line-height:1}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.toolbar{
+  display:grid;
+  grid-template-columns:1.1fr 1.1fr 1fr 1fr auto;
+  gap:12px;
+  align-items:end;
+}
+.field,.fieldInline{display:grid;gap:6px}
 label{font-size:12px;color:var(--muted);font-weight:700}
 input,select,textarea{
-  width:100%;padding:12px 13px;border-radius:14px;border:1px solid var(--line2);
-  background:rgba(255,255,255,.04);color:var(--text);font:inherit;outline:none
+  width:100%;
+  padding:12px 13px;
+  border-radius:14px;
+  border:1px solid var(--line2);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font:inherit;
+  outline:none;
 }
 input:focus,select:focus,textarea:focus{
-  border-color:rgba(255,79,167,.45);box-shadow:0 0 0 3px rgba(255,79,167,.12)
+  border-color:rgba(255,79,167,.45);
+  box-shadow:0 0 0 3px rgba(255,79,167,.12);
 }
 select option{background:#0f1420}
 textarea{min-height:90px;resize:vertical}
-.row{
-  display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px
-}
-.row:last-child{border-bottom:0;padding-bottom:0}
 .kpiWrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}
+table{width:100%;border-collapse:collapse;min-width:820px}
 th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
 th{font-size:12px;color:var(--muted);text-transform:uppercase}
 .delta.up{color:var(--green)}
 .delta.down{color:var(--red)}
 .delta.flat{color:var(--muted)}
-.reportActions a{color:#ffc7e2;text-decoration:none;font-weight:700;cursor:pointer;margin-right:12px}
-.canvasWrap{height:240px}
+.reportActions a{
+  color:#ffc7e2;
+  text-decoration:none;
+  font-weight:700;
+  margin-right:12px;
+  cursor:pointer;
+}
+.stat{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:110px;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:rgba(255,79,167,.12);
+  border:1px solid rgba(255,79,167,.16);
+}
+.analysisBox,.noteBox{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  line-height:1.65;
+}
+.analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.topPost{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.topPost:last-child{border-bottom:0}
+.canvasWrap{height:220px}
 canvas{width:100%;height:100%;display:block}
 .empty{
-  padding:30px;text-align:center;color:var(--muted);border:1px dashed rgba(255,255,255,.12);
-  border-radius:16px;background:rgba(255,255,255,.02)
-}
-.list{margin:0;padding-left:18px}
-.list li{margin:0 0 8px}
-.entry{
-  padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02);margin-bottom:12px
+  padding:34px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed rgba(255,255,255,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
 }
 .modalBackdrop{
-  position:fixed;inset:0;background:rgba(4,6,10,.74);backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;padding:16px;z-index:50
+  position:fixed;
+  inset:0;
+  background:rgba(4,6,10,.74);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:50;
 }
 .modalBackdrop.open{display:flex}
 .modal{
-  width:min(1100px,100%);max-height:94vh;border-radius:26px;overflow:hidden;
-  display:grid;grid-template-rows:auto 1fr auto
+  width:min(1180px,100%);
+  max-height:94vh;
+  border-radius:26px;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
 }
 .modalHead,.modalFoot{
-  padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px
+  padding:18px 22px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
 }
 .modalFoot{border-top:1px solid var(--line);border-bottom:0}
 .modalBody{padding:20px;overflow:auto}
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stepPill{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+.stepPill.active{
+  background:rgba(255,79,167,.14);
+  color:#ffd8ea;
+  border-color:rgba(255,79,167,.24);
+}
+.step{display:none}
+.step.active{display:block}
+.stepCard{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.02);
+  margin-bottom:16px;
+}
+.stepTitle{font-size:18px;font-weight:800;margin:0 0 10px}
+.helper{color:var(--muted);font-size:13px;margin-bottom:12px}
 .form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .form3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.topPost{
-  display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)
+.entry{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:rgba(255,255,255,.02);
+  margin-bottom:12px;
 }
-.topPost:last-child{border-bottom:0}
+.previewGrid{display:grid;gap:12px}
 .savingBadge{
-  display:none;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);
-  border:1px solid var(--line);font-size:12px;color:var(--muted)
+  display:none;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--muted);
 }
 .savingBadge.show{display:inline-flex}
 .toast{
-  position:fixed;right:18px;bottom:18px;z-index:70;background:#121722;border:1px solid var(--line);
-  padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);display:none;max-width:320px
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:70;
+  background:#121722;
+  border:1px solid var(--line);
+  padding:12px 14px;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  display:none;
+  max-width:320px;
 }
 .toast.show{display:block}
+.viewHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.list{
+  margin:0;
+  padding-left:18px;
+}
+.list li{
+  margin:0 0 8px;
+}
 @media (max-width:1200px){
-  .g5,.g4,.g3,.g2,.toolbar,.form2,.form3{grid-template-columns:1fr}
+  .g5,.g4,.g3,.g2,.toolbar,.analysisGrid{grid-template-columns:1fr}
   .hero{flex-direction:column;align-items:flex-start}
 }
 @media (max-width:760px){
   .app{width:calc(100vw - 12px)}
   .hero,.card{padding:18px}
-  .metric{font-size:28px}
+  .form2,.form3{grid-template-columns:1fr}
   .topPost{grid-template-columns:1fr}
   table{min-width:620px}
+  .metric{font-size:32px}
+  .hero h1{font-size:30px}
 }
 </style>
 </head>
@@ -160,17 +320,18 @@ canvas{width:100%;height:100%;display:block}
   <section class="section">
     <div class="hero">
       <div>
-        <h1>Marketing Dashboard</h1>
-        <p>Pregled samo po osobi ili po nalogu. Bez globalnog overview-a.</p>
+        <h1>Marketing Team Reporting Dashboard</h1>
+        <p>Unos sedmičnih izvještaja, fokusirani pregled po profilu ili po osobi.</p>
         <div class="chipRow">
-          <span class="badge" id="modeBadge">Izaberi fokus</span>
-          <span class="badge" id="focusBadge">—</span>
+          <span class="badge" id="modeBadge">Focus dashboard</span>
+          <span class="badge" id="heroContextA">Izaberi profil ili osobu</span>
+          <span class="badge" id="heroContextB">Bez globalnog overview-a</span>
         </div>
       </div>
       <div class="hero-actions">
         <span class="savingBadge" id="savingBadge">Čuvanje u toku...</span>
-        <button class="btn btn-ghost hidden" id="backToFocusBtn">Nazad</button>
-        <button class="btn btn-ghost" id="resetFiltersBtn">Reset</button>
+        <button class="btn btn-ghost hidden" id="entityBackBtn">Nazad</button>
+        <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
         <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
       </div>
     </div>
@@ -180,109 +341,110 @@ canvas{width:100%;height:100%;display:block}
     <div class="card">
       <h3>Filteri</h3>
       <div class="toolbar">
-        <div class="field">
-          <label>Zadužena osoba</label>
-          <select id="filterOwner"></select>
-        </div>
-        <div class="field">
+        <div class="fieldInline">
           <label>Profil</label>
           <select id="filterProfile"></select>
         </div>
-        <div class="field">
+        <div class="fieldInline">
+          <label>Zadužena osoba</label>
+          <select id="filterOwner"></select>
+        </div>
+        <div class="fieldInline">
           <label>Od datuma</label>
           <input id="filterDateFrom" type="date" />
         </div>
-        <div class="field">
+        <div class="fieldInline">
           <label>Do datuma</label>
           <input id="filterDateTo" type="date" />
         </div>
-        <button class="btn btn-primary" id="applyFiltersBtn">Primijeni</button>
-        <button class="btn btn-ghost" id="clearFocusBtn">Očisti fokus</button>
+        <div class="fieldInline">
+          <button class="btn btn-primary" id="applyFiltersBtn">Primijeni</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <div id="focusView">
-    <section class="section" id="emptyStateWrap">
-      <div class="empty">Izaberi osobu ili profil za pregled dashboarda.</div>
+  <div id="emptyView">
+    <section class="section">
+      <div class="empty">Izaberi profil ili zaduženu osobu da vidiš pregled.</div>
+    </section>
+  </div>
+
+  <div id="entityView" class="hidden">
+    <section class="section grid g5">
+      <div class="card">
+        <h3>Entitet</h3>
+        <div class="metric" id="entityTitleMetric">-</div>
+        <div class="muted" id="entityTypeLabel">-</div>
+      </div>
+      <div class="card">
+        <h3>Broj reporta</h3>
+        <div class="metric" id="entityReportsCount">0</div>
+        <div class="muted">U ovoj selekciji</div>
+      </div>
+      <div class="card">
+        <h3>Ukupni views</h3>
+        <div class="metric" id="entityViewsTotal">0</div>
+        <div class="muted">Organski views</div>
+      </div>
+      <div class="card">
+        <h3>Novi pratioci</h3>
+        <div class="metric" id="entityFollowersTotal">0</div>
+        <div class="muted">Ukupno</div>
+      </div>
+      <div class="card">
+        <h3>ADS impressions</h3>
+        <div class="metric" id="entityImpressionsTotal">0</div>
+        <div class="muted">Ukupno iz oglasa</div>
+      </div>
     </section>
 
-    <div id="focusContent" class="hidden">
-      <section class="section grid g5">
-        <div class="card">
-          <h3>Fokus</h3>
-          <div class="metric" id="focusTitle">-</div>
-          <div class="muted" id="focusType">-</div>
+    <section class="section grid g2">
+      <div class="card">
+        <h3>Agregirani KPI</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Metrika</th>
+                <th>Tekuća</th>
+                <th>Prošla</th>
+                <th>Promjena</th>
+              </tr>
+            </thead>
+            <tbody id="entityOrganicTableBody"></tbody>
+          </table>
         </div>
-        <div class="card">
-          <h3>Broj reporta</h3>
-          <div class="metric" id="focusReportsCount">0</div>
-          <div class="muted">U selekciji</div>
-        </div>
-        <div class="card">
-          <h3>Ukupni views</h3>
-          <div class="metric" id="focusViewsTotal">0</div>
-          <div class="muted">Organski</div>
-        </div>
-        <div class="card">
-          <h3>Novi pratioci</h3>
-          <div class="metric" id="focusFollowersTotal">0</div>
-          <div class="muted">Ukupno</div>
-        </div>
-        <div class="card">
-          <h3>ADS impressions</h3>
-          <div class="metric" id="focusImpressionsTotal">0</div>
-          <div class="muted">Ukupno</div>
-        </div>
-      </section>
+      </div>
+      <div class="card">
+        <h3>Trend kroz vrijeme</h3>
+        <div class="canvasWrap"><canvas id="entityTrendChart"></canvas></div>
+      </div>
+    </section>
 
-      <section class="section grid g2">
-        <div class="card">
-          <h3>Agregirani KPI</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Metrika</th>
-                  <th>Tekuća</th>
-                  <th>Prošla</th>
-                  <th>Promjena</th>
-                </tr>
-              </thead>
-              <tbody id="focusOrganicTableBody"></tbody>
-            </table>
-          </div>
+    <section class="section">
+      <div class="card">
+        <h3>Izvještaji</h3>
+        <div class="kpiWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Profil</th>
+                <th>Osoba</th>
+                <th>Period</th>
+                <th>Views</th>
+                <th>Interactions</th>
+                <th>Impressions</th>
+                <th>Akcije</th>
+              </tr>
+            </thead>
+            <tbody id="entityReportsTableBody"></tbody>
+          </table>
         </div>
-        <div class="card">
-          <h3>Trend</h3>
-          <div class="canvasWrap"><canvas id="focusTrendChart"></canvas></div>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="card">
-          <h3>Izvještaji</h3>
-          <div class="kpiWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Datum</th>
-                  <th>Profil</th>
-                  <th>Osoba</th>
-                  <th>Period</th>
-                  <th>Views</th>
-                  <th>Interactions</th>
-                  <th>Impressions</th>
-                  <th>Akcije</th>
-                </tr>
-              </thead>
-              <tbody id="focusReportsTableBody"></tbody>
-            </table>
-          </div>
-          <div id="focusReportsEmpty" class="empty hidden">Nema izvještaja za ovu selekciju.</div>
-        </div>
-      </section>
-    </div>
+        <div id="entityReportsEmpty" class="empty hidden">Nema izvještaja za ovaj entitet.</div>
+      </div>
+    </section>
   </div>
 
   <div id="reportView" class="hidden">
@@ -310,22 +472,22 @@ canvas{width:100%;height:100%;display:block}
     </section>
 
     <section class="section grid g4">
-      <div class="card"><h3>Views promjena</h3><div class="metric-sm" id="reportViewsDelta">0.00%</div></div>
-      <div class="card"><h3>Interactions promjena</h3><div class="metric-sm" id="reportInteractionsDelta">0.00%</div></div>
-      <div class="card"><h3>Engagement rate</h3><div class="metric-sm" id="reportEngagementRate">0.00%</div></div>
-      <div class="card"><h3>Ads CTR</h3><div class="metric-sm" id="reportAdsCtr">0.00%</div></div>
+      <div class="card stat"><div class="icon">👁</div><div><div class="muted">Views promjena</div><div class="metric-sm" id="reportViewsDelta">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">⚡</div><div><div class="muted">Interactions promjena</div><div class="metric-sm" id="reportInteractionsDelta">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">📈</div><div><div class="muted">Engagement rate</div><div class="metric-sm" id="reportEngagementRate">0.00%</div></div></div>
+      <div class="card stat"><div class="icon">🔗</div><div><div class="muted">Ads CTR</div><div class="metric-sm" id="reportAdsCtr">0.00%</div></div></div>
     </section>
 
     <section class="section">
       <div class="card">
         <h3>Executive summary</h3>
-        <div id="reportSummaryBox" class="row" style="display:block;border-bottom:0;padding:0;color:var(--text)">—</div>
+        <div class="analysisBox" id="reportSummaryBox">—</div>
       </div>
     </section>
 
     <section class="section grid g2">
       <div class="card">
-        <h3>Organski rezultati</h3>
+        <h3>KPI po profilu – organski rezultati</h3>
         <div class="kpiWrap">
           <table>
             <thead>
@@ -341,13 +503,16 @@ canvas{width:100%;height:100%;display:block}
         </div>
       </div>
       <div class="card">
-        <h3>Plaćeni rezultati (ADS)</h3>
+        <div class="viewHeader">
+          <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
+          <span class="badge"><span id="reportAdsCampaignCount">0</span> kampanja</span>
+        </div>
         <div class="kpiWrap">
           <table>
             <thead>
               <tr>
                 <th>Metrika</th>
-                <th>Vrijednost</th>
+                <th id="reportAdsHeadCols"></th>
               </tr>
             </thead>
             <tbody id="reportAdsBody"></tbody>
@@ -358,107 +523,173 @@ canvas{width:100%;height:100%;display:block}
 
     <section class="section grid g2">
       <div class="card">
-        <h3>Top objave – views</h3>
+        <h3>Top objave – po views</h3>
         <div id="reportTopViews"></div>
       </div>
       <div class="card">
-        <h3>Top objave – lajkovi</h3>
+        <h3>Top objave – po lajkovima</h3>
         <div id="reportTopLikes"></div>
       </div>
     </section>
 
     <section class="section grid g2">
       <div class="card">
-        <h3>Trend</h3>
+        <h3>Weekly trend</h3>
         <div class="canvasWrap"><canvas id="reportTrendChart"></canvas></div>
       </div>
       <div class="card">
-        <h3>Promjene po metrici</h3>
+        <h3>Organske metrike</h3>
         <div class="canvasWrap"><canvas id="reportBarsChart"></canvas></div>
       </div>
     </section>
 
-    <section class="section grid g2">
-      <div class="card">
-        <h3>Insights</h3>
-        <div id="reportInsightsBox">—</div>
-      </div>
-      <div class="card">
-        <h3>Recommendations</h3>
-        <div id="reportRecommendationsBox">—</div>
+    <section class="section">
+      <div class="analysisGrid">
+        <div class="card">
+          <h3>Insights</h3>
+          <div class="analysisBox" id="reportInsightsBox">—</div>
+        </div>
+        <div class="card">
+          <h3>Recommendations</h3>
+          <div class="analysisBox" id="reportRecommendationsBox">—</div>
+        </div>
+        <div class="card">
+          <h3>Napomena / zaključak</h3>
+          <div class="noteBox" id="reportNotesBox">—</div>
+        </div>
       </div>
     </section>
   </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="viewHeader">
+        <h3 style="margin:0">Sačuvani izvještaji</h3>
+        <span class="badge"><span id="reportsCountLabel">0</span> zapis</span>
+      </div>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Profil</th>
+              <th>Osoba</th>
+              <th>Period</th>
+              <th>Views</th>
+              <th>Interactions</th>
+              <th>Impressions</th>
+              <th>Akcije</th>
+            </tr>
+          </thead>
+          <tbody id="globalReportsTableBody"></tbody>
+        </table>
+      </div>
+      <div id="globalReportsEmpty" class="empty hidden">Nema izvještaja za aktivne filtere.</div>
+    </div>
+  </section>
 </div>
 
 <div class="modalBackdrop" id="reportModal">
   <div class="modal">
     <div class="modalHead">
       <div>
-        <div style="font-size:22px;font-weight:800">Novi sedmični izvještaj</div>
-        <div class="muted">Isti podaci, jednostavnija forma.</div>
+        <div style="font-size:22px;font-weight:800">Unos sedmičnog izvještaja</div>
+        <div class="muted">Forma je usklađena sa postojećim Apps Script backendom.</div>
       </div>
       <button class="btn btn-ghost" id="closeModalBtn">Zatvori</button>
     </div>
 
     <div class="modalBody">
-      <div class="card" style="margin-bottom:14px">
-        <h3>Osnovno</h3>
-        <div class="form3">
-          <div class="field"><label>Datum reporta</label><input id="reportDateInput" type="date" /></div>
-          <div class="field"><label>Početak perioda</label><input id="weekStartInput" type="date" /></div>
-          <div class="field"><label>Kraj perioda</label><input id="weekEndInput" type="date" /></div>
-        </div>
-        <div class="form2" style="margin-top:14px">
-          <div class="field"><label>Zadužena osoba</label><input id="ownerInput" list="ownersList" /></div>
-          <div class="field"><label>Profil</label><input id="profileInput" list="profilesList" /></div>
-          <div class="field"><label>Period label</label><input id="periodLabelInput" value="pon-ned" /></div>
-          <div class="field"><label>Kratka napomena</label><input id="notesShortInput" /></div>
-        </div>
-        <datalist id="ownersList"></datalist>
-        <datalist id="profilesList"></datalist>
-      </div>
+      <div class="stepper" id="stepper"></div>
 
-      <div class="card" style="margin-bottom:14px">
-        <h3>Organski KPI</h3>
-        <div class="form3" id="organicMetricsGrid"></div>
-      </div>
+      <div class="step active" data-step="0">
+        <div class="stepCard">
+          <div class="stepTitle">1. Osnovni podaci</div>
+          <div class="helper">Profil, osoba, datum reporta i period.</div>
 
-      <div class="card" style="margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
-          <h3 style="margin:0">ADS</h3>
-          <button class="btn btn-primary" id="addCampaignBtn" type="button">Dodaj kampanju</button>
-        </div>
-        <div id="campaignsContainer"></div>
-      </div>
+          <div class="form3">
+            <div class="field">
+              <label>Datum reporta</label>
+              <input id="reportDateInput" type="date" />
+            </div>
+            <div class="field">
+              <label>Početak perioda</label>
+              <input id="weekStartInput" type="date" />
+            </div>
+            <div class="field">
+              <label>Kraj perioda</label>
+              <input id="weekEndInput" type="date" />
+            </div>
+          </div>
 
-      <div class="card" style="margin-bottom:14px">
-        <h3>Top objave</h3>
+          <div class="form2" style="margin-top:14px">
+            <div class="field"><label>Zadužena osoba</label><input id="ownerInput" list="ownersList" /></div>
+            <div class="field"><label>Profil</label><input id="profileInput" list="profilesList" /></div>
+            <div class="field"><label>Period label</label><input id="periodLabelInput" value="pon-ned" /></div>
+            <div class="field"><label>Napomena</label><input id="notesShortInput" placeholder="Kratka napomena za lakši pregled" /></div>
+          </div>
 
-        <div style="margin:16px 0 8px;font-weight:700">Po views</div>
-        <div id="topViewsInputs"></div>
-        <button class="btn btn-ghost" id="addTopViewsBtn" type="button">Dodaj objavu</button>
-
-        <div style="margin:18px 0 8px;font-weight:700">Po lajkovima</div>
-        <div id="topLikesInputs"></div>
-        <button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu</button>
-
-        <div class="field" style="margin-top:18px">
-          <label>Komentar / zaključak</label>
-          <textarea id="notesInput"></textarea>
+          <datalist id="ownersList"></datalist>
+          <datalist id="profilesList"></datalist>
         </div>
       </div>
 
-      <div class="card">
-        <h3>Preview</h3>
-        <div id="previewBox"></div>
+      <div class="step" data-step="1">
+        <div class="stepCard">
+          <div class="stepTitle">2. KPI po profilu – organski rezultati</div>
+          <div class="helper">Unosiš tekuću i prošlu nedelju. Promjena se računa automatski.</div>
+          <div class="form3" id="organicMetricsGrid"></div>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <div class="stepCard">
+          <div class="viewHeader">
+            <div>
+              <div class="stepTitle" style="margin-bottom:4px">3. Plaćeni rezultati (ADS)</div>
+              <div class="helper" style="margin:0">Unosiš budžet, impresije, klikove, leads i prihod. Ostalo se računa automatski.</div>
+            </div>
+            <button class="btn btn-primary" id="addCampaignBtn" type="button">Dodaj kampanju</button>
+          </div>
+          <div id="campaignsContainer"></div>
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <div class="stepCard">
+          <div class="stepTitle">4. Top objave + zaključak</div>
+          <div class="helper">Top objave po views i lajkovima.</div>
+
+          <div style="margin:16px 0 8px;font-weight:700">Top objave – po views</div>
+          <div id="topViewsInputs"></div>
+          <button class="btn btn-ghost" id="addTopViewsBtn" type="button">Dodaj objavu po views</button>
+
+          <div style="margin:18px 0 8px;font-weight:700">Top objave – po lajkovima</div>
+          <div id="topLikesInputs"></div>
+          <button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu po lajkovima</button>
+
+          <div class="field" style="margin-top:18px">
+            <label>Komentar / zaključak</label>
+            <textarea id="notesInput"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" data-step="4">
+        <div class="stepCard">
+          <div class="stepTitle">5. Preview</div>
+          <div class="helper">Provjeri unos prije čuvanja.</div>
+          <div class="previewGrid" id="previewBox"></div>
+        </div>
       </div>
     </div>
 
     <div class="modalFoot">
-      <div class="muted">Čuva isti payload kao postojeća verzija.</div>
+      <div class="muted" id="stepStatus">Korak 1 od 5</div>
       <div class="hero-actions">
-        <button class="btn btn-success" id="saveReportBtn">Sačuvaj</button>
+        <button class="btn btn-ghost" id="prevStepBtn">Nazad</button>
+        <button class="btn btn-primary" id="nextStepBtn">Dalje</button>
+        <button class="btn btn-success hidden" id="saveReportBtn">Sačuvaj</button>
       </div>
     </div>
   </div>
@@ -480,17 +711,35 @@ const ORGANIC_METRICS = [
   { key: "organic_leads", label: "Leads iz organika" }
 ];
 
+const ADS_METRICS = [
+  { key:"budget", label:"Budžet" },
+  { key:"impressions", label:"Impresije" },
+  { key:"cpm", label:"CPM" },
+  { key:"ctr", label:"CTR (%)" },
+  { key:"clicks", label:"Klikovi" },
+  { key:"cpc", label:"CPC" },
+  { key:"leads", label:"Leads / Registracije" },
+  { key:"conversion", label:"Konverzija (%)" },
+  { key:"cpa", label:"CPA" },
+  { key:"revenue", label:"Prihod" },
+  { key:"roas", label:"ROAS" }
+];
+
 const state = {
-  currentView: "focus",
-  focusType: null,   // owner | profile
-  focusValue: null,
+  currentView: "empty",
+  entityType: null,
+  entityValue: null,
+  selectedReportId: null,
   allReports: [],
   filteredReports: [],
-  selectedReportId: null
+  step: 0
 };
 
-function fmt(v,d=0){
-  return (Number(v)||0).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+function fmt(v, d=0){
+  return (Number(v) || 0).toLocaleString("en-US", {
+    minimumFractionDigits:d,
+    maximumFractionDigits:d
+  });
 }
 function esc(v){
   return String(v ?? "")
@@ -531,13 +780,13 @@ function setSaving(on){
   document.getElementById("savingBadge").classList.toggle("show", on);
   document.getElementById("saveReportBtn").disabled = on;
 }
-async function apiGet(params={}){
+async function apiGet(params = {}){
   const q = new URLSearchParams(params).toString();
   const res = await fetch(`${API}?${q}`);
   return res.json();
 }
 async function apiPost(body){
-  const res = await fetch(API,{
+  const res = await fetch(API, {
     method:"POST",
     headers:{ "Content-Type":"text/plain" },
     body: JSON.stringify(body)
@@ -545,445 +794,12 @@ async function apiPost(body){
   return res.json();
 }
 
-function normalizeReport(full){
-  const organic = full.organic || {};
-  const adsTotals = full.ads_totals || {};
-  return {
-    report_id: full.report_id || "",
-    profile: full.profile || "",
-    owner: full.owner || "",
-    report_date: full.report_date || "",
-    period_start: full.week_start || "",
-    period_end: full.week_end || "",
-    period_label: full.period_label || "",
-    notes: full.notes || "",
-    overview: {
-      views: Number(organic.views_current || 0),
-      views_previous: Number(organic.views_previous || 0),
-      interactions: Number(organic.interactions_current || 0),
-      interactions_previous: Number(organic.interactions_previous || 0),
-      impressions: Number(adsTotals.impressions || 0)
-    },
-    organic_rows: [
-      { label:"Objave (post)", current:Number(organic.posts_current || 0), previous:Number(organic.posts_previous || 0), change:Number(organic.posts_change_pct || 0) },
-      { label:"Reels / video", current:Number(organic.reels_current || 0), previous:Number(organic.reels_previous || 0), change:Number(organic.reels_change_pct || 0) },
-      { label:"Stories (broj)", current:Number(organic.stories_current || 0), previous:Number(organic.stories_previous || 0), change:Number(organic.stories_change_pct || 0) },
-      { label:"Views", current:Number(organic.views_current || 0), previous:Number(organic.views_previous || 0), change:Number(organic.views_change_pct || 0) },
-      { label:"Interactions", current:Number(organic.interactions_current || 0), previous:Number(organic.interactions_previous || 0), change:Number(organic.interactions_change_pct || 0) },
-      { label:"Novi pratioci", current:Number(organic.new_followers_current || 0), previous:Number(organic.new_followers_previous || 0), change:Number(organic.new_followers_change_pct || 0) },
-      { label:"Izgubljeni pratioci", current:Number(organic.lost_followers_current || 0), previous:Number(organic.lost_followers_previous || 0), change:Number(organic.lost_followers_change_pct || 0) },
-      { label:"Leads iz organika", current:Number(organic.organic_leads_current || 0), previous:Number(organic.organic_leads_previous || 0), change:Number(organic.organic_leads_change_pct || 0) }
-    ],
-    ads: (full.ads || []).map(c => ({
-      campaign_name: c.campaign_name || "",
-      budget: Number(c.budget || 0),
-      impressions: Number(c.impressions || 0),
-      clicks: Number(c.clicks || 0),
-      leads: Number(c.leads_registrations || 0),
-      revenue: Number(c.revenue || 0),
-      cpm: Number(c.cpm || 0),
-      ctr: Number(c.ctr_pct || 0),
-      cpc: Number(c.cpc || 0),
-      cpa: Number(c.cpa || 0),
-      roas: Number(c.roas || 0),
-      conversion: Number(c.conversion_pct || 0)
-    })),
-    topViews: (full.topViews || []).map(p => ({
-      title: p.title || "", link: p.link || "", value: Number(p.value || 0), interactions: Number(p.interactions || 0), comment: p.comment || ""
-    })),
-    topLikes: (full.topLikes || []).map(p => ({
-      title: p.title || "", link: p.link || "", value: Number(p.value || 0), interactions: Number(p.interactions || 0), comment: p.comment || ""
-    }))
-  };
+function emptyCampaign(){
+  return { name:"", budget:"", impressions:"", clicks:"", leads:"", revenue:"" };
 }
-
-function getOrganicValue(report, label, kind){
-  const row = (report.organic_rows || []).find(r => r.label === label);
-  return row ? Number(row[kind] || 0) : 0;
+function emptyTopPost(){
+  return { title:"", link:"", value:"", interactions:"", comment:"" };
 }
-function summarizeReports(reports){
-  return reports.reduce((acc, r) => {
-    acc.reports += 1;
-    acc.views += r.overview.views || 0;
-    acc.interactions += r.overview.interactions || 0;
-    acc.followers += getOrganicValue(r, "Novi pratioci", "current");
-    acc.impressions += r.overview.impressions || 0;
-    return acc;
-  }, { reports:0, views:0, interactions:0, followers:0, impressions:0 });
-}
-function aggregateOrganicRows(reports){
-  return ORGANIC_METRICS.map(m => {
-    const current = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "current"), 0);
-    const previous = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "previous"), 0);
-    return { label:m.label, current, previous, change:pctChange(current, previous) };
-  });
-}
-
-async function bootstrap(){
-  try{
-    const list = await apiGet({ action:"listReports" });
-    if(!list.ok) throw new Error(list.error || "Greška pri učitavanju.");
-    state.allReports = (list.reports || []).map(normalizeReport);
-    fillFilters(list.lookups || null);
-    applyFilters();
-  }catch(e){
-    showToast(e.message || "Greška pri učitavanju.", true);
-  }
-}
-
-function fillFilters(lookups=null){
-  const profiles = lookups?.profiles?.length
-    ? [...new Set(lookups.profiles.filter(Boolean))].sort()
-    : [...new Set(state.allReports.map(r => r.profile).filter(Boolean))].sort();
-
-  const owners = lookups?.owners?.length
-    ? [...new Set(lookups.owners.filter(Boolean))].sort()
-    : [...new Set(state.allReports.map(r => r.owner).filter(Boolean))].sort();
-
-  document.getElementById("filterProfile").innerHTML =
-    `<option value="all">Izaberi profil</option>` + profiles.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join("");
-  document.getElementById("filterOwner").innerHTML =
-    `<option value="all">Izaberi osobu</option>` + owners.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
-
-  document.getElementById("ownersList").innerHTML = owners.map(o => `<option value="${esc(o)}"></option>`).join("");
-  document.getElementById("profilesList").innerHTML = profiles.map(p => `<option value="${esc(p)}"></option>`).join("");
-}
-
-function applyFilters(){
-  const owner = document.getElementById("filterOwner").value;
-  const profile = document.getElementById("filterProfile").value;
-  const from = document.getElementById("filterDateFrom").value;
-  const to = document.getElementById("filterDateTo").value;
-
-  state.filteredReports = state.allReports.filter(r =>
-    (owner === "all" || r.owner === owner) &&
-    (profile === "all" || r.profile === profile) &&
-    (!from || !r.period_start || r.period_start >= from) &&
-    (!to || !r.period_end || r.period_end <= to)
-  );
-
-  state.selectedReportId = null;
-  state.currentView = "focus";
-
-  if (profile !== "all") {
-    state.focusType = "profile";
-    state.focusValue = profile;
-  } else if (owner !== "all") {
-    state.focusType = "owner";
-    state.focusValue = owner;
-  } else {
-    state.focusType = null;
-    state.focusValue = null;
-  }
-
-  renderAll();
-}
-
-function clearFocus(){
-  state.focusType = null;
-  state.focusValue = null;
-  state.selectedReportId = null;
-  state.currentView = "focus";
-  document.getElementById("filterOwner").value = "all";
-  document.getElementById("filterProfile").value = "all";
-  renderAll();
-}
-
-function getFocusReports(){
-  if (!state.focusType || !state.focusValue) return [];
-  if (state.focusType === "profile") return state.filteredReports.filter(r => r.profile === state.focusValue);
-  if (state.focusType === "owner") return state.filteredReports.filter(r => r.owner === state.focusValue);
-  return [];
-}
-
-function getSelectedReport(){
-  return state.allReports.find(r => r.report_id === state.selectedReportId) || null;
-}
-
-function renderAll(){
-  document.getElementById("focusView").classList.toggle("hidden", state.currentView !== "focus");
-  document.getElementById("reportView").classList.toggle("hidden", state.currentView !== "report");
-  document.getElementById("backToFocusBtn").classList.toggle("hidden", state.currentView !== "report");
-
-  if(state.currentView === "report") renderReportView();
-  else renderFocusView();
-}
-
-function renderFocusView(){
-  const hasFocus = !!(state.focusType && state.focusValue);
-  document.getElementById("emptyStateWrap").classList.toggle("hidden", hasFocus);
-  document.getElementById("focusContent").classList.toggle("hidden", !hasFocus);
-
-  document.getElementById("modeBadge").textContent = hasFocus
-    ? (state.focusType === "profile" ? "Pregled po nalogu" : "Pregled po osobi")
-    : "Izaberi fokus";
-  document.getElementById("focusBadge").textContent = hasFocus ? state.focusValue : "—";
-
-  if(!hasFocus) return;
-
-  const reports = getFocusReports();
-  const summary = summarizeReports(reports);
-  const rows = aggregateOrganicRows(reports);
-
-  document.getElementById("focusTitle").textContent = state.focusValue;
-  document.getElementById("focusType").textContent = state.focusType === "profile" ? "Profil" : "Zadužena osoba";
-  document.getElementById("focusReportsCount").textContent = fmt(summary.reports);
-  document.getElementById("focusViewsTotal").textContent = fmt(summary.views);
-  document.getElementById("focusFollowersTotal").textContent = fmt(summary.followers);
-  document.getElementById("focusImpressionsTotal").textContent = fmt(summary.impressions);
-
-  document.getElementById("focusOrganicTableBody").innerHTML = rows.map(r => `
-    <tr>
-      <td>${esc(r.label)}</td>
-      <td>${fmt(r.current)}</td>
-      <td>${fmt(r.previous)}</td>
-      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change,2)}%</span></td>
-    </tr>
-  `).join("");
-
-  document.getElementById("focusReportsEmpty").classList.toggle("hidden", reports.length > 0);
-  document.getElementById("focusReportsTableBody").innerHTML = reports.map(r => `
-    <tr>
-      <td>${esc(r.report_date || "-")}</td>
-      <td>${esc(r.profile)}</td>
-      <td>${esc(r.owner)}</td>
-      <td>${esc(r.period_label || "-")}</td>
-      <td>${fmt(r.overview.views)}</td>
-      <td>${fmt(r.overview.interactions)}</td>
-      <td>${fmt(r.overview.impressions)}</td>
-      <td class="reportActions"><a data-show="${esc(r.report_id)}">Prikaži</a></td>
-    </tr>
-  `).join("");
-
-  drawFocusTrendChart(reports);
-}
-
-function openReport(reportId){
-  state.selectedReportId = reportId;
-  state.currentView = "report";
-  renderAll();
-}
-
-function buildInsights(report){
-  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
-  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
-  const newFollowers = getOrganicValue(report, "Novi pratioci", "current");
-  const lostFollowers = getOrganicValue(report, "Izgubljeni pratioci", "current");
-  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
-  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
-  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
-  const paidImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
-  const insights = [];
-  if (interactionsChange > viewsChange) insights.push("Angažman raste brže od dosega.");
-  if (storiesChange > 0 && viewsChange > 0) insights.push("Više stories prati rast vidljivosti.");
-  if (newFollowers > lostFollowers) insights.push("Profil ima pozitivan net growth.");
-  if (paidImpressions === 0) insights.push("Rezultat ovog perioda dolazi dominantno organski.");
-  if ((report.topViews || [])[0]) insights.push(`Najjača objava po views je "${report.topViews[0].title}".`);
-  return insights;
-}
-function buildRecommendations(report){
-  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
-  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
-  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
-  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
-  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
-  const adsImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
-  const adsClicks = report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0);
-  const adsCtr = safeRate(adsClicks, adsImpressions);
-  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
-  const recs = [];
-  if (viewsChange <= 0) recs.push("Testirati više reels/video formata i jači hook.");
-  if (interactionsChange > 0 && report.ads.reduce((s,a)=>s+Number(a.leads||0),0) === 0) recs.push("Dodati jasniji CTA prema konverziji.");
-  if (adsImpressions > 0 && adsCtr < 0.8) recs.push("Paid kreativu i targeting treba osvježiti.");
-  if ((report.topViews || [])[0]) recs.push(`Ponoviti logiku objave "${report.topViews[0].title}".`);
-  if (storiesChange <= 0) recs.push("Povećati stories frekvenciju.");
-  if (engagementRate < 2 && report.overview.views > 0) recs.push("Ubaciti više interaktivnih elemenata.");
-  return recs.slice(0,4);
-}
-
-function renderTopPosts(containerId, items, metricLabel){
-  document.getElementById(containerId).innerHTML = items.length
-    ? items.map(item => `
-      <div class="topPost">
-        <div>
-          <strong>${esc(item.title || "-")}</strong>
-          ${item.comment ? `<div class="muted" style="margin-top:4px">${esc(item.comment)}</div>` : ""}
-        </div>
-        <div>${fmt(item.value || 0)} ${esc(metricLabel)}</div>
-        <div>${fmt(item.interactions || 0)} interactions</div>
-      </div>
-    `).join("")
-    : `<div class="empty">Nema unosa.</div>`;
-}
-
-function renderReportView(){
-  const report = getSelectedReport();
-  if(!report){
-    state.currentView = "focus";
-    renderAll();
-    return;
-  }
-
-  document.getElementById("modeBadge").textContent = "Single report";
-  document.getElementById("focusBadge").textContent = report.profile || "—";
-
-  document.getElementById("reportProfileName").textContent = report.profile || "-";
-  document.getElementById("reportOwnerName").textContent = report.owner || "-";
-  document.getElementById("reportPeriodLabel").textContent = report.period_label || "-";
-  document.getElementById("reportDateLabel").textContent = report.report_date || "-";
-  document.getElementById("reportViewsCurrent").textContent = fmt(report.overview.views);
-  document.getElementById("reportViewsPrevious").textContent = fmt(report.overview.views_previous);
-  document.getElementById("reportImpressionsCurrent").textContent = fmt(report.overview.impressions);
-
-  const viewsDelta = pctChange(report.overview.views, report.overview.views_previous);
-  const interactionsDelta = pctChange(report.overview.interactions, report.overview.interactions_previous);
-  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
-  const adsCtr = safeRate(
-    report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0),
-    report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0)
-  );
-
-  document.getElementById("reportViewsDelta").textContent = `${fmt(viewsDelta,2)}%`;
-  document.getElementById("reportInteractionsDelta").textContent = `${fmt(interactionsDelta,2)}%`;
-  document.getElementById("reportEngagementRate").textContent = `${fmt(engagementRate,2)}%`;
-  document.getElementById("reportAdsCtr").textContent = `${fmt(adsCtr,2)}%`;
-  document.getElementById("reportSummaryBox").textContent = report.notes || "—";
-
-  document.getElementById("reportOrganicTableBody").innerHTML = report.organic_rows.map(r => `
-    <tr>
-      <td>${esc(r.label)}</td>
-      <td>${fmt(r.current)}</td>
-      <td>${fmt(r.previous)}</td>
-      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change,2)}%</span></td>
-    </tr>
-  `).join("");
-
-  const totals = {
-    budget: report.ads.reduce((s,a)=>s+a.budget,0),
-    impressions: report.ads.reduce((s,a)=>s+a.impressions,0),
-    clicks: report.ads.reduce((s,a)=>s+a.clicks,0),
-    leads: report.ads.reduce((s,a)=>s+a.leads,0),
-    revenue: report.ads.reduce((s,a)=>s+a.revenue,0)
-  };
-  const adsRows = [
-    ["Broj kampanja", report.ads.length],
-    ["Budžet", fmt(totals.budget,2)],
-    ["Impressions", fmt(totals.impressions)],
-    ["Klikovi", fmt(totals.clicks)],
-    ["CTR", `${fmt(safeRate(totals.clicks, totals.impressions),2)}%`],
-    ["Leads", fmt(totals.leads)],
-    ["CPA", fmt(totals.leads ? totals.budget / totals.leads : 0,2)],
-    ["Prihod", fmt(totals.revenue,2)],
-    ["ROAS", fmt(totals.budget ? totals.revenue / totals.budget : 0,2)]
-  ];
-  document.getElementById("reportAdsBody").innerHTML = adsRows.map(([k,v]) => `
-    <tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>
-  `).join("");
-
-  renderTopPosts("reportTopViews", report.topViews || [], "views");
-  renderTopPosts("reportTopLikes", report.topLikes || [], "lajkova");
-
-  const insights = buildInsights(report);
-  const recommendations = buildRecommendations(report);
-
-  document.getElementById("reportInsightsBox").innerHTML =
-    insights.length ? `<ul class="list">${insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
-  document.getElementById("reportRecommendationsBox").innerHTML =
-    recommendations.length ? `<ul class="list">${recommendations.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
-
-  drawReportCharts(report);
-}
-
-function setupCanvas(canvas){
-  const ratio = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * ratio;
-  canvas.height = rect.height * ratio;
-  const ctx = canvas.getContext("2d");
-  ctx.scale(ratio, ratio);
-  return { ctx, w: rect.width, h: rect.height };
-}
-function axes(ctx, w, h, labels){
-  const m = { t:20, r:18, b:34, l:42 };
-  const pw = w - m.l - m.r;
-  const ph = h - m.t - m.b;
-  ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle = "rgba(255,255,255,.08)";
-  ctx.fillStyle = "#98a2b3";
-  ctx.font = "12px Inter";
-  for(let i=0;i<5;i++){
-    const y = m.t + ph * i / 4;
-    ctx.beginPath(); ctx.moveTo(m.l,y); ctx.lineTo(w-m.r,y); ctx.stroke();
-  }
-  labels.forEach((lb,i)=>ctx.fillText(lb, m.l + pw * (i / Math.max(labels.length-1,1)) - 10, h - 10));
-  return { m, pw, ph };
-}
-function lineChart(id, labels, sets, max){
-  const canvas = document.getElementById(id);
-  const { ctx, w, h } = setupCanvas(canvas);
-  const { m, pw, ph } = axes(ctx, w, h, labels);
-  const M = max || Math.max(1, ...sets.flatMap(s => s.data), 10);
-  const x = i => m.l + pw * (i / Math.max(labels.length - 1, 1));
-  const y = v => m.t + ph - (v / M) * ph;
-  sets.forEach(s => {
-    ctx.beginPath();
-    s.data.forEach((v,i)=> i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
-    ctx.strokeStyle = s.color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
-}
-function barChart(id, labels, sets){
-  const canvas = document.getElementById(id);
-  const { ctx, w, h } = setupCanvas(canvas);
-  const allValues = sets.flatMap(s => s.data);
-  const minVal = Math.min(...allValues, 0);
-  const maxVal = Math.max(...allValues, 0);
-  const range = Math.max(1, maxVal - minVal);
-  const { m, pw, ph } = axes(ctx, w, h, labels);
-  const yScale = v => m.t + ((maxVal - v) / range) * ph;
-  const zeroY = yScale(0);
-  ctx.strokeStyle = "rgba(255,255,255,.16)";
-  ctx.beginPath(); ctx.moveTo(m.l,zeroY); ctx.lineTo(w-m.r,zeroY); ctx.stroke();
-  const slot = pw / Math.max(labels.length, 1);
-  const bw = Math.max(12, Math.min(34, slot / (sets.length + 1)));
-  sets.forEach((s,si) => s.data.forEach((v,i) => {
-    const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
-    const y = yScale(v);
-    const top = Math.min(y, zeroY);
-    const height = Math.max(2, Math.abs(zeroY - y));
-    ctx.fillStyle = s.color;
-    ctx.fillRect(x, top, bw - 4, height);
-  }));
-}
-function drawFocusTrendChart(reports){
-  const labels = reports.map((r, i) => r.period_end || r.period_start || `R${i+1}`);
-  const views = reports.map(r => r.overview.views || 0);
-  const interactions = reports.map(r => r.overview.interactions || 0);
-  const followers = reports.map(r => getOrganicValue(r, "Novi pratioci", "current"));
-  lineChart("focusTrendChart", labels.length ? labels : ["-"], [
-    { color:"#ff4fa7", data:labels.length ? views : [0] },
-    { color:"#8b5cf6", data:labels.length ? interactions : [0] },
-    { color:"#22d3ee", data:labels.length ? followers : [0] }
-  ]);
-}
-function drawReportCharts(report){
-  const labels = report.organic_rows.map(r => r.label);
-  const current = report.organic_rows.map(r => r.current);
-  const previous = report.organic_rows.map(r => r.previous);
-  const growth = report.organic_rows.map(r => r.change);
-  lineChart("reportTrendChart", labels.length ? labels : ["-"], [
-    { color:"#ff4fa7", data:labels.length ? current : [0] },
-    { color:"#8b5cf6", data:labels.length ? previous : [0] }
-  ]);
-  barChart("reportBarsChart", labels.length ? labels : ["-"], [
-    { color:"#22d3ee", data:labels.length ? growth : [0] }
-  ]);
-}
-
-/* FORM */
-function emptyCampaign(){ return { name:"", budget:"", impressions:"", clicks:"", leads:"", revenue:"" }; }
-function emptyTopPost(){ return { title:"", link:"", value:"", interactions:"", comment:"" }; }
 
 function getOrganicInputValue(key, type){
   const el = document.querySelector(`[data-organic-key="${key}"][data-type="${type}"]`);
@@ -993,14 +809,15 @@ function getOrganicTargetValue(key){
   const el = document.querySelector(`[data-organic-key="${key}"][data-type="target"]`);
   return el ? Number(el.value || 0) : 0;
 }
+
 function renderOrganicMetricsGrid(){
-  document.getElementById("organicMetricsGrid").innerHTML = ORGANIC_METRICS.map(m => `
+  const html = ORGANIC_METRICS.map(m => `
     <div class="field">
-      <label>${esc(m.label)} – Tekuća</label>
+      <label>${esc(m.label)} – Tekuća nedelja</label>
       <input type="number" step="any" data-organic-key="${esc(m.key)}" data-type="current" />
     </div>
     <div class="field">
-      <label>${esc(m.label)} – Prošla</label>
+      <label>${esc(m.label)} – Prošla nedelja</label>
       <input type="number" step="any" data-organic-key="${esc(m.key)}" data-type="previous" />
     </div>
     <div class="field">
@@ -1014,8 +831,11 @@ function renderOrganicMetricsGrid(){
       </div>
     ` : `<div class="field"></div>`}
   `).join("");
-  document.querySelectorAll("[data-organic-key][data-type='current'],[data-organic-key][data-type='previous'],[data-organic-key][data-type='target']")
-    .forEach(input => input.addEventListener("input", updateOrganicChanges));
+  document.getElementById("organicMetricsGrid").innerHTML = html;
+
+  document.querySelectorAll("[data-organic-key][data-type='current'], [data-organic-key][data-type='previous'], [data-organic-key][data-type='target']").forEach(input => {
+    input.addEventListener("input", updateOrganicChanges);
+  });
 }
 function updateOrganicChanges(){
   ORGANIC_METRICS.forEach(m => {
@@ -1023,25 +843,28 @@ function updateOrganicChanges(){
     const previous = getOrganicInputValue(m.key, "previous");
     const change = pctChange(current, previous);
     const out = document.querySelector(`[data-organic-key="${m.key}"][data-type="change"]`);
-    if(out) out.value = `${fmt(change,2)}%`;
+    if (out) out.value = `${fmt(change, 2)}%`;
   });
   renderPreview();
 }
+
 function campaignTemplate(index, data={}){
   const budget = Number(data.budget || 0);
   const impressions = Number(data.impressions || 0);
   const clicks = Number(data.clicks || 0);
   const leads = Number(data.leads || 0);
   const revenue = Number(data.revenue || 0);
+
   const cpm = impressions ? (budget / impressions) * 1000 : 0;
   const ctr = impressions ? (clicks / impressions) * 100 : 0;
   const cpc = clicks ? (budget / clicks) : 0;
   const conversion = clicks ? (leads / clicks) * 100 : 0;
   const cpa = leads ? (budget / leads) : 0;
   const roas = budget ? (revenue / budget) : 0;
+
   return `
-    <div class="entry campaignEntry">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+    <div class="entry campaignEntry" data-index="${index}">
+      <div class="viewHeader">
         <strong>Kampanja ${index + 1}</strong>
         <button class="btn btn-danger remove-campaign-btn" type="button">Obriši</button>
       </div>
@@ -1050,20 +873,24 @@ function campaignTemplate(index, data={}){
         <div class="field"><label>Budžet</label><input type="number" step="0.01" data-key="budget" value="${budget || ""}" /></div>
         <div class="field"><label>Impresije</label><input type="number" step="any" data-key="impressions" value="${impressions || ""}" /></div>
         <div class="field"><label>Klikovi</label><input type="number" step="any" data-key="clicks" value="${clicks || ""}" /></div>
-        <div class="field"><label>Leads</label><input type="number" step="any" data-key="leads" value="${leads || ""}" /></div>
+        <div class="field"><label>Leads / Registracije</label><input type="number" step="any" data-key="leads" value="${leads || ""}" /></div>
         <div class="field"><label>Prihod</label><input type="number" step="0.01" data-key="revenue" value="${revenue || ""}" /></div>
-        <div class="field"><label>CPM</label><input disabled value="${fmt(cpm,2)}" /></div>
-        <div class="field"><label>CTR (%)</label><input disabled value="${fmt(ctr,2)}%" /></div>
-        <div class="field"><label>CPC</label><input disabled value="${fmt(cpc,2)}" /></div>
-        <div class="field"><label>Konverzija (%)</label><input disabled value="${fmt(conversion,2)}%" /></div>
-        <div class="field"><label>CPA</label><input disabled value="${fmt(cpa,2)}" /></div>
-        <div class="field"><label>ROAS</label><input disabled value="${fmt(roas,2)}" /></div>
+
+        <div class="field"><label>CPM</label><input disabled value="${fmt(cpm, 2)}" /></div>
+        <div class="field"><label>CTR (%)</label><input disabled value="${fmt(ctr, 2)}%" /></div>
+        <div class="field"><label>CPC</label><input disabled value="${fmt(cpc, 2)}" /></div>
+        <div class="field"><label>Konverzija (%)</label><input disabled value="${fmt(conversion, 2)}%" /></div>
+        <div class="field"><label>CPA</label><input disabled value="${fmt(cpa, 2)}" /></div>
+        <div class="field"><label>ROAS</label><input disabled value="${fmt(roas, 2)}" /></div>
       </div>
     </div>
   `;
 }
 function renderCampaigns(campaigns=[emptyCampaign()]){
-  document.getElementById("campaignsContainer").innerHTML = campaigns.map((c,i)=>campaignTemplate(i,c)).join("");
+  document.getElementById("campaignsContainer").innerHTML = campaigns.map((c, i) => campaignTemplate(i, c)).join("");
+  bindCampaignEvents();
+}
+function bindCampaignEvents(){
   document.querySelectorAll(".campaignEntry [data-key]").forEach(input => {
     input.addEventListener("input", () => {
       const campaigns = collectCampaigns();
@@ -1090,28 +917,36 @@ function collectCampaigns(){
     revenue: Number(entry.querySelector('[data-key="revenue"]').value || 0)
   })).filter(c => c.name || c.budget || c.impressions || c.clicks || c.leads || c.revenue);
 }
-function topPostTemplate(data={}){
+
+function topPostTemplate(type, data={}){
   return `
-    <div class="entry topPostEntry">
+    <div class="entry topPostEntry" data-type="${type}">
       <div class="form3">
         <div class="field"><label>Naziv objave</label><input data-key="title" value="${esc(data.title || "")}" /></div>
         <div class="field"><label>Link objave</label><input data-key="link" value="${esc(data.link || "")}" /></div>
-        <div class="field"><label>Vrijednost</label><input type="number" step="any" data-key="value" value="${esc(data.value || "")}" /></div>
+        <div class="field"><label>${type === "views" ? "Views" : "Lajkovi"}</label><input type="number" step="any" data-key="value" value="${esc(data.value || "")}" /></div>
         <div class="field"><label>Interactions</label><input type="number" step="any" data-key="interactions" value="${esc(data.interactions || "")}" /></div>
         <div class="field" style="grid-column:span 2"><label>Komentar</label><input data-key="comment" value="${esc(data.comment || "")}" /></div>
       </div>
-      <div style="margin-top:10px"><button class="btn btn-danger remove-post-btn" type="button">Obriši objavu</button></div>
+      <div style="margin-top:10px">
+        <button class="btn btn-danger remove-post-btn" type="button">Obriši objavu</button>
+      </div>
     </div>
   `;
 }
-function renderTopPostInputs(containerId, items=[emptyTopPost()]){
-  document.getElementById(containerId).innerHTML = items.map(topPostTemplate).join("");
-  document.querySelectorAll(`#${containerId} .topPostEntry input`).forEach(input => input.addEventListener("input", renderPreview));
+function renderTopPostInputs(containerId, type, items=[emptyTopPost()]){
+  document.getElementById(containerId).innerHTML = items.map(i => topPostTemplate(type, i)).join("");
+  bindTopPostEvents(containerId, type);
+}
+function bindTopPostEvents(containerId, type){
+  document.querySelectorAll(`#${containerId} .topPostEntry input`).forEach(input => {
+    input.addEventListener("input", renderPreview);
+  });
   document.querySelectorAll(`#${containerId} .remove-post-btn`).forEach(btn => {
     btn.onclick = () => {
       btn.closest(".topPostEntry").remove();
       const remaining = collectTopPosts(containerId);
-      renderTopPostInputs(containerId, remaining.length ? remaining : [emptyTopPost()]);
+      renderTopPostInputs(containerId, type, remaining.length ? remaining : [emptyTopPost()]);
       renderPreview();
     };
   });
@@ -1125,82 +960,7 @@ function collectTopPosts(containerId){
     comment: entry.querySelector('[data-key="comment"]').value || ""
   })).filter(p => p.title || p.link || p.value || p.interactions || p.comment);
 }
-function buildReportPayloadFromForm(){
-  const campaigns = collectCampaigns();
-  const topViews = collectTopPosts("topViewsInputs");
-  const topLikes = collectTopPosts("topLikesInputs");
-  const organic = {
-    posts_current: getOrganicInputValue("posts","current"),
-    posts_previous: getOrganicInputValue("posts","previous"),
-    posts_target: getOrganicTargetValue("posts"),
-    reels_current: getOrganicInputValue("reels","current"),
-    reels_previous: getOrganicInputValue("reels","previous"),
-    stories_current: getOrganicInputValue("stories","current"),
-    stories_previous: getOrganicInputValue("stories","previous"),
-    stories_target: getOrganicTargetValue("stories"),
-    views_current: getOrganicInputValue("views","current"),
-    views_previous: getOrganicInputValue("views","previous"),
-    interactions_current: getOrganicInputValue("interactions","current"),
-    interactions_previous: getOrganicInputValue("interactions","previous"),
-    new_followers_current: getOrganicInputValue("new_followers","current"),
-    new_followers_previous: getOrganicInputValue("new_followers","previous"),
-    followers_target: getOrganicTargetValue("new_followers"),
-    lost_followers_current: getOrganicInputValue("lost_followers","current"),
-    lost_followers_previous: getOrganicInputValue("lost_followers","previous"),
-    organic_leads_current: getOrganicInputValue("organic_leads","current"),
-    organic_leads_previous: getOrganicInputValue("organic_leads","previous")
-  };
-  const ads = campaigns.map(c => {
-    const budget = Number(c.budget || 0);
-    const impressions = Number(c.impressions || 0);
-    const clicks = Number(c.clicks || 0);
-    const leads = Number(c.leads || 0);
-    const revenue = Number(c.revenue || 0);
-    return {
-      campaign_name: c.name,
-      budget,
-      impressions,
-      cpm: impressions ? (budget / impressions) * 1000 : 0,
-      ctr_pct: safeRate(clicks, impressions),
-      clicks,
-      cpc: clicks ? budget / clicks : 0,
-      leads_registrations: leads,
-      conversion_pct: safeRate(leads, clicks),
-      cpa: leads ? budget / leads : 0,
-      revenue,
-      roas: budget ? revenue / budget : 0
-    };
-  });
-  return {
-    report_date: document.getElementById("reportDateInput").value,
-    week_start: document.getElementById("weekStartInput").value,
-    week_end: document.getElementById("weekEndInput").value,
-    period_label: document.getElementById("periodLabelInput").value,
-    profile: document.getElementById("profileInput").value,
-    owner: document.getElementById("ownerInput").value,
-    notes: [document.getElementById("notesShortInput").value, document.getElementById("notesInput").value].filter(Boolean).join("\n"),
-    organic,
-    ads,
-    topViews,
-    topLikes,
-    top_posts_count: topViews.length + topLikes.length
-  };
-}
-function renderPreview(){
-  const report = buildReportPayloadFromForm();
-  const impressionsTotal = (report.ads || []).reduce((s,a) => s + Number(a.impressions || 0), 0);
-  document.getElementById("previewBox").innerHTML = `
-    <div class="row"><span>Profil</span><strong>${esc(report.profile || "-")}</strong></div>
-    <div class="row"><span>Osoba</span><strong>${esc(report.owner || "-")}</strong></div>
-    <div class="row"><span>Datum reporta</span><strong>${esc(report.report_date || "-")}</strong></div>
-    <div class="row"><span>Period</span><strong>${esc(report.week_start || "-")} → ${esc(report.week_end || "-")}</strong></div>
-    <div class="row"><span>Views</span><strong>${fmt(report.organic.views_current || 0)}</strong></div>
-    <div class="row"><span>Interactions</span><strong>${fmt(report.organic.interactions_current || 0)}</strong></div>
-    <div class="row"><span>Novi pratioci</span><strong>${fmt(report.organic.new_followers_current || 0)}</strong></div>
-    <div class="row"><span>ADS impressions</span><strong>${fmt(impressionsTotal)}</strong></div>
-    <div class="row"><span>Broj kampanja</span><strong>${fmt((report.ads || []).length)}</strong></div>
-  `;
-}
+
 function openModal(){
   document.getElementById("reportDateInput").value = todayDate();
   document.getElementById("weekStartInput").value = todayDate();
@@ -1212,35 +972,669 @@ function openModal(){
   document.getElementById("notesInput").value = "";
   renderOrganicMetricsGrid();
   renderCampaigns([emptyCampaign()]);
-  renderTopPostInputs("topViewsInputs",[emptyTopPost()]);
-  renderTopPostInputs("topLikesInputs",[emptyTopPost()]);
+  renderTopPostInputs("topViewsInputs", "views", [emptyTopPost()]);
+  renderTopPostInputs("topLikesInputs", "likes", [emptyTopPost()]);
+  state.step = 0;
+  renderStepper();
   renderPreview();
   document.getElementById("reportModal").classList.add("open");
 }
-function closeModal(){ document.getElementById("reportModal").classList.remove("open"); }
+function closeModal(){
+  document.getElementById("reportModal").classList.remove("open");
+}
+function renderStepper(){
+  const labels = ["Osnovno", "Organski KPI", "ADS", "Top objave", "Preview"];
+  document.getElementById("stepper").innerHTML = labels.map((l, i) => `
+    <div class="stepPill ${i === state.step ? "active" : ""}">${i + 1}. ${esc(l)}</div>
+  `).join("");
+  document.querySelectorAll(".step").forEach((step, i) => {
+    step.classList.toggle("active", i === state.step);
+  });
+  document.getElementById("stepStatus").textContent = `Korak ${state.step + 1} od 5`;
+  document.getElementById("prevStepBtn").classList.toggle("hidden", state.step === 0);
+  document.getElementById("nextStepBtn").classList.toggle("hidden", state.step === 4);
+  document.getElementById("saveReportBtn").classList.toggle("hidden", state.step !== 4);
+}
 
-/* EVENTS */
+function buildReportPayloadFromForm(){
+  const campaigns = collectCampaigns();
+  const topViews = collectTopPosts("topViewsInputs");
+  const topLikes = collectTopPosts("topLikesInputs");
+
+  const organic = {
+    posts_current: getOrganicInputValue("posts", "current"),
+    posts_previous: getOrganicInputValue("posts", "previous"),
+    posts_target: getOrganicTargetValue("posts"),
+
+    reels_current: getOrganicInputValue("reels", "current"),
+    reels_previous: getOrganicInputValue("reels", "previous"),
+
+    stories_current: getOrganicInputValue("stories", "current"),
+    stories_previous: getOrganicInputValue("stories", "previous"),
+    stories_target: getOrganicTargetValue("stories"),
+
+    views_current: getOrganicInputValue("views", "current"),
+    views_previous: getOrganicInputValue("views", "previous"),
+
+    interactions_current: getOrganicInputValue("interactions", "current"),
+    interactions_previous: getOrganicInputValue("interactions", "previous"),
+
+    new_followers_current: getOrganicInputValue("new_followers", "current"),
+    new_followers_previous: getOrganicInputValue("new_followers", "previous"),
+    followers_target: getOrganicTargetValue("new_followers"),
+
+    lost_followers_current: getOrganicInputValue("lost_followers", "current"),
+    lost_followers_previous: getOrganicInputValue("lost_followers", "previous"),
+
+    organic_leads_current: getOrganicInputValue("organic_leads", "current"),
+    organic_leads_previous: getOrganicInputValue("organic_leads", "previous")
+  };
+
+  const ads = campaigns.map(c => {
+    const budget = Number(c.budget || 0);
+    const impressions = Number(c.impressions || 0);
+    const clicks = Number(c.clicks || 0);
+    const leads = Number(c.leads || 0);
+    const revenue = Number(c.revenue || 0);
+
+    return {
+      campaign_name: c.name,
+      budget,
+      impressions,
+      cpm: impressions ? (budget / impressions) * 1000 : 0,
+      ctr_pct: safeRate(clicks, impressions),
+      clicks,
+      cpc: clicks ? (budget / clicks) : 0,
+      leads_registrations: leads,
+      conversion_pct: safeRate(leads, clicks),
+      cpa: leads ? (budget / leads) : 0,
+      revenue,
+      roas: budget ? (revenue / budget) : 0
+    };
+  });
+
+  return {
+    report_date: document.getElementById("reportDateInput").value,
+    week_start: document.getElementById("weekStartInput").value,
+    week_end: document.getElementById("weekEndInput").value,
+    period_label: document.getElementById("periodLabelInput").value,
+    profile: document.getElementById("profileInput").value,
+    owner: document.getElementById("ownerInput").value,
+    notes: [document.getElementById("notesShortInput").value, document.getElementById("notesInput").value].filter(Boolean).join("\n"),
+    organic,
+    ads,
+    topViews: topViews.map(p => ({
+      title: p.title,
+      link: p.link,
+      value: p.value,
+      interactions: p.interactions,
+      comment: p.comment
+    })),
+    topLikes: topLikes.map(p => ({
+      title: p.title,
+      link: p.link,
+      value: p.value,
+      interactions: p.interactions,
+      comment: p.comment
+    })),
+    top_posts_count: topViews.length + topLikes.length
+  };
+}
+
+function renderPreview(){
+  const report = buildReportPayloadFromForm();
+  const impressionsTotal = (report.ads || []).reduce((s, a) => s + Number(a.impressions || 0), 0);
+
+  document.getElementById("previewBox").innerHTML = `
+    <div class="row"><span>Profil</span><strong>${esc(report.profile || "-")}</strong></div>
+    <div class="row"><span>Osoba</span><strong>${esc(report.owner || "-")}</strong></div>
+    <div class="row"><span>Datum reporta</span><strong>${esc(report.report_date || "-")}</strong></div>
+    <div class="row"><span>Period</span><strong>${esc(report.week_start || "-")} → ${esc(report.week_end || "-")}</strong></div>
+    <div class="row"><span>Views</span><strong>${fmt(report.organic.views_current || 0)}</strong></div>
+    <div class="row"><span>Interactions</span><strong>${fmt(report.organic.interactions_current || 0)}</strong></div>
+    <div class="row"><span>Novi pratioci</span><strong>${fmt(report.organic.new_followers_current || 0)}</strong></div>
+    <div class="row"><span>ADS impressions</span><strong>${fmt(impressionsTotal)}</strong></div>
+    <div class="row"><span>Broj kampanja</span><strong>${fmt((report.ads || []).length)}</strong></div>
+    <div class="row"><span>Top views objava</span><strong>${fmt((report.topViews || []).length)}</strong></div>
+    <div class="row"><span>Top likes objava</span><strong>${fmt((report.topLikes || []).length)}</strong></div>
+  `;
+}
+
+function normalizeReport(full){
+  const organic = full.organic || {};
+  const adsTotals = full.ads_totals || {};
+  const notes = full.notes || "";
+
+  const organicRows = [
+    { label:"Objave (post)", current:Number(organic.posts_current || 0), previous:Number(organic.posts_previous || 0), change:Number(organic.posts_change_pct || 0) },
+    { label:"Reels / video", current:Number(organic.reels_current || 0), previous:Number(organic.reels_previous || 0), change:Number(organic.reels_change_pct || 0) },
+    { label:"Stories (broj)", current:Number(organic.stories_current || 0), previous:Number(organic.stories_previous || 0), change:Number(organic.stories_change_pct || 0) },
+    { label:"Views", current:Number(organic.views_current || 0), previous:Number(organic.views_previous || 0), change:Number(organic.views_change_pct || 0) },
+    { label:"Interactions", current:Number(organic.interactions_current || 0), previous:Number(organic.interactions_previous || 0), change:Number(organic.interactions_change_pct || 0) },
+    { label:"Novi pratioci", current:Number(organic.new_followers_current || 0), previous:Number(organic.new_followers_previous || 0), change:Number(organic.new_followers_change_pct || 0) },
+    { label:"Izgubljeni pratioci", current:Number(organic.lost_followers_current || 0), previous:Number(organic.lost_followers_previous || 0), change:Number(organic.lost_followers_change_pct || 0) },
+    { label:"Leads iz organika", current:Number(organic.organic_leads_current || 0), previous:Number(organic.organic_leads_previous || 0), change:Number(organic.organic_leads_change_pct || 0) }
+  ];
+
+  return {
+    report_id: full.report_id || "",
+    profile: full.profile || "",
+    owner: full.owner || "",
+    report_date: full.report_date || "",
+    period_start: full.week_start || "",
+    period_end: full.week_end || "",
+    period_label: full.period_label || `${full.week_start || ""} → ${full.week_end || ""}`,
+    created_at: full.created_at || "",
+    updated_at: full.updated_at || "",
+    notes,
+    overview: {
+      views: Number(organic.views_current || 0),
+      views_previous: Number(organic.views_previous || 0),
+      interactions: Number(organic.interactions_current || 0),
+      interactions_previous: Number(organic.interactions_previous || 0),
+      follower_change: Number(organic.new_followers_current || 0),
+      impressions: Number(adsTotals.impressions || 0),
+      paid_spend: Number(adsTotals.budget || 0),
+      clicks: Number(adsTotals.clicks || 0),
+      revenue: Number(adsTotals.revenue || 0)
+    },
+    organic_rows: organicRows,
+    ads: (full.ads || []).map(c => ({
+      campaign_name: c.campaign_name || "",
+      budget: Number(c.budget || 0),
+      impressions: Number(c.impressions || 0),
+      clicks: Number(c.clicks || 0),
+      leads: Number(c.leads_registrations || 0),
+      revenue: Number(c.revenue || 0),
+      cpm: Number(c.cpm || 0),
+      ctr: Number(c.ctr_pct || 0),
+      cpc: Number(c.cpc || 0),
+      cpa: Number(c.cpa || 0),
+      roas: Number(c.roas || 0),
+      conversion: Number(c.conversion_pct || 0)
+    })),
+    topViews: (full.topViews || []).map(p => ({
+      title: p.title || "",
+      link: p.link || "",
+      value: Number(p.value || 0),
+      interactions: Number(p.interactions || 0),
+      comment: p.comment || ""
+    })),
+    topLikes: (full.topLikes || []).map(p => ({
+      title: p.title || "",
+      link: p.link || "",
+      value: Number(p.value || 0),
+      interactions: Number(p.interactions || 0),
+      comment: p.comment || ""
+    }))
+  };
+}
+
+async function bootstrap(){
+  try {
+    const list = await apiGet({ action: "listReports" });
+    if (!list.ok) throw new Error(list.error || "Greška pri učitavanju.");
+
+    const base = Array.isArray(list.reports) ? list.reports : [];
+    state.allReports = base.map(normalizeReport);
+    fillFilters(list.lookups || null);
+    applyFilters();
+  } catch (e) {
+    showToast(e.message || "Greška pri učitavanju podataka.", true);
+  }
+}
+
+function fillFilters(lookups = null){
+  const profiles = lookups && Array.isArray(lookups.profiles)
+    ? [...new Set(lookups.profiles.filter(Boolean))].sort()
+    : [...new Set(state.allReports.map(r => r.profile).filter(Boolean))].sort();
+
+  const owners = lookups && Array.isArray(lookups.owners)
+    ? [...new Set(lookups.owners.filter(Boolean))].sort()
+    : [...new Set(state.allReports.map(r => r.owner).filter(Boolean))].sort();
+
+  const profileSelect = document.getElementById("filterProfile");
+  const ownerSelect = document.getElementById("filterOwner");
+  profileSelect.innerHTML = `<option value="all">Svi profili</option>` + profiles.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join("");
+  ownerSelect.innerHTML = `<option value="all">Sve osobe</option>` + owners.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join("");
+
+  document.getElementById("ownersList").innerHTML = owners.map(o => `<option value="${esc(o)}"></option>`).join("");
+  document.getElementById("profilesList").innerHTML = profiles.map(p => `<option value="${esc(p)}"></option>`).join("");
+}
+
+function applyFilters(){
+  const profile = document.getElementById("filterProfile").value;
+  const owner = document.getElementById("filterOwner").value;
+  const from = document.getElementById("filterDateFrom").value;
+  const to = document.getElementById("filterDateTo").value;
+
+  state.filteredReports = state.allReports.filter(r =>
+    (profile === "all" || r.profile === profile) &&
+    (owner === "all" || r.owner === owner) &&
+    (!from || !r.period_start || r.period_start >= from) &&
+    (!to || !r.period_end || r.period_end <= to)
+  );
+
+  state.entityType = null;
+  state.entityValue = null;
+  state.selectedReportId = null;
+
+  if (profile !== "all") {
+    state.entityType = "profile";
+    state.entityValue = profile;
+    state.currentView = "entity";
+  } else if (owner !== "all") {
+    state.entityType = "owner";
+    state.entityValue = owner;
+    state.currentView = "entity";
+  } else {
+    state.currentView = "empty";
+  }
+
+  renderAll();
+}
+
+function showView(view){
+  state.currentView = view;
+  document.getElementById("emptyView").classList.toggle("hidden", view !== "empty");
+  document.getElementById("entityView").classList.toggle("hidden", view !== "entity");
+  document.getElementById("reportView").classList.toggle("hidden", view !== "report");
+  document.getElementById("entityBackBtn").classList.toggle("hidden", view !== "report");
+
+  document.getElementById("modeBadge").textContent =
+    view === "empty" ? "Focus dashboard" :
+    view === "entity" ? "Entity overview" : "Single report";
+}
+
+function renderAll(){
+  renderGlobalReportsTable();
+
+  if (state.currentView === "empty") {
+    showView("empty");
+    document.getElementById("heroContextA").textContent = "Izaberi profil ili osobu";
+    document.getElementById("heroContextB").textContent = "Prikaz bez globalnog overview-a";
+  } else if (state.currentView === "entity") {
+    showView("entity");
+    renderEntityView();
+  } else {
+    showView("report");
+    renderReportView();
+  }
+}
+
+function summarizeReports(reports){
+  return reports.reduce((acc, r) => {
+    acc.reports += 1;
+    acc.views += r.overview.views || 0;
+    acc.interactions += r.overview.interactions || 0;
+    acc.followers += getOrganicValue(r, "Novi pratioci", "current");
+    acc.impressions += r.overview.impressions || 0;
+    return acc;
+  }, { reports:0, views:0, interactions:0, followers:0, impressions:0 });
+}
+
+function getOrganicValue(report, label, kind){
+  const row = (report.organic_rows || []).find(r => r.label === label);
+  return row ? Number(row[kind] || 0) : 0;
+}
+
+function getEntityReports(){
+  if (!state.entityType || !state.entityValue) return [];
+  if (state.entityType === "profile") return state.filteredReports.filter(r => r.profile === state.entityValue);
+  if (state.entityType === "owner") return state.filteredReports.filter(r => r.owner === state.entityValue);
+  return [];
+}
+
+function aggregateOrganicRows(reports){
+  return ORGANIC_METRICS.map(m => {
+    const current = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "current"), 0);
+    const previous = reports.reduce((s, r) => s + getOrganicValue(r, m.label, "previous"), 0);
+    return {
+      label: m.label,
+      current,
+      previous,
+      change: pctChange(current, previous)
+    };
+  });
+}
+
+function renderEntityView(){
+  const reports = getEntityReports();
+  const summary = summarizeReports(reports);
+
+  document.getElementById("heroContextA").textContent = state.entityType === "profile" ? "Pregled po profilu" : "Pregled po osobi";
+  document.getElementById("heroContextB").textContent = state.entityValue || "-";
+
+  document.getElementById("entityTitleMetric").textContent = state.entityValue || "-";
+  document.getElementById("entityTypeLabel").textContent = state.entityType === "profile" ? "Profil" : "Zadužena osoba";
+  document.getElementById("entityReportsCount").textContent = fmt(summary.reports);
+  document.getElementById("entityViewsTotal").textContent = fmt(summary.views);
+  document.getElementById("entityFollowersTotal").textContent = fmt(summary.followers);
+  document.getElementById("entityImpressionsTotal").textContent = fmt(summary.impressions);
+
+  const rows = aggregateOrganicRows(reports);
+  document.getElementById("entityOrganicTableBody").innerHTML = rows.map(r => `
+    <tr>
+      <td>${esc(r.label)}</td>
+      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.previous)}</td>
+      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
+    </tr>
+  `).join("");
+
+  document.getElementById("entityReportsEmpty").classList.toggle("hidden", reports.length > 0);
+  document.getElementById("entityReportsTableBody").innerHTML = reports.map(r => `
+    <tr>
+      <td>${esc(r.report_date || "-")}</td>
+      <td>${esc(r.profile)}</td>
+      <td>${esc(r.owner)}</td>
+      <td>${esc(r.period_label)}</td>
+      <td>${fmt(r.overview.views)}</td>
+      <td>${fmt(r.overview.interactions)}</td>
+      <td>${fmt(r.overview.impressions)}</td>
+      <td class="reportActions"><a data-show="${esc(r.report_id)}">Prikaži</a></td>
+    </tr>
+  `).join("");
+
+  drawEntityTrendChart(reports);
+}
+
+function getSelectedReport(){
+  return state.allReports.find(r => r.report_id === state.selectedReportId) || null;
+}
+
+function openReport(reportId){
+  state.selectedReportId = reportId;
+  state.currentView = "report";
+  renderAll();
+}
+
+function buildInsights(report){
+  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const newFollowers = getOrganicValue(report, "Novi pratioci", "current");
+  const lostFollowers = getOrganicValue(report, "Izgubljeni pratioci", "current");
+  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
+  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
+  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
+  const paidImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
+
+  const insights = [];
+  if (interactionsChange > viewsChange) insights.push("Angažman raste brže od dosega, što ukazuje na kvalitetniji odziv publike.");
+  if (storiesChange > 0 && viewsChange > 0) insights.push("Povećana stories aktivnost prati rast vidljivosti sadržaja.");
+  if (newFollowers > lostFollowers) insights.push("Profil ostvaruje pozitivan net growth u broju pratilaca.");
+  if (paidImpressions === 0) insights.push("Rezultat ovog perioda dominantno dolazi iz organskog sadržaja.");
+  if ((report.topViews || [])[0]) insights.push(`Najjača objava po views trenutno je "${report.topViews[0].title}".`);
+  return insights;
+}
+
+function buildRecommendations(report){
+  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
+  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
+  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
+
+  const adsImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
+  const adsClicks = report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0);
+  const adsCtr = safeRate(adsClicks, adsImpressions);
+  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
+
+  const recs = [];
+  if (viewsChange <= 0) recs.push("Views stagniraju ili opadaju — testirati više reels/video formata i jači hook u prvim sekundama sadržaja.");
+  if (interactionsChange > 0 && report.ads.reduce((s,a)=>s+Number(a.leads||0),0) === 0) recs.push("Angažman raste, ali nema konverzija — dodati jasniji CTA i sadržaj usmjeriti ka akciji.");
+  if (adsImpressions > 0 && adsCtr < 0.8) recs.push("Paid kampanje imaju nizak CTR — testirati novu kreativu, headline i targetiranje.");
+  if ((report.topViews || [])[0]) recs.push(`Najbolju objavu "${report.topViews[0].title}" iskoristiti kao referencu za sličan format.`);
+  if (storiesChange <= 0) recs.push("Stories output ne raste — povećati frekvenciju za bolju dnevnu vidljivost.");
+  if (engagementRate < 2 && report.overview.views > 0) recs.push("Engagement rate je nizak — uključiti više pitanja, CTA i interaktivnih elemenata.");
+  return recs.slice(0, 4);
+}
+
+function renderAdsTable(report){
+  const ads = report.ads || [];
+  document.getElementById("reportAdsCampaignCount").textContent = fmt(ads.length);
+  document.getElementById("reportAdsHeadCols").textContent = ads.map(a => a.campaign_name || "Kampanja").join(" / ");
+
+  if (!ads.length) {
+    document.getElementById("reportAdsBody").innerHTML = `<tr><td colspan="2">Nema kampanja.</td></tr>`;
+    return;
+  }
+
+  document.getElementById("reportAdsBody").innerHTML = ADS_METRICS.map(metric => `
+    <tr>
+      <td>${esc(metric.label)}</td>
+      <td>${ads.map(a => {
+        const val = (() => {
+          if (metric.key === "budget") return fmt(a.budget, 2);
+          if (metric.key === "impressions") return fmt(a.impressions);
+          if (metric.key === "clicks") return fmt(a.clicks);
+          if (metric.key === "leads") return fmt(a.leads);
+          if (metric.key === "revenue") return fmt(a.revenue, 2);
+          if (metric.key === "cpm") return fmt(a.cpm, 2);
+          if (metric.key === "ctr") return `${fmt(a.ctr, 2)}%`;
+          if (metric.key === "cpc") return fmt(a.cpc, 2);
+          if (metric.key === "conversion") return `${fmt(a.conversion, 2)}%`;
+          if (metric.key === "cpa") return fmt(a.cpa, 2);
+          if (metric.key === "roas") return fmt(a.roas, 2);
+          return "-";
+        })();
+        return `<div>${esc(val)}</div>`;
+      }).join("")}</td>
+    </tr>
+  `).join("");
+}
+
+function renderTopPosts(containerId, items, metricLabel){
+  const container = document.getElementById(containerId);
+  container.innerHTML = items.length ? items.map(item => `
+    <div class="topPost">
+      <div>
+        <strong>${esc(item.title || "-")}</strong>
+        ${item.comment ? `<div class="muted" style="margin-top:4px">${esc(item.comment)}</div>` : ""}
+      </div>
+      <div>${fmt(item.value || 0)} ${esc(metricLabel)}</div>
+      <div>${fmt(item.interactions || 0)} interactions</div>
+    </div>
+  `).join("") : `<div class="empty">Nema unosa.</div>`;
+}
+
+function renderReportView(){
+  const report = getSelectedReport();
+  if (!report) {
+    state.currentView = state.entityType ? "entity" : "empty";
+    renderAll();
+    return;
+  }
+
+  document.getElementById("heroContextA").textContent = "Single report";
+  document.getElementById("heroContextB").textContent = report.profile || "-";
+
+  document.getElementById("reportProfileName").textContent = report.profile || "-";
+  document.getElementById("reportOwnerName").textContent = report.owner || "-";
+  document.getElementById("reportPeriodLabel").textContent = report.period_label || "-";
+  document.getElementById("reportDateLabel").textContent = report.report_date || "-";
+
+  document.getElementById("reportViewsCurrent").textContent = fmt(report.overview.views);
+  document.getElementById("reportViewsPrevious").textContent = fmt(report.overview.views_previous);
+  document.getElementById("reportImpressionsCurrent").textContent = fmt(report.overview.impressions);
+
+  const viewsDelta = pctChange(report.overview.views, report.overview.views_previous);
+  const interactionsDelta = pctChange(report.overview.interactions, report.overview.interactions_previous);
+  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
+  const adsCtr = safeRate(
+    report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0),
+    report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0)
+  );
+
+  document.getElementById("reportViewsDelta").textContent = `${fmt(viewsDelta, 2)}%`;
+  document.getElementById("reportInteractionsDelta").textContent = `${fmt(interactionsDelta, 2)}%`;
+  document.getElementById("reportEngagementRate").textContent = `${fmt(engagementRate, 2)}%`;
+  document.getElementById("reportAdsCtr").textContent = `${fmt(adsCtr, 2)}%`;
+
+  document.getElementById("reportSummaryBox").textContent = report.notes || "—";
+
+  document.getElementById("reportOrganicTableBody").innerHTML = (report.organic_rows || []).map(r => `
+    <tr>
+      <td>${esc(r.label)}</td>
+      <td>${fmt(r.current)}</td>
+      <td>${fmt(r.previous)}</td>
+      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
+    </tr>
+  `).join("");
+
+  renderAdsTable(report);
+  renderTopPosts("reportTopViews", report.topViews || [], "views");
+  renderTopPosts("reportTopLikes", report.topLikes || [], "lajkova");
+
+  const insights = buildInsights(report);
+  const recommendations = buildRecommendations(report);
+
+  document.getElementById("reportInsightsBox").innerHTML = insights.length ? `<ul class="list">${insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
+  document.getElementById("reportRecommendationsBox").innerHTML = recommendations.length ? `<ul class="list">${recommendations.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
+  document.getElementById("reportNotesBox").textContent = report.notes || "—";
+
+  drawReportCharts(report);
+}
+
+function renderGlobalReportsTable(){
+  const reports = state.filteredReports;
+  document.getElementById("reportsCountLabel").textContent = fmt(reports.length);
+  document.getElementById("globalReportsEmpty").classList.toggle("hidden", reports.length > 0);
+
+  document.getElementById("globalReportsTableBody").innerHTML = reports.map(r => `
+    <tr>
+      <td>${esc(r.report_date || "-")}</td>
+      <td>${esc(r.profile)}</td>
+      <td>${esc(r.owner)}</td>
+      <td>${esc(r.period_label)}</td>
+      <td>${fmt(r.overview.views)}</td>
+      <td>${fmt(r.overview.interactions)}</td>
+      <td>${fmt(r.overview.impressions)}</td>
+      <td class="reportActions"><a data-show="${esc(r.report_id)}">Prikaži</a></td>
+    </tr>
+  `).join("");
+}
+
+function setupCanvas(canvas){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(ratio, ratio);
+  return { ctx, w: rect.width, h: rect.height };
+}
+function axes(ctx, w, h, labels){
+  const m = { t:20, r:18, b:34, l:42 };
+  const pw = w - m.l - m.r;
+  const ph = h - m.t - m.b;
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = "rgba(255,255,255,.08)";
+  ctx.fillStyle = "#98a2b3";
+  ctx.font = "12px Inter";
+  for (let i = 0; i < 5; i++) {
+    const y = m.t + ph * i / 4;
+    ctx.beginPath();
+    ctx.moveTo(m.l, y);
+    ctx.lineTo(w - m.r, y);
+    ctx.stroke();
+  }
+  labels.forEach((lb, i) => ctx.fillText(lb, m.l + pw * (i / Math.max(labels.length - 1, 1)) - 10, h - 10));
+  return { m, pw, ph };
+}
+function lineChart(id, labels, sets, max){
+  const canvas = document.getElementById(id);
+  const { ctx, w, h } = setupCanvas(canvas);
+  const { m, pw, ph } = axes(ctx, w, h, labels);
+  const M = max || Math.max(1, ...sets.flatMap(s => s.data), 10);
+  const x = i => m.l + pw * (i / Math.max(labels.length - 1, 1));
+  const y = v => m.t + ph - (v / M) * ph;
+  sets.forEach(s => {
+    ctx.beginPath();
+    s.data.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v)));
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+function barChart(id, labels, sets){
+  const canvas = document.getElementById(id);
+  const { ctx, w, h } = setupCanvas(canvas);
+
+  const allValues = sets.flatMap(s => s.data);
+  const minVal = Math.min(...allValues, 0);
+  const maxVal = Math.max(...allValues, 0);
+
+  const range = Math.max(1, maxVal - minVal);
+  const { m, pw, ph } = axes(ctx, w, h, labels);
+
+  const yScale = v => m.t + ((maxVal - v) / range) * ph;
+  const zeroY = yScale(0);
+
+  ctx.strokeStyle = "rgba(255,255,255,.16)";
+  ctx.beginPath();
+  ctx.moveTo(m.l, zeroY);
+  ctx.lineTo(w - m.r, zeroY);
+  ctx.stroke();
+
+  const slot = pw / Math.max(labels.length, 1);
+  const bw = Math.max(12, Math.min(34, slot / (sets.length + 1)));
+
+  sets.forEach((s, si) => s.data.forEach((v, i) => {
+    const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
+    const y = yScale(v);
+
+    const barTop = Math.min(y, zeroY);
+    const barHeight = Math.max(2, Math.abs(zeroY - y));
+
+    ctx.fillStyle = s.color;
+    ctx.fillRect(x, barTop, bw - 4, barHeight);
+  }));
+}
+function drawEntityTrendChart(reports){
+  const labels = reports.map((r, i) => r.period_end || r.period_start || `R${i+1}`);
+  const views = reports.map(r => r.overview.views || 0);
+  const interactions = reports.map(r => r.overview.interactions || 0);
+  const followers = reports.map(r => getOrganicValue(r, "Novi pratioci", "current"));
+  lineChart("entityTrendChart", labels.length ? labels : ["-"], [
+    { color:"#ff4fa7", data:labels.length ? views : [0] },
+    { color:"#8b5cf6", data:labels.length ? interactions : [0] },
+    { color:"#22d3ee", data:labels.length ? followers : [0] }
+  ]);
+}
+function drawReportCharts(report){
+  const labels = (report.organic_rows || []).map(r => r.label);
+  const current = (report.organic_rows || []).map(r => r.current);
+  const previous = (report.organic_rows || []).map(r => r.previous);
+  const growth = (report.organic_rows || []).map(r => r.change);
+
+  lineChart("reportTrendChart", labels.length ? labels : ["-"], [
+    { color:"#ff4fa7", data:labels.length ? current : [0] },
+    { color:"#ff9a31", data:labels.length ? previous : [0] }
+  ]);
+  barChart("reportBarsChart", labels.length ? labels : ["-"], [
+    { color:"#8b5cf6", data:labels.length ? growth : [0] }
+  ]);
+}
+
+document.getElementById("openModalBtn").onclick = openModal;
+document.getElementById("closeModalBtn").onclick = closeModal;
 document.getElementById("applyFiltersBtn").onclick = applyFilters;
 document.getElementById("resetFiltersBtn").onclick = () => {
-  document.getElementById("filterOwner").value = "all";
   document.getElementById("filterProfile").value = "all";
+  document.getElementById("filterOwner").value = "all";
   document.getElementById("filterDateFrom").value = "";
   document.getElementById("filterDateTo").value = "";
-  clearFocus();
+  applyFilters();
 };
-document.getElementById("clearFocusBtn").onclick = clearFocus;
-document.getElementById("backToFocusBtn").onclick = () => {
-  state.currentView = "focus";
+document.getElementById("entityBackBtn").onclick = () => {
+  state.currentView = "entity";
   state.selectedReportId = null;
   renderAll();
 };
-document.getElementById("openModalBtn").onclick = openModal;
-document.getElementById("closeModalBtn").onclick = closeModal;
-document.getElementById("reportModal").onclick = e => { if (e.target.id === "reportModal") closeModal(); };
 
-document.getElementById("focusReportsTableBody").onclick = e => {
-  const show = e.target.dataset.show;
-  if(show) openReport(show);
+document.getElementById("reportModal").onclick = (e) => {
+  if (e.target.id === "reportModal") closeModal();
 };
 
 document.getElementById("addCampaignBtn").onclick = () => {
@@ -1252,44 +1646,72 @@ document.getElementById("addCampaignBtn").onclick = () => {
 document.getElementById("addTopViewsBtn").onclick = () => {
   const posts = collectTopPosts("topViewsInputs");
   posts.push(emptyTopPost());
-  renderTopPostInputs("topViewsInputs", posts);
+  renderTopPostInputs("topViewsInputs", "views", posts);
   renderPreview();
 };
 document.getElementById("addTopLikesBtn").onclick = () => {
   const posts = collectTopPosts("topLikesInputs");
   posts.push(emptyTopPost());
-  renderTopPostInputs("topLikesInputs", posts);
+  renderTopPostInputs("topLikesInputs", "likes", posts);
+  renderPreview();
+};
+document.getElementById("prevStepBtn").onclick = () => {
+  state.step = Math.max(0, state.step - 1);
+  renderStepper();
+  renderPreview();
+};
+document.getElementById("nextStepBtn").onclick = () => {
+  state.step = Math.min(4, state.step + 1);
+  renderStepper();
   renderPreview();
 };
 
 document.getElementById("saveReportBtn").onclick = async () => {
   const report = buildReportPayloadFromForm();
+
   if (!report.profile || !report.owner || !report.report_date || !report.week_start || !report.week_end) {
     showToast("Popuni profil, osobu, datum reporta i period.", true);
     return;
   }
-  try{
+
+  try {
     setSaving(true);
-    const res = await apiPost({ action:"saveReport", report });
-    if(!res.ok) throw new Error(res.error || "Greška pri čuvanju.");
+
+    const res = await apiPost({
+      action: "saveReport",
+      report
+    });
+
+    if (!res.ok) throw new Error(res.error || "Greška pri čuvanju.");
+
     const normalized = normalizeReport(res.report);
     const idx = state.allReports.findIndex(r => r.report_id === normalized.report_id);
-    if(idx > -1) state.allReports[idx] = normalized;
+    if (idx > -1) state.allReports[idx] = normalized;
     else state.allReports.unshift(normalized);
+
     fillFilters();
     applyFilters();
     closeModal();
     showToast("Izvještaj je sačuvan.");
-  }catch(e){
+  } catch (e) {
     showToast(e.message || "Greška pri čuvanju.", true);
-  }finally{
+  } finally {
     setSaving(false);
   }
 };
 
+document.getElementById("globalReportsTableBody").onclick = (e) => {
+  const show = e.target.dataset.show;
+  if (show) openReport(show);
+};
+document.getElementById("entityReportsTableBody").onclick = (e) => {
+  const show = e.target.dataset.show;
+  if (show) openReport(show);
+};
+
 window.addEventListener("resize", () => {
-  if(state.currentView === "focus" && state.focusType) renderFocusView();
-  if(state.currentView === "report") renderReportView();
+  if (state.currentView === "entity") renderEntityView();
+  if (state.currentView === "report") renderReportView();
 });
 
 bootstrap();
