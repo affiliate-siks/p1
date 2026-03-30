@@ -22,7 +22,7 @@
   --yellow:#facc15;
   --radius:22px;
   --shadow:0 18px 50px rgba(0,0,0,.35);
-  --max:1480px;
+  --max:1560px;
 }
 *{box-sizing:border-box}
 body{
@@ -43,6 +43,7 @@ a{color:inherit}
 .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr))}
 .hero,.card,.modal{
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
   border:1px solid var(--line);
@@ -138,6 +139,46 @@ input:focus,select:focus,textarea:focus{
 }
 select option{background:#0f1420}
 textarea{min-height:90px;resize:vertical}
+.cardList{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.entityCard{
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  cursor:pointer;
+  transition:.18s ease;
+}
+.entityCard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+.entityTitle{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:8px;
+  line-height:1.2;
+}
+.entityNote{
+  margin-top:8px;
+  line-height:1.5;
+}
+.entityMeta{display:grid;gap:8px;margin-top:12px}
+.entityMeta .row{padding:8px 0;font-size:13px}
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  border:1px solid var(--line);
+  margin-top:10px;
+}
+.status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
+.status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
+.status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
+.status.empty{background:rgba(255,255,255,.06);color:var(--muted)}
 .kpiWrap{overflow:auto}
 table{width:100%;border-collapse:collapse;min-width:820px}
 th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
@@ -175,7 +216,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase}
   background:rgba(255,255,255,.02);
   line-height:1.65;
 }
-.analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.analysisGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .topPost{
   display:grid;
   grid-template-columns:1fr auto auto;
@@ -188,7 +229,7 @@ th{font-size:12px;color:var(--muted);text-transform:uppercase}
 .canvasWrap{height:220px}
 canvas{width:100%;height:100%;display:block}
 .empty{
-  padding:34px;
+  padding:26px;
   text-align:center;
   color:var(--muted);
   border:1px dashed rgba(255,255,255,.12);
@@ -301,7 +342,7 @@ canvas{width:100%;height:100%;display:block}
   margin:0 0 8px;
 }
 @media (max-width:1200px){
-  .g5,.g4,.g3,.g2,.toolbar,.analysisGrid{grid-template-columns:1fr}
+  .g6,.g5,.g4,.g3,.g2,.toolbar,.cardList,.analysisGrid{grid-template-columns:1fr}
   .hero{flex-direction:column;align-items:flex-start}
 }
 @media (max-width:760px){
@@ -321,15 +362,16 @@ canvas{width:100%;height:100%;display:block}
     <div class="hero">
       <div>
         <h1>Marketing Team Reporting Dashboard</h1>
-        <p>Unos sedmičnih izvještaja, fokusirani pregled po profilu ili po osobi.</p>
+        <p>Unos sedmičnih izvještaja, pregled po profilu i pregled po osobi uz organske i paid metrike.</p>
         <div class="chipRow">
-          <span class="badge" id="modeBadge">Focus dashboard</span>
-          <span class="badge" id="heroContextA">Izaberi profil ili osobu</span>
-          <span class="badge" id="heroContextB">Bez globalnog overview-a</span>
+          <span class="badge" id="modeBadge">Pregled</span>
+          <span class="badge" id="heroContextA">Svi profili</span>
+          <span class="badge" id="heroContextB">Sve osobe</span>
         </div>
       </div>
       <div class="hero-actions">
         <span class="savingBadge" id="savingBadge">Čuvanje u toku...</span>
+        <button class="btn btn-ghost hidden" id="homeBtn">Početna</button>
         <button class="btn btn-ghost hidden" id="entityBackBtn">Nazad</button>
         <button class="btn btn-ghost" id="resetFiltersBtn">Reset filtera</button>
         <button class="btn btn-primary" id="openModalBtn">Novi izvještaj</button>
@@ -364,9 +406,25 @@ canvas{width:100%;height:100%;display:block}
     </div>
   </section>
 
-  <div id="emptyView">
+  <div id="homeView">
     <section class="section">
-      <div class="empty">Izaberi profil ili zaduženu osobu da vidiš pregled.</div>
+      <div class="card">
+        <div class="viewHeader">
+          <h3>Profili</h3>
+          <span class="muted">Klik na karticu otvara pregled profila i njegovih izvještaja.</span>
+        </div>
+        <div class="cardList" id="profilesCards"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="viewHeader">
+          <h3>Zadužene osobe</h3>
+          <span class="muted">Klik na karticu otvara pregled osobe i svih povezanih izvještaja.</span>
+        </div>
+        <div class="cardList" id="ownersCards"></div>
+      </div>
     </section>
   </div>
 
@@ -478,14 +536,14 @@ canvas{width:100%;height:100%;display:block}
       <div class="card stat"><div class="icon">🔗</div><div><div class="muted">Ads CTR</div><div class="metric-sm" id="reportAdsCtr">0.00%</div></div></div>
     </section>
 
-    <section class="section">
+    <section class="section" id="reportSummarySection">
       <div class="card">
         <h3>Executive summary</h3>
         <div class="analysisBox" id="reportSummaryBox">—</div>
       </div>
     </section>
 
-    <section class="section grid g2">
+    <section class="section grid g2" id="reportKpiAdsSection">
       <div class="card">
         <h3>KPI po profilu – organski rezultati</h3>
         <div class="kpiWrap">
@@ -502,7 +560,7 @@ canvas{width:100%;height:100%;display:block}
           </table>
         </div>
       </div>
-      <div class="card">
+      <div class="card" id="reportAdsCard">
         <div class="viewHeader">
           <h3 style="margin:0">Plaćeni rezultati (ADS)</h3>
           <span class="badge"><span id="reportAdsCampaignCount">0</span> kampanja</span>
@@ -521,18 +579,18 @@ canvas{width:100%;height:100%;display:block}
       </div>
     </section>
 
-    <section class="section grid g2">
-      <div class="card">
+    <section class="section grid g2" id="reportTopPostsSection">
+      <div class="card" id="reportTopViewsCard">
         <h3>Top objave – po views</h3>
         <div id="reportTopViews"></div>
       </div>
-      <div class="card">
+      <div class="card" id="reportTopLikesCard">
         <h3>Top objave – po lajkovima</h3>
         <div id="reportTopLikes"></div>
       </div>
     </section>
 
-    <section class="section grid g2">
+    <section class="section grid g2" id="reportChartsSection">
       <div class="card">
         <h3>Weekly trend</h3>
         <div class="canvasWrap"><canvas id="reportTrendChart"></canvas></div>
@@ -543,17 +601,13 @@ canvas{width:100%;height:100%;display:block}
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="reportAnalysisSection">
       <div class="analysisGrid">
-        <div class="card">
+        <div class="card" id="reportInsightsCard">
           <h3>Insights</h3>
           <div class="analysisBox" id="reportInsightsBox">—</div>
         </div>
-        <div class="card">
-          <h3>Recommendations</h3>
-          <div class="analysisBox" id="reportRecommendationsBox">—</div>
-        </div>
-        <div class="card">
+        <div class="card" id="reportNotesCard">
           <h3>Napomena / zaključak</h3>
           <div class="noteBox" id="reportNotesBox">—</div>
         </div>
@@ -626,7 +680,6 @@ canvas{width:100%;height:100%;display:block}
             <div class="field"><label>Zadužena osoba</label><input id="ownerInput" list="ownersList" /></div>
             <div class="field"><label>Profil</label><input id="profileInput" list="profilesList" /></div>
             <div class="field"><label>Period label</label><input id="periodLabelInput" value="pon-ned" /></div>
-            <div class="field"><label>Napomena</label><input id="notesShortInput" placeholder="Kratka napomena za lakši pregled" /></div>
           </div>
 
           <datalist id="ownersList"></datalist>
@@ -669,8 +722,8 @@ canvas{width:100%;height:100%;display:block}
           <button class="btn btn-ghost" id="addTopLikesBtn" type="button">Dodaj objavu po lajkovima</button>
 
           <div class="field" style="margin-top:18px">
-            <label>Komentar / zaključak</label>
-            <textarea id="notesInput"></textarea>
+            <label>Komentar / zaključak *</label>
+            <textarea id="notesInput" required></textarea>
           </div>
         </div>
       </div>
@@ -726,7 +779,7 @@ const ADS_METRICS = [
 ];
 
 const state = {
-  currentView: "empty",
+  currentView: "home",
   entityType: null,
   entityValue: null,
   selectedReportId: null,
@@ -968,7 +1021,6 @@ function openModal(){
   document.getElementById("ownerInput").value = "";
   document.getElementById("profileInput").value = "";
   document.getElementById("periodLabelInput").value = "pon-ned";
-  document.getElementById("notesShortInput").value = "";
   document.getElementById("notesInput").value = "";
   renderOrganicMetricsGrid();
   renderCampaigns([emptyCampaign()]);
@@ -1060,7 +1112,7 @@ function buildReportPayloadFromForm(){
     period_label: document.getElementById("periodLabelInput").value,
     profile: document.getElementById("profileInput").value,
     owner: document.getElementById("ownerInput").value,
-    notes: [document.getElementById("notesShortInput").value, document.getElementById("notesInput").value].filter(Boolean).join("\n"),
+    notes: document.getElementById("notesInput").value.trim(),
     organic,
     ads,
     topViews: topViews.map(p => ({
@@ -1097,6 +1149,7 @@ function renderPreview(){
     <div class="row"><span>Broj kampanja</span><strong>${fmt((report.ads || []).length)}</strong></div>
     <div class="row"><span>Top views objava</span><strong>${fmt((report.topViews || []).length)}</strong></div>
     <div class="row"><span>Top likes objava</span><strong>${fmt((report.topLikes || []).length)}</strong></div>
+    <div class="row"><span>Komentar</span><strong>${esc(report.notes || "-")}</strong></div>
   `;
 }
 
@@ -1215,44 +1268,32 @@ function applyFilters(){
     (!to || !r.period_end || r.period_end <= to)
   );
 
+  state.currentView = "home";
   state.entityType = null;
   state.entityValue = null;
   state.selectedReportId = null;
-
-  if (profile !== "all") {
-    state.entityType = "profile";
-    state.entityValue = profile;
-    state.currentView = "entity";
-  } else if (owner !== "all") {
-    state.entityType = "owner";
-    state.entityValue = owner;
-    state.currentView = "entity";
-  } else {
-    state.currentView = "empty";
-  }
-
   renderAll();
 }
 
 function showView(view){
   state.currentView = view;
-  document.getElementById("emptyView").classList.toggle("hidden", view !== "empty");
+  document.getElementById("homeView").classList.toggle("hidden", view !== "home");
   document.getElementById("entityView").classList.toggle("hidden", view !== "entity");
   document.getElementById("reportView").classList.toggle("hidden", view !== "report");
+  document.getElementById("homeBtn").classList.toggle("hidden", view === "home");
   document.getElementById("entityBackBtn").classList.toggle("hidden", view !== "report");
 
   document.getElementById("modeBadge").textContent =
-    view === "empty" ? "Focus dashboard" :
-    view === "entity" ? "Entity overview" : "Single report";
+    view === "home" ? "Pregled" :
+    view === "entity" ? "Entitet" : "Izvještaj";
 }
 
 function renderAll(){
   renderGlobalReportsTable();
 
-  if (state.currentView === "empty") {
-    showView("empty");
-    document.getElementById("heroContextA").textContent = "Izaberi profil ili osobu";
-    document.getElementById("heroContextB").textContent = "Prikaz bez globalnog overview-a";
+  if (state.currentView === "home") {
+    showView("home");
+    renderHomeView();
   } else if (state.currentView === "entity") {
     showView("entity");
     renderEntityView();
@@ -1278,11 +1319,103 @@ function getOrganicValue(report, label, kind){
   return row ? Number(row[kind] || 0) : 0;
 }
 
+function renderHomeView(){
+  document.getElementById("heroContextA").textContent =
+    document.getElementById("filterProfile").value === "all" ? "Svi profili" : document.getElementById("filterProfile").value;
+  document.getElementById("heroContextB").textContent =
+    document.getElementById("filterOwner").value === "all" ? "Sve osobe" : document.getElementById("filterOwner").value;
+
+  renderEntityCards("profilesCards", groupReportsBy(state.filteredReports, "profile"), "profile");
+  renderEntityCards("ownersCards", groupReportsBy(state.filteredReports, "owner"), "owner");
+}
+
+function groupReportsBy(reports, key){
+  return reports.reduce((acc, r) => {
+    const val = r[key];
+    if (!val) return acc;
+    if (!acc[val]) acc[val] = [];
+    acc[val].push(r);
+    return acc;
+  }, {});
+}
+
+function getLatestReport(reports){
+  if (!reports || !reports.length) return null;
+  return [...reports].sort((a, b) => {
+    const da = new Date(a.report_date || a.created_at || 0).getTime();
+    const db = new Date(b.report_date || b.created_at || 0).getTime();
+    return db - da;
+  })[0] || null;
+}
+
+function getLatestReportNote(reports){
+  const latest = getLatestReport(reports);
+  return (latest?.notes || "").trim();
+}
+
+function getEntityStatus(reports){
+  if (!reports.length) {
+    return { status:"empty", text:"Nema podataka" };
+  }
+
+  const latest = getLatestReport(reports);
+  if (!latest) {
+    return { status:"empty", text:"Nema podataka" };
+  }
+
+  const viewsDelta = pctChange(latest.overview.views, latest.overview.views_previous);
+  const interactionsDelta = pctChange(latest.overview.interactions, latest.overview.interactions_previous);
+
+  if (viewsDelta < -20 || interactionsDelta < -20) {
+    return { status:"bad", text:"Kritično" };
+  }
+  if (viewsDelta < 0 || interactionsDelta < 0) {
+    return { status:"warn", text:"Obratiti pažnju" };
+  }
+  return { status:"good", text:"OK" };
+}
+
+function renderEntityCards(containerId, groups, type){
+  const container = document.getElementById(containerId);
+  const html = Object.entries(groups).map(([name, reports]) => {
+    const s = summarizeReports(reports);
+    const latestNote = getLatestReportNote(reports);
+    const statusInfo = getEntityStatus(reports);
+    const trimmedNote = latestNote.length > 160 ? `${latestNote.slice(0, 160)}...` : latestNote;
+
+    return `
+      <div class="entityCard" data-type="${esc(type)}" data-name="${esc(name)}">
+        <div class="entityTitle">${esc(name)}</div>
+        <div class="muted">${fmt(s.reports)} reporta</div>
+        ${type === "profile" && trimmedNote ? `<div class="muted entityNote">${esc(trimmedNote)}</div>` : ""}
+        <div class="entityMeta">
+          <div class="row"><span>Views</span><strong>${fmt(s.views)}</strong></div>
+          <div class="row"><span>Novi pratioci</span><strong>${fmt(s.followers)}</strong></div>
+          <div class="row"><span>ADS impressions</span><strong>${fmt(s.impressions)}</strong></div>
+        </div>
+        <div class="status ${statusInfo.status}">${statusInfo.text}</div>
+      </div>
+    `;
+  }).join("");
+
+  container.innerHTML = html || `<div class="empty">Nema podataka.</div>`;
+
+  container.querySelectorAll(".entityCard").forEach(card => {
+    card.onclick = () => openEntity(card.dataset.type, card.dataset.name);
+  });
+}
+
+function openEntity(type, value){
+  state.entityType = type;
+  state.entityValue = value;
+  state.selectedReportId = null;
+  state.currentView = "entity";
+  renderAll();
+}
+
 function getEntityReports(){
   if (!state.entityType || !state.entityValue) return [];
-  if (state.entityType === "profile") return state.filteredReports.filter(r => r.profile === state.entityValue);
-  if (state.entityType === "owner") return state.filteredReports.filter(r => r.owner === state.entityValue);
-  return [];
+  return state.filteredReports.filter(r => (state.entityType === "profile" ? r.profile : r.owner) === state.entityValue);
 }
 
 function aggregateOrganicRows(reports){
@@ -1301,9 +1434,6 @@ function aggregateOrganicRows(reports){
 function renderEntityView(){
   const reports = getEntityReports();
   const summary = summarizeReports(reports);
-
-  document.getElementById("heroContextA").textContent = state.entityType === "profile" ? "Pregled po profilu" : "Pregled po osobi";
-  document.getElementById("heroContextB").textContent = state.entityValue || "-";
 
   document.getElementById("entityTitleMetric").textContent = state.entityValue || "-";
   document.getElementById("entityTypeLabel").textContent = state.entityType === "profile" ? "Profil" : "Zadužena osoba";
@@ -1368,28 +1498,6 @@ function buildInsights(report){
   return insights;
 }
 
-function buildRecommendations(report){
-  const viewsChange = pctChange(report.overview.views, report.overview.views_previous);
-  const interactionsChange = pctChange(report.overview.interactions, report.overview.interactions_previous);
-  const storiesCurrent = getOrganicValue(report, "Stories (broj)", "current");
-  const storiesPrevious = getOrganicValue(report, "Stories (broj)", "previous");
-  const storiesChange = pctChange(storiesCurrent, storiesPrevious);
-
-  const adsImpressions = report.ads.reduce((s, a) => s + Number(a.impressions || 0), 0);
-  const adsClicks = report.ads.reduce((s, a) => s + Number(a.clicks || 0), 0);
-  const adsCtr = safeRate(adsClicks, adsImpressions);
-  const engagementRate = safeRate(report.overview.interactions, report.overview.views);
-
-  const recs = [];
-  if (viewsChange <= 0) recs.push("Views stagniraju ili opadaju — testirati više reels/video formata i jači hook u prvim sekundama sadržaja.");
-  if (interactionsChange > 0 && report.ads.reduce((s,a)=>s+Number(a.leads||0),0) === 0) recs.push("Angažman raste, ali nema konverzija — dodati jasniji CTA i sadržaj usmjeriti ka akciji.");
-  if (adsImpressions > 0 && adsCtr < 0.8) recs.push("Paid kampanje imaju nizak CTR — testirati novu kreativu, headline i targetiranje.");
-  if ((report.topViews || [])[0]) recs.push(`Najbolju objavu "${report.topViews[0].title}" iskoristiti kao referencu za sličan format.`);
-  if (storiesChange <= 0) recs.push("Stories output ne raste — povećati frekvenciju za bolju dnevnu vidljivost.");
-  if (engagementRate < 2 && report.overview.views > 0) recs.push("Engagement rate je nizak — uključiti više pitanja, CTA i interaktivnih elemenata.");
-  return recs.slice(0, 4);
-}
-
 function renderAdsTable(report){
   const ads = report.ads || [];
   document.getElementById("reportAdsCampaignCount").textContent = fmt(ads.length);
@@ -1438,16 +1546,42 @@ function renderTopPosts(containerId, items, metricLabel){
   `).join("") : `<div class="empty">Nema unosa.</div>`;
 }
 
+function toggleSection(id, shouldShow){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle("hidden", !shouldShow);
+}
+
 function renderReportView(){
   const report = getSelectedReport();
   if (!report) {
-    state.currentView = state.entityType ? "entity" : "empty";
+    state.currentView = state.entityType ? "entity" : "home";
     renderAll();
     return;
   }
 
-  document.getElementById("heroContextA").textContent = "Single report";
-  document.getElementById("heroContextB").textContent = report.profile || "-";
+  const hasOrganicRows = (report.organic_rows || []).some(r =>
+    Number(r.current || 0) !== 0 || Number(r.previous || 0) !== 0
+  );
+  const hasAds = Array.isArray(report.ads) && report.ads.length > 0;
+  const hasTopViews = Array.isArray(report.topViews) && report.topViews.length > 0;
+  const hasTopLikes = Array.isArray(report.topLikes) && report.topLikes.length > 0;
+  const hasTopPosts = hasTopViews || hasTopLikes;
+  const hasNotes = !!String(report.notes || "").trim();
+  const insights = buildInsights(report);
+  const hasInsights = insights.length > 0;
+  const hasCharts = hasOrganicRows;
+
+  toggleSection("reportSummarySection", hasNotes);
+  toggleSection("reportKpiAdsSection", hasOrganicRows || hasAds);
+  toggleSection("reportAdsCard", hasAds);
+  toggleSection("reportTopPostsSection", hasTopPosts);
+  toggleSection("reportTopViewsCard", hasTopViews);
+  toggleSection("reportTopLikesCard", hasTopLikes);
+  toggleSection("reportChartsSection", hasCharts);
+  toggleSection("reportAnalysisSection", hasInsights || hasNotes);
+  toggleSection("reportInsightsCard", hasInsights);
+  toggleSection("reportNotesCard", hasNotes);
 
   document.getElementById("reportProfileName").textContent = report.profile || "-";
   document.getElementById("reportOwnerName").textContent = report.owner || "-";
@@ -1471,29 +1605,35 @@ function renderReportView(){
   document.getElementById("reportEngagementRate").textContent = `${fmt(engagementRate, 2)}%`;
   document.getElementById("reportAdsCtr").textContent = `${fmt(adsCtr, 2)}%`;
 
-  document.getElementById("reportSummaryBox").textContent = report.notes || "—";
+  document.getElementById("reportSummaryBox").textContent = hasNotes ? report.notes : "—";
 
-  document.getElementById("reportOrganicTableBody").innerHTML = (report.organic_rows || []).map(r => `
-    <tr>
-      <td>${esc(r.label)}</td>
-      <td>${fmt(r.current)}</td>
-      <td>${fmt(r.previous)}</td>
-      <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
-    </tr>
-  `).join("");
+  document.getElementById("reportOrganicTableBody").innerHTML = hasOrganicRows
+    ? (report.organic_rows || []).map(r => `
+      <tr>
+        <td>${esc(r.label)}</td>
+        <td>${fmt(r.current)}</td>
+        <td>${fmt(r.previous)}</td>
+        <td><span class="delta ${deltaClass(r.change)}">${fmt(r.change, 2)}%</span></td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="4">Nema organskih podataka.</td></tr>`;
 
   renderAdsTable(report);
-  renderTopPosts("reportTopViews", report.topViews || [], "views");
-  renderTopPosts("reportTopLikes", report.topLikes || [], "lajkova");
 
-  const insights = buildInsights(report);
-  const recommendations = buildRecommendations(report);
+  if (hasTopViews) renderTopPosts("reportTopViews", report.topViews || [], "views");
+  else document.getElementById("reportTopViews").innerHTML = `<div class="empty">Nema unosa.</div>`;
 
-  document.getElementById("reportInsightsBox").innerHTML = insights.length ? `<ul class="list">${insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
-  document.getElementById("reportRecommendationsBox").innerHTML = recommendations.length ? `<ul class="list">${recommendations.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
-  document.getElementById("reportNotesBox").textContent = report.notes || "—";
+  if (hasTopLikes) renderTopPosts("reportTopLikes", report.topLikes || [], "lajkova");
+  else document.getElementById("reportTopLikes").innerHTML = `<div class="empty">Nema unosa.</div>`;
 
-  drawReportCharts(report);
+  document.getElementById("reportInsightsBox").innerHTML =
+    hasInsights ? `<ul class="list">${insights.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "—";
+
+  document.getElementById("reportNotesBox").textContent = hasNotes ? report.notes : "—";
+
+  if (hasCharts) {
+    drawReportCharts(report);
+  }
 }
 
 function renderGlobalReportsTable(){
@@ -1564,10 +1704,9 @@ function barChart(id, labels, sets){
   const allValues = sets.flatMap(s => s.data);
   const minVal = Math.min(...allValues, 0);
   const maxVal = Math.max(...allValues, 0);
-
   const range = Math.max(1, maxVal - minVal);
-  const { m, pw, ph } = axes(ctx, w, h, labels);
 
+  const { m, pw, ph } = axes(ctx, w, h, labels);
   const yScale = v => m.t + ((maxVal - v) / range) * ph;
   const zeroY = yScale(0);
 
@@ -1583,7 +1722,6 @@ function barChart(id, labels, sets){
   sets.forEach((s, si) => s.data.forEach((v, i) => {
     const x = m.l + i * slot + si * bw + (slot - sets.length * bw) / 2;
     const y = yScale(v);
-
     const barTop = Math.min(y, zeroY);
     const barHeight = Math.max(2, Math.abs(zeroY - y));
 
@@ -1627,6 +1765,13 @@ document.getElementById("resetFiltersBtn").onclick = () => {
   document.getElementById("filterDateTo").value = "";
   applyFilters();
 };
+document.getElementById("homeBtn").onclick = () => {
+  state.currentView = "home";
+  state.entityType = null;
+  state.entityValue = null;
+  state.selectedReportId = null;
+  renderAll();
+};
 document.getElementById("entityBackBtn").onclick = () => {
   state.currentView = "entity";
   state.selectedReportId = null;
@@ -1668,9 +1813,18 @@ document.getElementById("nextStepBtn").onclick = () => {
 
 document.getElementById("saveReportBtn").onclick = async () => {
   const report = buildReportPayloadFromForm();
+  const detailedComment = document.getElementById("notesInput").value.trim();
 
   if (!report.profile || !report.owner || !report.report_date || !report.week_start || !report.week_end) {
     showToast("Popuni profil, osobu, datum reporta i period.", true);
+    return;
+  }
+
+  if (!detailedComment) {
+    showToast("Komentar / zaključak je obavezan.", true);
+    state.step = 3;
+    renderStepper();
+    document.getElementById("notesInput").focus();
     return;
   }
 
