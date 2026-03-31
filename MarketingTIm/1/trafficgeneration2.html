@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Traffic Generation Team Report</title>
+<style>
+:root{
+  --bg:#0b0d12;
+  --panel:#131925;
+  --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.12);
+  --text:#eef2ff;
+  --muted:#98a2b3;
+  --pink:#ff4fa7;
+  --pink2:#ff77bf;
+  --orange:#ff9a31;
+  --purple:#8b5cf6;
+  --cyan:#22d3ee;
+  --green:#22c55e;
+  --red:#f87171;
+  --yellow:#facc15;
+  --radius:22px;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --max:1560px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(255,79,167,.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(34,211,238,.08), transparent 20%),
+    linear-gradient(180deg,#090b10,#0d1017);
+}
+a{color:inherit;text-decoration:none}
+.app{width:min(var(--max), calc(100vw - 20px));margin:10px auto 28px}
+.section{margin-bottom:18px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.hero,.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.hero{
+  border-radius:28px;
+  padding:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 22%),
+    linear-gradient(120deg,#131823 0%,#17131f 48%,#321427 78%,#ff4fa7 140%);
+}
+.hero h1{
+  margin:0;
+  font-size:clamp(28px,4vw,54px);
+  font-weight:300;
+  letter-spacing:-.05em;
+}
+.hero p{margin:8px 0 0;color:rgba(255,255,255,.72);font-size:14px;max-width:900px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.chipRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+}
+.card{
+  border-radius:var(--radius);
+  padding:22px;
+  overflow:hidden;
+  position:relative;
+}
+.card h3{margin:0 0 14px;font-size:18px}
+.muted{color:var(--muted);font-size:13px}
+.metric{font-size:38px;font-weight:800;line-height:1;margin-bottom:6px}
+.metric-sm{font-size:28px;font-weight:800;line-height:1}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.kpiWrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th,td{padding:11px 8px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-size:12px;color:var(--muted);text-transform:uppercase}
+.stat{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:110px;
+}
+.icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:rgba(255,79,167,.12);
+  border:1px solid rgba(255,79,167,.16);
+}
+.analysisBox,.noteBox{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  line-height:1.7;
+}
+.analysisGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.list{margin:0;padding-left:18px}
+.list li{margin:0 0 8px}
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  border:1px solid var(--line);
+}
+.status.good{background:rgba(34,197,94,.14);color:#d8ffe6}
+.status.warn{background:rgba(250,204,21,.12);color:#fff2b3}
+.status.bad{background:rgba(248,113,113,.14);color:#ffd8d8}
+.note{
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid rgba(250,204,21,.18);
+  background:rgba(250,204,21,.06);
+  color:#fff2b3;
+  line-height:1.65;
+}
+.small{font-size:12px}
+.link{
+  color:#fff;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  word-break:break-all;
+}
+@media (max-width:1200px){
+  .g6,.g5,.g4,.g3,.g2,.analysisGrid{grid-template-columns:1fr}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:760px){
+  .app{width:calc(100vw - 12px)}
+  .hero,.card{padding:18px}
+  table{min-width:620px}
+  .metric{font-size:32px}
+  .hero h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section class="section">
+    <div class="hero">
+      <div>
+        <h1>Traffic Generation Team Report</h1>
+        <p>Sedmični pregled spend & delivery rezultata, aktivnih promo kampanja za mart i optimizacija po kanalima bez prikaza praznih performance polja.</p>
+        <div class="chipRow">
+          <span class="badge">Zadužena osoba: Maja Veličković</span>
+          <span class="badge">Tržište: Bugarska / Crna Gora</span>
+          <span class="badge">Period izvještaja: 23.03–29.03.</span>
+          <span class="badge">Kanali: PropellerAds / Adsterra / Hilltop Ads</span>
+          <span class="badge">Mjesečni plan: 01.03–31.03.</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <span class="badge">Traffic Generation</span>
+        <span class="badge">Media Buying / Programmatic</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g6">
+    <div class="card">
+      <h3>Ukupan spend</h3>
+      <div class="metric">$2,248.95</div>
+      <div class="muted">Ukupno potrošeno kroz sve prikazane kampanje u sedmici</div>
+    </div>
+    <div class="card">
+      <h3>Ukupne impresije</h3>
+      <div class="metric">643,766</div>
+      <div class="muted">Push + POP delivery volumen</div>
+    </div>
+    <div class="card">
+      <h3>Ukupno klikova</h3>
+      <div class="metric">8,447</div>
+      <div class="muted">Samo gdje su klikovi dostupni u mreži</div>
+    </div>
+    <div class="card">
+      <h3>Prosječan CPM</h3>
+      <div class="metric">3.49</div>
+      <div class="muted">Računat iz ukupnog spend / impresije</div>
+    </div>
+    <div class="card">
+      <h3>Push CTR</h3>
+      <div class="metric">1.36%</div>
+      <div class="muted">Računat samo na kampanjama sa dostupnim klikovima</div>
+    </div>
+    <div class="card">
+      <h3>Status</h3>
+      <div class="metric-sm">Optimizovano</div>
+      <div class="status good" style="margin-top:10px">Adsterra efikasnost + Hilltop reach</div>
+    </div>
+  </section>
+
+  <section class="section grid g4">
+    <div class="card stat">
+      <div class="icon">💸</div>
+      <div>
+        <div class="muted">Top spend kampanja</div>
+        <div class="metric-sm">DoubleBoost - Hilltop Ads</div>
+        <div class="muted">$1,197.19</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">👁</div>
+      <div>
+        <div class="muted">Top delivery kampanja</div>
+        <div class="metric-sm">DoubleBoost - Hilltop Ads</div>
+        <div class="muted">310,511 impresija</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">🖱</div>
+      <div>
+        <div class="muted">Najveći CTR</div>
+        <div class="metric-sm">DoubleBoost - Adsterra</div>
+        <div class="muted">5.53%</div>
+      </div>
+    </div>
+    <div class="card stat">
+      <div class="icon">🎯</div>
+      <div>
+        <div class="muted">POP konverzije</div>
+        <div class="metric-sm">84</div>
+        <div class="muted">31 Propeller + 53 Hilltop</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g4">
+    <div class="card">
+      <h3>Mjesečni budžet</h3>
+      <div class="metric">$15,000</div>
+      <div class="muted">Ukupan planirani budžet za mart</div>
+    </div>
+    <div class="card">
+      <h3>Acquisition share</h3>
+      <div class="metric">70%</div>
+      <div class="muted">$10,500 za Double Casino Boost + Double Sport Boost</div>
+    </div>
+    <div class="card">
+      <h3>Retention share</h3>
+      <div class="metric">30%</div>
+      <div class="muted">$4,500 raspoređeno na dnevne i vikend promo akcije</div>
+    </div>
+    <div class="card">
+      <h3>Casino fokus</h3>
+      <div class="metric">86.67%</div>
+      <div class="muted">$13,000 kazino / $2,000 sport</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Mjesečni promo plan — mart</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Promo Campaign</th>
+              <th>Schedule</th>
+              <th>A/R</th>
+              <th>Vertical</th>
+              <th>Link</th>
+              <th>Budget</th>
+              <th>Budget Share</th>
+              <th>Creatives</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Double Casino Boost</td>
+              <td>Every Day</td>
+              <td>Acquisition</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/tuhmb6cf3" target="_blank">admiralbetbgtrack.com/tuhmb6cf3</a></td>
+              <td>$8,500.00</td>
+              <td>56.67%</td>
+              <td>Double Casino boost</td>
+            </tr>
+            <tr>
+              <td>Double Sport Boost</td>
+              <td>Every Day</td>
+              <td>Acquisition</td>
+              <td>Sport</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/tsxhlr0az" target="_blank">admiralbetbgtrack.com/tsxhlr0az</a></td>
+              <td>$2,000.00</td>
+              <td>13.33%</td>
+              <td>Double Sport boost</td>
+            </tr>
+            <tr>
+              <td>Monday Comeback</td>
+              <td>Mondays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/tjhatroja" target="_blank">admiralbetbgtrack.com/tjhatroja</a></td>
+              <td>$400.00</td>
+              <td>2.67%</td>
+              <td>Monday Comeback</td>
+            </tr>
+            <tr>
+              <td>Tuesday Thrill</td>
+              <td>Tuesdays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/ts83ibdvf" target="_blank">admiralbetbgtrack.com/ts83ibdvf</a></td>
+              <td>$400.00</td>
+              <td>2.67%</td>
+              <td>Tuesday Thrill</td>
+            </tr>
+            <tr>
+              <td>Midweek Rush</td>
+              <td>Wednesdays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/twa30mtrf" target="_blank">admiralbetbgtrack.com/twa30mtrf</a></td>
+              <td>$400.00</td>
+              <td>2.67%</td>
+              <td>Midweek Rush</td>
+            </tr>
+            <tr>
+              <td>Thursday Fortune</td>
+              <td>Thursdays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/tcesu8ylc" target="_blank">admiralbetbgtrack.com/tcesu8ylc</a></td>
+              <td>$400.00</td>
+              <td>2.67%</td>
+              <td>Thursday Fortune</td>
+            </tr>
+            <tr>
+              <td>Friday Tournaments</td>
+              <td>Fridays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/txv2zh4nk" target="_blank">admiralbetbgtrack.com/txv2zh4nk</a></td>
+              <td>$400.00</td>
+              <td>2.67%</td>
+              <td>Friday Tournaments</td>
+            </tr>
+            <tr>
+              <td>Weekend Lucky Wheels</td>
+              <td>Saturdays & Sundays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/t0skdakyl" target="_blank">admiralbetbgtrack.com/t0skdakyl</a></td>
+              <td>$1,500.00</td>
+              <td>10.00%</td>
+              <td>Weekend Lucky Wheels</td>
+            </tr>
+            <tr>
+              <td>Live Casino Rush</td>
+              <td>Weekdays Only</td>
+              <td>Retention</td>
+              <td>Casino</td>
+              <td><a class="link" href="https://admiralbetbgtrack.com/tuywyxdyq" target="_blank">admiralbetbgtrack.com/tuywyxdyq</a></td>
+              <td>$1,000.00</td>
+              <td>6.67%</td>
+              <td>Live Casino Rush</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Spend & Delivery po kampanji — sedmični presjek</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>KPI</th>
+              <th>DoubleBoost - PropellerAds</th>
+              <th>Registration campaign - Adsterra</th>
+              <th>DoubleBoost - Adsterra</th>
+              <th>DoubleBoost - Hilltop Ads</th>
+              <th>LuckyWheel - Hilltop Ads</th>
+              <th>GLC / Sedmične Nagrade - Adsterra</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Budžet potrošen ($)</td>
+              <td>891.58</td>
+              <td>24.90</td>
+              <td>89.62</td>
+              <td>1197.19</td>
+              <td>13.80</td>
+              <td>31.86</td>
+            </tr>
+            <tr>
+              <td>Impresije</td>
+              <td>210,438</td>
+              <td>21,898</td>
+              <td>61,353</td>
+              <td>310,511</td>
+              <td>10,457</td>
+              <td>29,109</td>
+            </tr>
+            <tr>
+              <td>CPM</td>
+              <td>4.24</td>
+              <td>1.14</td>
+              <td>1.46</td>
+              <td>3.86</td>
+              <td>1.32</td>
+              <td>1.09</td>
+            </tr>
+            <tr>
+              <td>Klikovi</td>
+              <td>4,131</td>
+              <td>Podatak nije dostupan</td>
+              <td>3,391</td>
+              <td>61</td>
+              <td>157</td>
+              <td>707</td>
+            </tr>
+            <tr>
+              <td>CTR (%)</td>
+              <td>1.96%</td>
+              <td>Podatak nije dostupan</td>
+              <td>5.53%</td>
+              <td>0.02%</td>
+              <td>1.50%</td>
+              <td>2.43%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:16px">
+        Na svim platformama su paralelno aktivne i POP kampanje, za koje platforme ne prikazuju klikove već samo impresije. Zato klikovi i CTR u tabeli predstavljaju samo dio push saobraćaja, dok značajan dio ukupnog traffica dolazi iz POP formata i čita se kroz delivery i cost.
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g2">
+    <div class="card">
+      <h3>Performance highlight</h3>
+      <div class="analysisBox">
+        <div class="row"><span>Propeller DoubleBoost POP test</span><strong>31 konverzija reg</strong></div>
+        <div class="row"><span>Hilltop DoubleBoost POP test</span><strong>53 konverzije reg</strong></div>
+        <div class="row"><span>Ukupno evidentirano</span><strong>84 konverzije reg</strong></div>
+      </div>
+    
+    </div>
+
+    <div class="card">
+      <h3>Kanal summary</h3>
+      <div class="analysisBox">
+        <div class="row"><span>Adsterra</span><strong>Najefikasniji po CTR-u i najnižem CPM-u</strong></div>
+        <div class="row"><span>Hilltop Ads</span><strong>Najveći delivery i najviše POP konverzija</strong></div>
+        <div class="row"><span>PropellerAds</span><strong>Jak InPagePUSH signal + solidan POP doprinos</strong></div>
+     
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>Optimizacije</h3>
+      <div class="kpiWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Test / promjena</th>
+              <th>Rezultat</th>
+              <th>KPI koji se poboljšava</th>
+              <th>Očekivani efekat</th>
+              <th>Napomena</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Smanjenje budžeta i redistribucija ka Adsterra — DoubleBoost kampanja</td>
+              <td>
+                Propeller i Hilltop nose visok delivery volumen, ali Adsterra zadržava najefikasniji dio kroz DoubleBoost SB formate sa CTR rasponom 6.7%–8.98% prema opštem zaključku tima.
+              </td>
+              <td>Efikasnost budžeta, CTR, kvalitet saobraćaja</td>
+              <td>Veći udio kvalitetnog saobraćaja uz smanjeno rasipanje budžeta na slabije izvore</td>
+              <td>
+                Blacklistovani loši izvori, whitelistovani oni koji donose bolji kvalitet. Pad volumena na Hilltop/Propeller je očekivan zbog smanjenja budžeta.
+              </td>
+            </tr>
+            <tr>
+              <td>Zadržavanje kampanje uz smanjen budžet</td>
+              <td>
+                Propeller InPagePUSH DoubleBoost pokazuje CTR 10.7% na 38,494 impresije uz spend od samo $7.7. Hilltop Push ostaje na 0.94%–1.50% CTR uz niži volumen, dok je POP i dalje glavni reach format.
+              </td>
+              <td>CTR, kontrola troška, fokus na kvalitet</td>
+              <td>Bolji odnos kvaliteta i troška uz manji waste</td>
+              <td>POP na sve tri platforme ostaje dominantan za impresije i reach.</td>
+            </tr>
+            <tr>
+              <td>General overview</td>
+              <td>
+                Adsterra je najefikasnija platforma po klikabilnosti i trošku, Hilltop Ads nosi najveći volumen impresija i najviše POP konverzija, dok PropellerAds ima najjači pojedinačni format kroz InPagePUSH.
+              </td>
+              <td>Ukupna efikasnost miks kanala</td>
+              <td>Kombinacija mreža daje balans između volumena, engagementa i konverzija</td>
+              <td>Testirana implementacija Affilka trackera na HilltopAds i PropellerAds.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section grid g2">
+    <div class="card">
+      <h3>Executive summary</h3>
+      <div class="analysisBox">
+        U sedmici 23.03–29.03. ukupno je potrošeno <strong>$2,248.95</strong> uz delivery od <strong>643,766 impresija</strong>. Najveći dio volumena dolazi sa Hilltop DoubleBoost kampanje, dok se najbolji CTR vidi na DoubleBoost kampanji preko Adsterre.
+        <br><br>
+        Kanal miks ostaje logičan: <strong>Adsterra</strong> vodi po efikasnosti i klikabilnosti, <strong>Hilltop</strong> nosi reach i konverzije kroz POP, a <strong>Propeller</strong> zadržava vrijednost kroz InPagePUSH i dodatni POP doprinos.
+        <br><br>
+        Na mjesečnom nivou budžet je snažno usmjeren na acquisition, sa <strong>70%</strong> ukupnog fonda usmjerenog na Double Casino Boost i Double Sport Boost, dok retention kampanje služe kao stabilan dnevni i vikend layer podrške.
+      </div>
+    </div>
+
+   
+  </section>
+
+  <section class="section">
+    <div class="analysisGrid">
+      <div class="card">
+        <h3>Insights</h3>
+        <div class="analysisBox">
+          <ul class="list">
+            <li>DoubleBoost ostaje centralna kampanja i po mjesečnom budžetu i po sedmičnom delivery značaju.</li>
+            <li>Hilltop DoubleBoost nosi najveći spend i najveći delivery, ali uz slab push CTR.</li>
+            <li>Adsterra DoubleBoost daje najbolji CTR i najefikasniji klikabilan traffic.</li>
+            <li>POP saobraćaj čini važan dio ukupne slike i ne smije se procjenjivati samo kroz klikove.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recommendations</h3>
+        <div class="analysisBox">
+          <ul class="list">
+            <li>Nastaviti jače oslanjanje na Adsterra za kampanje gdje je klikabilnost prioritet.</li>
+            <li>Hilltop zadržati kao reach i POP konverzioni layer, ali ne kao glavni push kanal.</li>
+            <li>Propeller InPagePUSH dodatno testirati i širiti na placement-ima koji potvrde kvalitet.</li>
+            <li>U narednim izvještajima dodati prihod, CPA i ROAS čim budu dostupni, kako bi delivery bio povezan sa stvarnim outcome-om.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Zaključak</h3>
+        <div class="noteBox">
+          Budžetska redistribucija ide u dobrom pravcu. Delivery je širok, klikabilni kvalitet je koncentrisan na pravim mrežama, a kanal miks je dovoljno raznolik da podrži i reach i efikasnost. Stranica je svjesno pojednostavljena da prikazuje samo ono što je stvarno popunjeno i relevantno.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section grid g2">
+
+ 
+
+  <div class="card">
+    <h3>Time Sheet</h3>
+    <div class="kpiWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aktivnost</th>
+            <th>Sati utrošeni</th>
+            <th>% ukupnog vremena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Kreiranje sadržaja</td><td>2</td><td>5%</td></tr>
+          <tr><td>Planiranje / strategija</td><td>7</td><td>18%</td></tr>
+          <tr><td>Communication management (grupe, odgovori, sastanci...)</td><td>6</td><td>10%</td></tr>
+          <tr><td>Analiza i reporting</td><td>8</td><td>25%</td></tr>
+          <tr><td>Ads optimizacija</td><td>5</td><td>13%</td></tr>
+          <tr><td>Testiranje / A/B</td><td>4</td><td>10%</td></tr>
+          <tr><td>Ostalo</td><td>8</td><td>13%</td></tr>
+          <tr><td><strong>Ukupno</strong></td><td><strong>40</strong></td><td><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+</div>
+</body>
+</html>
