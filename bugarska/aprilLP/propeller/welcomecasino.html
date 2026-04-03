@@ -168,11 +168,20 @@ body {
   const subid = params.get('subid') || '';
   const placementId = params.get('placement_id') || '';
 
-  const finalUrl =
-    'https://admiralbetbgtrack.com/tumjlkjex' +
-    '?s1=' + encodeURIComponent(subid) +
-    '&placement_id=' + encodeURIComponent(placementId) +
-    '&source=propeller';
+  const offerBase = 'https://admiralbetbgtrack.com/tumjlkjex';
+  const offerParams = new URLSearchParams();
+
+  if (subid) {
+    offerParams.set('s1', subid);
+  }
+
+  if (placementId) {
+    offerParams.set('placement_id', placementId);
+  }
+
+  offerParams.set('source', 'propeller');
+
+  const finalUrl = offerBase + '?' + offerParams.toString();
 
   document.getElementById('bgLink').href = finalUrl;
   document.getElementById('ctaLink').href = finalUrl;
