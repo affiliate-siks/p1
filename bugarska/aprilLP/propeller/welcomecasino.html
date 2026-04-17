@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CASINO STARTER PACK</title>
+
+<style>
+html, body {
+margin: 0;
+padding: 0;
+width: 100%;
+height: 100%;
+font-family: Arial, sans-serif;
+}
+
+body {
+background-image: url('/bugarska/aprilLP/fotke/casino1.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+position: relative;
+}
+
+@media (max-width: 768px) {
+body {
+background-image: url('/bugarska/aprilLP/fotke/casino2.png');
+}
+}
+
+/* OVERLAY */
+.bg-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.25);
+z-index: 0;
+}
+
+/* FULL CLICK */
+.full-link {
+position: fixed;
+inset: 0;
+z-index: 1;
+}
+
+/* CONTENT */
+.content-box {
+position: absolute;
+top: 14%;
+left: 6%;
+width: 38%;
+z-index: 2;
+}
+
+@media (max-width: 768px) {
+.content-box {
+top: 10%;
+left: 50%;
+width: 88%;
+transform: translateX(-50%);
+text-align: center;
+}
+}
+
+.main-heading {
+font-size: 4.8rem;
+font-weight: 900;
+line-height: 1;
+margin: 0;
+letter-spacing: 1px;
+
+background: linear-gradient(180deg,#fff176,#ffd700,#ffb300);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+
+text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+}
+
+.sub-text {
+margin-top: 1.2rem;
+font-size: 1.6rem;
+font-weight: 700;
+line-height: 1.3;
+color: #fff;
+text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+/* CTA */
+.cta-wrapper {
+position: fixed;
+bottom: 20px;
+left: 0;
+width: 100%;
+display: flex;
+justify-content: center;
+z-index: 3;
+pointer-events: none;
+}
+
+.cta-button {
+pointer-events: auto;
+
+width: 90%;
+max-width: 420px;
+padding: 1.2rem;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+font-size: 1.1rem;
+font-weight: 900;
+border-radius: 14px;
+text-decoration: none;
+text-transform: uppercase;
+
+color: #000;
+background: linear-gradient(180deg, #fff066, #ffd400);
+
+box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+.cta-button:active {
+transform: scale(0.95);
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-overlay"></div>
+
+<!-- FULL CLICK BACKGROUND -->
+<a href="#" class="full-link" id="bgLink"></a>
+
+<div class="content-box">
+<h1 class="main-heading">200% БОНУС<br>+ 100 FS</h1>
+
+<div class="sub-text">
+Само за нови играчи.<br>
+Депозирай и вземи стартов пакет сега.
+</div>
+</div>
+
+<div class="cta-wrapper">
+  <a href="#" class="cta-button" id="ctaLink">
+    ВЗЕМИ БОНУСА СЕГА
+  </a>
+</div>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const subid = params.get('subid') || '';
+  const placementId = params.get('placement_id') || '';
+
+  const finalUrl =
+    'https://admiralbetbgtrack.com/tumjlkjex' +
+    '?s1=' + encodeURIComponent(subid) +
+    '&placement_id=' + encodeURIComponent(placementId) +
+    '&source=propeller';
+
+  document.getElementById('bgLink').href = finalUrl;
+  document.getElementById('ctaLink').href = finalUrl;
+})();
+</script>
+
+</body>
+</html>
