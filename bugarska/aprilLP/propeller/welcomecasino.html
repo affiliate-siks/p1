@@ -20,14 +20,18 @@
       background-position: center;
       background-repeat: no-repeat;
       position: relative;
-      overflow: hidden;
-      transition: background-image 0.6s ease-in-out;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background-image: url('/bugarska/aprilLP/fotke/casino2.png');
+      }
     }
 
     .bg-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.18);
+      background: rgba(0,0,0,0.18);
       z-index: 0;
     }
 
@@ -55,6 +59,7 @@
       }
     }
 
+    /* ZADRŽAN ORIGINALNI LOOK, SAMO POPRAVLJEN */
     .main-heading {
       font-size: 4.8rem;
       font-weight: 900;
@@ -73,9 +78,9 @@
       -webkit-text-fill-color: transparent;
       -webkit-text-stroke: 0.6px #fff8cc;
       text-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.5),
-        0 0 8px rgba(255, 215, 0, 0.6),
-        0 0 16px rgba(255, 200, 0, 0.4);
+        0 2px 4px rgba(0,0,0,0.5),
+        0 0 8px rgba(255,215,0,0.6),
+        0 0 16px rgba(255,200,0,0.4);
     }
 
     .sub-text {
@@ -85,7 +90,7 @@
       line-height: 1.2;
       letter-spacing: 0.6px;
       color: #fff;
-      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.9);
     }
 
     @media (max-width: 768px) {
@@ -126,8 +131,8 @@
       color: #000;
       background: linear-gradient(180deg, #fff066, #ffd400);
       box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(255, 212, 0, 0.8);
+        0 10px 25px rgba(0,0,0,0.6),
+        0 0 25px rgba(255,212,0,0.8);
     }
 
     .cta-button:active {
@@ -146,8 +151,8 @@
     <h1 class="main-heading">200% БОНУС<br>+ 100 FS</h1>
 
     <div class="sub-text">
-      Само за нови играчи.
-
+      Само за нови играчи.<br>
+      Депозирай и вземи стартов пакет сега.
     </div>
   </div>
 
@@ -166,13 +171,8 @@
       const offerBase = 'https://admiralbetbgtrack.com/tumjlkjex';
       const offerParams = new URLSearchParams();
 
-      if (subid) {
-        offerParams.set('s1', subid);
-      }
-
-      if (placementId) {
-        offerParams.set('placement_id', placementId);
-      }
+      if (subid) offerParams.set('s1', subid);
+      if (placementId) offerParams.set('placement_id', placementId);
 
       offerParams.set('source', 'propeller');
 
