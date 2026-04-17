@@ -20,12 +20,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
-}
-
-@media (max-width: 768px) {
-  body {
-    background-image: url('/bugarska/aprilLP/fotke/casino2.png');
-  }
+  transition: background-image 0.6s ease-in-out;
 }
 
 .bg-overlay {
@@ -152,7 +147,7 @@ body {
 
   <div class="sub-text">
     Само за нови играчи.<br>
-    Депозирай и вземи стартов пакет сега.
+  
   </div>
 </div>
 
@@ -169,13 +164,57 @@ body {
   const placementId = params.get('placement_id') || '';
 
   const finalUrl =
-    'https://admiralbetbgtrack.com/t0bytgvuh' +
+    'https://admiralbetbgtrack.com/trqbnjfgt' +
     '?s1=' + encodeURIComponent(subid) +
     '&placement_id=' + encodeURIComponent(placementId) +
-    '&source=hilltop';
+    '&source=adsterra';
 
   document.getElementById('bgLink').href = finalUrl;
   document.getElementById('ctaLink').href = finalUrl;
+
+  const desktopImages = [
+    '/bugarska/aprilLP/fotke/casino1.png',
+    '/bugarska/aprilLP/fotke/casino12.png',
+    '/bugarska/aprilLP/fotke/casino13.png'
+  ];
+
+  const mobileImages = [
+    '/bugarska/aprilLP/fotke/casino1.png',
+    '/bugarska/aprilLP/fotke/casino22.png',
+    '/bugarska/aprilLP/fotke/casino23.png'
+  ];
+
+  let currentIndex = 0;
+
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  function getImages() {
+    return isMobile() ? mobileImages : desktopImages;
+  }
+
+  function setBackground() {
+    const images = getImages();
+    document.body.style.backgroundImage = 'url("' + images[currentIndex] + '")';
+  }
+
+  function rotateBackground() {
+    const images = getImages();
+    currentIndex = (currentIndex + 1) % images.length;
+    setBackground();
+  }
+
+  setBackground();
+  setInterval(rotateBackground, 30000);
+
+  window.addEventListener('resize', function () {
+    const images = getImages();
+    if (currentIndex >= images.length) {
+      currentIndex = 0;
+    }
+    setBackground();
+  });
 })();
 </script>
 
