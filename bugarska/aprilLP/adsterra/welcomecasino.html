@@ -1,230 +1,197 @@
 <!doctype html>
 <html lang="bg">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CASINO STARTER PACK</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CASINO STARTER PACK</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: Arial, sans-serif;
-    }
+<style>
+html, body {
+margin: 0;
+padding: 0;
+width: 100%;
+height: 100%;
+font-family: Arial, sans-serif;
+}
 
-    body {
-      background-image: url('/bugarska/aprilLP/fotke/casino1.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-      overflow: hidden;
-      transition: background-image 0.6s ease-in-out;
-    }
+body {
+background-image: url('/bugarska/aprilLP/fotke/casino1.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+position: relative;
+}
 
-    .bg-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.18);
-      z-index: 0;
-    }
+@media (max-width: 768px) {
+body {
+background-image: url('/bugarska/aprilLP/fotke/casino2.png');
+}
+}
 
-    .full-link {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-    }
+/* OVERLAY */
+.bg-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.18);
+z-index: 0;
+}
 
-    .content-box {
-      position: absolute;
-      top: 14%;
-      left: 6%;
-      width: 38%;
-      z-index: 2;
-    }
+/* FULL CLICK BACKGROUND */
+.full-link {
+position: fixed;
+inset: 0;
+z-index: 1;
+}
 
-    .main-heading {
-      margin: 0;
-      font-size: 4.8rem;
-      font-weight: 900;
-      line-height: 0.98;
-      letter-spacing: 0.5px;
-      background: linear-gradient(
-        180deg,
-        #fffde7 0%,
-        #fff176 20%,
-        #ffd700 45%,
-        #ffb300 70%,
-        #ff8f00 100%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.45),
-        0 0 10px rgba(255, 215, 0, 0.35);
-    }
+/* CONTENT */
+.content-box {
+position: absolute;
+top: 14%;
+left: 6%;
+width: 38%;
+z-index: 2;
+}
 
-    .sub-text {
-      margin-top: 1.2rem;
-      font-size: 1.8rem;
-      font-weight: 900;
-      line-height: 1.2;
-      letter-spacing: 0.5px;
-      color: #ffffff;
-      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.75);
-    }
+@media (max-width: 768px) {
+.content-box {
+top: 10%;
+left: 50%;
+width: 88%;
+transform: translateX(-50%);
+text-align: center;
+}
+}
 
-    .cta-wrapper {
-      position: fixed;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      z-index: 999;
-      pointer-events: none;
-    }
+.main-heading {
+font-size: 4.8rem;
+font-weight: 900;
+line-height: 0.95;
+margin: 0;
+letter-spacing: 2px;
 
-    .cta-button {
-      pointer-events: auto;
-      width: 90%;
-      max-width: 430px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.15rem;
-      font-size: 1.15rem;
-      font-weight: 900;
-      border-radius: 16px;
-      text-decoration: none;
-      text-align: center;
-      text-transform: uppercase;
-      color: #000000;
-      background: linear-gradient(180deg, #fff066, #ffd400);
-      box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.6),
-        0 0 25px rgba(255, 212, 0, 0.5);
-    }
+background: linear-gradient(
+180deg,
+#fffde7 0%,
+#fff176 20%,
+#ffd700 45%,
+#ffb300 70%,
+#ff8f00 100%
+);
 
-    .cta-button:active {
-      transform: scale(0.96);
-    }
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
 
-    @media (max-width: 768px) {
-      .content-box {
-        top: 10%;
-        left: 50%;
-        width: 88%;
-        transform: translateX(-50%);
-        text-align: center;
-      }
+-webkit-text-stroke: 1.5px #fff8cc;
 
-      .main-heading {
-        font-size: 2.8rem;
-        line-height: 1;
-      }
+text-shadow:
+0 2px 6px rgba(0,0,0,0.4),
+0 0 15px rgba(255,215,0,0.9),
+0 0 30px rgba(255,200,0,0.7),
+0 0 60px rgba(255,180,0,0.5);
+}
 
-      .sub-text {
-        font-size: 1.2rem;
-      }
+.sub-text {
+margin-top: 1.2rem;
+font-size: 1.8rem;
+font-weight: 900;
+line-height: 1.2;
+letter-spacing: 1px;
+color: #fff;
+text-shadow: 0 4px 20px rgba(0,0,0,0.95);
+}
 
-      .cta-button {
-        font-size: 1rem;
-        padding: 1rem;
-      }
-    }
-  </style>
+@media (max-width: 768px) {
+.main-heading {
+font-size: 2.8rem;
+}
+
+.sub-text {
+font-size: 1.2rem;
+}
+}
+
+/* CTA PERFECT CENTER */
+.cta-wrapper {
+position: fixed;
+bottom: 20px;
+left: 0;
+width: 100%;
+display: flex;
+justify-content: center;
+z-index: 999;
+pointer-events: none;
+}
+
+.cta-button {
+pointer-events: auto;
+width: 90%;
+max-width: 430px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+padding: 1.15rem;
+font-size: 1.15rem;
+font-weight: 900;
+border-radius: 16px;
+text-decoration: none;
+text-align: center;
+text-transform: uppercase;
+color: #000;
+
+background: linear-gradient(180deg, #fff066, #ffd400);
+
+box-shadow:
+0 10px 25px rgba(0,0,0,0.6),
+0 0 25px rgba(255,212,0,0.9);
+}
+
+.cta-button:active {
+transform: scale(0.96);
+}
+</style>
 </head>
 
 <body>
-  <div class="bg-overlay"></div>
 
-  <a
-    href="https://admiralbetbgtrack.com/trqbnjfgt"
-    class="full-link"
-    id="bgLink"
-    aria-label="Open offer"
-  ></a>
+<div class="bg-overlay"></div>
 
-  <div class="content-box">
-    <h1 class="main-heading">200% БОНУС<br>+ 100 FS</h1>
+<a href="https://admiralbetbgtrack.com/trqbnjfgt" class="full-link"></a>
+<a href="https://admiralbetbgtrack.com/trqbnjfgt" class="full-link" id="bgLink"></a>
 
-    <div class="sub-text">
-      Само за нови играчи.
-    </div>
-  </div>
+<div class="content-box">
+<h1 class="main-heading">200% БОНУС<br>+ 100 FS</h1>
 
-  <div class="cta-wrapper">
-    <a
-      href="https://admiralbetbgtrack.com/trqbnjfgt"
-      class="cta-button"
-      id="ctaLink"
-    >
-      ВЗЕМИ БОНУСА СЕГА
-    </a>
-  </div>
+<div class="sub-text">
+Само за нови играчи.<br>
+Депозирай и вземи стартов пакет сега.
+</div>
+</div>
 
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const subid = params.get('subid') || '';
-      const placementId = params.get('placement_id') || '';
+<div class="cta-wrapper">
+  <a href="https://admiralbetbgtrack.com/trqbnjfgt" class="cta-button">
+  <a href="https://admiralbetbgtrack.com/trqbnjfgt" class="cta-button" id="ctaLink">
+ВЗЕМИ БОНУСА СЕГА
+</a>
+</div>
 
-      const baseUrl = 'https://admiralbetbgtrack.com/trqbnjfgt';
-      const finalUrl =
-        baseUrl +
-        '?s1=' + encodeURIComponent(subid) +
-        '&placement_id=' + encodeURIComponent(placementId) +
-        '&source=adsterra';
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const subid = params.get('subid') || '';
+  const placementId = params.get('placement_id') || '';
 
-      document.getElementById('bgLink').href = finalUrl;
-      document.getElementById('ctaLink').href = finalUrl;
+  const finalUrl =
+    'https://admiralbetbgtrack.com/trqbnjfgt' +
+    '?s1=' + encodeURIComponent(subid) +
+    '&placement_id=' + encodeURIComponent(placementId) +
+    '&source=adsterra';
 
-      const desktopImages = [
-        '/bugarska/aprilLP/fotke/casino1.png',
-        '/bugarska/aprilLP/fotke/casino12.png',
-        '/bugarska/aprilLP/fotke/casino13.png'
-      ];
+  document.getElementById('bgLink').href = finalUrl;
+  document.getElementById('ctaLink').href = finalUrl;
+})();
+</script>
 
-      const mobileImages = [
-        '/bugarska/aprilLP/fotke/casino1.png',
-        '/bugarska/aprilLP/fotke/casino22.png',
-        '/bugarska/aprilLP/fotke/casino23.png'
-      ];
-
-      let currentIndex = 0;
-      let usingMobile = window.innerWidth <= 768;
-
-      function getImages() {
-        return usingMobile ? mobileImages : desktopImages;
-      }
-
-      function setBackground() {
-        const images = getImages();
-        document.body.style.backgroundImage = 'url("' + images[currentIndex] + '")';
-      }
-
-      function rotateBackground() {
-        const images = getImages();
-        currentIndex = (currentIndex + 1) % images.length;
-        setBackground();
-      }
-
-      setBackground();
-      setInterval(rotateBackground, 30000);
-
-      window.addEventListener('resize', function () {
-        const nowMobile = window.innerWidth <= 768;
-
-        if (nowMobile !== usingMobile) {
-          usingMobile = nowMobile;
-          currentIndex = 0;
-          setBackground();
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
