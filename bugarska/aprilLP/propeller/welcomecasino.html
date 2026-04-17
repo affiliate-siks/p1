@@ -28,6 +28,7 @@ background-image: url('/bugarska/aprilLP/fotke/casino2.png');
 }
 }
 
+/* OVERLAY */
 .bg-overlay {
 position: fixed;
 inset: 0;
@@ -35,12 +36,14 @@ background: rgba(0,0,0,0.18);
 z-index: 0;
 }
 
+/* FULL CLICK BACKGROUND */
 .full-link {
 position: fixed;
 inset: 0;
 z-index: 1;
 }
 
+/* CONTENT */
 .content-box {
 position: absolute;
 top: 14%;
@@ -65,6 +68,7 @@ font-weight: 900;
 line-height: 0.95;
 margin: 0;
 letter-spacing: 2px;
+
 background: linear-gradient(
 180deg,
 #fffde7 0%,
@@ -73,9 +77,12 @@ background: linear-gradient(
 #ffb300 70%,
 #ff8f00 100%
 );
+
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
+
 -webkit-text-stroke: 1.5px #fff8cc;
+
 text-shadow:
 0 2px 6px rgba(0,0,0,0.4),
 0 0 15px rgba(255,215,0,0.9),
@@ -103,6 +110,7 @@ font-size: 1.2rem;
 }
 }
 
+/* CTA PERFECT CENTER */
 .cta-wrapper {
 position: fixed;
 bottom: 20px;
@@ -118,9 +126,11 @@ pointer-events: none;
 pointer-events: auto;
 width: 90%;
 max-width: 430px;
+
 display: flex;
 align-items: center;
 justify-content: center;
+
 padding: 1.15rem;
 font-size: 1.15rem;
 font-weight: 900;
@@ -129,7 +139,9 @@ text-decoration: none;
 text-align: center;
 text-transform: uppercase;
 color: #000;
+
 background: linear-gradient(180deg, #fff066, #ffd400);
+
 box-shadow:
 0 10px 25px rgba(0,0,0,0.6),
 0 0 25px rgba(255,212,0,0.9);
@@ -145,6 +157,7 @@ transform: scale(0.96);
 
 <div class="bg-overlay"></div>
 
+<a href="https://admiralbetbgtrack.com/tumjlkjex" class="full-link"></a>
 <a href="https://admiralbetbgtrack.com/tumjlkjex" class="full-link" id="bgLink"></a>
 
 <div class="content-box">
@@ -157,39 +170,26 @@ transform: scale(0.96);
 </div>
 
 <div class="cta-wrapper">
-<a href="https://admiralbetbgtrack.com/tumjlkjex" class="cta-button" id="ctaLink">
+  <a href="https://admiralbetbgtrack.com/tumjlkjex" class="cta-button">
+  <a href="https://admiralbetbgtrack.com/tumjlkjex" class="cta-button" id="ctaLink">
 ВЗЕМИ БОНУСА СЕГА
 </a>
 </div>
 
 <script>
 (function () {
-const params = new URLSearchParams(window.location.search);
-const subid = params.get('subid') || '';
-const placementId = params.get('placement_id') || '';
+  const params = new URLSearchParams(window.location.search);
+  const subid = params.get('subid') || '';
+  const placementId = params.get('placement_id') || '';
 
   const finalUrl =
-    'https://admiralbetbgtrack.com/tumjlkjex' +
+    'https://admiralbetbgtrack.com/t0bytgvuh' +
     '?s1=' + encodeURIComponent(subid) +
     '&placement_id=' + encodeURIComponent(placementId) +
-    '&source=propeller';
-  const offerBase = 'https://admiralbetbgtrack.com/tumjlkjex';
-  const offerParams = new URLSearchParams();
+    '&source=hilltop';
 
-  if (subid) {
-    offerParams.set('s1', subid);
-  }
-
-  if (placementId) {
-    offerParams.set('placement_id', placementId);
-  }
-
-  offerParams.set('source', 'propeller');
-
-  const finalUrl = offerBase + '?' + offerParams.toString();
-
-document.getElementById('bgLink').href = finalUrl;
-document.getElementById('ctaLink').href = finalUrl;
+  document.getElementById('bgLink').href = finalUrl;
+  document.getElementById('ctaLink').href = finalUrl;
 })();
 </script>
 
