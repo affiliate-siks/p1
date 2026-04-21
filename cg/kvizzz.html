@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="sr-ME">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmiralBET Sportski Kviz</title>
+  <style>
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #0d1c34;
+      --bg-3: #13284c;
+      --panel: rgba(14, 26, 49, 0.92);
+      --panel-2: rgba(18, 35, 66, 0.96);
+      --line: rgba(255,255,255,0.10);
+      --line-strong: rgba(248, 200, 74, 0.28);
+      --text: #f7f9ff;
+      --muted: #b7c2e3;
+      --accent: #f3c84a;
+      --accent-2: #ffdf7c;
+      --accent-soft: rgba(243, 200, 74, 0.12);
+      --danger: #ff7b7b;
+      --success: #3fd19b;
+      --shadow: 0 18px 50px rgba(0,0,0,.36);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --max: 560px;
+    }
+
+    * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(243,200,74,.20), transparent 22%),
+        radial-gradient(circle at left 20%, rgba(255,223,124,.08), transparent 18%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 20px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .section {
+      margin: 18px 0;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025)),
+        linear-gradient(180deg, rgba(18,35,66,.92), rgba(12,24,45,.95));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+      pointer-events: none;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      width: min(220px, 62vw);
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 100%;
+    }
+
+    h1, h2, p {
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: clamp(28px, 6vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 4.2vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      color: var(--text);
+      border-radius: 15px;
+      padding: 14px 16px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder {
+      color: rgba(183,194,227,.72);
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-color: rgba(243,200,74,.7);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.14);
+      background: rgba(255,255,255,.06);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .checkbox-row input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .checkbox-row input:checked {
+      border-color: rgba(243,200,74,.65);
+      background: rgba(243,200,74,.12);
+    }
+
+    .checkbox-row input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      flex: 1 1 180px;
+      width: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-size: 16px;
+      box-shadow: 0 10px 24px rgba(243,200,74,.20);
+    }
+
+    .btn-secondary {
+      flex: 1 1 120px;
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 14px 18px;
+      border-radius: 15px;
+      font-size: 15px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+
+    .details-wrap {
+      margin-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 12px;
+    }
+
+    details {
+      border-radius: 12px;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-content {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 12px 13px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .quiz-shell,
+    .result-shell {
+      display: none;
+    }
+
+    .quiz-shell.active,
+    .result-shell.active {
+      display: block;
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .counter,
+    .timer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .question-title {
+      font-size: clamp(22px, 4vw, 30px);
+      line-height: 1.3;
+      margin: 0 0 18px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .answer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.45;
+      width: 100%;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .answer.selected {
+      border-color: rgba(243,200,74,.72);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.12);
+      background: rgba(243,200,74,.09);
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      margin-bottom: 16px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .22s ease;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .result-box {
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025));
+      border-radius: 18px;
+      padding: 18px 14px;
+      text-align: center;
+    }
+
+    .result-box .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      line-height: 1.4;
+    }
+
+    .result-box .value {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .small-note {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .footer-space {
+      height: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(var(--max), calc(100% - 14px));
+        padding-top: 12px;
+      }
+
+      .card {
+        padding: 18px 16px;
+        border-radius: 20px;
+      }
+
+      .sub {
+        font-size: 15px;
+      }
+
+      .quiz-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .counter,
+      .timer {
+        width: 100%;
+        text-align: center;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .wrap {
+        width: calc(100% - 12px);
+      }
+
+      .card {
+        padding: 16px 14px;
+      }
+
+      .logo-wrap {
+        width: min(200px, 72vw);
+        padding: 10px 12px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .question-title {
+        font-size: 22px;
+      }
+
+      .answer {
+        padding: 13px 14px;
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="section" id="registerSection">
+      <div class="card">
+        <div class="brand-block">
+          <div class="logo-wrap">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s"
+              alt="AdmiralBET logo"
+            />
+          </div>
+          <div class="brand-pill">AdmiralBET Online · Instagram Sportski Kviz</div>
+        </div>
+
+        <h1>Sportski kviz</h1>
+        <p class="sub">Unesi podatke i pokreni kviz. Tvoje vrijeme se mjeri automatski odmah nakon početka.</p>
+
+        <div class="form-grid">
+          <div>
+            <label for="name">Ime i prezime</label>
+            <input type="text" id="name" placeholder="Upiši ime i prezime" maxlength="80" autocomplete="name" />
+          </div>
+
+          <div>
+            <label for="email">Email adresa</label>
+            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" autocomplete="email" inputmode="email" />
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="privacy" />
+          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="startBtn">Pokreni kviz</button>
+        </div>
+
+        <div class="status" id="registerStatus"></div>
+
+        <div class="details-wrap">
+          <details>
+            <summary>Detalji kampanje</summary>
+            <div class="details-content">
+              <div class="detail-item">Kviz je aktivan svaki dan i sastoji se od 10 pitanja.</div>
+              <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
+              <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme, bez live rang liste.</div>
+              <div class="detail-item">Presjek rezultata radi se ponedjeljkom i petkom, a top 20 korisnika objavljuje se u Viber zajednici.</div>
+              <div class="detail-item">Nagrade po presjeku: 1. mjesto €50 bonus, 2–5. mjesto €20 bonus, 6–20. mjesto €10 bonus.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quiz-shell" id="quizSection">
+      <div class="card">
+        <div class="progress"><span id="progressBar"></span></div>
+
+        <div class="quiz-top">
+          <div class="counter" id="questionCounter">Pitanje 1 / 10</div>
+          <div class="timer">Vrijeme: <strong id="timerText">00:00</strong></div>
+        </div>
+
+        <h2 class="question-title" id="questionText"></h2>
+        <div class="answers" id="answersWrap"></div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" id="prevBtn">Nazad</button>
+          <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
+        </div>
+
+        <div class="status" id="quizStatus"></div>
+      </div>
+    </section>
+
+    <section class="section result-shell" id="resultSection">
+      <div class="card">
+        <h2>Tvoj rezultat je zabilježen</h2>
+        <p class="sub">Na ovoj stranici se ne prikazuju tačni odgovori niti rang lista uživo.</p>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <span class="label">Tačnih odgovora</span>
+            <span class="value" id="finalCorrect">0/10</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Vrijeme</span>
+            <span class="value" id="finalTime">00:00</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Status</span>
+            <span class="value" id="finalStatus">Poslato</span>
+          </div>
+        </div>
+
+        <p class="small-note">
+          Ako si kviz završio sa svim tačnim odgovorima i dovoljno brzim vremenom, tvoj rezultat ulazi u naredni presjek rezultata. Presjek se radi ponedjeljkom i petkom, a top 20 korisnika se objavljuje u Viber zajednici. Bonusi po plasmanu su €50 za 1. mjesto, €20 za mjesta 2–5 i €10 za mjesta 6–20.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT45t1B0MKIqtm2JXaUAbPO55Xh9bXJsOZbp_WUNBdukqY_-iTX82siKZTuHfHIAS3/exec';
+
+    const QUIZ_QUESTIONS = [
+      {
+        text: 'Koja reprezentacija je osvojila FIFA Svjetsko prvenstvo 2022?',
+        answers: ['Argentina', 'Francuska', 'Brazil', 'Njemačka'],
+        correctIndex: 0
+      },
+      {
+        text: 'Koliko igrača ima jedan fudbalski tim na terenu?',
+        answers: ['9', '10', '11', '12'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je poznat po pojmu triple-double?',
+        answers: ['Tenis', 'Košarka', 'Odbojka', 'Rukomet'],
+        correctIndex: 1
+      },
+      {
+        text: 'Na kojoj podlozi se igra Wimbledon?',
+        answers: ['Šljaka', 'Beton', 'Trava', 'Parket'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko setova je potrebno osvojiti za pobjedu u muškom Grand Slam meču?',
+        answers: ['2', '3', '4', '5'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koji sport koristi termin touchdown?',
+        answers: ['Ragbi', 'Američki fudbal', 'Bejzbol', 'Hokej'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koliko poena vrijedi šut za tri poena u košarci?',
+        answers: ['1', '2', '3', '4'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koja država je domaćin Formule 1 trke u Monaku?',
+        answers: ['Italija', 'Francuska', 'Monako', 'Španija'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je Novak Đokovićev?',
+        answers: ['Fudbal', 'Košarka', 'Tenis', 'Odbojka'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko minuta traje regularni fudbalski meč bez nadoknade?',
+        answers: ['80', '85', '90', '95'],
+        correctIndex: 2
+      }
+    ];
+
+    const startBtn = document.getElementById('startBtn');
+    const registerStatus = document.getElementById('registerStatus');
+    const quizStatus = document.getElementById('quizStatus');
+    const registerSection = document.getElementById('registerSection');
+    const quizSection = document.getElementById('quizSection');
+    const resultSection = document.getElementById('resultSection');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const privacyInput = document.getElementById('privacy');
+    const questionCounter = document.getElementById('questionCounter');
+    const timerText = document.getElementById('timerText');
+    const questionText = document.getElementById('questionText');
+    const answersWrap = document.getElementById('answersWrap');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const progressBar = document.getElementById('progressBar');
+    const finalCorrect = document.getElementById('finalCorrect');
+    const finalTime = document.getElementById('finalTime');
+    const finalStatus = document.getElementById('finalStatus');
+
+    let currentQuestion = 0;
+    let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+    let timerInterval = null;
+    let startTimeMs = null;
+    let participantToken = '';
+
+    function setStatus(el, msg, type = '') {
+      el.textContent = msg || '';
+      el.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    function sanitizeName(value) {
+      return value.trim().replace(/\s+/g, ' ');
+    }
+
+    function sanitizeEmail(value) {
+      return value.trim().toLowerCase();
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function formatTime(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
+
+    function elapsedSeconds() {
+      if (!startTimeMs) return 0;
+      return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
+    }
+
+    function updateTimerUI() {
+      timerText.textContent = formatTime(elapsedSeconds());
+    }
+
+    function createParticipantToken(name, email) {
+      return btoa(unescape(encodeURIComponent(name + '|' + email + '|' + Date.now()))).replace(/=/g, '');
+    }
+
+    function showQuiz() {
+      registerSection.style.display = 'none';
+      quizSection.classList.add('active');
+      resultSection.classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showResult() {
+      quizSection.classList.remove('active');
+      resultSection.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderQuestion() {
+      const q = QUIZ_QUESTIONS[currentQuestion];
+      questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${QUIZ_QUESTIONS.length}`;
+      questionText.textContent = q.text;
+      progressBar.style.width = `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+      answersWrap.innerHTML = '';
+
+      q.answers.forEach((answerText, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
+        btn.textContent = answerText;
+
+        btn.addEventListener('click', () => {
+          selectedAnswers[currentQuestion] = index;
+          renderQuestion();
+          nextBtn.disabled = false;
+        });
+
+        answersWrap.appendChild(btn);
+      });
+
+      prevBtn.style.display = currentQuestion === 0 ? 'none' : 'inline-block';
+      nextBtn.disabled = selectedAnswers[currentQuestion] === null;
+      nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
+      setStatus(quizStatus, '');
+    }
+
+    function calculateScore() {
+      let correct = 0;
+
+      for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+        if (selectedAnswers[i] === QUIZ_QUESTIONS[i].correctIndex) {
+          correct++;
+        }
+      }
+
+      return correct;
+    }
+
+    async function apiRequest(payload) {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Server error: ' + response.status);
+      }
+
+      return await response.json();
+    }
+
+    async function reserveEmail(name, email) {
+      return apiRequest({
+        action: 'reserveParticipant',
+        name,
+        email,
+        participantToken,
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || '',
+        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+      });
+    }
+
+    async function submitQuiz(name, email, correctAnswers, timeSeconds) {
+      return apiRequest({
+        action: 'submitQuiz',
+        name,
+        email,
+        participantToken,
+        totalQuestions: QUIZ_QUESTIONS.length,
+        correctAnswers,
+        timeSeconds,
+        answers: selectedAnswers,
+        submittedAtClient: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || ''
+      });
+    }
+
+    startBtn.addEventListener('click', async () => {
+      const name = sanitizeName(nameInput.value);
+      const email = sanitizeEmail(emailInput.value);
+
+      if (!name || name.length < 2) {
+        setStatus(registerStatus, 'Provjeri unos imena.', 'error');
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+        return;
+      }
+
+      if (!privacyInput.checked) {
+        setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
+        return;
+      }
+
+      startBtn.disabled = true;
+      setStatus(registerStatus, '');
+      participantToken = createParticipantToken(name, email);
+
+      try {
+        const data = await reserveEmail(name, email);
+
+        if (!data.success) {
+          setStatus(registerStatus, 'Prijava nije dostupna za ovaj email.', 'error');
+          startBtn.disabled = false;
+          return;
+        }
+
+        startTimeMs = Date.now();
+        updateTimerUI();
+        timerInterval = setInterval(updateTimerUI, 1000);
+        currentQuestion = 0;
+        selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+        renderQuestion();
+        showQuiz();
+      } catch (error) {
+        setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+        startBtn.disabled = false;
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener('click', async () => {
+      if (selectedAnswers[currentQuestion] === null) {
+        setStatus(quizStatus, 'Izaberi odgovor.', 'error');
+        return;
+      }
+
+      if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+        return;
+      }
+
+      nextBtn.disabled = true;
+      prevBtn.disabled = true;
+      setStatus(quizStatus, '');
+
+      const name = sanitizeName(nameInput.value);
+      const email = sanitizeEmail(emailInput.value);
+      const correctAnswers = calculateScore();
+      const timeSeconds = elapsedSeconds();
+
+      try {
+        const data = await submitQuiz(name, email, correctAnswers, timeSeconds);
+
+        clearInterval(timerInterval);
+        finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
+        finalTime.textContent = formatTime(timeSeconds);
+        finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
+        showResult();
+      } catch (error) {
+        nextBtn.disabled = false;
+        prevBtn.disabled = false;
+        setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
