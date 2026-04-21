@@ -189,6 +189,13 @@
       background: rgba(255,255,255,.06);
     }
 
+    .field-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
     .checkbox-row {
       display: flex;
       align-items: flex-start;
@@ -619,6 +626,9 @@
           <div>
             <label for="email">Email adresa</label>
             <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" autocomplete="email" inputmode="email" />
+            <div class="field-note">
+              Mora biti email naloga registrovanog na Admiralbet.me platformi.
+            </div>
           </div>
         </div>
 
@@ -1004,7 +1014,14 @@
         const data = await reserveEmail(initials, email);
 
         if (!data.success) {
-          setStatus(registerStatus, 'Prijava nije dostupna za ovaj email.', 'error');
+          if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
+            setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
+          } else if (data.message === 'Invalid email.') {
+            setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+          } else {
+            setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+          }
+
           startBtn.disabled = false;
           return;
         }
