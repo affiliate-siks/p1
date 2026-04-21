@@ -21,7 +21,6 @@
       --success: #3fd19b;
       --shadow: 0 18px 50px rgba(0,0,0,.30);
       --radius: 24px;
-      --radius-sm: 16px;
       --max: 560px;
     }
 
@@ -425,14 +424,6 @@
       word-break: break-word;
     }
 
-    .small-note {
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 14px;
-      margin: 0;
-      text-align: center;
-    }
-
     .viber-btn {
       display: flex;
       align-items: center;
@@ -617,12 +608,12 @@
         </div>
 
         <h1>Sportski kviz</h1>
-        <p class="sub">Unesi podatke i pokreni kviz.</p>
+        <p class="sub">Unesi inicijale i email adresu, pa pokreni kviz.</p>
 
         <div class="form-grid">
           <div>
-            <label for="name">Ime i prezime</label>
-            <input type="text" id="name" placeholder="Upiši ime i prezime" maxlength="80" autocomplete="name" />
+            <label for="initials">Inicijali</label>
+            <input type="text" id="initials" placeholder="Npr. MP" maxlength="3" autocomplete="off" />
           </div>
 
           <div>
@@ -647,6 +638,7 @@
             <summary>Detalji kampanje</summary>
             <div class="details-content">
               <div class="detail-item">Kviz sadrži 10 pitanja.</div>
+              <div class="detail-item">Unose se samo inicijali i email.</div>
               <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
               <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme.</div>
               <div class="detail-item">Tačni odgovori se ne prikazuju tokom ni nakon kviza.</div>
@@ -711,7 +703,7 @@
         <div class="leaderboard-wrap">
           <div class="leaderboard-head">
             <h3>Top 20 najbržih</h3>
-            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Umjesto imena prikazani su samo inicijali.</p>
+            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. U rang listi se prikazuju inicijali koje je korisnik unio.</p>
           </div>
 
           <div class="leaderboard-list" id="leaderboardList">
@@ -786,7 +778,7 @@
     const registerSection = document.getElementById('registerSection');
     const quizSection = document.getElementById('quizSection');
     const resultSection = document.getElementById('resultSection');
-    const nameInput = document.getElementById('name');
+    const initialsInput = document.getElementById('initials');
     const emailInput = document.getElementById('email');
     const privacyInput = document.getElementById('privacy');
     const questionCounter = document.getElementById('questionCounter');
@@ -811,8 +803,12 @@
       el.className = 'status' + (type ? ' ' + type : '');
     }
 
-    function sanitizeName(value) {
-      return value.trim().replace(/\s+/g, ' ');
+    function sanitizeInitials(value) {
+      return value
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-ZČĆŽŠĐ]/g, '')
+        .slice(0, 3);
     }
 
     function sanitizeEmail(value) {
@@ -821,6 +817,10 @@
 
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidInitials(initials) {
+      return /^[A-ZČĆŽŠĐ]{2,3}$/.test(initials);
     }
 
     function formatTime(totalSeconds) {
@@ -838,8 +838,8 @@
       timerText.textContent = formatTime(elapsedSeconds());
     }
 
-    function createParticipantToken(name, email) {
-      return btoa(unescape(encodeURIComponent(name + '|' + email + '|' + Date.now()))).replace(/=/g, '');
+    function createParticipantToken(initials, email) {
+      return btoa(unescape(encodeURIComponent(initials + '|' + email + '|' + Date.now()))).replace(/=/g, '');
     }
 
     function showQuiz() {
@@ -925,10 +925,10 @@
       return await response.json();
     }
 
-    async function reserveEmail(name, email) {
+    async function reserveEmail(initials, email) {
       return apiRequest({
         action: 'reserveParticipant',
-        name,
+        initials,
         email,
         participantToken,
         userAgent: navigator.userAgent,
@@ -940,10 +940,10 @@
       });
     }
 
-    async function submitQuiz(name, email, correctAnswers, timeSeconds) {
+    async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
       return apiRequest({
         action: 'submitQuiz',
-        name,
+        initials,
         email,
         participantToken,
         totalQuestions: QUIZ_QUESTIONS.length,
@@ -973,12 +973,16 @@
       }
     }
 
+    initialsInput.addEventListener('input', () => {
+      initialsInput.value = sanitizeInitials(initialsInput.value);
+    });
+
     startBtn.addEventListener('click', async () => {
-      const name = sanitizeName(nameInput.value);
+      const initials = sanitizeInitials(initialsInput.value);
       const email = sanitizeEmail(emailInput.value);
 
-      if (!name || name.length < 2) {
-        setStatus(registerStatus, 'Provjeri unos imena.', 'error');
+      if (!isValidInitials(initials)) {
+        setStatus(registerStatus, 'Unesi 2 ili 3 slova za inicijale.', 'error');
         return;
       }
 
@@ -994,10 +998,10 @@
 
       startBtn.disabled = true;
       setStatus(registerStatus, '');
-      participantToken = createParticipantToken(name, email);
+      participantToken = createParticipantToken(initials, email);
 
       try {
-        const data = await reserveEmail(name, email);
+        const data = await reserveEmail(initials, email);
 
         if (!data.success) {
           setStatus(registerStatus, 'Prijava nije dostupna za ovaj email.', 'error');
@@ -1033,13 +1037,13 @@
       nextBtn.disabled = true;
       setStatus(quizStatus, '');
 
-      const name = sanitizeName(nameInput.value);
+      const initials = sanitizeInitials(initialsInput.value);
       const email = sanitizeEmail(emailInput.value);
       const correctAnswers = calculateScore();
       const timeSeconds = elapsedSeconds();
 
       try {
-        const data = await submitQuiz(name, email, correctAnswers, timeSeconds);
+        const data = await submitQuiz(initials, email, correctAnswers, timeSeconds);
 
         clearInterval(timerInterval);
         finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
