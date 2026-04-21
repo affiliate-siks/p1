@@ -557,7 +557,7 @@
     // =========================
     // CONFIG
     // =========================
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT45t1B0MKIqtm2JXaUAbPO55Xh9bXJsOZbp_WUNBdukqY_-iTX82siKZTuHfHIAS3/exec';
+    const APPS_SCRIPT_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
     // U ovoj listi upiši finalnih 10 pitanja.
     // Svako pitanje ima tekst, ponuđene odgovore i index tačnog odgovora.
@@ -878,6 +878,264 @@
 </html>
 
 
+// FILE 2: Code.gs
+// Google Apps Script backend za Google Sheet bazu podataka.
+// Koraci:
+// 1) Napravi Google Sheet.
+// 2) Extensions > Apps Script.
+// 3) Zalijepi ovaj kod u Code.gs.
+// 4) Deploy > New deployment > Web app.
+// 5) Execute as: Me
+// 6) Who has access: Anyone
+// 7) Kopiraj Web App URL i ubaci ga u index.html kao APPS_SCRIPT_URL.
 
+const SHEET_NAME = 'QuizEntries';
+const SHEET_HEADERS = [
+  'CreatedAt',
+  'Status',
+  'Name',
+  'Email',
+  'ParticipantToken',
+  'TotalQuestions',
+  'CorrectAnswers',
+  'TimeSeconds',
+  'AnswersJson',
+  'SubmittedAtClient',
+  'SubmittedAtServer',
+  'UserAgent',
+  'PageUrl',
+  'Referrer',
+  'UtmSource',
+  'UtmMedium',
+  'UtmCampaign'
+];
+
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents || '{}');
+    const action = String(payload.action || '');
+
+    ensureSheet();
+
+    if (action === 'reserveParticipant') {
+      return jsonOutput(handleReserveParticipant(payload));
+    }
+
+    if (action === 'submitQuiz') {
+      return jsonOutput(handleSubmitQuiz(payload));
+    }
+
+    return jsonOutput({ success: false, message: 'Unknown action.' });
+  } catch (err) {
+    return jsonOutput({ success: false, message: err.message || 'Unexpected error.' });
+  }
+}
+
+function jsonOutput(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function ensureSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, SHEET_HEADERS.length).setValues([SHEET_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function sanitizeName(name) {
+  return String(name || '').trim().replace(/\s+/g, ' ');
+}
+
+function getAllDataRows(sheet) {
+  const lastRow = sheet.getLastRow();
+  const lastCol = sheet.getLastColumn();
+  if (lastRow < 2) return [];
+  return sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+}
+
+function findRowsByEmail(sheet, email) {
+  const normalized = normalizeEmail(email);
+  const rows = getAllDataRows(sheet);
+  const matches = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowNumber = i + 2;
+    const rowEmail = normalizeEmail(row[3]);
+    if (rowEmail === normalized) {
+      matches.push({ rowNumber, values: row });
+    }
+  }
+
+  return matches;
+}
+
+function handleReserveParticipant(payload) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+
+  try {
+    const sheet = ensureSheet();
+    const name = sanitizeName(payload.name);
+    const email = normalizeEmail(payload.email);
+    const participantToken = String(payload.participantToken || '').trim();
+
+    if (!name || name.length < 2) {
+      return { success: false, message: 'Invalid name.' };
+    }
+    if (!email || !/@/.test(email)) {
+      return { success: false, message: 'Invalid email.' };
+    }
+    if (!participantToken) {
+      return { success: false, message: 'Missing participant token.' };
+    }
+
+    const matches = findRowsByEmail(sheet, email);
+
+    if (matches.length > 0) {
+      return {
+        success: false,
+        message: 'Ovaj email je već korišćen za učešće u kvizu.'
+      };
+    }
+
+    const now = new Date();
+    sheet.appendRow([
+      now,
+      'STARTED',
+      name,
+      email,
+      participantToken,
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      String(payload.userAgent || ''),
+      String(payload.pageUrl || ''),
+      String(payload.referrer || ''),
+      String(payload.utm_source || ''),
+      String(payload.utm_medium || ''),
+      String(payload.utm_campaign || '')
+    ]);
+
+    return {
+      success: true,
+      message: 'Participant reserved.'
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function handleSubmitQuiz(payload) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+
+  try {
+    const sheet = ensureSheet();
+    const name = sanitizeName(payload.name);
+    const email = normalizeEmail(payload.email);
+    const participantToken = String(payload.participantToken || '').trim();
+    const totalQuestions = Number(payload.totalQuestions || 0);
+    const correctAnswers = Number(payload.correctAnswers || 0);
+    const timeSeconds = Number(payload.timeSeconds || 0);
+    const answers = payload.answers || [];
+
+    if (!name || !email || !participantToken) {
+      return { success: false, message: 'Missing required fields.' };
+    }
+
+    const matches = findRowsByEmail(sheet, email);
+
+    if (matches.length === 0) {
+      return { success: false, message: 'Participant not found.' };
+    }
+
+    // Uzima prvi red za taj email i upisuje finalni rezultat.
+    // Pošto blokiramo jedan email = jedan pokušaj, ovo je dovoljno.
+    const entry = matches[0];
+    const rowNumber = entry.rowNumber;
+    const existingStatus = String(entry.values[1] || '');
+    const existingToken = String(entry.values[4] || '').trim();
+
+    if (existingStatus === 'SUBMITTED') {
+      return { success: false, message: 'Result already submitted for this email.' };
+    }
+
+    if (existingToken && existingToken !== participantToken) {
+      return { success: false, message: 'Token mismatch.' };
+    }
+
+    const now = new Date();
+    const values = [[
+      'SUBMITTED',
+      name,
+      email,
+      participantToken,
+      totalQuestions,
+      correctAnswers,
+      timeSeconds,
+      JSON.stringify(answers),
+      String(payload.submittedAtClient || ''),
+      now,
+      String(payload.userAgent || ''),
+      String(payload.pageUrl || ''),
+      String(payload.referrer || '')
+    ]];
+
+    // Pišemo kolone B do N, a UTM ostaje iz rezervacije ako je već upisan.
+    sheet.getRange(rowNumber, 2, 1, 13).setValues(values);
+
+    return {
+      success: true,
+      message: 'Quiz submitted successfully.'
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+
+// FILE 3: OPTIONAL_SETUP_NOTES.txt
+// Preporučena struktura Google Sheeta:
+// A: CreatedAt
+// B: Status
+// C: Name
+// D: Email
+// E: ParticipantToken
+// F: TotalQuestions
+// G: CorrectAnswers
+// H: TimeSeconds
+// I: AnswersJson
+// J: SubmittedAtClient
+// K: SubmittedAtServer
+// L: UserAgent
+// M: PageUrl
+// N: Referrer
+// O: UtmSource
+// P: UtmMedium
+// Q: UtmCampaign
+//
+// Za rangiranje u Sheet-u kasnije koristi filter:
+// - Status = SUBMITTED
+// - CorrectAnswers = 10
+// - Sort by TimeSeconds ascending
 //
 // Tako dobijaš najbrže učesnike sa svim tačnim odgovorima.
