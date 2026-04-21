@@ -6,21 +6,20 @@
   <title>AdmiralBET Sportski Kviz</title>
   <style>
     :root {
-      --bg-1: #07111f;
-      --bg-2: #0d1c34;
-      --bg-3: #13284c;
-      --panel: rgba(14, 26, 49, 0.92);
-      --panel-2: rgba(18, 35, 66, 0.96);
+      --bg-1: #08111f;
+      --bg-2: #0d1a30;
+      --bg-3: #13233e;
+      --panel: rgba(13, 24, 45, 0.96);
+      --panel-2: rgba(16, 30, 56, 0.98);
       --line: rgba(255,255,255,0.10);
-      --line-strong: rgba(248, 200, 74, 0.28);
+      --line-strong: rgba(243, 200, 74, 0.18);
       --text: #f7f9ff;
       --muted: #b7c2e3;
       --accent: #f3c84a;
       --accent-2: #ffdf7c;
-      --accent-soft: rgba(243, 200, 74, 0.12);
       --danger: #ff7b7b;
       --success: #3fd19b;
-      --shadow: 0 18px 50px rgba(0,0,0,.36);
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
       --radius: 24px;
       --radius-sm: 16px;
       --max: 560px;
@@ -37,10 +36,7 @@
       min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at top right, rgba(243,200,74,.20), transparent 22%),
-        radial-gradient(circle at left 20%, rgba(255,223,124,.08), transparent 18%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
       overflow-x: hidden;
     }
 
@@ -52,7 +48,8 @@
     button,
     input,
     textarea,
-    select {
+    select,
+    a {
       font: inherit;
     }
 
@@ -70,23 +67,13 @@
       position: relative;
       overflow: hidden;
       background:
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025)),
-        linear-gradient(180deg, rgba(18,35,66,.92), rgba(12,24,45,.95));
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        linear-gradient(180deg, var(--panel-2), var(--panel));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
       padding: 22px;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0 auto auto 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
-      pointer-events: none;
     }
 
     .brand-block {
@@ -104,7 +91,6 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       background: rgba(255,255,255,.03);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
     }
 
     .brand-pill {
@@ -122,7 +108,7 @@
       max-width: 100%;
     }
 
-    h1, h2, p {
+    h1, h2, h3, p {
       word-wrap: break-word;
       overflow-wrap: anywhere;
     }
@@ -140,6 +126,12 @@
       font-size: clamp(22px, 4.2vw, 30px);
       line-height: 1.15;
       letter-spacing: -.02em;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.2;
     }
 
     .sub {
@@ -179,10 +171,11 @@
       background: rgba(255,255,255,.045);
       color: var(--text);
       border-radius: 15px;
-      padding: 14px 16px;
+      padding: 15px 16px;
       font-size: 16px;
       outline: none;
       transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      min-height: 56px;
     }
 
     input[type="text"]::placeholder,
@@ -192,8 +185,8 @@
 
     input[type="text"]:focus,
     input[type="email"]:focus {
-      border-color: rgba(243,200,74,.7);
-      box-shadow: 0 0 0 4px rgba(243,200,74,.14);
+      border-color: rgba(243,200,74,.55);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
       background: rgba(255,255,255,.06);
     }
 
@@ -219,8 +212,8 @@
     }
 
     .checkbox-row input:checked {
-      border-color: rgba(243,200,74,.65);
-      background: rgba(243,200,74,.12);
+      border-color: rgba(243,200,74,.55);
+      background: rgba(243,200,74,.10);
     }
 
     .checkbox-row input:checked::after {
@@ -242,8 +235,9 @@
       border: 0;
       cursor: pointer;
       font-weight: 700;
-      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
       -webkit-tap-highlight-color: transparent;
+      min-height: 58px;
     }
 
     button:hover {
@@ -258,24 +252,13 @@
     }
 
     .btn-primary {
-      flex: 1 1 180px;
       width: 100%;
+      min-height: 58px;
       background: linear-gradient(180deg, var(--accent), var(--accent-2));
       color: #111;
       padding: 15px 20px;
-      border-radius: 15px;
+      border-radius: 16px;
       font-size: 16px;
-      box-shadow: 0 10px 24px rgba(243,200,74,.20);
-    }
-
-    .btn-secondary {
-      flex: 1 1 120px;
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border: 1px solid var(--line);
-      padding: 14px 18px;
-      border-radius: 15px;
-      font-size: 15px;
     }
 
     .status {
@@ -354,7 +337,7 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,.04);
       border-radius: 14px;
-      padding: 10px 14px;
+      padding: 11px 14px;
       font-size: 14px;
       color: var(--muted);
     }
@@ -375,20 +358,21 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,.03);
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 15px 16px;
       text-align: left;
       color: var(--text);
       font-size: 16px;
       line-height: 1.45;
       width: 100%;
+      min-height: 58px;
       white-space: normal;
       word-break: break-word;
     }
 
     .answer.selected {
-      border-color: rgba(243,200,74,.72);
-      box-shadow: 0 0 0 4px rgba(243,200,74,.12);
-      background: rgba(243,200,74,.09);
+      border-color: rgba(243,200,74,.60);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
+      background: rgba(243,200,74,.08);
     }
 
     .progress {
@@ -446,6 +430,87 @@
       line-height: 1.65;
       font-size: 14px;
       margin: 0;
+      text-align: center;
+    }
+
+    .viber-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      text-align: center;
+    }
+
+    .leaderboard-wrap {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .leaderboard-head {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .leaderboard-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .leaderboard-row {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .leaderboard-rank {
+      font-weight: 800;
+      color: var(--accent-2);
+      font-size: 15px;
+    }
+
+    .leaderboard-name {
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .04em;
+    }
+
+    .leaderboard-time {
+      color: var(--muted);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .leaderboard-empty {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 14px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .footer-space {
@@ -483,12 +548,20 @@
       }
 
       .btn-primary,
-      .btn-secondary {
+      .answer,
+      .viber-btn {
         width: 100%;
+        min-height: 58px;
       }
 
       .result-grid {
         grid-template-columns: 1fr;
+      }
+
+      .leaderboard-row {
+        grid-template-columns: 44px 1fr auto;
+        gap: 10px;
+        padding: 11px 12px;
       }
     }
 
@@ -515,8 +588,16 @@
       }
 
       .answer {
-        padding: 13px 14px;
+        padding: 14px;
         font-size: 15px;
+      }
+
+      .leaderboard-row {
+        grid-template-columns: 40px 1fr auto;
+      }
+
+      .leaderboard-time {
+        font-size: 13px;
       }
     }
   </style>
@@ -536,7 +617,7 @@
         </div>
 
         <h1>Sportski kviz</h1>
-        <p class="sub">Unesi podatke i pokreni kviz. Tvoje vrijeme se mjeri automatski odmah nakon početka.</p>
+        <p class="sub">Unesi podatke i pokreni kviz.</p>
 
         <div class="form-grid">
           <div>
@@ -565,11 +646,11 @@
           <details>
             <summary>Detalji kampanje</summary>
             <div class="details-content">
-              <div class="detail-item">Kviz je aktivan svaki dan i sastoji se od 10 pitanja.</div>
+              <div class="detail-item">Kviz sadrži 10 pitanja.</div>
               <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
-              <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme, bez live rang liste.</div>
-              <div class="detail-item">Presjek rezultata radi se ponedjeljkom i petkom, a top 20 korisnika objavljuje se u Viber zajednici.</div>
-              <div class="detail-item">Nagrade po presjeku: 1. mjesto €50 bonus, 2–5. mjesto €20 bonus, 6–20. mjesto €10 bonus.</div>
+              <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme.</div>
+              <div class="detail-item">Tačni odgovori se ne prikazuju tokom ni nakon kviza.</div>
+              <div class="detail-item">Presjek rezultata radi se ponedjeljkom i petkom.</div>
             </div>
           </details>
         </div>
@@ -589,7 +670,6 @@
         <div class="answers" id="answersWrap"></div>
 
         <div class="btn-row">
-          <button class="btn-secondary" id="prevBtn">Nazad</button>
           <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
         </div>
 
@@ -600,7 +680,7 @@
     <section class="section result-shell" id="resultSection">
       <div class="card">
         <h2>Tvoj rezultat je zabilježen</h2>
-        <p class="sub">Na ovoj stranici se ne prikazuju tačni odgovori niti rang lista uživo.</p>
+        <p class="sub">Prati rezultate ekskluzivno!</p>
 
         <div class="result-grid">
           <div class="result-box">
@@ -617,9 +697,27 @@
           </div>
         </div>
 
-        <p class="small-note">
-          Ako si kviz završio sa svim tačnim odgovorima i dovoljno brzim vremenom, tvoj rezultat ulazi u naredni presjek rezultata. Presjek se radi ponedjeljkom i petkom, a top 20 korisnika se objavljuje u Viber zajednici. Bonusi po plasmanu su €50 za 1. mjesto, €20 za mjesta 2–5 i €10 za mjesta 6–20.
-        </p>
+        <div class="btn-row">
+          <a
+            href="https://invite.viber.com/?g2=AQAGbinw7tVGslYV2WvdAfrosKQv2a7dtdMV4JXtPeftniw56lBLUga4O127Zs%2Bx"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="viber-btn"
+          >
+            Pridruži se AdmiralBET - SAD! na Viberu
+          </a>
+        </div>
+
+        <div class="leaderboard-wrap">
+          <div class="leaderboard-head">
+            <h3>Top 20 najbržih</h3>
+            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Umjesto imena prikazani su samo inicijali.</p>
+          </div>
+
+          <div class="leaderboard-list" id="leaderboardList">
+            <div class="leaderboard-empty">Učitavanje rang liste...</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -696,11 +794,11 @@
     const questionText = document.getElementById('questionText');
     const answersWrap = document.getElementById('answersWrap');
     const nextBtn = document.getElementById('nextBtn');
-    const prevBtn = document.getElementById('prevBtn');
     const progressBar = document.getElementById('progressBar');
     const finalCorrect = document.getElementById('finalCorrect');
     const finalTime = document.getElementById('finalTime');
     const finalStatus = document.getElementById('finalStatus');
+    const leaderboardList = document.getElementById('leaderboardList');
 
     let currentQuestion = 0;
     let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
@@ -779,7 +877,6 @@
         answersWrap.appendChild(btn);
       });
 
-      prevBtn.style.display = currentQuestion === 0 ? 'none' : 'inline-block';
       nextBtn.disabled = selectedAnswers[currentQuestion] === null;
       nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
       setStatus(quizStatus, '');
@@ -795,6 +892,23 @@
       }
 
       return correct;
+    }
+
+    function renderLeaderboard(items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        leaderboardList.innerHTML = '<div class="leaderboard-empty">Još nema dovoljno rezultata za prikaz rang liste.</div>';
+        return;
+      }
+
+      leaderboardList.innerHTML = items.map(item => {
+        return `
+          <div class="leaderboard-row">
+            <div class="leaderboard-rank">#${item.rank}</div>
+            <div class="leaderboard-name">${item.initials}</div>
+            <div class="leaderboard-time">${item.time}</div>
+          </div>
+        `;
+      }).join('');
     }
 
     async function apiRequest(payload) {
@@ -843,6 +957,22 @@
       });
     }
 
+    async function fetchLeaderboard() {
+      try {
+        const data = await apiRequest({
+          action: 'getLeaderboard'
+        });
+
+        if (data && data.success) {
+          renderLeaderboard(data.items || []);
+        } else {
+          renderLeaderboard([]);
+        }
+      } catch (error) {
+        leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista trenutno nije dostupna.</div>';
+      }
+    }
+
     startBtn.addEventListener('click', async () => {
       const name = sanitizeName(nameInput.value);
       const email = sanitizeEmail(emailInput.value);
@@ -888,13 +1018,6 @@
       }
     });
 
-    prevBtn.addEventListener('click', () => {
-      if (currentQuestion > 0) {
-        currentQuestion--;
-        renderQuestion();
-      }
-    });
-
     nextBtn.addEventListener('click', async () => {
       if (selectedAnswers[currentQuestion] === null) {
         setStatus(quizStatus, 'Izaberi odgovor.', 'error');
@@ -908,7 +1031,6 @@
       }
 
       nextBtn.disabled = true;
-      prevBtn.disabled = true;
       setStatus(quizStatus, '');
 
       const name = sanitizeName(nameInput.value);
@@ -924,9 +1046,9 @@
         finalTime.textContent = formatTime(timeSeconds);
         finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
         showResult();
+        fetchLeaderboard();
       } catch (error) {
         nextBtn.disabled = false;
-        prevBtn.disabled = false;
         setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
       }
     });
