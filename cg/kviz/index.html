@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdmiralBET Sportski Kviz</title>
+  <title>AdmiralBET Sportski</title>
   <style>
     :root {
       --bg-1: #08111f;
@@ -37,6 +37,10 @@
       color: var(--text);
       background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
       overflow-x: hidden;
+    }
+
+    body {
+      padding-bottom: 120px;
     }
 
     img {
@@ -511,11 +515,43 @@
       line-height: 1.5;
     }
 
+    .sticky-banner-wrap {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      pointer-events: none;
+    }
+
+    .sticky-banner-link {
+      pointer-events: auto;
+      display: block;
+      width: min(560px, calc(100% - 20px));
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(0,0,0,.38);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .sticky-banner-link img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     .footer-space {
       height: 14px;
     }
 
     @media (max-width: 760px) {
+      body {
+        padding-bottom: 100px;
+      }
+
       .wrap {
         width: min(var(--max), calc(100% - 14px));
         padding-top: 12px;
@@ -561,9 +597,22 @@
         gap: 10px;
         padding: 11px 12px;
       }
+
+      .sticky-banner-wrap {
+        padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      }
+
+      .sticky-banner-link {
+        width: calc(100% - 16px);
+        border-radius: 14px;
+      }
     }
 
     @media (max-width: 420px) {
+      body {
+        padding-bottom: 88px;
+      }
+
       .wrap {
         width: calc(100% - 12px);
       }
@@ -596,6 +645,11 @@
 
       .leaderboard-time {
         font-size: 13px;
+      }
+
+      .sticky-banner-link {
+        width: calc(100% - 12px);
+        border-radius: 12px;
       }
     }
   </style>
@@ -713,7 +767,7 @@
         <div class="leaderboard-wrap">
           <div class="leaderboard-head">
             <h3>Top 20 najbržih</h3>
-            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Najvbžih 20 časti AdmiralBet!</p>
+            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Najbržih 20 časti AdmiralBet!</p>
           </div>
 
           <div class="leaderboard-list" id="leaderboardList">
@@ -724,6 +778,21 @@
     </section>
 
     <div class="footer-space"></div>
+  </div>
+
+  <div class="sticky-banner-wrap">
+    <a
+      href="https://admiralbet.me/promotions/admiralbet-pocetak-1374"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="sticky-banner-link"
+      aria-label="AdmiralBET promocija"
+    >
+      <img
+        src="https://admiralbet.me/assets/images/promotion/vfbgnhmjk.jpg"
+        alt="AdmiralBET promocija"
+      />
+    </a>
   </div>
 
   <script>
@@ -906,9 +975,9 @@
 
     function renderLeaderboard(items) {
       if (!Array.isArray(items) || items.length === 0) {
-  leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
-  return;
-}
+        leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
+        return;
+      }
 
       leaderboardList.innerHTML = items.map(item => {
         return `
@@ -936,38 +1005,39 @@
     }
 
     async function reserveEmail(initials, email) {
-  return apiRequest({
-    action: 'reserveParticipant',
-    initials,
-    name: initials,
-    email,
-    participantToken,
-    userAgent: navigator.userAgent,
-    pageUrl: location.href,
-    referrer: document.referrer || '',
-    utm_source: new URLSearchParams(location.search).get('utm_source') || '',
-    utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
-    utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
-  });
-}
+      return apiRequest({
+        action: 'reserveParticipant',
+        initials,
+        name: initials,
+        email,
+        participantToken,
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || '',
+        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+      });
+    }
 
-async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
-  return apiRequest({
-    action: 'submitQuiz',
-    initials,
-    name: initials,
-    email,
-    participantToken,
-    totalQuestions: QUIZ_QUESTIONS.length,
-    correctAnswers,
-    timeSeconds,
-    answers: selectedAnswers,
-    submittedAtClient: new Date().toISOString(),
-    userAgent: navigator.userAgent,
-    pageUrl: location.href,
-    referrer: document.referrer || ''
-  });
-}
+    async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
+      return apiRequest({
+        action: 'submitQuiz',
+        initials,
+        name: initials,
+        email,
+        participantToken,
+        totalQuestions: QUIZ_QUESTIONS.length,
+        correctAnswers,
+        timeSeconds,
+        answers: selectedAnswers,
+        submittedAtClient: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || ''
+      });
+    }
+
     async function fetchLeaderboard() {
       try {
         const data = await apiRequest({
@@ -1014,24 +1084,24 @@ async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
       try {
         const data = await reserveEmail(initials, email);
 
-       if (!data.success) {
-  if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
-    setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
-  } else if (data.message === 'Invalid email.') {
-    setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-  } else if (data.message === 'Invalid initials.') {
-    setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-  } else if (data.message === 'Invalid name.') {
-    setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-  } else if (data.message === 'Missing participant token.') {
-    setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-  } else {
-    setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
-  }
+        if (!data.success) {
+          if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
+            setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
+          } else if (data.message === 'Invalid email.') {
+            setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+          } else if (data.message === 'Invalid initials.') {
+            setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+          } else if (data.message === 'Invalid name.') {
+            setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+          } else if (data.message === 'Missing participant token.') {
+            setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+          } else {
+            setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
+          }
 
-  startBtn.disabled = false;
-  return;
-}
+          startBtn.disabled = false;
+          return;
+        }
 
         startTimeMs = Date.now();
         updateTimerUI();
