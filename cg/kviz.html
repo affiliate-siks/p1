@@ -1,3 +1,4 @@
+// FILE 1: index.html
 <!doctype html>
 <html lang="sr-ME">
 <head>
@@ -7,108 +8,152 @@
   <style>
     :root {
       --bg: #0b1020;
-      --line: rgba(255,255,255,.08);
+      --panel: #121936;
+      --panel-2: #1a2347;
+      --line: rgba(255,255,255,0.08);
       --text: #f5f7ff;
       --muted: #aeb8da;
       --accent: #f6c343;
       --accent-2: #ffd86b;
       --danger: #ff6b6b;
+      --success: #31c48d;
       --shadow: 0 18px 50px rgba(0,0,0,.35);
       --radius: 22px;
-      --max: 560px;
+      --max: 520px;
     }
 
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       padding: 0;
       font-family: Arial, Helvetica, sans-serif;
       background:
         radial-gradient(circle at top right, rgba(246,195,67,.18), transparent 26%),
+        radial-gradient(circle at left center, rgba(49,196,141,.10), transparent 18%),
         linear-gradient(180deg, #0a0f1e 0%, #0d1430 100%);
       color: var(--text);
       min-height: 100%;
     }
 
-    body {
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    button, input {
-      font: inherit;
-    }
+    a { color: inherit; }
 
     .wrap {
-      width: min(var(--max), calc(100% - 22px));
+      width: min(var(--max), calc(100% - 18px));
       margin: 0 auto;
-      padding: 14px 0 24px;
+      padding: 10px 0 18px;
     }
 
-    .card {
+    .hero { display:none; }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .hero-card, .card {
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(8px);
-      padding: 18px;
     }
 
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255,255,255,.03);
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
+    .hero-card {
+      padding: 26px;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: clamp(28px, 8vw, 42px);
+      margin: 0 0 12px;
+      font-size: clamp(30px, 6vw, 52px);
       line-height: 1.02;
       letter-spacing: -.03em;
+      max-width: 740px;
     }
 
     .sub {
-      margin: 0 0 16px;
+      max-width: 700px;
       color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0 0 20px;
     }
 
-    .mini-meta {
+    .hero-meta { display:none; }
+
+    .meta-pill { display:none; }
+
+    .section {
+      margin: 18px 0;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(22px, 4vw, 30px);
+      letter-spacing: -.02em;
+    }
+
+    p.lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .steps, .rules, .result-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 12px;
     }
 
-    .mini-meta div {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(255,255,255,.03);
-      padding: 10px 8px;
-      text-align: center;
-      font-size: 12px;
+    .steps { display:none; }
+
+    .step { display:none; }
+
+    .step .n {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .step span, .muted {
       color: var(--muted);
-      line-height: 1.35;
+      line-height: 1.55;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     label {
       display: block;
-      font-size: 13px;
-      margin-bottom: 6px;
+      font-size: 14px;
+      margin-bottom: 8px;
       color: var(--muted);
     }
 
@@ -125,10 +170,9 @@
       background: rgba(255,255,255,.04);
       color: var(--text);
       border-radius: 14px;
-      padding: 14px 15px;
+      padding: 14px 16px;
       font-size: 16px;
       outline: none;
-      min-height: 52px;
     }
 
     input[type="text"]:focus,
@@ -143,12 +187,12 @@
       gap: 10px;
       margin-top: 10px;
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .checkbox-row input {
-      margin-top: 1px;
+      margin-top: 2px;
       width: 18px;
       height: 18px;
       border: 1px solid var(--line);
@@ -168,8 +212,9 @@
 
     .btn-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     button {
@@ -177,14 +222,12 @@
       cursor: pointer;
       font-weight: 700;
       transition: transform .18s ease, opacity .18s ease;
-      min-height: 52px;
     }
 
     button:hover { transform: translateY(-1px); }
     button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
     .btn-primary {
-      width: 100%;
       background: linear-gradient(180deg, var(--accent), var(--accent-2));
       color: #111;
       padding: 14px 20px;
@@ -199,34 +242,78 @@
       padding: 14px 18px;
       border-radius: 14px;
       font-size: 15px;
-      flex: 1;
     }
 
     .status {
-      min-height: 18px;
-      margin-top: 10px;
-      font-size: 12px;
-      color: transparent;
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
     }
 
     .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
 
-    .quiz-shell,
-    .result-shell,
-    .rules-shell {
+    .quiz-shell {
       display: none;
-      margin-top: 14px;
     }
 
     .quiz-shell.active,
-    .result-shell.active,
-    .rules-shell.active {
+    .result-shell.active {
       display: block;
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .counter,
+    .timer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .question-title {
+      font-size: clamp(22px, 3.8vw, 30px);
+      line-height: 1.25;
+      margin: 0 0 18px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .answer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--text);
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .answer.selected {
+      border-color: rgba(246,195,67,.65);
+      box-shadow: 0 0 0 4px rgba(246,195,67,.12);
+      background: rgba(246,195,67,.08);
     }
 
     .progress {
       width: 100%;
-      height: 8px;
+      height: 10px;
       border-radius: 999px;
       overflow: hidden;
       background: rgba(255,255,255,.08);
@@ -241,73 +328,26 @@
       transition: width .22s ease;
     }
 
-    .quiz-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .counter,
-    .timer {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .question-title {
-      font-size: clamp(22px, 5vw, 30px);
-      line-height: 1.25;
-      margin: 0 0 16px;
-    }
-
-    .answers {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .answer {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 16px;
-      padding: 14px 16px;
-      text-align: left;
-      color: var(--text);
-      font-size: 16px;
-      width: 100%;
-      min-height: 54px;
-    }
-
-    .answer.selected {
-      border-color: rgba(246,195,67,.65);
-      box-shadow: 0 0 0 4px rgba(246,195,67,.12);
-      background: rgba(246,195,67,.08);
+    .result-shell {
+      display: none;
     }
 
     .result-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin: 18px 0 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 20px 0;
     }
 
     .result-box {
       border: 1px solid var(--line);
       background: rgba(255,255,255,.03);
       border-radius: 18px;
-      padding: 16px;
+      padding: 18px;
       text-align: center;
     }
 
     .result-box .label {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--muted);
       margin-bottom: 6px;
       text-transform: uppercase;
@@ -315,78 +355,82 @@
     }
 
     .result-box .value {
-      font-size: clamp(24px, 8vw, 36px);
+      font-size: clamp(24px, 5vw, 38px);
       font-weight: 800;
       letter-spacing: -.03em;
     }
 
-    .rules-link {
-      margin-top: 12px;
-      text-align: center;
-    }
-
-    .rules-toggle {
-      background: transparent;
+    .small-note {
       color: var(--muted);
-      min-height: auto;
-      padding: 0;
-      font-size: 13px;
-      text-decoration: underline;
-    }
-
-    .rules-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .rule {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 16px;
-      padding: 14px;
-      color: var(--muted);
-      line-height: 1.55;
+      line-height: 1.65;
       font-size: 14px;
     }
 
-    @media (max-width: 420px) {
-      .wrap {
-        width: calc(100% - 16px);
-        padding-top: 8px;
+    .rules { display:none; }
+
+    .rule { display:none; }
+
+    .footer-space { height: 14px; }
+
+    .details-wrap {
+      margin-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 10px;
+    }
+
+    details {
+      border-radius: 12px;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .details-content {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 760px) {
+      .hero-meta,
+      .steps,
+      .form-grid,
+      .rules,
+      .result-grid {
+        grid-template-columns: 1fr;
       }
 
-      .card {
-        padding: 15px;
-      }
-
-      .mini-meta {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-
-      .mini-meta div {
-        font-size: 11px;
-        padding: 9px 6px;
-      }
-
-      .question-title {
-        font-size: 21px;
-      }
+      .hero-card, .card { padding: 18px; }
+      .sub { font-size: 16px; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <section id="registerSection">
+    <section class="section" id="registerSection">
       <div class="card">
         <div class="brand">AdmiralBET Online</div>
         <h1>Sportski kviz</h1>
-        <p class="sub">Unesi podatke i počni. Na kraju vidiš samo broj tačnih odgovora i vrijeme.</p>
-
-        <div class="mini-meta">
-          <div>10 pitanja</div>
-          <div>1 email<br>1 pokušaj</div>
-          <div>Bez prikaza<br>tačnih odgovora</div>
-        </div>
+        <p class="sub">Unesi podatke i pokreni kviz.</p>
 
         <div class="form-grid">
           <div>
@@ -405,29 +449,55 @@
         </label>
 
         <div class="btn-row">
-          <button class="btn-primary" id="startBtn">Počni kviz</button>
+          <button class="btn-primary" id="startBtn">Pokreni kviz</button>
         </div>
 
         <div class="status" id="registerStatus"></div>
 
-        <div class="rules-link">
-          <button type="button" class="rules-toggle" id="rulesToggle">Pravila</button>
+        <div class="details-wrap">
+          <details>
+            <summary>Detalji</summary>
+            <div class="details-content">
+              <div class="detail-item">10 pitanja.</div>
+              <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
+              <div class="detail-item">Na kraju se prikazuje samo broj tačnih odgovora i vrijeme.</div>
+              <div class="detail-item">Tačni odgovori se ne prikazuju tokom ni nakon kviza.</div>
+            </div>
+          </details>
         </div>
       </div>
     </section>
 
-    <section class="rules-shell" id="rulesSection">
+    <section class="section" id="registerSection_old" style="display:none;">
       <div class="card">
-        <div class="rules-list">
-          <div class="rule">Jedan korisnik može igrati samo jednom po jednoj email adresi.</div>
-          <div class="rule">Po završetku se prikazuje samo ukupan broj tačnih odgovora i ukupno vrijeme.</div>
-          <div class="rule">Tačni odgovori se ne prikazuju ni tokom ni nakon kviza.</div>
-          <div class="rule">Organizator zadržava pravo provjere validnosti prijava i rezultata.</div>
+        <h2>Prijava i početak kviza</h2>
+        <p class="lead">Kada potvrdiš podatke i kreneš, kviz otvara prvi set pitanja i startuje vrijeme.</p>
+
+        <div class="form-grid">
+          <div>
+            <label for="name">Ime i prezime</label>
+            <input type="text" id="name" placeholder="Upiši ime i prezime" maxlength="80" />
+          </div>
+          <div>
+            <label for="email">Email adresa</label>
+            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" />
+          </div>
         </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="privacy" />
+          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu i evidenciju rezultata.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="startBtn">Pokreni kviz</button>
+        </div>
+
+        <div class="status" id="registerStatus"></div>
       </div>
     </section>
 
-    <section class="quiz-shell" id="quizSection">
+    <section class="section quiz-shell" id="quizSection">
       <div class="card">
         <div class="progress"><span id="progressBar"></span></div>
         <div class="quiz-top">
@@ -439,17 +509,17 @@
         <div class="answers" id="answersWrap"></div>
 
         <div class="btn-row">
-          <button class="btn-secondary" id="prevBtn" type="button">Nazad</button>
-          <button class="btn-primary" id="nextBtn" type="button" disabled>Dalje</button>
+          <button class="btn-secondary" id="prevBtn">Nazad</button>
+          <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
         </div>
         <div class="status" id="quizStatus"></div>
       </div>
     </section>
 
-    <section class="result-shell" id="resultSection">
+    <section class="section result-shell" id="resultSection">
       <div class="card">
-        <h1 style="font-size: clamp(24px, 7vw, 34px); margin-bottom: 8px;">Rezultat</h1>
-        <p class="sub">Tvoj rezultat je evidentiran.</p>
+        <h2>Tvoj rezultat je zabilježen</h2>
+        <p class="lead">Na ovoj stranici se ne prikazuju tačni odgovori niti rang lista uživo.</p>
 
         <div class="result-grid">
           <div class="result-box">
@@ -460,33 +530,89 @@
             <span class="label">Vrijeme</span>
             <span class="value" id="finalTime">00:00</span>
           </div>
+          <div class="result-box">
+            <span class="label">Status</span>
+            <span class="value" id="finalStatus">Poslato</span>
+          </div>
         </div>
+
+        <p class="small-note">
+          Ako imaš dovoljan broj tačnih odgovora i dovoljno brzo vrijeme, tvoj rezultat ulazi u evidenciju za naredni presjek. Dobitnici i top rezultati objavljuju se zasebno, prema pravilima kampanje.
+        </p>
       </div>
     </section>
+
+    <div class="footer-space"></div>
   </div>
 
   <script>
+    // =========================
+    // CONFIG
+    // =========================
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT45t1B0MKIqtm2JXaUAbPO55Xh9bXJsOZbp_WUNBdukqY_-iTX82siKZTuHfHIAS3/exec';
 
+    // U ovoj listi upiši finalnih 10 pitanja.
+    // Svako pitanje ima tekst, ponuđene odgovore i index tačnog odgovora.
     const QUIZ_QUESTIONS = [
-      { text: 'Koja reprezentacija je osvojila FIFA Svjetsko prvenstvo 2022?', answers: ['Argentina', 'Francuska', 'Brazil', 'Njemačka'], correctIndex: 0 },
-      { text: 'Koliko igrača ima jedan fudbalski tim na terenu?', answers: ['9', '10', '11', '12'], correctIndex: 2 },
-      { text: 'Koji sport je poznat po pojmu triple-double?', answers: ['Tenis', 'Košarka', 'Odbojka', 'Rukomet'], correctIndex: 1 },
-      { text: 'Na kojoj podlozi se igra Wimbledon?', answers: ['Šljaka', 'Beton', 'Trava', 'Parket'], correctIndex: 2 },
-      { text: 'Koliko setova je potrebno osvojiti za pobjedu u muškom Grand Slam meču?', answers: ['2', '3', '4', '5'], correctIndex: 1 },
-      { text: 'Koji sport koristi termin touchdown?', answers: ['Ragbi', 'Američki fudbal', 'Bejzbol', 'Hokej'], correctIndex: 1 },
-      { text: 'Koliko poena vrijedi šut za tri poena u košarci?', answers: ['1', '2', '3', '4'], correctIndex: 2 },
-      { text: 'Koja država je domaćin Formule 1 trke u Monaku?', answers: ['Italija', 'Francuska', 'Monako', 'Španija'], correctIndex: 2 },
-      { text: 'Koji sport je Novak Đokovićev?', answers: ['Fudbal', 'Košarka', 'Tenis', 'Odbojka'], correctIndex: 2 },
-      { text: 'Koliko minuta traje regularni fudbalski meč bez nadoknade?', answers: ['80', '85', '90', '95'], correctIndex: 2 }
+      {
+        text: 'Koja reprezentacija je osvojila FIFA Svjetsko prvenstvo 2022?',
+        answers: ['Argentina', 'Francuska', 'Brazil', 'Njemačka'],
+        correctIndex: 0
+      },
+      {
+        text: 'Koliko igrača ima jedan fudbalski tim na terenu?',
+        answers: ['9', '10', '11', '12'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je poznat po pojmu triple-double?',
+        answers: ['Tenis', 'Košarka', 'Odbojka', 'Rukomet'],
+        correctIndex: 1
+      },
+      {
+        text: 'Na kojoj podlozi se igra Wimbledon?',
+        answers: ['Šljaka', 'Beton', 'Trava', 'Parket'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko setova je potrebno osvojiti za pobjedu u muškom Grand Slam meču?',
+        answers: ['2', '3', '4', '5'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koji sport koristi termin touchdown?',
+        answers: ['Ragbi', 'Američki fudbal', 'Bejzbol', 'Hokej'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koliko poena vrijedi šut za tri poena u košarci?',
+        answers: ['1', '2', '3', '4'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koja država je domaćin Formule 1 trke u Monaku?',
+        answers: ['Italija', 'Francuska', 'Monako', 'Španija'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je Novak Đokovićev?',
+        answers: ['Fudbal', 'Košarka', 'Tenis', 'Odbojka'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko minuta traje regularni fudbalski meč bez nadoknade?',
+        answers: ['80', '85', '90', '95'],
+        correctIndex: 2
+      }
     ];
 
+    // =========================
+    // ELEMENTS
+    // =========================
     const startBtn = document.getElementById('startBtn');
     const registerStatus = document.getElementById('registerStatus');
     const quizStatus = document.getElementById('quizStatus');
     const registerSection = document.getElementById('registerSection');
-    const rulesSection = document.getElementById('rulesSection');
-    const rulesToggle = document.getElementById('rulesToggle');
     const quizSection = document.getElementById('quizSection');
     const resultSection = document.getElementById('resultSection');
     const nameInput = document.getElementById('name');
@@ -501,13 +627,21 @@
     const progressBar = document.getElementById('progressBar');
     const finalCorrect = document.getElementById('finalCorrect');
     const finalTime = document.getElementById('finalTime');
+    const finalStatus = document.getElementById('finalStatus');
 
+    // =========================
+    // STATE
+    // =========================
     let currentQuestion = 0;
     let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
     let timerInterval = null;
     let startTimeMs = null;
+    let hasStarted = false;
     let participantToken = '';
 
+    // =========================
+    // HELPERS
+    // =========================
     function setStatus(el, msg, type = '') {
       el.textContent = msg || '';
       el.className = 'status' + (type ? ' ' + type : '');
@@ -546,7 +680,6 @@
 
     function showQuiz() {
       registerSection.style.display = 'none';
-      rulesSection.classList.remove('active');
       quizSection.classList.add('active');
       resultSection.classList.remove('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -578,7 +711,7 @@
         answersWrap.appendChild(btn);
       });
 
-      prevBtn.style.display = currentQuestion === 0 ? 'none' : 'block';
+      prevBtn.style.display = currentQuestion === 0 ? 'none' : 'inline-block';
       nextBtn.disabled = selectedAnswers[currentQuestion] === null;
       nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
       setStatus(quizStatus, '');
@@ -599,8 +732,12 @@
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error('Server error');
-      return response.json();
+      if (!response.ok) {
+        throw new Error('Server error: ' + response.status);
+      }
+
+      const data = await response.json();
+      return data;
     }
 
     async function reserveEmail(name, email) {
@@ -635,10 +772,9 @@
       });
     }
 
-    rulesToggle.addEventListener('click', () => {
-      rulesSection.classList.toggle('active');
-    });
-
+    // =========================
+    // EVENTS
+    // =========================
     startBtn.addEventListener('click', async () => {
       const name = sanitizeName(nameInput.value);
       const email = sanitizeEmail(emailInput.value);
@@ -655,8 +791,13 @@
         setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
         return;
       }
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE_YOUR')) {
+        setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+        return;
+      }
 
       startBtn.disabled = true;
+      setStatus(registerStatus, '');
       participantToken = createParticipantToken(name, email);
 
       try {
@@ -668,6 +809,7 @@
           return;
         }
 
+        hasStarted = true;
         startTimeMs = Date.now();
         updateTimerUI();
         timerInterval = setInterval(updateTimerUI, 1000);
@@ -689,7 +831,10 @@
     });
 
     nextBtn.addEventListener('click', async () => {
-      if (selectedAnswers[currentQuestion] === null) return;
+      if (selectedAnswers[currentQuestion] === null) {
+        setStatus(quizStatus, '', 'error');
+        return;
+      }
 
       if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
         currentQuestion++;
@@ -699,6 +844,7 @@
 
       nextBtn.disabled = true;
       prevBtn.disabled = true;
+      setStatus(quizStatus, '');
 
       const name = sanitizeName(nameInput.value);
       const email = sanitizeEmail(emailInput.value);
@@ -706,10 +852,12 @@
       const timeSeconds = elapsedSeconds();
 
       try {
-        await submitQuiz(name, email, correctAnswers, timeSeconds);
+        const data = await submitQuiz(name, email, correctAnswers, timeSeconds);
+
         clearInterval(timerInterval);
         finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
         finalTime.textContent = formatTime(timeSeconds);
+        finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
         showResult();
       } catch (error) {
         nextBtn.disabled = false;
@@ -720,3 +868,4 @@
   </script>
 </body>
 </html>
+
