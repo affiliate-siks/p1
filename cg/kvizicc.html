@@ -727,7 +727,7 @@
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT45t1B0MKIqtm2JXaUAbPO55Xh9bXJsOZbp_WUNBdukqY_-iTX82siKZTuHfHIAS3/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
 
     const QUIZ_QUESTIONS = [
       {
@@ -936,37 +936,38 @@
     }
 
     async function reserveEmail(initials, email) {
-      return apiRequest({
-        action: 'reserveParticipant',
-        initials,
-        email,
-        participantToken,
-        userAgent: navigator.userAgent,
-        pageUrl: location.href,
-        referrer: document.referrer || '',
-        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
-        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
-        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
-      });
-    }
+  return apiRequest({
+    action: 'reserveParticipant',
+    initials,
+    name: initials,
+    email,
+    participantToken,
+    userAgent: navigator.userAgent,
+    pageUrl: location.href,
+    referrer: document.referrer || '',
+    utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+    utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+    utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+  });
+}
 
-    async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
-      return apiRequest({
-        action: 'submitQuiz',
-        initials,
-        email,
-        participantToken,
-        totalQuestions: QUIZ_QUESTIONS.length,
-        correctAnswers,
-        timeSeconds,
-        answers: selectedAnswers,
-        submittedAtClient: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        pageUrl: location.href,
-        referrer: document.referrer || ''
-      });
-    }
-
+async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
+  return apiRequest({
+    action: 'submitQuiz',
+    initials,
+    name: initials,
+    email,
+    participantToken,
+    totalQuestions: QUIZ_QUESTIONS.length,
+    correctAnswers,
+    timeSeconds,
+    answers: selectedAnswers,
+    submittedAtClient: new Date().toISOString(),
+    userAgent: navigator.userAgent,
+    pageUrl: location.href,
+    referrer: document.referrer || ''
+  });
+}
     async function fetchLeaderboard() {
       try {
         const data = await apiRequest({
@@ -1013,18 +1014,24 @@
       try {
         const data = await reserveEmail(initials, email);
 
-        if (!data.success) {
-          if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
-            setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
-          } else if (data.message === 'Invalid email.') {
-            setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-          } else {
-            setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-          }
+       if (!data.success) {
+  if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
+    setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
+  } else if (data.message === 'Invalid email.') {
+    setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+  } else if (data.message === 'Invalid initials.') {
+    setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+  } else if (data.message === 'Invalid name.') {
+    setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+  } else if (data.message === 'Missing participant token.') {
+    setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+  } else {
+    setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
+  }
 
-          startBtn.disabled = false;
-          return;
-        }
+  startBtn.disabled = false;
+  return;
+}
 
         startTimeMs = Date.now();
         updateTimerUI();
