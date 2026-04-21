@@ -713,7 +713,7 @@
         <div class="leaderboard-wrap">
           <div class="leaderboard-head">
             <h3>Top 20 najbržih</h3>
-            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. U rang listi se prikazuju inicijali koje je korisnik unio.</p>
+            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Najvbžih 20 časti AdmiralBet!</p>
           </div>
 
           <div class="leaderboard-list" id="leaderboardList">
@@ -906,9 +906,9 @@
 
     function renderLeaderboard(items) {
       if (!Array.isArray(items) || items.length === 0) {
-        leaderboardList.innerHTML = '<div class="leaderboard-empty">Još nema dovoljno rezultata za prikaz rang liste.</div>';
-        return;
-      }
+  leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
+  return;
+}
 
       leaderboardList.innerHTML = items.map(item => {
         return `
