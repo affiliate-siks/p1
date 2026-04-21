@@ -39,10 +39,6 @@
       overflow-x: hidden;
     }
 
-    body {
-      padding-bottom: 120px;
-    }
-
     img {
       max-width: 100%;
       display: block;
@@ -515,32 +511,60 @@
       line-height: 1.5;
     }
 
-    .sticky-banner-wrap {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 999;
-      display: flex;
-      justify-content: center;
-      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
-      pointer-events: none;
+    .promo-banner-shell {
+      display: none;
+      margin-top: 18px;
+      width: 100%;
     }
 
-    .sticky-banner-link {
-      pointer-events: auto;
+    .promo-banner-shell.active {
       display: block;
-      width: min(560px, calc(100% - 20px));
+    }
+
+    .promo-banner {
+      position: relative;
+      width: 100%;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 14px 34px rgba(0,0,0,.38);
       border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      background: rgba(255,255,255,.03);
     }
 
-    .sticky-banner-link img {
+    .promo-banner-link {
+      display: block;
+      width: 100%;
+    }
+
+    .promo-banner-link img {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    .promo-banner-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(8, 17, 31, .74);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      z-index: 2;
+    }
+
+    .promo-banner-close:hover {
+      transform: none;
+      background: rgba(8, 17, 31, .9);
     }
 
     .footer-space {
@@ -548,10 +572,6 @@
     }
 
     @media (max-width: 760px) {
-      body {
-        padding-bottom: 100px;
-      }
-
       .wrap {
         width: min(var(--max), calc(100% - 14px));
         padding-top: 12px;
@@ -598,21 +618,16 @@
         padding: 11px 12px;
       }
 
-      .sticky-banner-wrap {
-        padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
-      }
-
-      .sticky-banner-link {
-        width: calc(100% - 16px);
-        border-radius: 14px;
+      .promo-banner-close {
+        top: 6px;
+        right: 6px;
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
       }
     }
 
     @media (max-width: 420px) {
-      body {
-        padding-bottom: 88px;
-      }
-
       .wrap {
         width: calc(100% - 12px);
       }
@@ -645,11 +660,6 @@
 
       .leaderboard-time {
         font-size: 13px;
-      }
-
-      .sticky-banner-link {
-        width: calc(100% - 12px);
-        border-radius: 12px;
       }
     }
   </style>
@@ -774,25 +784,28 @@
             <div class="leaderboard-empty">Učitavanje rang liste...</div>
           </div>
         </div>
+
+        <div class="promo-banner-shell" id="promoBannerShell">
+          <div class="promo-banner">
+            <button type="button" class="promo-banner-close" id="promoBannerClose" aria-label="Zatvori promociju">×</button>
+            <a
+              href="https://admiralbet.me/promotions/admiralbet-pocetak-1374"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="promo-banner-link"
+              aria-label="AdmiralBET promocija"
+            >
+              <img
+                src="https://admiralbet.me/assets/images/promotion/vfbgnhmjk.jpg"
+                alt="AdmiralBET promocija"
+              />
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
     <div class="footer-space"></div>
-  </div>
-
-  <div class="sticky-banner-wrap">
-    <a
-      href="https://admiralbet.me/promotions/admiralbet-pocetak-1374"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="sticky-banner-link"
-      aria-label="AdmiralBET promocija"
-    >
-      <img
-        src="https://admiralbet.me/assets/images/promotion/vfbgnhmjk.jpg"
-        alt="AdmiralBET promocija"
-      />
-    </a>
   </div>
 
   <script>
@@ -870,6 +883,8 @@
     const finalTime = document.getElementById('finalTime');
     const finalStatus = document.getElementById('finalStatus');
     const leaderboardList = document.getElementById('leaderboardList');
+    const promoBannerShell = document.getElementById('promoBannerShell');
+    const promoBannerClose = document.getElementById('promoBannerClose');
 
     let currentQuestion = 0;
     let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
@@ -925,12 +940,14 @@
       registerSection.style.display = 'none';
       quizSection.classList.add('active');
       resultSection.classList.remove('active');
+      promoBannerShell.classList.remove('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function showResult() {
       quizSection.classList.remove('active');
       resultSection.classList.add('active');
+      promoBannerShell.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1056,6 +1073,10 @@
 
     initialsInput.addEventListener('input', () => {
       initialsInput.value = sanitizeInitials(initialsInput.value);
+    });
+
+    promoBannerClose.addEventListener('click', () => {
+      promoBannerShell.classList.remove('active');
     });
 
     startBtn.addEventListener('click', async () => {
