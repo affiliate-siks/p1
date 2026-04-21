@@ -1,0 +1,883 @@
+// FILE 1: index.html
+<!doctype html>
+<html lang="sr-ME">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmiralBET Sportski Kviz</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121936;
+      --panel-2: #1a2347;
+      --line: rgba(255,255,255,0.08);
+      --text: #f5f7ff;
+      --muted: #aeb8da;
+      --accent: #f6c343;
+      --accent-2: #ffd86b;
+      --danger: #ff6b6b;
+      --success: #31c48d;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 22px;
+      --max: 860px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(246,195,67,.18), transparent 26%),
+        radial-gradient(circle at left center, rgba(49,196,141,.10), transparent 18%),
+        linear-gradient(180deg, #0a0f1e 0%, #0d1430 100%);
+      color: var(--text);
+      min-height: 100%;
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 38px 0 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .hero-card, .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-card {
+      padding: 26px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 6vw, 52px);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      max-width: 740px;
+    }
+
+    .sub {
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 22px 0 0;
+    }
+
+    .meta-pill {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .section {
+      margin: 18px 0;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(22px, 4vw, 30px);
+      letter-spacing: -.02em;
+    }
+
+    p.lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .steps, .rules, .result-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .step .n {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .step span, .muted {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="checkbox"] {
+      appearance: none;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus {
+      border-color: rgba(246,195,67,.6);
+      box-shadow: 0 0 0 4px rgba(246,195,67,.14);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .checkbox-row input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .checkbox-row input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 16px;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid var(--line);
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 15px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+
+    .quiz-shell {
+      display: none;
+    }
+
+    .quiz-shell.active,
+    .result-shell.active {
+      display: block;
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .counter,
+    .timer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .question-title {
+      font-size: clamp(22px, 3.8vw, 30px);
+      line-height: 1.25;
+      margin: 0 0 18px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .answer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--text);
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .answer.selected {
+      border-color: rgba(246,195,67,.65);
+      box-shadow: 0 0 0 4px rgba(246,195,67,.12);
+      background: rgba(246,195,67,.08);
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      margin-bottom: 16px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .22s ease;
+    }
+
+    .result-shell {
+      display: none;
+    }
+
+    .result-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 20px 0;
+    }
+
+    .result-box {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .result-box .label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .result-box .value {
+      font-size: clamp(24px, 5vw, 38px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .small-note {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .rules {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+
+    .rule {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .footer-space { height: 26px; }
+
+    @media (max-width: 760px) {
+      .hero-meta,
+      .steps,
+      .form-grid,
+      .rules,
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card, .card { padding: 18px; }
+      .sub { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="brand">AdmiralBET Online • Sportski kviz izazov</div>
+      <div class="hero-card">
+        <h1>Riješi sportski kviz što brže i osvoji bonus</h1>
+        <p class="sub">
+          Kviz je aktivan svaki dan. Vrijeme se mjeri automatski, a najbrži učesnici sa svim tačnim odgovorima ulaze u konkurenciju za bonus na presjeku ponedjeljkom i petkom.
+        </p>
+        <div class="hero-meta">
+          <div class="meta-pill">10 pitanja</div>
+          <div class="meta-pill">1 email = 1 pokušaj</div>
+          <div class="meta-pill">Na kraju vidiš samo rezultat i vrijeme</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Kako funkcioniše</h2>
+        <p class="lead">Jednostavno, brzo i bez prikaza tačnih odgovora tokom ili nakon kviza.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="n">1</div>
+            <strong>Unesi podatke</strong>
+            <span>Upiši ime i email adresu. Jedan email može učestvovati samo jednom.</span>
+          </div>
+          <div class="step">
+            <div class="n">2</div>
+            <strong>Riješi 10 pitanja</strong>
+            <span>Odgovaraj redom. Vrijeme se automatski pokreće kada počneš kviz.</span>
+          </div>
+          <div class="step">
+            <div class="n">3</div>
+            <strong>Sistem sabira rezultat</strong>
+            <span>Po završetku vidiš samo broj tačnih odgovora i ukupno vrijeme rješavanja.</span>
+          </div>
+          <div class="step">
+            <div class="n">4</div>
+            <strong>Presjek rezultata</strong>
+            <span>Najbrži učesnici sa svim tačnim odgovorima ulaze u konkurenciju na presjeku ponedjeljkom i petkom.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="registerSection">
+      <div class="card">
+        <h2>Prijava i početak kviza</h2>
+        <p class="lead">Kada potvrdiš podatke i kreneš, kviz otvara prvi set pitanja i startuje vrijeme.</p>
+
+        <div class="form-grid">
+          <div>
+            <label for="name">Ime i prezime</label>
+            <input type="text" id="name" placeholder="Upiši ime i prezime" maxlength="80" />
+          </div>
+          <div>
+            <label for="email">Email adresa</label>
+            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" />
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="privacy" />
+          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu i evidenciju rezultata.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="startBtn">Pokreni kviz</button>
+        </div>
+
+        <div class="status" id="registerStatus"></div>
+      </div>
+    </section>
+
+    <section class="section quiz-shell" id="quizSection">
+      <div class="card">
+        <div class="progress"><span id="progressBar"></span></div>
+        <div class="quiz-top">
+          <div class="counter" id="questionCounter">Pitanje 1 / 10</div>
+          <div class="timer">Vrijeme: <strong id="timerText">00:00</strong></div>
+        </div>
+
+        <h2 class="question-title" id="questionText"></h2>
+        <div class="answers" id="answersWrap"></div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" id="prevBtn">Nazad</button>
+          <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
+        </div>
+        <div class="status" id="quizStatus"></div>
+      </div>
+    </section>
+
+    <section class="section result-shell" id="resultSection">
+      <div class="card">
+        <h2>Tvoj rezultat je zabilježen</h2>
+        <p class="lead">Na ovoj stranici se ne prikazuju tačni odgovori niti rang lista uživo.</p>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <span class="label">Tačnih odgovora</span>
+            <span class="value" id="finalCorrect">0/10</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Vrijeme</span>
+            <span class="value" id="finalTime">00:00</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Status</span>
+            <span class="value" id="finalStatus">Poslato</span>
+          </div>
+        </div>
+
+        <p class="small-note">
+          Ako imaš dovoljan broj tačnih odgovora i dovoljno brzo vrijeme, tvoj rezultat ulazi u evidenciju za naredni presjek. Dobitnici i top rezultati objavljuju se zasebno, prema pravilima kampanje.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Pravila</h2>
+        <div class="rules">
+          <div class="rule">Jedan korisnik može igrati samo jednom po jednoj email adresi.</div>
+          <div class="rule">Po završetku se prikazuje samo ukupan broj tačnih odgovora i ukupno vrijeme.</div>
+          <div class="rule">Tačni odgovori se ne prikazuju odmah, ni tokom ni nakon kviza.</div>
+          <div class="rule">Organizator zadržava pravo provjere validnosti prijava i rezultata.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+    // =========================
+    // CONFIG
+    // =========================
+    const APPS_SCRIPT_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+    // U ovoj listi upiši finalnih 10 pitanja.
+    // Svako pitanje ima tekst, ponuđene odgovore i index tačnog odgovora.
+    const QUIZ_QUESTIONS = [
+      {
+        text: 'Koja reprezentacija je osvojila FIFA Svjetsko prvenstvo 2022?',
+        answers: ['Argentina', 'Francuska', 'Brazil', 'Njemačka'],
+        correctIndex: 0
+      },
+      {
+        text: 'Koliko igrača ima jedan fudbalski tim na terenu?',
+        answers: ['9', '10', '11', '12'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je poznat po pojmu triple-double?',
+        answers: ['Tenis', 'Košarka', 'Odbojka', 'Rukomet'],
+        correctIndex: 1
+      },
+      {
+        text: 'Na kojoj podlozi se igra Wimbledon?',
+        answers: ['Šljaka', 'Beton', 'Trava', 'Parket'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko setova je potrebno osvojiti za pobjedu u muškom Grand Slam meču?',
+        answers: ['2', '3', '4', '5'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koji sport koristi termin touchdown?',
+        answers: ['Ragbi', 'Američki fudbal', 'Bejzbol', 'Hokej'],
+        correctIndex: 1
+      },
+      {
+        text: 'Koliko poena vrijedi šut za tri poena u košarci?',
+        answers: ['1', '2', '3', '4'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koja država je domaćin Formule 1 trke u Monaku?',
+        answers: ['Italija', 'Francuska', 'Monako', 'Španija'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koji sport je Novak Đokovićev?',
+        answers: ['Fudbal', 'Košarka', 'Tenis', 'Odbojka'],
+        correctIndex: 2
+      },
+      {
+        text: 'Koliko minuta traje regularni fudbalski meč bez nadoknade?',
+        answers: ['80', '85', '90', '95'],
+        correctIndex: 2
+      }
+    ];
+
+    // =========================
+    // ELEMENTS
+    // =========================
+    const startBtn = document.getElementById('startBtn');
+    const registerStatus = document.getElementById('registerStatus');
+    const quizStatus = document.getElementById('quizStatus');
+    const registerSection = document.getElementById('registerSection');
+    const quizSection = document.getElementById('quizSection');
+    const resultSection = document.getElementById('resultSection');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const privacyInput = document.getElementById('privacy');
+    const questionCounter = document.getElementById('questionCounter');
+    const timerText = document.getElementById('timerText');
+    const questionText = document.getElementById('questionText');
+    const answersWrap = document.getElementById('answersWrap');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const progressBar = document.getElementById('progressBar');
+    const finalCorrect = document.getElementById('finalCorrect');
+    const finalTime = document.getElementById('finalTime');
+    const finalStatus = document.getElementById('finalStatus');
+
+    // =========================
+    // STATE
+    // =========================
+    let currentQuestion = 0;
+    let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+    let timerInterval = null;
+    let startTimeMs = null;
+    let hasStarted = false;
+    let participantToken = '';
+
+    // =========================
+    // HELPERS
+    // =========================
+    function setStatus(el, msg, type = '') {
+      el.textContent = msg || '';
+      el.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    function sanitizeName(value) {
+      return value.trim().replace(/\s+/g, ' ');
+    }
+
+    function sanitizeEmail(value) {
+      return value.trim().toLowerCase();
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function formatTime(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
+
+    function elapsedSeconds() {
+      if (!startTimeMs) return 0;
+      return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
+    }
+
+    function updateTimerUI() {
+      timerText.textContent = formatTime(elapsedSeconds());
+    }
+
+    function createParticipantToken(name, email) {
+      return btoa(unescape(encodeURIComponent(name + '|' + email + '|' + Date.now()))).replace(/=/g, '');
+    }
+
+    function showQuiz() {
+      registerSection.style.display = 'none';
+      quizSection.classList.add('active');
+      resultSection.classList.remove('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showResult() {
+      quizSection.classList.remove('active');
+      resultSection.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderQuestion() {
+      const q = QUIZ_QUESTIONS[currentQuestion];
+      questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${QUIZ_QUESTIONS.length}`;
+      questionText.textContent = q.text;
+      progressBar.style.width = `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+      answersWrap.innerHTML = '';
+
+      q.answers.forEach((answerText, index) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
+        btn.textContent = answerText;
+        btn.addEventListener('click', () => {
+          selectedAnswers[currentQuestion] = index;
+          renderQuestion();
+          nextBtn.disabled = false;
+        });
+        answersWrap.appendChild(btn);
+      });
+
+      prevBtn.style.display = currentQuestion === 0 ? 'none' : 'inline-block';
+      nextBtn.disabled = selectedAnswers[currentQuestion] === null;
+      nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
+      setStatus(quizStatus, '');
+    }
+
+    function calculateScore() {
+      let correct = 0;
+      for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+        if (selectedAnswers[i] === QUIZ_QUESTIONS[i].correctIndex) correct++;
+      }
+      return correct;
+    }
+
+    async function apiRequest(payload) {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Server error: ' + response.status);
+      }
+
+      const data = await response.json();
+      return data;
+    }
+
+    async function reserveEmail(name, email) {
+      return apiRequest({
+        action: 'reserveParticipant',
+        name,
+        email,
+        participantToken,
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || '',
+        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+      });
+    }
+
+    async function submitQuiz(name, email, correctAnswers, timeSeconds) {
+      return apiRequest({
+        action: 'submitQuiz',
+        name,
+        email,
+        participantToken,
+        totalQuestions: QUIZ_QUESTIONS.length,
+        correctAnswers,
+        timeSeconds,
+        answers: selectedAnswers,
+        submittedAtClient: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        pageUrl: location.href,
+        referrer: document.referrer || ''
+      });
+    }
+
+    // =========================
+    // EVENTS
+    // =========================
+    startBtn.addEventListener('click', async () => {
+      const name = sanitizeName(nameInput.value);
+      const email = sanitizeEmail(emailInput.value);
+
+      if (!name || name.length < 2) {
+        setStatus(registerStatus, 'Upiši validno ime.', 'error');
+        return;
+      }
+      if (!isValidEmail(email)) {
+        setStatus(registerStatus, 'Upiši validnu email adresu.', 'error');
+        return;
+      }
+      if (!privacyInput.checked) {
+        setStatus(registerStatus, 'Moraš potvrditi saglasnost za obradu podataka.', 'error');
+        return;
+      }
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE_YOUR')) {
+        setStatus(registerStatus, 'Dodaj Apps Script Web App URL u kod prije testiranja.', 'error');
+        return;
+      }
+
+      startBtn.disabled = true;
+      setStatus(registerStatus, 'Provjera prijave...');
+      participantToken = createParticipantToken(name, email);
+
+      try {
+        const data = await reserveEmail(name, email);
+
+        if (!data.success) {
+          setStatus(registerStatus, data.message || 'Prijava nije moguća.', 'error');
+          startBtn.disabled = false;
+          return;
+        }
+
+        hasStarted = true;
+        startTimeMs = Date.now();
+        updateTimerUI();
+        timerInterval = setInterval(updateTimerUI, 1000);
+        currentQuestion = 0;
+        selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+        renderQuestion();
+        showQuiz();
+      } catch (error) {
+        setStatus(registerStatus, 'Greška pri povezivanju sa serverom. Pokušaj ponovo.', 'error');
+        startBtn.disabled = false;
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener('click', async () => {
+      if (selectedAnswers[currentQuestion] === null) {
+        setStatus(quizStatus, 'Izaberi odgovor da nastaviš.', 'error');
+        return;
+      }
+
+      if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+        return;
+      }
+
+      nextBtn.disabled = true;
+      prevBtn.disabled = true;
+      setStatus(quizStatus, 'Slanje rezultata...');
+
+      const name = sanitizeName(nameInput.value);
+      const email = sanitizeEmail(emailInput.value);
+      const correctAnswers = calculateScore();
+      const timeSeconds = elapsedSeconds();
+
+      try {
+        const data = await submitQuiz(name, email, correctAnswers, timeSeconds);
+
+        clearInterval(timerInterval);
+        finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
+        finalTime.textContent = formatTime(timeSeconds);
+        finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
+        showResult();
+      } catch (error) {
+        nextBtn.disabled = false;
+        prevBtn.disabled = false;
+        setStatus(quizStatus, 'Greška pri slanju rezultata. Pokušaj ponovo.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+//
+// Tako dobijaš najbrže učesnike sa svim tačnim odgovorima.
