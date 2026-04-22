@@ -431,6 +431,15 @@
       word-break: break-word;
     }
 
+    .result-box .value.status-value {
+  font-size: clamp(18px, 3.6vw, 28px);
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  display: block;
+  text-align: center;
+}
+    
     .viber-btn {
       display: flex;
       align-items: center;
@@ -759,7 +768,7 @@
           </div>
           <div class="result-box">
             <span class="label">Status</span>
-            <span class="value" id="finalStatus">Poslato</span>
+            <span class="value status-value" id="finalStatus">Poslato</span>
           </div>
         </div>
 
