@@ -808,369 +808,369 @@
     <div class="footer-space"></div>
   </div>
 
-  <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
+ <script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
 
-    const QUIZ_QUESTIONS = [
-      {
-        text: 'Koja reprezentacija je osvojila FIFA Svjetsko prvenstvo 2022?',
-        answers: ['Argentina', 'Francuska', 'Brazil', 'Njemačka'],
-        correctIndex: 0
-      },
-      {
-        text: 'Koliko igrača ima jedan fudbalski tim na terenu?',
-        answers: ['9', '10', '11', '12'],
-        correctIndex: 2
-      },
-      {
-        text: 'Koji sport je poznat po pojmu triple-double?',
-        answers: ['Tenis', 'Košarka', 'Odbojka', 'Rukomet'],
-        correctIndex: 1
-      },
-      {
-        text: 'Na kojoj podlozi se igra Wimbledon?',
-        answers: ['Šljaka', 'Beton', 'Trava', 'Parket'],
-        correctIndex: 2
-      },
-      {
-        text: 'Koliko setova je potrebno osvojiti za pobjedu u muškom Grand Slam meču?',
-        answers: ['2', '3', '4', '5'],
-        correctIndex: 1
-      },
-      {
-        text: 'Koji sport koristi termin touchdown?',
-        answers: ['Ragbi', 'Američki fudbal', 'Bejzbol', 'Hokej'],
-        correctIndex: 1
-      },
-      {
-        text: 'Koliko poena vrijedi šut za tri poena u košarci?',
-        answers: ['1', '2', '3', '4'],
-        correctIndex: 2
-      },
-      {
-        text: 'Koja država je domaćin Formule 1 trke u Monaku?',
-        answers: ['Italija', 'Francuska', 'Monako', 'Španija'],
-        correctIndex: 2
-      },
-      {
-        text: 'Koji sport je Novak Đokovićev?',
-        answers: ['Fudbal', 'Košarka', 'Tenis', 'Odbojka'],
-        correctIndex: 2
-      },
-      {
-        text: 'Koliko minuta traje regularni fudbalski meč bez nadoknade?',
-        answers: ['80', '85', '90', '95'],
-        correctIndex: 2
-      }
-    ];
-
-    const startBtn = document.getElementById('startBtn');
-    const registerStatus = document.getElementById('registerStatus');
-    const quizStatus = document.getElementById('quizStatus');
-    const registerSection = document.getElementById('registerSection');
-    const quizSection = document.getElementById('quizSection');
-    const resultSection = document.getElementById('resultSection');
-    const initialsInput = document.getElementById('initials');
-    const emailInput = document.getElementById('email');
-    const privacyInput = document.getElementById('privacy');
-    const questionCounter = document.getElementById('questionCounter');
-    const timerText = document.getElementById('timerText');
-    const questionText = document.getElementById('questionText');
-    const answersWrap = document.getElementById('answersWrap');
-    const nextBtn = document.getElementById('nextBtn');
-    const progressBar = document.getElementById('progressBar');
-    const finalCorrect = document.getElementById('finalCorrect');
-    const finalTime = document.getElementById('finalTime');
-    const finalStatus = document.getElementById('finalStatus');
-    const leaderboardList = document.getElementById('leaderboardList');
-    const promoBannerShell = document.getElementById('promoBannerShell');
-    const promoBannerClose = document.getElementById('promoBannerClose');
-
-    let currentQuestion = 0;
-    let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
-    let timerInterval = null;
-    let startTimeMs = null;
-    let participantToken = '';
-
-    function setStatus(el, msg, type = '') {
-      el.textContent = msg || '';
-      el.className = 'status' + (type ? ' ' + type : '');
+  const QUIZ_QUESTIONS = [
+    {
+      text: 'Ko je šampion CONCACAF kupa 2025?',
+      answers: ['SAD', 'Meksiko', 'Kanada'],
+      correctIndex: 1
+    },
+    {
+      text: 'Ko je aktuelni svjetski šampion u ženskom fudbalu?',
+      answers: ['Španija', 'Francuska', 'Engleska'],
+      correctIndex: 0
+    },
+    {
+      text: 'Ko je aktuelni šampion Južne Amerike (Copa América)?',
+      answers: ['Argentina', 'Brazil', 'Čile'],
+      correctIndex: 0
+    },
+    {
+      text: 'Ko je šampion Azijskog kupa?',
+      answers: ['J. Koreja', 'Novi Zeland', 'Katar'],
+      correctIndex: 2
+    },
+    {
+      text: 'Ko je šampion U20 prvenstva svijeta?',
+      answers: ['Brazil', 'Maroko', 'Francuska'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koja je jedina reprezentacija koja nikad nije izgubila od Brazila?',
+      answers: ['SAD', 'O. Slonovače', 'Norveška'],
+      correctIndex: 2
+    },
+    {
+      text: 'Koja reprezentacija nikada nije igrala na Svjetskom prvenstvu?',
+      answers: ['Libija', 'Kuba', 'Indonezija'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koja je jedina neporažena reprezentacija na SP 2010?',
+      answers: ['Švajcarska', 'Novi Zeland', 'Gana'],
+      correctIndex: 1
+    },
+    {
+      text: 'Prva Azijska reprezentacija koja je prošla grupu na SP?',
+      answers: ['S. Koreja', 'Kina', 'Mongolija'],
+      correctIndex: 0
+    },
+    {
+      text: 'Čuveni Brazilac koji nikad nije dao gol za reprezentaciju u takmičarskim mečevima?',
+      answers: ['Pato', 'Hulk', 'Luis Fabiano'],
+      correctIndex: 1
     }
+  ];
 
-    function sanitizeInitials(value) {
-      return value
-        .trim()
-        .toUpperCase()
-        .replace(/[^A-ZČĆŽŠĐ]/g, '')
-        .slice(0, 3);
-    }
+  const startBtn = document.getElementById('startBtn');
+  const registerStatus = document.getElementById('registerStatus');
+  const quizStatus = document.getElementById('quizStatus');
+  const registerSection = document.getElementById('registerSection');
+  const quizSection = document.getElementById('quizSection');
+  const resultSection = document.getElementById('resultSection');
+  const initialsInput = document.getElementById('initials');
+  const emailInput = document.getElementById('email');
+  const privacyInput = document.getElementById('privacy');
+  const questionCounter = document.getElementById('questionCounter');
+  const timerText = document.getElementById('timerText');
+  const questionText = document.getElementById('questionText');
+  const answersWrap = document.getElementById('answersWrap');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressBar = document.getElementById('progressBar');
+  const finalCorrect = document.getElementById('finalCorrect');
+  const finalTime = document.getElementById('finalTime');
+  const finalStatus = document.getElementById('finalStatus');
+  const leaderboardList = document.getElementById('leaderboardList');
+  const promoBannerShell = document.getElementById('promoBannerShell');
+  const promoBannerClose = document.getElementById('promoBannerClose');
 
-    function sanitizeEmail(value) {
-      return value.trim().toLowerCase();
-    }
+  let currentQuestion = 0;
+  let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+  let timerInterval = null;
+  let startTimeMs = null;
+  let participantToken = '';
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+  function setStatus(el, msg, type = '') {
+    el.textContent = msg || '';
+    el.className = 'status' + (type ? ' ' + type : '');
+  }
 
-    function isValidInitials(initials) {
-      return /^[A-ZČĆŽŠĐ]{2,3}$/.test(initials);
-    }
+  function sanitizeInitials(value) {
+    return value
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-ZČĆŽŠĐ]/g, '')
+      .slice(0, 3);
+  }
 
-    function formatTime(totalSeconds) {
-      const mins = Math.floor(totalSeconds / 60);
-      const secs = totalSeconds % 60;
-      return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-    }
+  function sanitizeEmail(value) {
+    return value.trim().toLowerCase();
+  }
 
-    function elapsedSeconds() {
-      if (!startTimeMs) return 0;
-      return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
-    }
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-    function updateTimerUI() {
-      timerText.textContent = formatTime(elapsedSeconds());
-    }
+  function isValidInitials(initials) {
+    return /^[A-ZČĆŽŠĐ]{2,3}$/.test(initials);
+  }
 
-    function createParticipantToken(initials, email) {
-      return btoa(unescape(encodeURIComponent(initials + '|' + email + '|' + Date.now()))).replace(/=/g, '');
-    }
+  function formatTime(totalSeconds) {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  }
 
-    function showQuiz() {
-      registerSection.style.display = 'none';
-      quizSection.classList.add('active');
-      resultSection.classList.remove('active');
-      promoBannerShell.classList.remove('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  function elapsedSeconds() {
+    if (!startTimeMs) return 0;
+    return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
+  }
 
-    function showResult() {
-      quizSection.classList.remove('active');
-      resultSection.classList.add('active');
-      promoBannerShell.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  function updateTimerUI() {
+    timerText.textContent = formatTime(elapsedSeconds());
+  }
 
-    function renderQuestion() {
-      const q = QUIZ_QUESTIONS[currentQuestion];
-      questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${QUIZ_QUESTIONS.length}`;
-      questionText.textContent = q.text;
-      progressBar.style.width = `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%`;
-      answersWrap.innerHTML = '';
+  function createParticipantToken(initials, email) {
+    return btoa(unescape(encodeURIComponent(initials + '|' + email + '|' + Date.now()))).replace(/=/g, '');
+  }
 
-      q.answers.forEach((answerText, index) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
-        btn.textContent = answerText;
+  function showQuiz() {
+    registerSection.style.display = 'none';
+    quizSection.classList.add('active');
+    resultSection.classList.remove('active');
+    promoBannerShell.classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-        btn.addEventListener('click', () => {
-          selectedAnswers[currentQuestion] = index;
-          renderQuestion();
-          nextBtn.disabled = false;
-        });
+  function showResult() {
+    quizSection.classList.remove('active');
+    resultSection.classList.add('active');
+    promoBannerShell.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-        answersWrap.appendChild(btn);
-      });
+  function renderQuestion() {
+    const q = QUIZ_QUESTIONS[currentQuestion];
+    questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${QUIZ_QUESTIONS.length}`;
+    questionText.textContent = q.text;
+    progressBar.style.width = `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+    answersWrap.innerHTML = '';
 
-      nextBtn.disabled = selectedAnswers[currentQuestion] === null;
-      nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
-      setStatus(quizStatus, '');
-    }
+    q.answers.forEach((answerText, index) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
+      btn.textContent = answerText;
 
-    function calculateScore() {
-      let correct = 0;
-
-      for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
-        if (selectedAnswers[i] === QUIZ_QUESTIONS[i].correctIndex) {
-          correct++;
-        }
-      }
-
-      return correct;
-    }
-
-    function renderLeaderboard(items) {
-      if (!Array.isArray(items) || items.length === 0) {
-        leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
-        return;
-      }
-
-      leaderboardList.innerHTML = items.map(item => {
-        return `
-          <div class="leaderboard-row">
-            <div class="leaderboard-rank">#${item.rank}</div>
-            <div class="leaderboard-name">${item.initials}</div>
-            <div class="leaderboard-time">${item.time}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function apiRequest(payload) {
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        throw new Error('Server error: ' + response.status);
-      }
-
-      return await response.json();
-    }
-
-    async function reserveEmail(initials, email) {
-      return apiRequest({
-        action: 'reserveParticipant',
-        initials,
-        name: initials,
-        email,
-        participantToken,
-        userAgent: navigator.userAgent,
-        pageUrl: location.href,
-        referrer: document.referrer || '',
-        utm_source: new URLSearchParams(location.search).get('utm_source') || '',
-        utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
-        utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
-      });
-    }
-
-    async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
-      return apiRequest({
-        action: 'submitQuiz',
-        initials,
-        name: initials,
-        email,
-        participantToken,
-        totalQuestions: QUIZ_QUESTIONS.length,
-        correctAnswers,
-        timeSeconds,
-        answers: selectedAnswers,
-        submittedAtClient: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        pageUrl: location.href,
-        referrer: document.referrer || ''
-      });
-    }
-
-    async function fetchLeaderboard() {
-      try {
-        const data = await apiRequest({
-          action: 'getLeaderboard'
-        });
-
-        if (data && data.success) {
-          renderLeaderboard(data.items || []);
-        } else {
-          renderLeaderboard([]);
-        }
-      } catch (error) {
-        leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista trenutno nije dostupna.</div>';
-      }
-    }
-
-    initialsInput.addEventListener('input', () => {
-      initialsInput.value = sanitizeInitials(initialsInput.value);
-    });
-
-    promoBannerClose.addEventListener('click', () => {
-      promoBannerShell.classList.remove('active');
-    });
-
-    startBtn.addEventListener('click', async () => {
-      const initials = sanitizeInitials(initialsInput.value);
-      const email = sanitizeEmail(emailInput.value);
-
-      if (!isValidInitials(initials)) {
-        setStatus(registerStatus, 'Unesi 2 ili 3 slova za inicijale.', 'error');
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-        return;
-      }
-
-      if (!privacyInput.checked) {
-        setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
-        return;
-      }
-
-      startBtn.disabled = true;
-      setStatus(registerStatus, '');
-      participantToken = createParticipantToken(initials, email);
-
-      try {
-        const data = await reserveEmail(initials, email);
-
-        if (!data.success) {
-          if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
-            setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
-          } else if (data.message === 'Invalid email.') {
-            setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-          } else if (data.message === 'Invalid initials.') {
-            setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-          } else if (data.message === 'Invalid name.') {
-            setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-          } else if (data.message === 'Missing participant token.') {
-            setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-          } else {
-            setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
-          }
-
-          startBtn.disabled = false;
-          return;
-        }
-
-        startTimeMs = Date.now();
-        updateTimerUI();
-        timerInterval = setInterval(updateTimerUI, 1000);
-        currentQuestion = 0;
-        selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+      btn.addEventListener('click', () => {
+        selectedAnswers[currentQuestion] = index;
         renderQuestion();
-        showQuiz();
-      } catch (error) {
-        setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-        startBtn.disabled = false;
-      }
-    });
-
-    nextBtn.addEventListener('click', async () => {
-      if (selectedAnswers[currentQuestion] === null) {
-        setStatus(quizStatus, 'Izaberi odgovor.', 'error');
-        return;
-      }
-
-      if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
-        currentQuestion++;
-        renderQuestion();
-        return;
-      }
-
-      nextBtn.disabled = true;
-      setStatus(quizStatus, '');
-
-      const initials = sanitizeInitials(initialsInput.value);
-      const email = sanitizeEmail(emailInput.value);
-      const correctAnswers = calculateScore();
-      const timeSeconds = elapsedSeconds();
-
-      try {
-        const data = await submitQuiz(initials, email, correctAnswers, timeSeconds);
-
-        clearInterval(timerInterval);
-        finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
-        finalTime.textContent = formatTime(timeSeconds);
-        finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
-        showResult();
-        fetchLeaderboard();
-      } catch (error) {
         nextBtn.disabled = false;
-        setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
-      }
+      });
+
+      answersWrap.appendChild(btn);
     });
-  </script>
+
+    nextBtn.disabled = selectedAnswers[currentQuestion] === null;
+    nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
+    setStatus(quizStatus, '');
+  }
+
+  function calculateScore() {
+    let correct = 0;
+
+    for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+      if (selectedAnswers[i] === QUIZ_QUESTIONS[i].correctIndex) {
+        correct++;
+      }
+    }
+
+    return correct;
+  }
+
+  function renderLeaderboard(items) {
+    if (!Array.isArray(items) || items.length === 0) {
+      leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
+      return;
+    }
+
+    leaderboardList.innerHTML = items.map(item => {
+      return `
+        <div class="leaderboard-row">
+          <div class="leaderboard-rank">#${item.rank}</div>
+          <div class="leaderboard-name">${item.initials}</div>
+          <div class="leaderboard-time">${item.time}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function apiRequest(payload) {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error('Server error: ' + response.status);
+    }
+
+    return await response.json();
+  }
+
+  async function reserveEmail(initials, email) {
+    return apiRequest({
+      action: 'reserveParticipant',
+      initials,
+      name: initials,
+      email,
+      participantToken,
+      userAgent: navigator.userAgent,
+      pageUrl: location.href,
+      referrer: document.referrer || '',
+      utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+      utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+      utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+    });
+  }
+
+  async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
+    return apiRequest({
+      action: 'submitQuiz',
+      initials,
+      name: initials,
+      email,
+      participantToken,
+      totalQuestions: QUIZ_QUESTIONS.length,
+      correctAnswers,
+      timeSeconds,
+      answers: selectedAnswers,
+      submittedAtClient: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      pageUrl: location.href,
+      referrer: document.referrer || ''
+    });
+  }
+
+  async function fetchLeaderboard() {
+    try {
+      const data = await apiRequest({
+        action: 'getLeaderboard'
+      });
+
+      if (data && data.success) {
+        renderLeaderboard(data.items || []);
+      } else {
+        renderLeaderboard([]);
+      }
+    } catch (error) {
+      leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista trenutno nije dostupna.</div>';
+    }
+  }
+
+  initialsInput.addEventListener('input', () => {
+    initialsInput.value = sanitizeInitials(initialsInput.value);
+  });
+
+  promoBannerClose.addEventListener('click', () => {
+    promoBannerShell.classList.remove('active');
+  });
+
+  startBtn.addEventListener('click', async () => {
+    const initials = sanitizeInitials(initialsInput.value);
+    const email = sanitizeEmail(emailInput.value);
+
+    if (!isValidInitials(initials)) {
+      setStatus(registerStatus, 'Unesi 2 ili 3 slova za inicijale.', 'error');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+      return;
+    }
+
+    if (!privacyInput.checked) {
+      setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
+      return;
+    }
+
+    startBtn.disabled = true;
+    setStatus(registerStatus, '');
+    participantToken = createParticipantToken(initials, email);
+
+    try {
+      const data = await reserveEmail(initials, email);
+
+      if (!data.success) {
+        if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
+          setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
+        } else if (data.message === 'Invalid email.') {
+          setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+        } else if (data.message === 'Invalid initials.') {
+          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+        } else if (data.message === 'Invalid name.') {
+          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+        } else if (data.message === 'Missing participant token.') {
+          setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+        } else {
+          setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
+        }
+
+        startBtn.disabled = false;
+        return;
+      }
+
+      startTimeMs = Date.now();
+      updateTimerUI();
+      timerInterval = setInterval(updateTimerUI, 1000);
+      currentQuestion = 0;
+      selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+      renderQuestion();
+      showQuiz();
+    } catch (error) {
+      setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+      startBtn.disabled = false;
+    }
+  });
+
+  nextBtn.addEventListener('click', async () => {
+    if (selectedAnswers[currentQuestion] === null) {
+      setStatus(quizStatus, 'Izaberi odgovor.', 'error');
+      return;
+    }
+
+    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+      currentQuestion++;
+      renderQuestion();
+      return;
+    }
+
+    nextBtn.disabled = true;
+    setStatus(quizStatus, '');
+
+    const initials = sanitizeInitials(initialsInput.value);
+    const email = sanitizeEmail(emailInput.value);
+    const correctAnswers = calculateScore();
+    const timeSeconds = elapsedSeconds();
+
+    try {
+      const data = await submitQuiz(initials, email, correctAnswers, timeSeconds);
+
+      clearInterval(timerInterval);
+      finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
+      finalTime.textContent = formatTime(timeSeconds);
+      finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
+      showResult();
+      fetchLeaderboard();
+    } catch (error) {
+      nextBtn.disabled = false;
+      setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
+    }
+  });
+</script>
 </body>
 </html>
