@@ -36,13 +36,6 @@
       z-index: 0;
     }
 
-    .full-link {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      display: block;
-    }
-
     .content-box {
       position: absolute;
       top: 14%;
@@ -100,7 +93,6 @@
       display: flex;
       justify-content: center;
       z-index: 3;
-      pointer-events: none;
     }
 
     .cta-button {
@@ -119,7 +111,6 @@
       background: linear-gradient(180deg, #fff066, #ffd400);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
       transition: transform 0.15s ease;
-      pointer-events: auto;
       position: relative;
       z-index: 4;
     }
@@ -133,9 +124,6 @@
 <body>
 
   <div class="bg-overlay"></div>
-
-  <!-- Full-screen klik -->
-  <a href="#" class="full-link" id="bgLink" aria-label="Open offer"></a>
 
   <div class="content-box">
     <h1 class="main-heading">
@@ -177,7 +165,6 @@
         '&source=' + encodeURIComponent(source);
 
       document.getElementById('ctaLink').href = finalUrl;
-      document.getElementById('bgLink').href = finalUrl;
     })();
   </script>
 
