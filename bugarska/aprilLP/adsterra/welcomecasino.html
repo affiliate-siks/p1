@@ -20,7 +20,6 @@
       background-position: center;
       background-repeat: no-repeat;
       position: relative;
-      overflow: hidden;
     }
 
     @media (max-width: 768px) {
@@ -111,8 +110,6 @@
       background: linear-gradient(180deg, #fff066, #ffd400);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
       transition: transform 0.15s ease;
-      position: relative;
-      z-index: 4;
     }
 
     .cta-button:active {
@@ -122,7 +119,6 @@
 </head>
 
 <body>
-
   <div class="bg-overlay"></div>
 
   <div class="content-box">
@@ -137,7 +133,7 @@
   </div>
 
   <div class="cta-wrapper">
-    <a href="#" class="cta-button" id="ctaLink">
+    <a href="https://admiralbetbgtrack.com/trqbnjfgt?source=adsterra" class="cta-button" id="ctaLink">
       ВЗЕМИ БОНУСА СЕГА
     </a>
   </div>
@@ -145,28 +141,18 @@
   <script>
     (function () {
       const params = new URLSearchParams(window.location.search);
+
       const subid = params.get('subid') || '';
       const placementId = params.get('placement_id') || '';
 
-      const BASE_URL = 'https://admiralbetbgtrack.com/trqbnjfgt';
-
-      let source = 'adsterra';
-
-      if (document.referrer.includes('adsterra')) {
-        source = 'adsterra';
-      } else if (document.referrer.includes('adsterra')) {
-        source = 'adsterra';
-      }
-
       const finalUrl =
-        BASE_URL +
+        'https://admiralbetbgtrack.com/trqbnjfgt' +
         '?s1=' + encodeURIComponent(subid) +
         '&placement_id=' + encodeURIComponent(placementId) +
-        '&source=' + encodeURIComponent(source);
+        '&source=adsterra';
 
       document.getElementById('ctaLink').href = finalUrl;
     })();
   </script>
-
 </body>
 </html>
