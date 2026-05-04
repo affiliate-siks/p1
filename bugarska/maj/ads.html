@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1000 СПИНОВА | AdmiralBet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Anton', Arial, sans-serif;
+    }
+
+    body {
+      background-image: url('/bugarska/aprilLP/fotke/casino1.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background-image: url('/bugarska/aprilLP/fotke/casino2.png');
+        background-position: center top;
+      }
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.85), rgba(0,0,0,0.4), rgba(0,0,0,0.7));
+      z-index: 1;
+    }
+
+    .content-box {
+      position: absolute;
+      top: 12%;
+      left: 6%;
+      width: 48%;
+      z-index: 2;
+    }
+
+    .limited {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: #ffd400;
+      color: #000;
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+    }
+
+    .offer {
+      font-size: 5.5rem;
+      line-height: 0.9;
+      text-transform: uppercase;
+      color: #fff;
+
+      -webkit-text-stroke: 2px #000;
+
+      text-shadow:
+        0 6px 0 #000,
+        0 12px 30px rgba(0,0,0,1),
+        0 0 25px rgba(255,200,0,0.6);
+    }
+
+    .offer span {
+      display: block;
+      color: #ffd400;
+      font-size: 6.2rem;
+    }
+
+    .cta-wrapper {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 3;
+      padding: 0 14px;
+    }
+
+    .cta-button {
+      width: 100%;
+      max-width: 440px;
+      padding: 1.2rem;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 900;
+      border-radius: 16px;
+      text-decoration: none;
+      text-transform: uppercase;
+      color: #000;
+      background: linear-gradient(180deg, #fff27a, #ffd400, #ffb300);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+    }
+
+    .cta-button:active {
+      transform: scale(0.96);
+    }
+
+    /* COUNTDOWN BAR */
+    .countdown-bar {
+      position: fixed;
+      bottom: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 440px;
+      z-index: 4;
+      padding: 0.7rem;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,212,0,0.5);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.65);
+    }
+
+    .countdown-text {
+      margin-bottom: 0.4rem;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .bar-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff3b00, #ffd400);
+      animation: countdownDrain 15s linear infinite;
+    }
+
+    @keyframes countdownDrain {
+      from { width: 100%; }
+      to { width: 5%; }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .content-box {
+        top: 8%;
+        left: 50%;
+        width: 92%;
+        transform: translateX(-50%);
+        text-align: center;
+      }
+
+      .offer {
+        font-size: 2.8rem;
+      }
+
+      .offer span {
+        font-size: 3.4rem;
+      }
+
+      .limited {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="overlay"></div>
+
+  <div class="content-box">
+    <div class="limited">ОГРАНИЧЕНА ОФЕРТА</div>
+
+    <div class="offer">
+      ВЗЕМИ
+      <span>1000 СПИНОВА</span>
+      СЕГА
+    </div>
+  </div>
+
+  <div class="countdown-bar">
+    <div class="countdown-text">ОФЕРТАТА ИЗТИЧА СКОРО</div>
+    <div class="bar-track">
+      <div class="bar-fill"></div>
+    </div>
+  </div>
+
+  <div class="cta-wrapper">
+    <a href="https://admiralbetbgtrack.com/tjfsfcoku" class="cta-button" id="ctaLink">
+      ВЗЕМИ БОНУСА
+    </a>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+
+      const subid = params.get('subid') || '';
+      const placementId = params.get('placement_id') || '';
+
+      const affilkaUrl = new URL('https://admiralbetbgtrack.com/tjfsfcoku');
+
+      affilkaUrl.searchParams.set('s1', subid);
+      affilkaUrl.searchParams.set('placement_id', placementId);
+      affilkaUrl.searchParams.set('source', 'propeller');
+      affilkaUrl.searchParams.set('promo', '1000spins');
+
+      document.getElementById('ctaLink').href = affilkaUrl.toString();
+    })();
+  </script>
+
+</body>
+</html>
