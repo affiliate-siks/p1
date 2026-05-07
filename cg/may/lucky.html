@@ -193,6 +193,7 @@ body{
   display:block;
   width:100%;
   height:100%;
+  filter:drop-shadow(0 0 20px rgba(123,63,245,0.4));
 }
 
 .wheel-pointer{
@@ -201,6 +202,7 @@ body{
   left:50%;
   transform:translateX(-50%);
   z-index:10;
+  filter:drop-shadow(0 4px 12px rgba(245,196,0,0.8));
 }
 
 .wheel-hub{
@@ -247,6 +249,11 @@ body{
   box-shadow:0 0 30px rgba(245,196,0,0.5);
 }
 
+.spin-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
 .result-overlay{
   position:fixed;
   inset:0;
@@ -274,6 +281,13 @@ body{
   text-align:center;
   max-width:380px;
   width:90%;
+  box-shadow:0 0 80px rgba(123,63,245,0.35);
+  transform:scale(.85);
+  transition:transform .35s ease;
+}
+
+.result-overlay.show .result-card{
+  transform:scale(1);
 }
 
 .result-congrats{
@@ -329,6 +343,7 @@ body{
   font-weight:700;
   letter-spacing:2px;
   color:rgba(255,255,255,0.45);
+  text-align:left;
 }
 
 .code-value{
@@ -336,6 +351,7 @@ body{
   font-size:28px;
   letter-spacing:4px;
   color:var(--white);
+  text-align:left;
 }
 
 .copy-btn{
@@ -369,6 +385,34 @@ body{
   color:rgba(255,255,255,0.5);
 }
 
+.confetti-container{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:101;
+  overflow:hidden;
+}
+
+.confetti-piece{
+  position:absolute;
+  top:-20px;
+  width:8px;
+  height:8px;
+  opacity:0;
+  animation:confetti-fall 1.8s ease-in forwards;
+}
+
+@keyframes confetti-fall{
+  0%{
+    opacity:1;
+    transform:translateY(-20px) rotate(0deg);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(100vh) rotate(720deg);
+  }
+}
+
 .footer-disclaimer{
   text-align:center;
   margin-top:32px;
@@ -382,16 +426,15 @@ body{
 <body>
 
 <div id="stars"></div>
+<div class="confetti-container" id="confettiContainer"></div>
 
 <div class="result-overlay" id="resultOverlay">
   <div class="result-card">
 
     <div class="result-congrats">ČESTITAMO!</div>
-
     <span class="result-emoji" id="resultEmoji">🎉</span>
 
     <div class="result-prize-label">TVOJA NAGRADA</div>
-
     <div class="result-prize-amount" id="resultPrizeAmount">10€</div>
 
     <div class="result-divider"></div>
@@ -406,7 +449,7 @@ body{
         <button class="copy-btn" onclick="copyCode()">KOPIRAJ</button>
       </div>
 
-      <button class="claim-btn" onclick="closeResult()">ZATVORI</button>
+      <button class="claim-btn" onclick="claimCode()">PREUZMI KOD</button>
     </div>
 
     <div id="noCodesSection" style="display:none;">
@@ -427,7 +470,6 @@ body{
 <div class="page">
 
 <header class="hero">
-
   <div class="logo">
     <div class="logo-lines">
       <div></div>
@@ -447,7 +489,6 @@ body{
     TOČAK<br>
     <span class="gold glow-text">SREĆE</span>
   </h1>
-
 </header>
 
 <div class="wheel-section">
@@ -486,7 +527,7 @@ body{
 </div>
 
 <script>
-const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzay6TjNKxl2aEKwjuUuHvDL4Y_meVvMyOko0e5cYvy3Zh5jytGI0gVHWqD-8fupx8P/exec';
 
 const CATEGORIES = [
   { label:'5€', emoji:'🎟️', color:'#3B7BF5', textColor:'#FFFFFF', prob:40 },
@@ -511,7 +552,6 @@ function drawWheel(angle){
   const segArc = (2*Math.PI)/CATEGORIES.length;
 
   CATEGORIES.forEach((seg,i)=>{
-
     const startAngle = angle + i*segArc;
     const endAngle = angle + (i+1)*segArc;
     const midAngle = startAngle + segArc/2;
@@ -529,21 +569,16 @@ function drawWheel(angle){
     ctx.stroke();
 
     const textR = R * 0.58;
-
     const tx = cx + textR * Math.cos(midAngle);
     const ty = cy + textR * Math.sin(midAngle);
 
     ctx.save();
-
     ctx.translate(tx,ty);
     ctx.rotate(midAngle + Math.PI/2);
-
     ctx.fillStyle = seg.textColor;
     ctx.font = "900 28px Bebas Neue";
     ctx.textAlign = 'center';
-
     ctx.fillText(seg.label,0,0);
-
     ctx.restore();
   });
 }
@@ -564,9 +599,7 @@ function pickCategoryByProbability(){
 }
 
 async function getCodeFromSheet(cat){
-
   const key = cat.label.replace('€','');
-
   const url = `${API_URL}?action=claim&category=${encodeURIComponent(key)}`;
 
   try{
@@ -580,30 +613,23 @@ async function getCodeFromSheet(cat){
     return data.code;
 
   }catch(err){
-
     console.error(err);
     return null;
   }
 }
 
 function spinWheel(){
-
   if(isSpinning) return;
 
   isSpinning = true;
-
   document.getElementById('spinBtn').disabled = true;
+  document.getElementById('hubBtn').style.pointerEvents = 'none';
 
   const targetCatIndex = pickCategoryByProbability();
-
   const segArc = (2*Math.PI)/CATEGORIES.length;
-
   const pointerAngle = -Math.PI/2;
-
   const segMid = (targetCatIndex + 0.5) * segArc;
-
   const extraSpins = 5;
-
   const needed = pointerAngle - segMid;
 
   const finalAngle =
@@ -612,9 +638,7 @@ function spinWheel(){
     + ((needed - currentAngle%(2*Math.PI))%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
 
   const duration = 4200;
-
   const startAngle = currentAngle;
-
   const startTime = performance.now();
 
   function easeOut(t){
@@ -622,13 +646,10 @@ function spinWheel(){
   }
 
   async function finishSpin(){
-
     currentAngle = finalAngle%(2*Math.PI);
-
     isSpinning = false;
 
     const cat = CATEGORIES[targetCatIndex];
-
     const code = await getCodeFromSheet(cat);
 
     if(!code){
@@ -638,10 +659,10 @@ function spinWheel(){
     }
 
     document.getElementById('spinBtn').disabled = false;
+    document.getElementById('hubBtn').style.pointerEvents = 'auto';
   }
 
   function animate(now){
-
     const t = Math.min((now-startTime)/duration,1);
 
     currentAngle =
@@ -661,41 +682,40 @@ function spinWheel(){
 }
 
 function showResult(cat,code){
-
   document.getElementById('resultEmoji').textContent = cat.emoji;
-
   document.getElementById('resultPrizeAmount').textContent = cat.label;
-
   document.getElementById('resultCode').textContent = code;
 
   document.getElementById('codeSection').style.display = 'block';
-
   document.getElementById('noCodesSection').style.display = 'none';
-
   document.getElementById('resultOverlay').classList.add('show');
+
+  spawnConfetti(cat.color);
 }
 
 function showResultNoCode(cat){
-
   document.getElementById('resultEmoji').textContent = cat.emoji;
-
   document.getElementById('resultPrizeAmount').textContent = cat.label;
 
   document.getElementById('codeSection').style.display = 'none';
-
   document.getElementById('noCodesSection').style.display = 'block';
-
   document.getElementById('resultOverlay').classList.add('show');
 }
 
-function copyCode(){
+function claimCode(){
+  closeResult();
+}
 
+function closeResult(){
+  document.getElementById('resultOverlay').classList.remove('show');
+}
+
+function copyCode(){
   const code = document.getElementById('resultCode').textContent;
 
-  navigator.clipboard.writeText(code);
+  navigator.clipboard.writeText(code).catch(()=>{});
 
   const btn = document.querySelector('.copy-btn');
-
   btn.textContent = 'KOPIRANO';
 
   setTimeout(()=>{
@@ -703,8 +723,28 @@ function copyCode(){
   },2000);
 }
 
-function closeResult(){
-  document.getElementById('resultOverlay').classList.remove('show');
+function spawnConfetti(color){
+  const container = document.getElementById('confettiContainer');
+  const colors = [color, '#F5C400', '#7B3FF5', '#FFFFFF', '#E03060'];
+
+  for(let i = 0; i < 36; i++){
+    const el = document.createElement('div');
+
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (5 + Math.random() * 8) + 'px';
+    el.style.height = (5 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDelay = Math.random() * 0.4 + 's';
+    el.style.animationDuration = (1.2 + Math.random() * 1.4) + 's';
+
+    container.appendChild(el);
+
+    setTimeout(()=>{
+      el.remove();
+    },3000);
+  }
 }
 
 drawWheel(0);
