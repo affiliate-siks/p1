@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="sr-ME">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>World Cup 2026 Predictor Challenge</title>
+<meta name="description" content="Pogodi grupnu fazu i knockout bracket za World Cup 2026. Dvije odvojene prediction kategorije: 1.000€ za grupe i 1.000€ za bracket." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050b16;
+  --bg2:#081426;
+  --bg3:#0c1b33;
+  --card:#101f38;
+  --card2:#142946;
+
+  --gold:#f2c14e;
+  --gold2:#ffdc7a;
+  --gold3:#b88422;
+
+  --text:#ffffff;
+  --muted:rgba(255,255,255,.66);
+  --muted2:rgba(255,255,255,.44);
+
+  --line:rgba(255,255,255,.12);
+  --line2:rgba(242,193,78,.28);
+
+  --dark:#07101f;
+  --radius:28px;
+  --shadow:0 28px 90px rgba(0,0,0,.42);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 8% 0%,rgba(242,193,78,.15),transparent 30%),
+    radial-gradient(circle at 88% 4%,rgba(255,220,122,.08),transparent 28%),
+    radial-gradient(circle at 50% 100%,rgba(19,45,82,.6),transparent 38%),
+    linear-gradient(180deg,#050b16,#071426 55%,#040912);
+  overflow-x:hidden;
+}
+
+button,input,select{font-family:inherit}
+
+button{cursor:pointer}
+
+.container{
+  width:min(1280px,calc(100% - 28px));
+  margin:auto;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  padding:14px 0;
+  backdrop-filter:blur(16px);
+  background:rgba(5,11,22,.72);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-mark{
+  width:46px;
+  height:46px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#111;
+  font-size:22px;
+  font-weight:900;
+  box-shadow:0 14px 36px rgba(242,193,78,.2);
+}
+
+.logo h3{
+  margin:0;
+  font-size:17px;
+  line-height:1;
+}
+
+.logo p{
+  margin:5px 0 0;
+  color:var(--muted2);
+  font-size:12px;
+}
+
+.nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.nav button{
+  min-height:42px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.055);
+  color:#fff;
+  font-weight:900;
+  transition:.18s ease;
+}
+
+.nav button.active,
+.nav button:hover{
+  background:var(--gold);
+  color:#111;
+  border-color:var(--gold);
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.hero{
+  padding:46px 0 34px;
+  display:grid;
+  grid-template-columns:1.04fr .96fr;
+  gap:24px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(242,193,78,.12);
+  border:1px solid var(--line2);
+  color:#ffe6a6;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+.hero h1{
+  margin:0;
+  font-size:clamp(44px,7vw,82px);
+  line-height:.92;
+  letter-spacing:-4px;
+}
+
+.hero p{
+  max-width:700px;
+  margin:22px 0 0;
+  color:var(--muted);
+  line-height:1.65;
+  font-size:17px;
+}
+
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:28px;
+}
+
+.btn{
+  min-height:54px;
+  padding:14px 22px;
+  border-radius:18px;
+  border:1px solid transparent;
+  font-weight:900;
+  transition:.2s ease;
+}
+
+.btn:hover{transform:translateY(-2px)}
+
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#111;
+}
+
+.btn-dark{
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  border-color:var(--line);
+}
+
+.card{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:30px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+}
+
+.prize-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+
+.prize{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg,rgba(242,193,78,.17),rgba(255,255,255,.045));
+  border:1px solid rgba(242,193,78,.28);
+  border-radius:24px;
+  padding:20px;
+}
+
+.prize:after{
+  content:"";
+  position:absolute;
+  inset:auto -30px -40px auto;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:rgba(242,193,78,.12);
+}
+
+.prize small{
+  display:block;
+  color:#ffe6a6;
+  font-weight:900;
+  text-transform:uppercase;
+  font-size:11px;
+  letter-spacing:1.4px;
+}
+
+.prize strong{
+  display:block;
+  margin-top:8px;
+  font-size:40px;
+  line-height:1;
+  color:var(--gold2);
+}
+
+.prize p{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.55;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+
+.stat{
+  background:var(--bg2);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+
+.stat small{
+  display:block;
+  color:var(--muted2);
+  text-transform:uppercase;
+  font-size:11px;
+  font-weight:900;
+}
+
+.stat strong{
+  display:block;
+  margin-top:8px;
+  font-size:23px;
+}
+
+.section{
+  padding:24px 0 42px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.section-head h2,
+.card h2{
+  margin:0;
+  font-size:clamp(28px,4vw,42px);
+  letter-spacing:-1.5px;
+  line-height:1;
+}
+
+.section-head p,
+.card p{
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.progress{
+  min-width:240px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+}
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:900;
+}
+
+.track{
+  height:10px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.09);
+}
+
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:.2s ease;
+}
+
+.rules{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.rule{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+
+.rule b{
+  display:block;
+  color:#ffe6a6;
+  margin-bottom:8px;
+}
+
+.rule p{
+  margin:0;
+  font-size:14px;
+}
+
+.groups{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.group-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+}
+
+.group-title{
+  margin:0 0 14px;
+  color:#ffe6a6;
+  font-weight:900;
+}
+
+.slot{
+  margin-bottom:10px;
+}
+
+.slot label{
+  display:block;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+select,
+input{
+  width:100%;
+  min-height:48px;
+  background:var(--bg2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  color:#fff;
+  outline:none;
+}
+
+select:focus,
+input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(242,193,78,.08);
+}
+
+.chips{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+
+.chip{
+  border:1px solid var(--line);
+  background:var(--bg2);
+  color:#fff;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-weight:900;
+  transition:.18s ease;
+}
+
+.chip.active{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#111;
+  border-color:var(--gold);
+}
+
+.hint-chip{
+  grid-column:1/-1;
+  color:var(--muted);
+  cursor:default;
+}
+
+.page-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.bracket-board{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(180px,1fr));
+  gap:14px;
+  align-items:start;
+  overflow-x:auto;
+  padding-bottom:10px;
+}
+
+.round{
+  display:grid;
+  gap:12px;
+  min-width:180px;
+}
+
+.round h3{
+  margin:0;
+  color:#ffe6a6;
+  font-size:17px;
+}
+
+.match{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:12px;
+}
+
+.match small{
+  display:block;
+  color:var(--muted);
+  margin-bottom:8px;
+  line-height:1.4;
+  font-weight:800;
+}
+
+.team{
+  width:100%;
+  min-height:42px;
+  margin:4px 0;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.045);
+  color:rgba(255,255,255,.72);
+  font-weight:800;
+}
+
+.final-box{
+  min-height:94px;
+  border-radius:20px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#111;
+  font-size:28px;
+  font-weight:900;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.submit{
+  width:100%;
+  margin-top:16px;
+  min-height:56px;
+  border:0;
+  border-radius:18px;
+  background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.42);
+  font-weight:900;
+  cursor:not-allowed;
+}
+
+.submit.ready{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#111;
+  cursor:pointer;
+}
+
+.success{
+  display:none;
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(242,193,78,.12);
+  border:1px solid rgba(242,193,78,.24);
+  color:#ffe6a6;
+  font-weight:900;
+}
+
+.success.show{display:block}
+
+.note{
+  padding:0 0 40px;
+  color:rgba(255,255,255,.44);
+  font-size:12px;
+  line-height:1.6;
+}
+
+@media(max-width:980px){
+  .hero{grid-template-columns:1fr}
+  .groups{grid-template-columns:repeat(2,1fr)}
+  .chips{grid-template-columns:repeat(2,1fr)}
+  .rules{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:640px){
+  .header-inner{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .nav{
+    width:100%;
+  }
+
+  .nav button{
+    flex:1;
+  }
+
+  .groups,
+  .stats,
+  .rules{
+    grid-template-columns:1fr;
+  }
+
+  .section-head{
+    display:block;
+  }
+
+  .progress{
+    margin-top:14px;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+
+  .btn{
+    width:100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-mark">A</div>
+      <div>
+        <h3>World Cup Predictor</h3>
+        <p>2026 Group Stage & Bracket Challenge</p>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button id="tabGroups" class="active" onclick="showPage('groupsPage')">Grupna faza</button>
+      <button id="tabBracket" onclick="showPage('bracketPage')">Bracket</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="groupsPage" class="page active">
+
+  <section class="container hero">
+    <div>
+      <div class="badge">World Cup 2026 · Predictor Challenge</div>
+
+      <h1>
+        Pogodi grupe.<br>
+        Pogodi bracket.<br>
+        Osvoji 2x po 1.000€.
+      </h1>
+
+      <p>
+        Grupna faza i knockout bracket računaju se odvojeno.
+        Možeš osvojiti 1.000€ za grupnu fazu i posebno 1.000€ za kompletan bracket.
+      </p>
+
+      <div class="actions">
+        <button class="btn btn-gold" onclick="document.getElementById('groups').scrollIntoView({behavior:'smooth'})">
+          Popuni grupe
+        </button>
+
+        <button class="btn btn-dark" onclick="showPage('bracketPage')">
+          Pogledaj bracket
+        </button>
+      </div>
+    </div>
+
+    <aside class="card">
+      <div class="prize-grid">
+        <div class="prize">
+          <small>GRUPNA FAZA</small>
+          <strong>1.000€</strong>
+          <p>
+            Ako tačno pogodiš kompletan poredak svih grupa:
+            1. mjesto, 2. mjesto i 3. mjesto.
+          </p>
+        </div>
+
+        <div class="prize">
+          <small>KNOCKOUT BRACKET</small>
+          <strong>1.000€</strong>
+          <p>
+            Ako tačno pogodiš kompletan knockout bracket
+            od Round of 32 do finalnog šampiona.
+          </p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <small>Timova</small>
+          <strong>48</strong>
+        </div>
+
+        <div class="stat">
+          <small>Grupa</small>
+          <strong>12</strong>
+        </div>
+
+        <div class="stat">
+          <small>Knockout</small>
+          <strong>32</strong>
+        </div>
+
+        <div class="stat">
+          <small>Maksimalno</small>
+          <strong>2.000€</strong>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="container section">
+    <div class="card">
+      <h2>Kako funkcioniše</h2>
+
+      <div class="rules">
+        <div class="rule">
+          <b>01</b>
+          <p>Izaberi 1, 2. i 3. mjesto u svakoj grupi.</p>
+        </div>
+
+        <div class="rule">
+          <b>02</b>
+          <p>Označi 8 najboljih trećeplasiranih timova.</p>
+        </div>
+
+        <div class="rule">
+          <b>03</b>
+          <p>Pogledaj kompletan knockout bracket raspored.</p>
+        </div>
+
+        <div class="rule">
+          <b>04</b>
+          <p>Zaključaj predikciju prije početka prvenstva.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section" id="groups">
+    <div class="section-head">
+      <div>
+        <h2>Grupna faza</h2>
+        <p>Za svaku grupu izaberi prvo, drugo i treće mjesto.</p>
+      </div>
+
+      <div class="progress">
+        <div class="progress-top">
+          <span>Progress</span>
+          <span id="progressText">0%</span>
+        </div>
+
+        <div class="track">
+          <div class="fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="groups" id="groupsWrap"></div>
+  </section>
+
+  <section class="container section">
+    <div class="card">
+      <h2>Najbolji trećeplasirani</h2>
+
+      <p>
+        Od 12 trećeplasiranih timova označi 8 koji prolaze dalje u Round of 32.
+      </p>
+
+      <div id="thirdWrap" class="chips"></div>
+
+      <div class="page-actions">
+        <button class="btn btn-gold" onclick="showPage('bracketPage')">
+          Nastavi na bracket →
+        </button>
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<section id="bracketPage" class="page">
+
+  <section class="container hero">
+    <div>
+      <div class="badge">Knockout faza · Vizuelni bracket preview</div>
+
+      <h1>
+        Kompletan<br>
+        World Cup<br>
+        bracket.
+      </h1>
+
+      <p>
+        Ovo je vizuelni prikaz knockout faze sa pravim rasporedom rundi,
+        datumima i placeholder mečevima. Timovi se popunjavaju nakon završetka grupne faze.
+      </p>
+
+      <div class="actions">
+        <button class="btn btn-dark" onclick="showPage('groupsPage')">
+          ← Nazad na grupe
+        </button>
+
+        <button class="btn btn-gold" onclick="document.getElementById('submitArea').scrollIntoView({behavior:'smooth'})">
+          Zaključaj predikciju
+        </button>
+      </div>
+    </div>
+
+    <aside class="card">
+      <div class="prize-grid">
+        <div class="prize">
+          <small>KNOCKOUT BRACKET</small>
+          <strong>1.000€</strong>
+          <p>
+            Posebna nagrada za tačno pogođen kompletan bracket do šampiona.
+          </p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <small>Round of 32</small>
+          <strong>28. jun</strong>
+        </div>
+
+        <div class="stat">
+          <small>Round of 16</small>
+          <strong>4. jul</strong>
+        </div>
+
+        <div class="stat">
+          <small>Polufinale</small>
+          <strong>14–15. jul</strong>
+        </div>
+
+        <div class="stat">
+          <small>Finale</small>
+          <strong>19. jul</strong>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="container section">
+    <div class="section-head">
+      <div>
+        <h2>Bracket raspored</h2>
+        <p>Pregled svih knockout rundi od Round of 32 do finalnog šampiona.</p>
+      </div>
+    </div>
+
+    <div class="bracket-board" id="bracketWrap"></div>
+  </section>
+
+  <section class="container section" id="submitArea">
+    <div class="card">
+      <h2>Zaključaj predikciju</h2>
+
+      <p>
+        Predikcija se nakon slanja zaključava i nije je moguće mijenjati.
+      </p>
+
+      <div class="form-grid">
+        <input id="name" placeholder="Ime i prezime">
+        <input id="email" type="email" placeholder="Email">
+        <input id="phone" placeholder="Telefon">
+      </div>
+
+      <button id="submitBtn" class="submit" disabled>
+        Zaključaj predikciju
+      </button>
+
+      <div id="success" class="success">
+        Predikcija je uspješno sačuvana u demo prikazu.
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<section class="container note">
+  Napomena: Finalna pravila, rokovi, uslovi učešća, način obračuna pobjednika i način isplate moraju biti definisani u zvaničnim pravilima promocije. 18+.
+</section>
+
+</main>
+
+<script>
+const groups = [
+  { id:"A", teams:["Mexico","South Africa","South Korea","Czechia"] },
+  { id:"B", teams:["Canada","Bosnia and Herzegovina","Qatar","Switzerland"] },
+  { id:"C", teams:["Brazil","Morocco","Haiti","Scotland"] },
+  { id:"D", teams:["USA","Paraguay","Australia","Türkiye"] },
+  { id:"E", teams:["Germany","Curaçao","Ivory Coast","Ecuador"] },
+  { id:"F", teams:["Netherlands","Japan","Sweden","Tunisia"] },
+  { id:"G", teams:["Belgium","Egypt","Iran","New Zealand"] },
+  { id:"H", teams:["Spain","Cape Verde","Saudi Arabia","Uruguay"] },
+  { id:"I", teams:["France","Senegal","Iraq","Norway"] },
+  { id:"J", teams:["Argentina","Algeria","Austria","Jordan"] },
+  { id:"K", teams:["Portugal","DR Congo","Uzbekistan","Colombia"] },
+  { id:"L", teams:["England","Croatia","Ghana","Panama"] }
+];
+
+const knockoutSchedule = {
+  r32:[
+    "28 Jun · 21:00","29 Jun · 19:00","29 Jun · 22:30","30 Jun · 03:00",
+    "30 Jun · 19:00","30 Jun · 23:00","1 Jul · 03:00","1 Jul · 18:00",
+    "1 Jul · 22:00","2 Jul · 02:00","2 Jul · 21:00","3 Jul · 01:00",
+    "3 Jul · 05:00","3 Jul · 20:00","4 Jul · 00:00","4 Jul · 03:30"
+  ],
+  r16:[
+    "4 Jul · 19:00","4 Jul · 23:00","5 Jul · 22:00","6 Jul · 02:00",
+    "6 Jul · 21:00","7 Jul · 02:00","7 Jul · 18:00","7 Jul · 22:00"
+  ],
+  qf:[
+    "9 Jul · 22:00","10 Jul · 21:00","11 Jul · 23:00","12 Jul · 03:00"
+  ],
+  sf:[
+    "14 Jul · 21:00","15 Jul · 21:00"
+  ],
+  third:[
+    "18 Jul · 23:00"
+  ],
+  final:[
+    "19 Jul · 21:00"
+  ]
+};
+
+const groupsWrap = document.getElementById("groupsWrap");
+const thirdWrap = document.getElementById("thirdWrap");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+const bracketWrap = document.getElementById("bracketWrap");
+const submitBtn = document.getElementById("submitBtn");
+const success = document.getElementById("success");
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.getElementById("tabGroups").classList.toggle("active", id === "groupsPage");
+  document.getElementById("tabBracket").classList.toggle("active", id === "bracketPage");
+
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+function renderGroups(){
+  groupsWrap.innerHTML = "";
+
+  groups.forEach(group => {
+    const card = document.createElement("div");
+    card.className = "group-card";
+
+    card.innerHTML = `
+      <p class="group-title">Grupa ${group.id}</p>
+
+      <div class="slot">
+        <label>1. mjesto</label>
+        <select class="group-select">
+          <option value="">Izaberi tim</option>
+          ${group.teams.map(team => `<option value="${team}">${team}</option>`).join("")}
+        </select>
+      </div>
+
+      <div class="slot">
+        <label>2. mjesto</label>
+        <select class="group-select">
+          <option value="">Izaberi tim</option>
+          ${group.teams.map(team => `<option value="${team}">${team}</option>`).join("")}
+        </select>
+      </div>
+
+      <div class="slot">
+        <label>3. mjesto</label>
+        <select class="group-select third-place">
+          <option value="">Izaberi tim</option>
+          ${group.teams.map(team => `<option value="${team}">${team}</option>`).join("")}
+        </select>
+      </div>
+    `;
+
+    groupsWrap.appendChild(card);
+  });
+
+  document.querySelectorAll(".group-select").forEach(select => {
+    select.addEventListener("change", () => {
+      updateProgress();
+      updateThirdPlaceList();
+      validate();
+    });
+  });
+}
+
+function updateProgress(){
+  const selects = document.querySelectorAll(".group-select");
+  let selected = 0;
+
+  selects.forEach(item => {
+    if(item.value) selected++;
+  });
+
+  const percent = Math.round((selected / 36) * 100);
+  progressText.textContent = `${percent}%`;
+  progressFill.style.width = `${percent}%`;
+}
+
+function updateThirdPlaceList(){
+  const thirdSelects = document.querySelectorAll(".third-place");
+  const thirdTeams = [];
+
+  thirdSelects.forEach(select => {
+    if(select.value) thirdTeams.push(select.value);
+  });
+
+  thirdWrap.innerHTML = "";
+
+  if(thirdTeams.length < 12){
+    const hint = document.createElement("div");
+    hint.className = "chip hint-chip";
+    hint.textContent = "Popuni treće mjesto u svim grupama da izabereš 8 najboljih trećeplasiranih.";
+    thirdWrap.appendChild(hint);
+    return;
+  }
+
+  thirdTeams.forEach(team => {
+    const chip = document.createElement("button");
+    chip.className = "chip";
+    chip.textContent = team;
+
+    chip.addEventListener("click", () => {
+      const activeCount = document.querySelectorAll(".chip.active").length;
+
+      if(!chip.classList.contains("active") && activeCount >= 8) return;
+
+      chip.classList.toggle("active");
+      validate();
+    });
+
+    thirdWrap.appendChild(chip);
+  });
+}
+
+function renderBracket(){
+  bracketWrap.innerHTML = "";
+
+  const rounds = [
+    { title:"Round of 32", count:16, schedule:knockoutSchedule.r32 },
+    { title:"Round of 16", count:8, schedule:knockoutSchedule.r16 },
+    { title:"Četvrtfinale", count:4, schedule:knockoutSchedule.qf },
+    { title:"Polufinale", count:2, schedule:knockoutSchedule.sf },
+    { title:"Treće mjesto", count:1, schedule:knockoutSchedule.third },
+    { title:"Finale", count:1, schedule:knockoutSchedule.final }
+  ];
+
+  rounds.forEach(round => {
+    const col = document.createElement("div");
+    col.className = "round";
+    col.innerHTML = `<h3>${round.title}</h3>`;
+
+    for(let i = 0; i < round.count; i++){
+      const match = document.createElement("div");
+      match.className = "match";
+
+      match.innerHTML = `
+        <small>${round.schedule[i] || "TBD"}<br>Meč ${i + 1}</small>
+        <button class="team">TBD</button>
+        <button class="team">TBD</button>
+      `;
+
+      col.appendChild(match);
+    }
+
+    bracketWrap.appendChild(col);
+  });
+
+  const champion = document.createElement("div");
+  champion.className = "round";
+
+  champion.innerHTML = `
+    <h3>Šampion</h3>
+    <div class="final-box">TBD</div>
+  `;
+
+  bracketWrap.appendChild(champion);
+}
+
+function validate(){
+  const activeThird = document.querySelectorAll(".chip.active").length;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  const ready = activeThird === 8 && name && email && phone;
+
+  submitBtn.disabled = !ready;
+  submitBtn.classList.toggle("ready", ready);
+}
+
+document.querySelectorAll("#name,#email,#phone").forEach(input => {
+  input.addEventListener("input", validate);
+});
+
+submitBtn.addEventListener("click", () => {
+  if(submitBtn.disabled) return;
+  success.classList.add("show");
+});
+
+renderGroups();
+updateThirdPlaceList();
+renderBracket();
+</script>
+
+</body>
+</html>
