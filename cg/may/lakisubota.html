@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="sr-ME">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AdmiralBet – Točak sreće</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#F5C400;
+  --goldLight:#FFD94A;
+  --dark:#0A0C14;
+  --purple:#7B3FF5;
+  --white:#FFFFFF;
+  --accent:#E03060;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  min-height:100vh;
+  overflow:hidden;
+  background: radial-gradient(circle at top, rgba(123,63,245,0.25), transparent 40%), #0A0C14;
+  color:white;
+  font-family:'Barlow',sans-serif;
+}
+#stars{
+  position:fixed; inset:0; pointer-events:none; opacity:.7;
+  background-image:
+    radial-gradient(1px 1px at 20% 20%, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 80% 80%, rgba(255,255,255,.5), transparent);
+}
+.page{
+  position:relative; z-index:2; width:100%; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:30px 20px;
+}
+.logo{ display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.logo-lines{ display:flex; flex-direction:column; gap:3px; }
+.logo-lines div{ height:3px; background:var(--gold); }
+.logo-lines div:first-child{ width:36px; }
+.logo-lines div:last-child{ width:24px; }
+.logo-text{ font-family:'Bebas Neue',sans-serif; letter-spacing:2px; font-size:34px; }
+.logo-text span{ color:var(--gold); }
+.hero-tag{
+  font-family:'Barlow Condensed',sans-serif; letter-spacing:3px; color:var(--gold);
+  border:1px solid rgba(245,196,0,.3); padding:6px 18px; border-radius:30px;
+  font-size:11px; margin-bottom:14px;
+}
+.hero-title{
+  text-align:center; font-family:'Bebas Neue',sans-serif;
+  line-height:.9; font-size:80px; letter-spacing:2px; margin-bottom:28px;
+}
+.hero-title span{ color:var(--gold); text-shadow:0 0 35px rgba(245,196,0,.6); }
+.wheel-wrap{
+  position:relative;
+  width:min(88vw,430px);
+  height:min(88vw,430px);
+}
+.wheel-wrap::before{
+  content:''; position:absolute; inset:-8px; border-radius:50%;
+  background:conic-gradient(rgba(123,63,245,.3),rgba(245,196,0,.35),rgba(224,48,96,.25),rgba(123,63,245,.3));
+  filter:blur(8px); animation:ring 10s linear infinite;
+}
+.wheel-wrap::after{
+  content:''; position:absolute; inset:-3px; border-radius:50%;
+  border:1px dashed rgba(245,196,0,.25); animation:ring 28s linear infinite reverse;
+}
+@keyframes ring{ to{ transform:rotate(360deg); } }
+#wheelCanvas{ width:100%; height:100%; border-radius:50%; position:relative; z-index:2; }
+.pointer{ position:absolute; top:-22px; left:50%; transform:translateX(-50%); z-index:10; }
+.hub{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:68px; height:68px; border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #C87AFF, #5A10CC, #18003A);
+  border:3px solid rgba(245,196,0,.5); z-index:5;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; box-shadow:0 0 30px rgba(123,63,245,.8);
+}
+.hub span{ font-family:'Bebas Neue',sans-serif; color:var(--gold); text-align:center; font-size:13px; line-height:1.1; letter-spacing:1px; }
+.spin-btn{
+  margin-top:26px; border:none; cursor:pointer; border-radius:60px; padding:14px 50px;
+  background:linear-gradient(135deg,var(--goldLight),var(--gold),#C89000);
+  color:#0A0C14; font-family:'Bebas Neue',sans-serif; font-size:26px;
+  letter-spacing:3px; box-shadow:0 0 30px rgba(245,196,0,.45);
+}
+.spin-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.footer{ margin-top:20px; font-size:11px; letter-spacing:1px; opacity:.35; }
+
+/* POPUP */
+.popup{
+  position:fixed; inset:0; z-index:100; background:rgba(0,0,0,.88);
+  backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:.3s ease;
+}
+.popup.show{ opacity:1; pointer-events:all; }
+.popup-card{
+  width:min(92vw,400px); border-radius:26px; padding:38px 28px;
+  background:linear-gradient(135deg,#1A1030,#0E1528,#1A0820);
+  border:1px solid rgba(245,196,0,.25); text-align:center;
+  transform:scale(.82); transition:.35s ease;
+  box-shadow:0 0 80px rgba(123,63,245,.35);
+}
+.popup.show .popup-card{ transform:scale(1); }
+.popup-top{ font-family:'Bebas Neue',sans-serif; letter-spacing:4px; color:rgba(255,255,255,.5); margin-bottom:6px; font-size:14px; }
+.popup-emoji{ font-size:58px; margin-bottom:8px; }
+.popup-type{ font-family:'Bebas Neue',sans-serif; letter-spacing:2px; color:rgba(255,255,255,.45); font-size:15px; margin-bottom:2px; }
+.popup-label{ font-family:'Bebas Neue',sans-serif; letter-spacing:3px; color:rgba(255,255,255,.5); font-size:16px; }
+.popup-amount{ font-family:'Bebas Neue',sans-serif; font-size:78px; line-height:1; color:var(--gold); text-shadow:0 0 35px rgba(245,196,0,.65); }
+.divider{ width:60px; height:2px; margin:16px auto; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.code-box{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  border-radius:14px; padding:14px 16px; background:rgba(0,0,0,.35);
+  border:1px solid rgba(245,196,0,.22); margin-bottom:16px;
+}
+.code-label{ font-size:11px; letter-spacing:2px; opacity:.45; text-align:left; }
+.code-value{ font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:4px; text-align:left; }
+.copy-btn{
+  border:none; cursor:pointer; padding:9px 14px; border-radius:8px;
+  background:rgba(245,196,0,.12); border:1px solid rgba(245,196,0,.25);
+  color:var(--gold); font-family:'Bebas Neue',sans-serif; letter-spacing:1px;
+  white-space:nowrap;
+}
+.claim-btn{
+  width:100%; border:none; cursor:pointer; border-radius:40px; padding:15px;
+  background:var(--gold); color:#0A0C14; font-family:'Bebas Neue',sans-serif;
+  letter-spacing:2px; font-size:22px;
+}
+.confetti-container{ position:fixed; inset:0; pointer-events:none; z-index:101; overflow:hidden; }
+.confetti{ position:absolute; top:-20px; opacity:0; animation:fall 1.8s ease-in forwards; }
+@keyframes fall{
+  0%{ opacity:1; transform:translateY(-20px) rotate(0deg); }
+  100%{ opacity:0; transform:translateY(110vh) rotate(720deg); }
+}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-card">
+    <div class="popup-top">ČESTITAMO!</div>
+    <div class="popup-emoji" id="popupEmoji">🎉</div>
+    <div class="popup-type" id="popupType">SLOT BONUS</div>
+    <div class="popup-label">OSVOJIO SI</div>
+    <div class="popup-amount" id="popupAmount">10€</div>
+    <div class="divider"></div>
+    <div class="code-box">
+      <div>
+        <div class="code-label">KOD ZA PREUZIMANJE</div>
+        <div class="code-value" id="popupCode">—</div>
+      </div>
+      <button class="copy-btn" onclick="copyCode()">KOPIRAJ</button>
+    </div>
+    <button class="claim-btn" onclick="claimCode()">PREUZMI KOD</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="logo">
+    <div class="logo-lines"><div></div><div></div></div>
+    <div class="logo-text">ADMIRAL<span>BET</span></div>
+  </div>
+
+  <div class="hero-tag">TOČAK SREĆE • SPECIJALNA PROMOCIJA</div>
+
+  <div class="hero-title">TOČAK<br><span>SREĆE</span></div>
+
+  <div class="wheel-wrap">
+    <div class="pointer">
+      <svg width="36" height="36" viewBox="0 0 36 36">
+        <polygon points="18,34 4,6 32,6" fill="#F5C400" stroke="#0A0C14" stroke-width="2"/>
+      </svg>
+    </div>
+    <canvas id="wheelCanvas" width="440" height="440"></canvas>
+    <div class="hub" onclick="spinWheel()">
+      <span>ZAVRTI<br>ME!</span>
+    </div>
+  </div>
+
+  <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎰 ZAVRTI TOČAK</button>
+
+  <div class="footer">18+ | Igraj odgovorno | AdmiralBet</div>
+
+</div>
+
+<script>
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbzay6TjNKxl2aEKwjuUuHvDL4Y_meVvMyOko0e5cYvy3Zh5jytGI0gVHWqD-8fupx8P/exec';
+
+// 6 kategorija iz Bonusi_za_Wheel.xlsx
+// Ukupne vjerovatnoće:
+//   SLOT (50% ukupno): 10€=30%, 20€=17.5%, 50€=2.5%
+//   SPORT (50% ukupno): 10€=30%, 20€=17.5%, 50€=2.5%
+const CATEGORIES = [
+  { key:'SLOT 10',  line1:'SLOT',  line2:'10€', emoji:'🎰', color:'#3B7BF5', text:'#fff', prob:30   },
+  { key:'SPORT 10', line1:'SPORT', line2:'10€', emoji:'⚽', color:'#10B981', text:'#fff', prob:30   },
+  { key:'SLOT 20',  line1:'SLOT',  line2:'20€', emoji:'🎰', color:'#E03060', text:'#fff', prob:17.5 },
+  { key:'SPORT 20', line1:'SPORT', line2:'20€', emoji:'⚽', color:'#F97316', text:'#fff', prob:17.5 },
+  { key:'SLOT 50',  line1:'SLOT',  line2:'50€', emoji:'🏆', color:'#7B3FF5', text:'#fff', prob:2.5  },
+  { key:'SPORT 50', line1:'SPORT', line2:'50€', emoji:'🏆', color:'#F5C400', text:'#0A0C14', prob:2.5 }
+];
+
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+let currentAngle = 0;
+let spinning = false;
+
+function drawWheel(angle){
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const radius = cx - 10;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const segArc = (2 * Math.PI) / CATEGORIES.length;
+
+  CATEGORIES.forEach((seg, i) => {
+    const start = angle + i * segArc;
+    const end = start + segArc;
+    const mid = start + segArc / 2;
+
+    // Segment fill
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = seg.color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.4)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Text
+    const dist = radius * 0.58;
+    const tx = cx + dist * Math.cos(mid);
+    const ty = cy + dist * Math.sin(mid);
+
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(mid + Math.PI / 2);
+
+    // Line 1 (SLOT / SPORT)
+    ctx.fillStyle = seg.text;
+    ctx.font = "700 19px 'Barlow Condensed', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText(seg.line1, 0, -14);
+
+    // Line 2 (10€ / 20€ / 50€)
+    ctx.font = "900 30px 'Bebas Neue', sans-serif";
+    ctx.fillText(seg.line2, 0, 14);
+
+    ctx.restore();
+  });
+
+  // Outer ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(245,196,0,.45)';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+
+function pickCategory(){
+  const roll = Math.random() * 100;
+  let total = 0;
+  for(let i = 0; i < CATEGORIES.length; i++){
+    total += CATEGORIES[i].prob;
+    if(roll < total) return i;
+  }
+  return 0;
+}
+
+async function getCode(cat){
+  const url = `${API_URL}?action=claim&category=${encodeURIComponent(cat.key)}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data.success) return null;
+    return data.code;
+  } catch(err){
+    console.error(err);
+    return null;
+  }
+}
+
+function spinWheel(){
+  if(spinning) return;
+  spinning = true;
+  document.getElementById('spinBtn').disabled = true;
+
+  const targetIndex = pickCategory();
+  const segArc = (2 * Math.PI) / CATEGORIES.length;
+  const pointerAngle = -Math.PI / 2;
+  const segMid = (targetIndex + 0.5) * segArc;
+  const extraSpins = 5;
+  const needed = pointerAngle - segMid;
+  const finalAngle =
+    currentAngle
+    + extraSpins * 2 * Math.PI
+    + ((needed - currentAngle % (2 * Math.PI)) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+
+  const duration = 4500;
+  const startAngle = currentAngle;
+  const startTime = performance.now();
+
+  function easeOut(t){ return 1 - Math.pow(1 - t, 3.6); }
+
+  async function finish(){
+    currentAngle = finalAngle % (2 * Math.PI);
+    spinning = false;
+    const cat = CATEGORIES[targetIndex];
+    const code = await getCode(cat);
+    if(code){
+      showPopup(cat, code);
+    } else {
+      alert('Nema više dostupnih kodova za ovu kategoriju.');
+    }
+    document.getElementById('spinBtn').disabled = false;
+  }
+
+  function animate(now){
+    const t = Math.min((now - startTime) / duration, 1);
+    currentAngle = startAngle + (finalAngle - startAngle) * easeOut(t);
+    drawWheel(currentAngle);
+    if(t < 1){ requestAnimationFrame(animate); } else { finish(); }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+function showPopup(cat, code){
+  document.getElementById('popupEmoji').textContent = cat.emoji;
+  document.getElementById('popupType').textContent = cat.line1 + ' BONUS';
+  document.getElementById('popupAmount').textContent = cat.line2;
+  document.getElementById('popupCode').textContent = code;
+  document.getElementById('popup').classList.add('show');
+  confetti(cat.color);
+}
+
+function claimCode(){
+  document.getElementById('popup').classList.remove('show');
+}
+
+function copyCode(){
+  const code = document.getElementById('popupCode').textContent;
+  navigator.clipboard.writeText(code);
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'KOPIRANO ✓';
+  setTimeout(() => { btn.textContent = 'KOPIRAJ'; }, 2000);
+}
+
+function confetti(color){
+  const container = document.getElementById('confettiContainer');
+  const colors = [color, '#F5C400', '#7B3FF5', '#FFFFFF', '#E03060', '#10B981'];
+  for(let i = 0; i < 40; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (5 + Math.random() * 8) + 'px';
+    el.style.height = (5 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    el.style.animationDelay = Math.random() * .35 + 's';
+    el.style.animationDuration = (1.2 + Math.random() * 1.5) + 's';
+    container.appendChild(el);
+    setTimeout(() => { el.remove(); }, 3000);
+  }
+}
+
+drawWheel(0);
+</script>
+</body>
+</html>
