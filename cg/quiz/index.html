@@ -678,7 +678,7 @@
         </div>
 
         <h1>Sportski kviz</h1>
-        <p class="sub" id="introText">Kviz još nije aktivan. Početak je 05.06.2026. u 20:00h.</p>
+        <p class="sub" id="introText">Kviz još nije aktivan. III kolo počinje 08.06.2026. u 16:00h.</p>
 
         <div class="countdown-box" id="countdownBox">
           <p class="countdown-title">Kviz počinje za</p>
@@ -732,7 +732,7 @@
           <details>
             <summary>Detalji kampanje</summary>
             <div class="details-content">
-              <div class="detail-item">Kviz počinje 05.06.2026. u 20:00h.</div>
+              <div class="detail-item">III kolo počinje 08.06.2026. u 16:00h.</div>
               <div class="detail-item">Kviz sadrži 10 pitanja.</div>
               <div class="detail-item">Unose se samo inicijali i email.</div>
               <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
@@ -833,58 +833,58 @@
  <script>
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
 
-  const QUIZ_START_AT = new Date('2026-06-05T20:00:00+02:00');
+  const QUIZ_START_AT = new Date('2026-06-08T16:00:00+02:00');
 
   const QUIZ_QUESTIONS = [
     {
-      text: 'Koja reprezentacija je osvojila prvo Svjetsko prvenstvo u fudbalu 1930. godine?',
-      answers: ['Argentina', 'Urugvaj', 'Brazil'],
+      text: 'Koja reprezentacija je osvojila Svjetsko prvenstvo 1966. godine?',
+      answers: ['Engleska', 'Njemačka', 'Portugal'],
+      correctIndex: 0
+    },
+    {
+      text: 'Ko je postigao prvi gol na Svjetskom prvenstvu 2010. godine?',
+      answers: ['Diego Forlán', 'Siphiwe Tshabalala', 'Rafael Márquez'],
       correctIndex: 1
     },
     {
-      text: 'Koja reprezentacija je osvojila Svjetsko prvenstvo 1958. godine, osvojivši svoj prvi naslov svjetskog prvaka?',
-      answers: ['Švedska', 'Brazil', 'Njemačka'],
+      text: 'Koji golman je osvojio Zlatnu rukavicu na Svjetskom prvenstvu 2022. godine?',
+      answers: ['Hugo Lloris', 'Emiliano Martínez', 'Yassine Bounou'],
       correctIndex: 1
     },
     {
-      text: 'Koji igrač je postigao dva gola za Francusku u finalu Svjetskog prvenstva 1998. godine protiv Brazila?',
-      answers: ['Thierry Henry', 'Zinedine Zidane', 'David Trezeguet'],
+      text: 'U kojoj državi je održano Svjetsko prvenstvo 1994. godine?',
+      answers: ['Francuska', 'SAD', 'Meksiko'],
       correctIndex: 1
     },
     {
-      text: 'U kojoj državi je održano Svjetsko prvenstvo 2014. godine?',
-      answers: ['Južna Afrika', 'Argentina', 'Brazil'],
-      correctIndex: 2
+      text: 'Koja reprezentacija je igrala finale Svjetskog prvenstva 2018. godine protiv Francuske?',
+      answers: ['Hrvatska', 'Belgija', 'Engleska'],
+      correctIndex: 0
     },
     {
-      text: 'Koja reprezentacija je osvojila Svjetsko prvenstvo 2010. godine, pobijedivši Holandiju u finalu?',
-      answers: ['Njemačka', 'Italija', 'Španija'],
-      correctIndex: 2
-    },
-    {
-      text: 'Koji je jedini fudbaler koji je kao kapiten podigao pehar Svjetskog prvenstva za Francusku 1998. godine, a kasnije kao selektor osvojio Svjetsko prvenstvo 2018. godine?',
-      answers: ['Marcel Desailly', 'Didier Deschamps', 'Michel Platini'],
+      text: 'Ko je bio selektor Italije kada je osvojila Svjetsko prvenstvo 2006. godine?',
+      answers: ['Roberto Mancini', 'Marcello Lippi', 'Fabio Capello'],
       correctIndex: 1
     },
     {
-      text: 'Ko je najskuplji/najvrijedniji igrač koji nije na Svjetskom prvenstvu?',
-      answers: ['Dominik Szoboszlai', 'Khvicha Kvaratskhelia', 'Victor Osimhen'],
+      text: 'Koji igrač je postigao pobjedonosni gol za Njemačku u finalu Svjetskog prvenstva 2014. godine?',
+      answers: ['Thomas Müller', 'Mario Götze', 'Miroslav Klose'],
       correctIndex: 1
     },
     {
-      text: 'Koja reprezentacija drži rekord po broju osvojenih Svjetskih prvenstava?',
-      answers: ['Njemačka', 'Argentina', 'Brazil'],
-      correctIndex: 2
+      text: 'Koja reprezentacija je osvojila Svjetsko prvenstvo 1986. godine?',
+      answers: ['Argentina', 'Brazil', 'Italija'],
+      correctIndex: 0
     },
     {
-      text: 'Ko je bio selektor Njemačke kada je osvojila Svjetsko prvenstvo 2014. godine?',
-      answers: ['Jürgen Klinsmann', 'Hansi Flick', 'Joachim Löw'],
-      correctIndex: 2
+      text: 'Ko je bio najbolji strijelac Svjetskog prvenstva 2018. godine?',
+      answers: ['Harry Kane', 'Kylian Mbappé', 'Romelu Lukaku'],
+      correctIndex: 0
     },
     {
-      text: 'Koji je stadion ugostio finale Svjetskog prvenstva 2022. godine?',
-      answers: ['Al Bayt Stadium', 'Education City Stadium', 'Lusail Stadium'],
-      correctIndex: 2
+      text: 'Koji stadion je ugostio finale Svjetskog prvenstva 2010. godine?',
+      answers: ['Soccer City', 'Green Point Stadium', 'Moses Mabhida Stadium'],
+      correctIndex: 0
     }
   ];
 
@@ -965,7 +965,7 @@
     countMinutes.textContent = pad2(minutes);
     countSeconds.textContent = pad2(seconds);
 
-    introText.textContent = 'Kviz još nije aktivan. Početak je 05.06.2026. u 20:00h.';
+    introText.textContent = 'Kviz još nije aktivan. III kolo počinje 08.06.2026. u 16:00h.';
     setStatus(registerStatus, 'Kviz još nije aktivan.', '');
   }
 
@@ -1155,7 +1155,7 @@
     updateCountdown();
 
     if (!quizIsActive) {
-      setStatus(registerStatus, 'Kviz još nije aktivan. Početak je 05.06.2026. u 20:00h.', 'error');
+      setStatus(registerStatus, 'Kviz još nije aktivan. III kolo počinje 08.06.2026. u 16:00h.', 'error');
       return;
     }
 
