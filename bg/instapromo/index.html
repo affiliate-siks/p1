@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +14,7 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #050b1d;
       color: #ffffff;
       min-height: 100vh;
@@ -22,127 +22,98 @@
 
     .topbar {
       width: 100%;
-      height: 56px;
-      background: #080d2a;
+      min-height: 60px;
+      background: #070d2a;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
+      justify-content: center;
+      padding: 14px 20px;
     }
 
     .logo {
+      font-size: 24px;
       font-weight: 900;
-      font-size: 22px;
       letter-spacing: 1px;
-      color: #ffffff;
     }
 
     .logo span {
       color: #ffc400;
     }
 
-    .nav {
-      display: flex;
-      gap: 28px;
-      font-size: 14px;
-      color: #d9e2ff;
-    }
-
-    .auth {
-      display: flex;
-      gap: 10px;
-    }
-
-    .auth button {
-      padding: 9px 18px;
-      border-radius: 4px;
-      border: 1px solid #ffffff33;
-      background: transparent;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .auth .signup {
-      background: #24933f;
-      border-color: #24933f;
-    }
-
     .page {
       width: 100%;
-      max-width: 720px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 70px 18px 60px;
+      padding: 34px 16px 60px;
       text-align: center;
     }
 
-    .hero-img {
+    .hero-image {
       width: 100%;
       border-radius: 18px;
       overflow: hidden;
-      background: radial-gradient(circle at center, #1ca8e8, #0a1030 65%);
-      padding: 46px 20px;
-      margin-bottom: 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      margin-bottom: 34px;
+      box-shadow: 0 22px 60px rgba(0,0,0,0.38);
+      background: #0b1435;
     }
 
-    .hero-icon {
-      font-size: 86px;
-      line-height: 1;
+    .hero-image img {
+      width: 100%;
+      display: block;
     }
 
     h1 {
-      font-size: clamp(36px, 7vw, 64px);
+      font-size: clamp(36px, 7vw, 68px);
       line-height: 0.95;
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       font-weight: 950;
       text-transform: uppercase;
       margin-bottom: 18px;
     }
 
     .subtitle {
-      color: #9fb2e8;
-      max-width: 620px;
+      color: #b9c8f5;
+      max-width: 700px;
       margin: 0 auto 28px;
       line-height: 1.6;
-      font-size: 15px;
+      font-size: 16px;
     }
 
-    .date-box {
+    .period {
       background: #10234f;
       border: 1px solid #244b9b;
-      border-radius: 10px;
-      padding: 12px 18px;
+      border-radius: 12px;
+      padding: 14px 18px;
       color: #dbe6ff;
-      font-size: 14px;
-      margin-bottom: 32px;
+      font-size: 15px;
+      margin-bottom: 30px;
     }
 
-    .date-box strong {
+    .period strong {
       color: #ffffff;
     }
 
     .claim-card {
       background: linear-gradient(180deg, #112a5c, #0d2046);
       border: 1px solid #2555ad;
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+      border-radius: 18px;
+      padding: 30px 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.28);
       margin-bottom: 28px;
     }
 
-    .section-label {
-      color: #5f8cff;
+    .label {
+      color: #6f97ff;
       font-size: 13px;
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       font-weight: 900;
       text-transform: uppercase;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .claim-card h2 {
-      font-size: 28px;
+      font-size: 30px;
       margin-bottom: 12px;
       color: #ffc400;
     }
@@ -156,29 +127,30 @@
 
     .input {
       width: 100%;
+      max-width: 460px;
       padding: 16px;
       border-radius: 10px;
       border: 1px solid #315fb8;
       background: #071431;
-      color: white;
+      color: #ffffff;
       font-size: 17px;
       text-align: center;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 1px;
       outline: none;
       margin-bottom: 16px;
+      text-transform: uppercase;
     }
 
     .input::placeholder {
       color: #7588b9;
+      text-transform: none;
+      font-weight: 600;
     }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       width: 100%;
-      max-width: 280px;
+      max-width: 300px;
       background: linear-gradient(180deg, #ffd34a, #e4a900);
       color: #050b1d;
       border: none;
@@ -187,7 +159,7 @@
       font-size: 16px;
       font-weight: 950;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.4px;
       cursor: pointer;
       box-shadow: 0 12px 30px rgba(255,196,0,0.25);
     }
@@ -199,11 +171,14 @@
 
     .result {
       display: none;
-      margin-top: 22px;
+      max-width: 520px;
+      margin: 24px auto 0;
       padding: 22px;
       border-radius: 14px;
       background: #071431;
       border: 1px solid #315fb8;
+      color: #d7e3ff;
+      line-height: 1.5;
     }
 
     .result.success {
@@ -229,18 +204,27 @@
 
     .copy-btn {
       background: #1e63ff;
-      color: white;
+      color: #ffffff;
       border: none;
       padding: 12px 18px;
       border-radius: 8px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
       margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    .copied {
+      display: none;
+      margin-top: 12px;
+      color: #ffc400;
+      font-size: 14px;
+      font-weight: 800;
     }
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 14px;
       margin-bottom: 30px;
     }
@@ -249,19 +233,20 @@
       background: #10234f;
       border: 1px solid #244b9b;
       border-radius: 12px;
-      padding: 20px 14px;
+      padding: 20px 12px;
     }
 
     .info-box strong {
       display: block;
       color: #ffc400;
-      font-size: 24px;
-      margin-bottom: 4px;
+      font-size: 23px;
+      margin-bottom: 5px;
     }
 
     .info-box span {
       color: #d7e3ff;
       font-size: 13px;
+      line-height: 1.4;
     }
 
     .rules {
@@ -270,12 +255,13 @@
       border: 1px solid #244b9b;
       border-radius: 14px;
       padding: 24px;
+      margin-bottom: 26px;
     }
 
     .rules h3 {
       color: #ffffff;
       margin-bottom: 14px;
-      font-size: 20px;
+      font-size: 21px;
     }
 
     .rules ul {
@@ -288,29 +274,34 @@
     .footer-note {
       color: #8ea4d8;
       font-size: 13px;
-      margin-top: 26px;
       line-height: 1.6;
     }
 
     @media (max-width: 760px) {
-      .nav, .auth {
-        display: none;
-      }
-
-      .topbar {
-        justify-content: center;
-      }
-
       .page {
-        padding-top: 42px;
+        padding-top: 22px;
       }
 
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .claim-card {
+        padding: 24px 16px;
+      }
+
+      h1 {
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (max-width: 430px) {
       .info-grid {
         grid-template-columns: 1fr;
       }
 
-      .claim-card {
-        padding: 22px 16px;
+      .code {
+        font-size: 20px;
       }
     }
   </style>
@@ -318,45 +309,56 @@
 
 <body>
 
-  
+  <header class="topbar">
+    <div class="logo">ADMIRAL<span>BET</span></div>
+  </header>
 
   <main class="page">
 
-    <div class="hero-img">
-      <div class="hero-icon">⚽📲💰</div>
+    <div class="hero-image">
+      <img
+        src="https://assets.xtreme.bet/production/novomaticbg/PROMOTIONS%20JUNE/PROMO%20PAGE/instafreebethour_final_promo.png"
+        alt="Insta Freebet Hour"
+      />
     </div>
 
     <h1>Insta Freebet Hour</h1>
 
     <p class="subtitle">
-      Svakog dana tokom promotivnog perioda AdmiralBet dijeli 10 Freebet kodova
-      u vrijednosti od 10 €. Prati Instagram objavu, unesi dnevnu šifru i pokušaj da preuzmeš svoj kod.
+      Every day during the promotional period, AdmiralBet gives players the chance
+      to claim one of 10 Freebet codes worth €10 directly through this page.
+      Follow our official Instagram profile, find the daily access password,
+      and be among the first to claim your Freebet.
     </p>
 
-    <div class="date-box">
-      <strong>11.06.2026</strong> • svaki dan od <strong>19:00 do 20:00</strong> • <strong>30.06.2026</strong>
+    <div class="period">
+      <strong>11.06.2026</strong> – <strong>30.06.2026</strong> |
+      Available daily from <strong>19:00 to 20:00</strong>
     </div>
 
     <section class="claim-card">
-      <div class="section-label">Instagram Freebet Giveaway</div>
+      <div class="label">Instagram Freebet Giveaway</div>
 
-      <h2>Preuzmi Freebet kod</h2>
+      <h2>Claim Your Freebet Code</h2>
 
       <p>
-        Dnevna šifra za ulaz objavljuje se svakog dana od 19:00 do 20:00
-        na zvaničnom Instagram profilu AdmiralBet-a.
+        The daily access password is published every day between 19:00 and 20:00
+        on AdmiralBet’s official Instagram profile. Enter the password below and
+        click the button to claim your code.
       </p>
 
       <input
         id="accessCode"
         class="input"
         type="text"
-        placeholder="Unesi Instagram šifru"
+        placeholder="Enter today’s Instagram password"
         autocomplete="off"
       />
 
+      <br />
+
       <button id="claimBtn" class="btn" onclick="claimCode()">
-        Preuzmi kod
+        Claim Freebet Code
       </button>
 
       <div id="result" class="result"></div>
@@ -364,50 +366,77 @@
 
     <section class="info-grid">
       <div class="info-box">
-        <strong>10 × 10 €</strong>
-        <span>Dnevni Freebet kodovi</span>
+        <strong>10 × €10</strong>
+        <span>Daily Freebet codes</span>
       </div>
 
       <div class="info-box">
         <strong>19:00</strong>
-        <span>Početak svakog dana</span>
+        <span>Daily start time</span>
       </div>
 
       <div class="info-box">
         <strong>24h</strong>
-        <span>Važenje Freebeta</span>
+        <span>Freebet validity</span>
       </div>
 
       <div class="info-box">
         <strong>5+</strong>
-        <span>Minimum događaja na tiketu</span>
+        <span>Minimum events per ticket</span>
       </div>
     </section>
 
     <section class="rules">
-      <h3>Pravila korišćenja</h3>
-
+      <h3>How It Works</h3>
       <ul>
-        <li>Promocija je aktivna svakog dana od 19:00 do 20:00.</li>
-        <li>Samo prvih 10 korisnika koji uspješno preuzmu kod dobijaju Freebet.</li>
-        <li>Freebet kod važi 24h od trenutka dodjele.</li>
-        <li>Freebet važi isključivo za sportsko klađenje.</li>
-        <li>Tiket mora sadržati minimum 5 događaja.</li>
-        <li>Minimalna kvota po događaju je 1.50.</li>
-        <li>Freebet nije moguće zamijeniti za gotovinu.</li>
-        <li>Primjenjuju se opšti uslovi i pravila AdmiralBet-a.</li>
+        <li>Visit AdmiralBet’s official Instagram profile between 19:00 and 20:00.</li>
+        <li>Find the daily access password published in the promotional post or story.</li>
+        <li>Return to this page and enter the password.</li>
+        <li>Click “Claim Freebet Code”.</li>
+        <li>If you are among the first 10 participants, your Freebet code will be displayed instantly.</li>
+        <li>Copy your code and use it according to the promotional rules.</li>
+      </ul>
+    </section>
+
+    <section class="rules">
+      <h3>Freebet Rules</h3>
+      <ul>
+        <li>Freebet amount: €10.</li>
+        <li>Freebet is valid for sports betting only.</li>
+        <li>Freebet must be used on a single ticket.</li>
+        <li>The ticket must contain a minimum of 5 events.</li>
+        <li>Minimum odds per event: 1.50.</li>
+        <li>Freebet stake is not returned with winnings.</li>
+        <li>Freebet validity: 24 hours after claiming.</li>
+        <li>Maximum one promotional Freebet per player per day.</li>
+        <li>Freebet cannot be exchanged for cash.</li>
+      </ul>
+    </section>
+
+    <section class="rules">
+      <h3>Additional Terms & Conditions</h3>
+      <ul>
+        <li>Promotion available to verified players only.</li>
+        <li>One account per player / household / IP address / device.</li>
+        <li>Freebet codes are distributed on a first-come, first-served basis.</li>
+        <li>Only the first 10 successful claims each day will receive a Freebet code.</li>
+        <li>If the daily allocation is exhausted, participants may try again the following day.</li>
+        <li>AdmiralBet reserves the right to modify, suspend, or cancel the promotion at any time.</li>
+        <li>General Terms & Conditions apply.</li>
+        <li>In case of dispute, the Organizer’s decision is final.</li>
       </ul>
     </section>
 
     <p class="footer-note">
-      Nova Instagram šifra objavljuje se svakog dana tokom promotivnog perioda.
-      Ako su kodovi za danas preuzeti, pokušajte ponovo sjutra od 19:00.
+      New Instagram passwords are published daily between 19:00 and 20:00
+      on AdmiralBet’s official Instagram profile. Follow us, enter the password,
+      and be one of the first 10 players to claim your Freebet.
     </p>
 
   </main>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyqI_-6wctzoLj7JdDROzyGSAcEE-2NMljoVbKEMvYdDpkH8nd4ccZ0bIzc_ygel8q3/exec";
+    const SCRIPT_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
 
     async function claimCode() {
       const accessCode = document.getElementById("accessCode").value.trim();
@@ -416,13 +445,20 @@
 
       resultBox.style.display = "block";
       resultBox.className = "result";
-      resultBox.innerHTML = "Provjera šifre i dostupnih kodova...";
+      resultBox.innerHTML = "Checking password and available codes...";
       button.disabled = true;
+
+      if (!accessCode) {
+        resultBox.className = "result error";
+        resultBox.innerHTML = "Please enter today’s Instagram password.";
+        button.disabled = false;
+        return;
+      }
 
       try {
         const response = await fetch(SCRIPT_URL, {
           method: "POST",
-          body: JSON.stringify({ accessCode }),
+          body: JSON.stringify({ accessCode: accessCode }),
           headers: {
             "Content-Type": "text/plain;charset=utf-8"
           }
@@ -433,31 +469,40 @@
         if (data.success) {
           resultBox.className = "result success";
           resultBox.innerHTML = `
-            <p>${data.message}</p>
+            <p><strong>Congratulations!</strong></p>
+            <p>${data.message || "Your Freebet code has been successfully claimed."}</p>
             <span class="code" id="freebetCode">${data.code}</span>
-            <button class="copy-btn" onclick="copyCode()">Kopiraj kod</button>
+            <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+            <div id="copiedMsg" class="copied">Code copied successfully.</div>
             <p style="margin-top:14px;font-size:13px;color:#d7e3ff;">
-              Sačuvajte kod i iskoristite ga u skladu sa pravilima promocije.
+              Please save your code and use it within the validity period.
             </p>
           `;
         } else {
           resultBox.className = "result error";
-          resultBox.innerHTML = `<p>${data.message}</p>`;
+          resultBox.innerHTML = `
+            <p>${data.message || "All Freebet codes for today have already been claimed. Please try again tomorrow between 19:00 and 20:00."}</p>
+          `;
         }
 
       } catch (error) {
         resultBox.className = "result error";
-        resultBox.innerHTML = "<p>Došlo je do greške. Pokušajte ponovo.</p>";
+        resultBox.innerHTML = "An error occurred. Please try again.";
       }
 
       button.disabled = false;
     }
 
     function copyCode() {
-      const code = document.getElementById("freebetCode").innerText;
+      const codeElement = document.getElementById("freebetCode");
+      const copiedMsg = document.getElementById("copiedMsg");
 
-      navigator.clipboard.writeText(code).then(() => {
-        alert("Kod je kopiran.");
+      if (!codeElement) return;
+
+      navigator.clipboard.writeText(codeElement.innerText).then(function () {
+        if (copiedMsg) {
+          copiedMsg.style.display = "block";
+        }
       });
     }
   </script>
