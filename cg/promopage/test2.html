@@ -47,7 +47,6 @@
     #ball-canvas {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 100%;
     }
 
     /* ─────────────────────────────────────────
@@ -960,8 +959,8 @@
       let balls = [], rects = [], startTs = null;
 
       function resize() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width  = window.innerWidth  || document.documentElement.clientWidth;
+        canvas.height = window.innerHeight || document.documentElement.clientHeight;
       }
       resize();
       window.addEventListener('resize', () => { resize(); buildRects(); });
@@ -1055,12 +1054,12 @@
         });
       }
 
-      let prev = 0;
+      let prev = null;
       function tick(ts) {
-        if (!startTs) { startTs = ts; prev = ts; buildRects(); }
+        if (!startTs) { startTs = ts; buildRects(); }
         const elapsed = ts - startTs;
         // delta capped to avoid huge jumps on tab-switch
-        const rawDt = Math.min((ts - prev) / 16.67, 3);
+        const rawDt = prev == null ? 1 : Math.min((ts - prev) / 16.67, 3.5);
         prev = ts;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1095,14 +1094,15 @@
         }
       }
 
-      img.onload  = () => { setTimeout(() => { spawn(); requestAnimationFrame(tick); }, 80); };
-      img.onerror = () => { wrap.style.display = 'none'; };
-      img.src = SRC;
-
+      // Start animation immediately - resize first, then spawn
+      setTimeout(() => { resize(); buildRects(); spawn(); requestAnimationFrame(tick); }, 80);
       window.addEventListener('load', buildRects);
-      setTimeout(buildRects, 500);
-    })();
+      setTimeout(buildRects, 400);
 
+      // Load image in background - if it loads, it'll be used automatically
+      img.src = SRC;
+    })();
+  </script>
 
   <script>
   /* ── floating gold particles behind promo grid ── */
