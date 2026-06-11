@@ -701,28 +701,24 @@ body{
   const whistle=document.getElementById('snd-whistle');
   let muted=false;
 
-  // Attach play directly to every possible user gesture on overlay
-  // This guarantees browser allows audio
   var audioStarted=false;
   function doPlayAudio(){
     if(audioStarted)return;
     audioStarted=true;
     crowd.volume=1;
-    whistle.volume=1;
     crowd.play().catch(function(){});
-    whistle.play().catch(function(){});
     if(window.__connectWave)window.__connectWave();
   }
-  // Attach to overlay so ANY tap/click on it triggers audio
-  var ov=document.getElementById('overlay');
-  if(ov){
-    ['click','touchstart'].forEach(function(ev){
-      ov.addEventListener(ev,doPlayAudio,{once:true,passive:true});
-    });
-  }
+
+  // Fire on ANY first interaction anywhere on the page
+  ['click','touchstart','keydown'].forEach(function(ev){
+    document.addEventListener(ev, doPlayAudio, {once:true, passive:true});
+  });
 
   window.__startAudio=function(){
     doPlayAudio();
+    whistle.volume=1;
+    whistle.play().catch(function(){});
     var ov2=document.getElementById('overlay');
     if(ov2){ov2.style.transition='opacity .3s';ov2.style.opacity='0';setTimeout(function(){ov2.remove()},320)}
   };
