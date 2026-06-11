@@ -539,9 +539,7 @@ body{
   </div>
 </main>
 
-<!-- AUDIO -->
-<audio id="snd-crowd"   src="https://cdn.jsdelivr.net/gh/affiliate-siks/p1@main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3"   preload="auto"></audio>
-<audio id="snd-whistle" src="https://cdn.jsdelivr.net/gh/affiliate-siks/p1@main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
+<!-- AUDIO via JS -->
 
 <!-- AUDIO PILL -->
 <div id="audio-pill">
@@ -644,8 +642,8 @@ body{
     const id=z.getAttribute('data-z');
     z.addEventListener('mouseenter',function(){document.getElementById('hl'+id).setAttribute('fill','rgba(255,203,5,0.13)')});
     z.addEventListener('mouseleave',function(){document.getElementById('hl'+id).setAttribute('fill','rgba(255,203,5,0)')});
-    z.addEventListener('click',function(){shoot(+id)});
-    z.addEventListener('touchend',function(e){e.preventDefault();shoot(+id)},{passive:false});
+    z.addEventListener('click',function(){if(window.__playCrowd)window.__playCrowd();shoot(+id)});
+    z.addEventListener('touchend',function(e){e.preventDefault();if(window.__playCrowd)window.__playCrowd();shoot(+id)},{passive:false});
   });
 
   function shoot(zid){
@@ -693,34 +691,32 @@ body{
   }
 })();
 
-/* ══ AUDIO ══ */
+/* == AUDIO == */
 (function(){
-  const pill=document.getElementById('audio-pill');
-  const closeBtn=document.getElementById('audio-close');
-  const crowd=document.getElementById('snd-crowd');
-  const whistle=document.getElementById('snd-whistle');
-  let muted=false;
+  var CU='https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3';
+  var WU='https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3';
+  var crowd=new Audio(CU);
+  var whistle=new Audio(WU);
+  crowd.preload='auto';crowd.volume=1;
+  whistle.preload='auto';whistle.volume=1;
+  var pill=document.getElementById('audio-pill');
+  var closeBtn=document.getElementById('audio-close');
+  var muted=false,started=false;
 
-  var audioStarted=false;
-  function doPlayAudio(){
-    if(audioStarted)return;
-    audioStarted=true;
+  window.__playCrowd=function(){
+    if(started)return;
+    started=true;
     crowd.volume=1;
-    crowd.play().catch(function(){});
-    if(window.__connectWave)window.__connectWave();
-  }
-
-  // Fire on ANY first interaction anywhere on the page
-  ['click','touchstart','keydown'].forEach(function(ev){
-    document.addEventListener(ev, doPlayAudio, {once:true, passive:true});
-  });
+    crowd.play().catch(function(e){console.warn('crowd play:',e);});
+    if(window.__connectWave)window.__connectWave(crowd);
+  };
 
   window.__startAudio=function(){
-    doPlayAudio();
+    window.__playCrowd();
     whistle.volume=1;
     whistle.play().catch(function(){});
-    var ov2=document.getElementById('overlay');
-    if(ov2){ov2.style.transition='opacity .3s';ov2.style.opacity='0';setTimeout(function(){ov2.remove()},320)}
+    var ov=document.getElementById('overlay');
+    if(ov){ov.style.transition='opacity .3s';ov.style.opacity='0';setTimeout(function(){ov.remove();},320);}
   };
 
   function setMute(m){
@@ -731,7 +727,8 @@ body{
 
   pill.addEventListener('click',function(e){
     if(e.target===closeBtn||closeBtn.contains(e.target)){
-      crowd.pause();crowd.src='';whistle.pause();whistle.src='';
+      crowd.pause();crowd.src='';
+      whistle.pause();whistle.src='';
       pill.style.display='none';
     }else setMute(!muted);
   });
@@ -770,9 +767,9 @@ body{
     return s/bufLen/255;
   }
 
-  window.__connectWave=function(){
+  window.__connectWave=function(audioEl){
     if(connected)return;
-    const el=document.getElementById('snd-crowd');
+    var el=audioEl||document.getElementById("snd-crowd");
     if(!el)return;
     try{
       audioCtx=new(window.AudioContext||window.webkitAudioContext)();
