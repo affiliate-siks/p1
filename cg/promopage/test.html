@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdmiralBet Montenegro – Promocije SP 2026</title>
+  <link rel="icon" type="image/x-icon" href="https://admiralbet.me/favicons/favicon-admiral-default.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://admiralbet.me">
+  <link rel="dns-prefetch" href="https://res.cloudinary.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #ffcb05;
+      --secondary: #002157;
+      --bg: #0a0e1a;
+      --card: #111827;
+      --card-border: #1e2d4a;
+      --font: 'Montserrat', sans-serif;
+      --radius: 2rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ─────────────────────────────────────────
+       BALL CANVAS OVERLAY
+    ───────────────────────────────────────── */
+    #ball-canvas-wrap {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+    #ball-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero { min-height: 340px; }
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://png.pngtree.com/background/20250520/original/pngtree-soccer-field-with-ball-and-line-picture-image_15577431.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      filter: brightness(0.55) saturate(1.2);
+    }
+
+    /* green pitch tint overlay */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 33, 87, 0.75) 0%,
+        rgba(0, 80, 20, 0.45) 50%,
+        rgba(0, 33, 87, 0.8) 100%
+      );
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 48px 28px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 20px;
+        gap: 24px;
+      }
+    }
+
+    /* LEFT: tagline */
+    .hero-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--primary);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 5vw, 52px);
+      font-weight: 900;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    }
+
+    .hero-title span {
+      color: var(--primary);
+    }
+
+    .hero-sub {
+      margin-top: 14px;
+      font-size: clamp(13px, 2vw, 16px);
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+    }
+
+    .hero-cta {
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: #0a0e1a;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(255, 203, 5, 0.4);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255, 203, 5, 0.55);
+    }
+
+    /* RIGHT: WC logo */
+    .hero-right {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-wc-logo {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 24px rgba(255,203,5,0.5));
+    }
+
+    @media (max-width: 768px) {
+      .hero-wc-logo { width: 110px; height: 110px; }
+    }
+
+    .hero-wc-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    /* decorative grass line at bottom of hero */
+    .hero-grass {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #1a7a2e, #2ecc55, #1a7a2e);
+      z-index: 3;
+    }
+
+    /* ─────────────────────────────────────────
+       BACKGROUND (pitch pattern)
+    ───────────────────────────────────────── */
+    .page-bg {
+      background:
+        linear-gradient(180deg, #070c18 0%, #080f1e 40%, #050e1a 100%);
+      position: relative;
+    }
+
+    /* hex mesh + pitch stripes combo */
+    .page-bg::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        /* diagonal hex grid */
+        repeating-linear-gradient(
+          60deg,
+          transparent,
+          transparent 30px,
+          rgba(255,203,5,0.018) 30px,
+          rgba(255,203,5,0.018) 31px
+        ),
+        repeating-linear-gradient(
+          -60deg,
+          transparent,
+          transparent 30px,
+          rgba(255,203,5,0.018) 30px,
+          rgba(255,203,5,0.018) 31px
+        ),
+        /* horizontal pitch bands */
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 80px,
+          rgba(0, 100, 30, 0.035) 80px,
+          rgba(0, 100, 30, 0.035) 160px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─────────────────────────────────────────
+       MAIN CONTENT
+    ───────────────────────────────────────── */
+    .main-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+    }
+
+    /* section heading gold underline */
+    .section-label h2 {
+      background: linear-gradient(90deg, #fff 60%, #ffcb05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-label h2 {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .section-label .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--card-border), transparent);
+    }
+
+    /* ─────────────────────────────────────────
+       PROMO GRID
+    ───────────────────────────────────────── */
+    .promo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1300px) {
+      .promo-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    }
+    @media (max-width: 900px) {
+      .promo-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .main-content { padding: 24px 12px 60px; }
+    }
+    /* MOBILE — always 2 columns, tightly scaled */
+    @media (max-width: 600px) {
+      .promo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+      }
+      .main-content { padding: 16px 8px 50px; }
+      .section-label { margin-bottom: 14px; }
+      .section-label h2 { font-size: 13px; letter-spacing: 0; }
+    }
+
+    /* ─────────────────────────────────────────
+       PROMO CARD
+    ───────────────────────────────────────── */
+    /* ── animated pitch glow behind grid ── */
+    .promo-section-wrap {
+      position: relative;
+      padding: 0 0 60px;
+    }
+
+    /* glowing orbs in background */
+    .promo-section-wrap::before,
+    .promo-section-wrap::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(90px);
+      opacity: 0.18;
+    }
+    .promo-section-wrap::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #ffcb05, transparent 70%);
+      top: -100px; left: -150px;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+    .promo-section-wrap::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #0055ff, transparent 70%);
+      bottom: 0px; right: -100px;
+      animation: orbFloat 10s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes orbFloat {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* card entry animation */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .promo-card {
+      position: relative;
+      background: linear-gradient(160deg, #141c2e 0%, #0d1420 100%);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.28s cubic-bezier(.22,.68,0,1.2), box-shadow 0.28s, border-color 0.28s;
+      animation: cardIn 0.5s ease both;
+    }
+
+    /* staggered entry delay */
+    .promo-card:nth-child(1)  { animation-delay: 0.05s; }
+    .promo-card:nth-child(2)  { animation-delay: 0.10s; }
+    .promo-card:nth-child(3)  { animation-delay: 0.15s; }
+    .promo-card:nth-child(4)  { animation-delay: 0.20s; }
+    .promo-card:nth-child(5)  { animation-delay: 0.25s; }
+    .promo-card:nth-child(6)  { animation-delay: 0.30s; }
+    .promo-card:nth-child(7)  { animation-delay: 0.35s; }
+    .promo-card:nth-child(8)  { animation-delay: 0.40s; }
+    .promo-card:nth-child(9)  { animation-delay: 0.45s; }
+    .promo-card:nth-child(10) { animation-delay: 0.50s; }
+
+    /* top accent line — gold shimmer */
+    .promo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffcb05, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 2;
+    }
+
+    .promo-card:hover {
+      transform: translateY(-8px) scale(1.015);
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.6),
+        0 0 30px rgba(255,203,5,0.12),
+        inset 0 0 0 1px rgba(255,203,5,0.2);
+      border-color: rgba(255,203,5,0.3);
+    }
+
+    .promo-card:hover::before { opacity: 1; }
+
+    /* image with overlay gradient */
+    .promo-card-img-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-card-img {
+      width: 100%;
+      aspect-ratio: 430 / 258;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .promo-card:hover .promo-card-img {
+      transform: scale(1.06);
+    }
+
+    /* bottom gradient fade on image */
+    .promo-card-img-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, #141c2e);
+      pointer-events: none;
+    }
+
+    .promo-card-body {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .promo-card-body h2 {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 7px;
+      line-height: 1.35;
+      letter-spacing: 0.3px;
+    }
+
+    .promo-card-body p {
+      font-size: 11px;
+      line-height: 1.55;
+      color: #7a8aaa;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .promo-card-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Mobile card scaling ── */
+    @media (max-width: 600px) {
+      .promo-card {
+        border-radius: 9px;
+      }
+      .promo-card-img {
+        aspect-ratio: 4 / 2.8;
+      }
+      .promo-card-body {
+        padding: 9px 9px 11px;
+      }
+      .promo-card-body h2 {
+        font-size: 9.5px;
+        margin-bottom: 5px;
+        line-height: 1.3;
+        /* allow 2 lines max before truncating */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .promo-card-body p {
+        font-size: 9px;
+        line-height: 1.45;
+        -webkit-line-clamp: 2;
+        margin-bottom: 0;
+      }
+      .promo-card-actions {
+        margin-top: 8px;
+        gap: 5px;
+      }
+      .promo-card-img-wrap::after {
+        height: 30px;
+      }
+    }
+
+    /* prevent hover lift on touch devices */
+    @media (hover: none) {
+      .promo-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: rgba(255,255,255,0.06);
+      }
+      .promo-card:hover::before { opacity: 0; }
+      .promo-card:hover .promo-card-img { transform: none; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 18px;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s, opacity 0.2s, transform 0.1s;
+      border: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    @media (max-width: 600px) {
+      .btn { font-size: 8.5px; padding: 5px 10px; letter-spacing: 0; }
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0a0e1a;
+    }
+    .btn-primary:hover { background: #deb000; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-secondary:hover { background: rgba(255,203,5,0.1); }
+
+
+    /* ── CARD SPARKLE BORDER (SVG animated stroke) ── */
+    .promo-card-border {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.3s;
+      overflow: hidden;
+    }
+    .promo-card:hover .promo-card-border { opacity: 1; }
+
+    .promo-card-border svg {
+      position: absolute;
+      inset: -1px;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+    }
+
+    .border-path {
+      fill: none;
+      stroke: url(#goldGrad);
+      stroke-width: 1.5;
+      stroke-dasharray: 60 400;
+      stroke-dashoffset: 0;
+      animation: borderDash 1.8s linear infinite;
+    }
+
+    @keyframes borderDash {
+      to { stroke-dashoffset: -460; }
+    }
+
+    /* ── CARD INNER GLOW on hover ── */
+    .promo-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,203,5,0.07) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 0.35s;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .promo-card:hover::after { opacity: 1; }
+
+    /* ── CARD IMAGE SHINE SWEEP ── */
+    .promo-card-img-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -75%;
+      width: 50%; height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255,255,255,0.12) 50%,
+        transparent 100%
+      );
+      transform: skewX(-15deg);
+      opacity: 0;
+      z-index: 2;
+      pointer-events: none;
+      transition: none;
+    }
+    .promo-card:hover .promo-card-img-wrap::before {
+      opacity: 1;
+      animation: shineSweep 0.6s ease forwards;
+    }
+    @keyframes shineSweep {
+      from { left: -75%; opacity: 1; }
+      to   { left: 125%; opacity: 1; }
+    }
+
+    /* ── FLOATING PARTICLES CANVAS ── */
+    #particles-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── BADGE on some cards ── */
+    .promo-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: linear-gradient(135deg, #ffcb05, #ff8c00);
+      color: #000;
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      z-index: 4;
+      box-shadow: 0 2px 8px rgba(255,140,0,0.5);
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+    @keyframes badgePulse {
+      0%,100% { box-shadow: 0 2px 8px rgba(255,140,0,0.4); transform: scale(1);   }
+      50%      { box-shadow: 0 2px 16px rgba(255,140,0,0.8); transform: scale(1.05); }
+    }
+
+    /* ── SECTION LABEL upgrade ── */
+    .section-label::before {
+      content: '⚽';
+      font-size: 18px;
+      margin-right: -4px;
+    }
+
+    /* ── GRID WRAPPER with particle canvas ── */
+    .promo-section-wrap {
+      position: relative;
+    }
+  </style>
+</head>
+<body class="page-bg">
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#ffcb05" stop-opacity="0"/>
+        <stop offset="30%"  stop-color="#ffcb05" stop-opacity="1"/>
+        <stop offset="70%"  stop-color="#fff176" stop-opacity="1"/>
+        <stop offset="100%" stop-color="#ffcb05" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- BOUNCING BALLS CANVAS -->
+  <div id="ball-canvas-wrap"><canvas id="ball-canvas"></canvas></div>
+
+  <!-- ═══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grass"></div>
+
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div class="hero-left">
+        <span class="hero-eyebrow">⚽ FIFA World Cup 2026</span>
+        <h1 class="hero-title">
+          Igraj Svjetsko<br>
+          u <span>Admiralu!</span>
+        </h1>
+        <p class="hero-sub">
+          Promo paketi, sport bonusi i casino akcije<br>
+          tokom cijelog Mundijala – samo za tebe.
+        </p>
+        <a href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne&competition=Svetsko_prvenstvo_2026"
+           class="hero-cta" target="_blank">
+          ⚽ Kladi se odmah
+        </a>
+      </div>
+
+      <!-- RIGHT: WC logo -->
+      <div class="hero-right">
+        <img loading="lazy"
+          src="https://assets.football-logos.cc/logos/tournaments/1500x1500/fifa-world-cup-2026.31d2489d.png"
+          alt="FIFA World Cup 2026"
+          class="hero-wc-logo">
+        <span class="hero-wc-label">Official 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       PROMOTIONS
+  ═══════════════════════════════════════ -->
+  <main class="main-content">
+
+    <div class="section-label">
+      <h2>🎁 Aktivne Promocije</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="promo-section-wrap">
+    <canvas id="particles-canvas"></canvas>
+    <div class="promo-grid">
+
+      <!-- 1 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/hjkuikzutjzhtd.jpg" alt="Bez stresa u nadoknadi">
+        </div>
+        <div class="promo-card-body">
+          <h2>BEZ STRESA U NADOKNADI!</h2>
+          <p>Za tipove Konačan ishod 1 i 2 računamo samo 90 minuta igre – ne padaš u nadoknadi!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/bez-stresa-u-nadoknadi-1449" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/rhtrjzkuliuukzj.jpg" alt="GG Akcija">
+        </div>
+        <div class="promo-card-body">
+          <h2>GG AKCIJA – 3+ REAKCIJA!</h2>
+          <p>Ako oba tima postignu gol u prvom poluvremenu, tvoja 3+ opklada je automatski dobitna!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/gg-akcija-3-reakcija-1450" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/sydvxfbgnhmj.jpg" alt="Rani gol brzi dobitak">
+        </div>
+        <div class="promo-card-body">
+          <h2>RANI GOL, BRZI DOBITAK!</h2>
+          <p>Gol do 5. minuta mijenja pravila igre – tvoja opklada 2+ prvo poluvrijeme bude dobitna!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/rani-gol-brzi-dobitak-1451" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/jhuihukihbhjasgdhkjgdsa.jpg" alt="Gol za Sport Bonus">
+        </div>
+        <div class="promo-card-body">
+          <h2>GOL ZA SPORT BONUS!</h2>
+          <p>Prvi gol po poluvremenu ti donosi 10€ sport bonusa – prati SP u AdmiralBet poslovnici!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/gol-za-sport-bonus-1424" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/agdsgdasgdgfadsg.jpg" alt="Sportski Kviz">
+        </div>
+        <div class="promo-card-body">
+          <h2>ADMIRALBET SPORTSKI KVIZ!</h2>
+          <p>Pokaži znanje, budi najbrži i osvoji sport bonus – svaki dan nova šansa, Top 20 najbrži!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/admiralbet-sportski-kviz-1422" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/paosdudiopasuoiudosaiu.jpg" alt="Bracket Izazov">
+        </div>
+        <div class="promo-card-body">
+          <h2>ADMIRALBET BRACKET IZAZOV!</h2>
+          <p>Predvidi tok Svjetskog prvenstva, popuni bracket i bori se za dio fonda od 10.000€!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/admiralbet-bracket-izazov-1423" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/fdaiobijashuofihadsfuadsihfui.jpg" alt="AdmiralBet Tripleta">
+        </div>
+        <div class="promo-card-body">
+          <h2>ADMIRALBET TRIPLETA!</h2>
+          <p>Uđi uz čak 250% ukupnog bonusa kroz prva tri depozita i pojačaj igru šampionskim tempom!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/admiralbet-tripleta-1416" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/fiuahuifdahfidhofads.jpg" alt="Admiralovih 11 Spinback">
+        </div>
+        <div class="promo-card-body">
+          <h2>ADMIRALOVIH 11: SPINBACK</h2>
+          <p>Od 12. juna igraj odabrane slotove i osvoji 30 spinova za Charming Lady's Boom!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/admiralovih-11-spinback-1418" class="btn btn-primary">Igraj!</a>
+            <a href="https://admiralbet.me/promotions/admiralovih-11-spinback-1418" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/ndhasjbdhabdhadhbjdashb.jpg" alt="Sportski Jackpot">
+        </div>
+        <div class="promo-card-body">
+          <h2>SPORTSKI JACKPOT!</h2>
+          <p>Sportski jackpot donosi dodatno uzbuđenje svakom tiketu koji odigraš!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/sportski-jackpot-1080" class="btn btn-primary">Uključi se!</a>
+            <a href="https://admiralbet.me/promotions/sportski-jackpot-1080" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="promo-card">
+        <div class="promo-card-border">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
+          </svg>
+        </div>
+        <div class="promo-card-img-wrap">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://admiralbet.me/assets/images/promotion/uodHOUIHDAsiuduisa.jpg" alt="Pojačaj kvotu">
+        </div>
+        <div class="promo-card-body">
+          <h2>POJAČAJ KVOTU I LANSIRAJ TIKET U VISINE!</h2>
+          <p>Sa AdmiralBET-om, bonusi do 701% čine tvoj dobitak još većim – kombinuj parove!</p>
+          <div class="promo-card-actions">
+            <a href="https://admiralbet.me/promotions/pojacaj-kvotu-i-lansiraj-tiket-u-visine-690" class="btn btn-primary">Igraj!</a>
+            <a href="https://admiralbet.me/promotions/pojacaj-kvotu-i-lansiraj-tiket-u-visine-690" class="btn btn-secondary">Info</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </main>
+
+
+  <!-- ═══════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════ -->
+  <script>
+    /* ══════════════════════════════════════════
+       BOUNCING BALLS — card collision, 3s then gone
+    ══════════════════════════════════════════ */
+    (function () {
+      const SRC        = 'https://res.cloudinary.com/accentgr/image/upload/Adidas%2FJD8032_1_HARDWARE_Photography_Front%20Center%20View_transparent';
+      const COUNT      = 20;
+      const G          = 0.42;   // gravity
+      const TOTAL      = 3500;   // ms until fully gone
+      const FADE_BEGIN = 2600;   // ms when fade starts
+
+      const wrap   = document.getElementById('ball-canvas-wrap');
+      const canvas = document.getElementById('ball-canvas');
+      const ctx    = canvas.getContext('2d');
+      const img    = new Image();
+      img.crossOrigin = 'anonymous';
+
+      let balls = [], rects = [], startTs = null;
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', () => { resize(); buildRects(); });
+      window.addEventListener('scroll', buildRects, { passive: true });
+
+      function buildRects() {
+        rects = Array.from(document.querySelectorAll('.promo-card')).map(el => {
+          const b = el.getBoundingClientRect();
+          return { l: b.left, t: b.top, r: b.right, bot: b.bottom };
+        });
+      }
+
+      function spawn() {
+        balls = [];
+        for (let i = 0; i < COUNT; i++) {
+          const rad = 16 + Math.random() * 16;
+          balls.push({
+            x:  rad + Math.random() * (canvas.width - rad * 2),
+            y: -rad - Math.random() * canvas.height * 0.85,
+            rad,
+            vx: (Math.random() - 0.5) * 2.8,
+            vy: 1.5 + Math.random() * 3.5,
+            e:  0.54 + Math.random() * 0.2,  // restitution
+            rot: Math.random() * 6.28,
+            rs:  (Math.random() - 0.5) * 0.14,
+          });
+        }
+      }
+
+      /* Prevent tunneling: sub-step collision.
+         We split each frame into sub-steps so fast balls
+         never skip through a surface. */
+      function step(b, dt) {
+        const STEPS = 3;
+        const dts = dt / STEPS;
+        for (let s = 0; s < STEPS; s++) {
+          b.vy += G * dts;
+          b.x  += b.vx * dts;
+          b.y  += b.vy * dts;
+          b.rot+= b.rs * dts;
+          resolveAll(b);
+        }
+      }
+
+      function resolveAll(b) {
+        const W = canvas.width, H = canvas.height;
+
+        // floor
+        if (b.y + b.rad > H) {
+          b.y  = H - b.rad;
+          b.vy = -Math.abs(b.vy) * b.e;
+          b.vx *= 0.90;
+          b.rs *= 0.84;
+          if (Math.abs(b.vy) < 0.7) b.vy = 0;
+        }
+        // ceiling
+        if (b.y - b.rad < 0) { b.y = b.rad; b.vy = Math.abs(b.vy) * b.e; }
+        // walls
+        if (b.x - b.rad < 0)  { b.x = b.rad;     b.vx =  Math.abs(b.vx) * 0.75; }
+        if (b.x + b.rad > W)  { b.x = W - b.rad;  b.vx = -Math.abs(b.vx) * 0.75; }
+
+        // cards
+        rects.forEach(rc => {
+          const pad = b.rad;
+          const l = rc.l - pad, t = rc.t - pad, r = rc.r + pad, bot = rc.bot + pad;
+          if (b.x < l || b.x > r || b.y < t || b.y > bot) return; // miss
+
+          // penetration on each axis
+          const dL   = b.x - l;
+          const dR   = r - b.x;
+          const dT   = b.y - t;
+          const dBot = bot - b.y;
+          const min  = Math.min(dL, dR, dT, dBot);
+
+          if (min === dT) {
+            // hit top face — most common, bounce up
+            b.y  = t;
+            b.vy = -Math.abs(b.vy) * b.e;
+            b.vx *= 0.88;
+            b.rs *= 0.82;
+          } else if (min === dBot) {
+            b.y  = bot;
+            b.vy =  Math.abs(b.vy) * b.e;
+          } else if (min === dL) {
+            b.x  = l;
+            b.vx = -Math.abs(b.vx) * b.e;
+          } else {
+            b.x  = r;
+            b.vx =  Math.abs(b.vx) * b.e;
+          }
+        });
+      }
+
+      let prev = 0;
+      function tick(ts) {
+        if (!startTs) { startTs = ts; prev = ts; buildRects(); }
+        const elapsed = ts - startTs;
+        // delta capped to avoid huge jumps on tab-switch
+        const rawDt = Math.min((ts - prev) / 16.67, 3);
+        prev = ts;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // global alpha for fade
+        let ga = 1;
+        if (elapsed < 300) ga = elapsed / 300;
+        else if (elapsed > FADE_BEGIN) ga = Math.max(0, 1 - (elapsed - FADE_BEGIN) / (TOTAL - FADE_BEGIN));
+
+        if (ga > 0) {
+          balls.forEach(b => {
+            step(b, rawDt);
+            ctx.save();
+            ctx.globalAlpha = ga;
+            ctx.translate(b.x, b.y);
+            ctx.rotate(b.rot);
+            if (img.complete && img.naturalWidth > 0) {
+              ctx.drawImage(img, -b.rad, -b.rad, b.rad * 2, b.rad * 2);
+            } else {
+              ctx.beginPath(); ctx.arc(0, 0, b.rad, 0, Math.PI*2);
+              ctx.fillStyle = '#fff'; ctx.fill();
+            }
+            ctx.restore();
+          });
+        }
+
+        if (elapsed < TOTAL) {
+          requestAnimationFrame(tick);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          wrap.style.display = 'none';
+        }
+      }
+
+      img.onload  = () => { setTimeout(() => { spawn(); requestAnimationFrame(tick); }, 80); };
+      img.onerror = () => { wrap.style.display = 'none'; };
+      img.src = SRC;
+
+      window.addEventListener('load', buildRects);
+      setTimeout(buildRects, 500);
+    })();
+
+
+  <script>
+  /* ── floating gold particles behind promo grid ── */
+  (function(){
+    const c   = document.getElementById('particles-canvas');
+    if(!c) return;
+    const ctx = c.getContext('2d');
+    const wrap = c.parentElement;
+
+    function resize(){
+      c.width  = wrap.offsetWidth;
+      c.height = wrap.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const N = 38;
+    const pts = Array.from({length:N}, () => ({
+      x: Math.random() * (c.width || 1200),
+      y: Math.random() * (c.height || 600),
+      r: .8 + Math.random() * 2.2,
+      vx: (Math.random()-.5) * .35,
+      vy: -.15 - Math.random() * .3,
+      life: Math.random(),
+      speed: .004 + Math.random() * .006,
+      col: Math.random() > .6 ? '#ffcb05' : Math.random() > .5 ? '#fff' : '#00aaff',
+    }));
+
+    function tick(){
+      if(c.width !== wrap.offsetWidth) resize();
+      ctx.clearRect(0,0,c.width,c.height);
+      pts.forEach(p => {
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.life += p.speed;
+        if(p.life > 1) p.life = 0;
+        if(p.y < -10)  { p.y = c.height + 5; p.x = Math.random()*c.width; }
+        if(p.x < -10)  p.x = c.width  + 5;
+        if(p.x > c.width+10)  p.x = -5;
+
+        /* alpha: fade in/out over life cycle */
+        const a = p.life < .5 ? p.life*2 : (1-p.life)*2;
+
+        ctx.save();
+        ctx.globalAlpha = a * .55;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = p.col;
+        ctx.fill();
+
+        /* tiny cross sparkle on bigger particles */
+        if(p.r > 1.8) {
+          ctx.globalAlpha = a * .25;
+          ctx.strokeStyle = p.col;
+          ctx.lineWidth = .8;
+          const s = p.r * 2.5;
+          ctx.beginPath();
+          ctx.moveTo(p.x-s, p.y); ctx.lineTo(p.x+s, p.y);
+          ctx.moveTo(p.x, p.y-s); ctx.lineTo(p.x, p.y+s);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+  </script>
+</body>
+</html>
