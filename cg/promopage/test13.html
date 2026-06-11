@@ -146,7 +146,7 @@ body{
 @keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .promo-card{
   position:relative;
-  background:linear-gradient(160deg,#141c2e 0%,#0d1420 100%);
+  background:linear-gradient(160deg,rgba(20,28,46,0.82) 0%,rgba(13,20,32,0.82) 100%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border:1px solid rgba(255,255,255,.06);border-radius:12px;
   overflow:hidden;display:flex;flex-direction:column;
   transition:transform .28s cubic-bezier(.22,.68,0,1.2),box-shadow .28s,border-color .28s;
@@ -704,8 +704,21 @@ body{
   window.__startAudio=function(){
     const ov=document.getElementById('overlay');
     if(ov){ov.style.transition='opacity .3s';ov.style.opacity='0';setTimeout(function(){ov.remove()},320)}
-    crowd.volume=1;crowd.play().catch(function(){});
-    whistle.volume=1;whistle.play().catch(function(){});
+    function tryPlay(el){
+      el.volume=1;el.muted=false;
+      var p=el.play();
+      if(p&&p.then){
+        p.catch(function(err){
+          // Resume suspended AudioContext then retry
+          if(window.AudioContext||window.webkitAudioContext){
+            var ac=new(window.AudioContext||window.webkitAudioContext)();
+            ac.resume().then(function(){el.play().catch(function(){})});
+          }
+        });
+      }
+    }
+    tryPlay(crowd);
+    tryPlay(whistle);
     if(window.__connectWave)window.__connectWave();
   };
 
