@@ -540,8 +540,8 @@ body{
 </main>
 
 <!-- AUDIO -->
-<audio id="snd-crowd"   src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3"   preload="auto"></audio>
-<audio id="snd-whistle" src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
+<audio id="snd-crowd"   src="https://cdn.jsdelivr.net/gh/affiliate-siks/p1@main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3"   preload="auto"></audio>
+<audio id="snd-whistle" src="https://cdn.jsdelivr.net/gh/affiliate-siks/p1@main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
 
 <!-- AUDIO PILL -->
 <div id="audio-pill">
@@ -701,25 +701,30 @@ body{
   const whistle=document.getElementById('snd-whistle');
   let muted=false;
 
-  window.__startAudio=function(){
-    const ov=document.getElementById('overlay');
-    if(ov){ov.style.transition='opacity .3s';ov.style.opacity='0';setTimeout(function(){ov.remove()},320)}
-    function tryPlay(el){
-      el.volume=1;el.muted=false;
-      var p=el.play();
-      if(p&&p.then){
-        p.catch(function(err){
-          // Resume suspended AudioContext then retry
-          if(window.AudioContext||window.webkitAudioContext){
-            var ac=new(window.AudioContext||window.webkitAudioContext)();
-            ac.resume().then(function(){el.play().catch(function(){})});
-          }
-        });
-      }
-    }
-    tryPlay(crowd);
-    tryPlay(whistle);
+  // Attach play directly to every possible user gesture on overlay
+  // This guarantees browser allows audio
+  var audioStarted=false;
+  function doPlayAudio(){
+    if(audioStarted)return;
+    audioStarted=true;
+    crowd.volume=1;
+    whistle.volume=1;
+    crowd.play().catch(function(){});
+    whistle.play().catch(function(){});
     if(window.__connectWave)window.__connectWave();
+  }
+  // Attach to overlay so ANY tap/click on it triggers audio
+  var ov=document.getElementById('overlay');
+  if(ov){
+    ['click','touchstart'].forEach(function(ev){
+      ov.addEventListener(ev,doPlayAudio,{once:true,passive:true});
+    });
+  }
+
+  window.__startAudio=function(){
+    doPlayAudio();
+    var ov2=document.getElementById('overlay');
+    if(ov2){ov2.style.transition='opacity .3s';ov2.style.opacity='0';setTimeout(function(){ov2.remove()},320)}
   };
 
   function setMute(m){
