@@ -539,7 +539,10 @@ body{
   </div>
 </main>
 
-<!-- AUDIO via JS -->
+  <!-- AUDIO -->
+  <audio id="snd-crowd"   src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3" preload="auto"></audio>
+  <audio id="snd-whistle" src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
+
 
 <!-- AUDIO PILL -->
 <div id="audio-pill">
@@ -838,7 +841,7 @@ body{
       window.__playCrowd();
       whistle.volume = 1;
       whistle.play().catch(function(){});
-      var overlay = document.getElementById('start-overlay');
+      var overlay = document.getElementById('overlay') || document.getElementById('start-overlay');
       if(overlay){
         overlay.style.transition = 'opacity 0.3s';
         overlay.style.opacity = '0';
