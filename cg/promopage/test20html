@@ -539,10 +539,6 @@ body{
   </div>
 </main>
 
-  <!-- AUDIO -->
-  <audio id="snd-crowd"   src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3" preload="auto"></audio>
-  <audio id="snd-whistle" src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
-
 
 <!-- AUDIO PILL -->
 <div id="audio-pill">
@@ -825,24 +821,54 @@ body{
 
   <script>
   (function(){
+    var CROWD_URL   = "https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3";
+    var WHISTLE_URL = "https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3";
+
     var pill     = document.getElementById('audio-pill');
     var closeBtn = document.getElementById('audio-close');
-    var crowd    = document.getElementById('snd-crowd');
-    var whistle  = document.getElementById('snd-whistle');
     var muted    = false;
+    var crowdStarted = false;
+
+    var actx = null;
+    var crowdSource = null;
+    var gainNode = null;
+
+    // Fetch + decode via Web Audio API — bypasses CSP sandbox on audio element
+    function fetchAndPlay(url, loop, onSource) {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      fetch(url)
+        .then(function(r){ return r.arrayBuffer(); })
+        .then(function(buf){ return actx.decodeAudioData(buf); })
+        .then(function(decoded){
+          var src = actx.createBufferSource();
+          src.buffer = decoded;
+          src.loop = !!loop;
+          var gain = actx.createGain();
+          gain.gain.value = 1.0;
+          src.connect(gain);
+          gain.connect(actx.destination);
+          src.start(0);
+          if (onSource) onSource(src, gain);
+        })
+        .catch(function(e){ console.warn('audio fetch failed:', e); });
+    }
 
     window.__playCrowd = function(){
-      crowd.volume = 1;
-      crowd.play().catch(function(){});
-      if(window.__connectWave) window.__connectWave(crowd);
+      if (crowdStarted) return;
+      crowdStarted = true;
+      fetchAndPlay(CROWD_URL, true, function(src, gain){
+        crowdSource = src;
+        gainNode = gain;
+        if (window.__connectWaveGain) window.__connectWaveGain(gain);
+      });
     };
 
     window.__startAudio = function(){
       window.__playCrowd();
-      whistle.volume = 1;
-      whistle.play().catch(function(){});
+      fetchAndPlay(WHISTLE_URL, false, null);
       var overlay = document.getElementById('overlay') || document.getElementById('start-overlay');
-      if(overlay){
+      if (overlay){
         overlay.style.transition = 'opacity 0.3s';
         overlay.style.opacity = '0';
         setTimeout(function(){ overlay.remove(); }, 320);
@@ -851,15 +877,14 @@ body{
 
     function setMute(m){
       muted = m;
-      crowd.muted = m; whistle.muted = m;
+      if (gainNode) gainNode.gain.value = m ? 0 : 1;
       pill.classList.toggle('muted', m);
       document.getElementById('audio-label').textContent = m ? 'Bez zvuka' : 'Ambijent';
     }
 
     pill.addEventListener('click', function(e){
-      if(e.target === closeBtn || closeBtn.contains(e.target)){
-        crowd.pause();   crowd.src = '';
-        whistle.pause(); whistle.src = '';
+      if (e.target === closeBtn || closeBtn.contains(e.target)){
+        if (crowdSource) { try { crowdSource.stop(); } catch(e){} }
         pill.style.display = 'none';
       } else {
         setMute(!muted);
