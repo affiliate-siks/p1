@@ -1177,7 +1177,7 @@
 
   <!-- AUDIO -->
   <iframe id="yt-crowd"
-    src=""  data-src="https://www.youtube.com/embed/Fx8TrHj55ek?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&start=5"
+    src=""  data-src="https://www.youtube.com/embed/VklWk_v9Dg4?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
@@ -1271,7 +1271,7 @@
     const CROWD_SRC   = crowdIframe.getAttribute('data-src');
     const AMBIENT_SRC = ambientIframe.getAttribute('data-src');
     // Fx8TrHj55ek is ~11 seconds (crowd cheer), delay ambient by that much
-    const CROWD_DURATION_MS = 6500; // video starts at 5s, plays remaining ~6.5s
+    const CROWD_DURATION_MS = 4000; // whistle ~3-4s then ambient kicks in
 
     let muted = false;
     let ambientStarted = false;
