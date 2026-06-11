@@ -677,34 +677,239 @@
   </style>
 </head>
 <body class="page-bg">
-  <!-- CLICK TO START OVERLAY -->
-  <div id="start-overlay" style="
-    position: fixed; inset: 0; z-index: 99999;
-    background: rgba(4,9,18,0.82);
-    backdrop-filter: blur(6px);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    cursor: pointer; gap: 20px;
-  " onclick="window.__startAudio()">
+  <!-- GOAL KICK OVERLAY -->
+  <div id="start-overlay" style="position:fixed;inset:0;z-index:99999;background:rgba(2,6,14,0.93);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;overflow:hidden;">
+
+    <!-- stadium bg lines -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden">
+      <svg width="100%" height="100%" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+        <!-- pitch lines -->
+        <rect x="80" y="60" width="640" height="380" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+        <line x1="400" y1="60" x2="400" y2="440" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+        <circle cx="400" cy="250" r="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+        <rect x="290" y="60" width="220" height="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+        <rect x="330" y="60" width="140" height="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <!-- WC logo + title -->
     <img src="https://assets.football-logos.cc/logos/tournaments/1500x1500/fifa-world-cup-2026.31d2489d.png"
-         style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(255,203,5,.7));"
-         alt="">
-    <div style="
-      background: linear-gradient(135deg,#ffcb05,#ff8c00);
-      color:#000; font-family:'Montserrat',sans-serif;
-      font-size:clamp(15px,3vw,22px); font-weight:900;
-      letter-spacing:1px; padding:14px 40px;
-      border-radius:50px; text-transform:uppercase;
-      box-shadow:0 0 30px rgba(255,203,5,.5);
-      animation: pulse 1.4s ease-in-out infinite;
-    ">⚽ Uđi na Mundijal</div>
-    <style>
-      @keyframes pulse {
-        0%,100%{box-shadow:0 0 20px rgba(255,203,5,.4);}
-        50%{box-shadow:0 0 45px rgba(255,203,5,.85);}
-      }
-    </style>
+         style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;filter:drop-shadow(0 0 16px rgba(255,203,5,.6));">
+    <div style="font-size:clamp(11px,2vw,13px);font-weight:700;color:rgba(255,203,5,.8);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">FIFA World Cup 2026</div>
+    <div style="font-size:clamp(22px,5vw,40px);font-weight:900;color:#fff;letter-spacing:-1px;text-transform:uppercase;margin-bottom:6px;text-shadow:0 2px 20px rgba(0,0,0,.8);">Igraj Svjetsko u Admiralu!</div>
+    <div style="font-size:clamp(12px,2vw,15px);color:rgba(255,255,255,.5);margin-bottom:32px;font-weight:500;">Odaberi kut — sutiraj i uđi!</div>
+
+    <!-- GOALPOST SVG with hover zones -->
+    <div id="goal-container" style="position:relative;width:min(520px,88vw);margin:0 auto;">
+      <svg id="goal-svg" viewBox="0 0 520 280" width="100%" style="display:block;filter:drop-shadow(0 8px 40px rgba(0,0,0,.7));">
+        <!-- net background -->
+        <defs>
+          <pattern id="net" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="18" y2="18" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
+            <line x1="18" y1="0" x2="0" y2="18" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
+          </pattern>
+        </defs>
+        <rect x="30" y="20" width="460" height="230" fill="url(#net)" rx="2"/>
+
+        <!-- goal zones — 6 sectors, invisible but clickable -->
+        <!-- Top row -->
+        <rect class="gzone" data-zone="0" x="30"  y="20"  width="153" height="110" fill="transparent" rx="0"/>
+        <rect class="gzone" data-zone="1" x="183" y="20"  width="154" height="110" fill="transparent" rx="0"/>
+        <rect class="gzone" data-zone="2" x="337" y="20"  width="153" height="110" fill="transparent" rx="0"/>
+        <!-- Bottom row -->
+        <rect class="gzone" data-zone="3" x="30"  y="130" width="153" height="120" fill="transparent" rx="0"/>
+        <rect class="gzone" data-zone="4" x="183" y="130" width="154" height="120" fill="transparent" rx="0"/>
+        <rect class="gzone" data-zone="5" x="337" y="130" width="153" height="120" fill="transparent" rx="0"/>
+
+        <!-- zone dividers -->
+        <line x1="183" y1="20" x2="183" y2="250" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="337" y1="20" x2="337" y2="250" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="30"  y1="130" x2="490" y2="130" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4 4"/>
+
+        <!-- crossbar + posts -->
+        <rect x="24" y="15" width="472" height="10" fill="#e8e8e8" rx="4"/>
+        <rect x="24" y="15" width="12" height="245" fill="#e8e8e8" rx="3"/>
+        <rect x="484" y="15" width="12" height="245" fill="#e8e8e8" rx="3"/>
+
+        <!-- ground line -->
+        <rect x="10" y="252" width="500" height="8" fill="#2a8a30" rx="2"/>
+        <rect x="10" y="256" width="500" height="4" fill="#1e6b24" rx="2"/>
+
+        <!-- keeper silhouette -->
+        <g id="keeper" opacity="0.7">
+          <!-- body -->
+          <rect x="228" y="148" width="64" height="72" fill="#ff6b00" rx="6"/>
+          <!-- head -->
+          <circle cx="260" cy="135" r="20" fill="#f4c27d"/>
+          <!-- gloves -->
+          <circle cx="210" cy="178" r="14" fill="#ff6b00"/>
+          <circle cx="310" cy="178" r="14" fill="#ff6b00"/>
+          <!-- legs -->
+          <rect x="232" y="218" width="20" height="32" fill="#0a2d6e" rx="4"/>
+          <rect x="268" y="218" width="20" height="32" fill="#0a2d6e" rx="4"/>
+        </g>
+
+        <!-- hover highlights (invisible by default) -->
+        <rect id="hl-0" x="30"  y="20"  width="153" height="110" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+        <rect id="hl-1" x="183" y="20"  width="154" height="110" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+        <rect id="hl-2" x="337" y="20"  width="153" height="110" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+        <rect id="hl-3" x="30"  y="130" width="153" height="120" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+        <rect id="hl-4" x="183" y="130" width="154" height="120" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+        <rect id="hl-5" x="337" y="130" width="153" height="120" fill="rgba(255,203,5,0)" rx="0" style="transition:fill 0.15s;pointer-events:none"/>
+
+        <!-- crosshair cursor (hidden until hover) -->
+        <g id="aim" opacity="0" style="pointer-events:none">
+          <circle r="22" fill="none" stroke="#ffcb05" stroke-width="2" opacity="0.9"/>
+          <line x1="-30" y1="0" x2="30" y2="0" stroke="#ffcb05" stroke-width="1.5" opacity="0.7"/>
+          <line x1="0" y1="-30" x2="0" y2="30" stroke="#ffcb05" stroke-width="1.5" opacity="0.7"/>
+        </g>
+      </svg>
+
+      <!-- ball at bottom -->
+      <div id="ball-kick" style="position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:48px;height:48px;transition:all 0.4s cubic-bezier(.22,.68,0,1.2);">
+        <img src="https://res.cloudinary.com/accentgr/image/upload/Adidas%2FJD8032_1_HARDWARE_Photography_Front%20Center%20View_transparent"
+             style="width:100%;height:100%;object-fit:contain;" alt="">
+      </div>
+    </div>
+
+    <div id="overlay-hint" style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;">Klikni na gol da sutiraš</div>
   </div>
+
+  <style>
+    .gzone { cursor:crosshair; }
+    .gzone:hover ~ #aim { opacity:1; }
+    #start-overlay.scored { pointer-events:none; }
+  </style>
+
+  <script>
+  (function(){
+    const svg    = document.getElementById('goal-svg');
+    const aim    = document.getElementById('aim');
+    const ball   = document.getElementById('ball-kick');
+    const keeper = document.getElementById('keeper');
+    const zones  = svg.querySelectorAll('.gzone');
+    const hint   = document.getElementById('overlay-hint');
+
+    // zone center coords in SVG space
+    const ZC = [
+      {x:106,y:75},  {x:260,y:75},  {x:413,y:75},
+      {x:106,y:190}, {x:260,y:190}, {x:413,y:190}
+    ];
+    // keeper saves: zones 1,4 (centre)
+    const SAVES = [1,4];
+
+    // move aim crosshair with mouse
+    svg.addEventListener('mousemove', function(e){
+      const r = svg.getBoundingClientRect();
+      const vbW = 520, vbH = 280;
+      const sx = (e.clientX - r.left) / r.width  * vbW;
+      const sy = (e.clientY - r.top)  / r.height * vbH;
+      aim.setAttribute('transform', `translate(${sx},${sy})`);
+      aim.setAttribute('opacity', '1');
+    });
+    svg.addEventListener('mouseleave', function(){
+      aim.setAttribute('opacity','0');
+    });
+
+    // hover highlight
+    zones.forEach(function(z){
+      const id = z.getAttribute('data-zone');
+      z.addEventListener('mouseenter', function(){
+        document.getElementById('hl-'+id).setAttribute('fill','rgba(255,203,5,0.12)');
+      });
+      z.addEventListener('mouseleave', function(){
+        document.getElementById('hl-'+id).setAttribute('fill','rgba(255,203,5,0)');
+      });
+      z.addEventListener('click', function(){ shoot(+id); });
+    });
+
+    function shoot(zoneId){
+      zones.forEach(function(z){ z.style.pointerEvents='none'; });
+      hint.textContent = '';
+      aim.setAttribute('opacity','0');
+
+      const zc  = ZC[zoneId];
+      const r   = svg.getBoundingClientRect();
+      const vbW = 520, vbH = 280;
+      // convert SVG coords to % of container
+      const tx  = (zc.x / vbW * 100) + '%';
+      const ty  = (zc.y / vbH * 100) + '%';
+
+      // animate ball to zone
+      ball.style.transition = 'all 0.42s cubic-bezier(.4,0,.2,1)';
+      ball.style.left  = tx;
+      ball.style.top   = ty;
+      ball.style.bottom= 'auto';
+      ball.style.transform = 'translate(-50%,-50%) scale(0.45) rotate(720deg)';
+
+      const saved = SAVES.indexOf(zoneId) !== -1;
+
+      // keeper dive
+      if(saved){
+        const dir = zoneId === 1 ? 0 : 0;
+        keeper.style.transition = 'transform 0.35s ease';
+        keeper.setAttribute('transform', 'translate(0,-20)');
+      } else {
+        // keeper dives wrong way
+        const dx = zoneId < 3 ? 120 : -120;
+        keeper.style.transition = 'transform 0.4s ease';
+        keeper.setAttribute('transform', `translate(${dx},30) rotate(${dx>0?-25:25})`);
+      }
+
+      setTimeout(function(){
+        if(saved){
+          // show SAVED, allow retry
+          showMsg('ODBRANJEN! 🧤', '#ff4455', true);
+        } else {
+          // GOAL — flash net, start audio
+          showMsg('GOOOAL! ⚽', '#ffcb05', false);
+          flashNet();
+          window.__startAudio();
+        }
+      }, 480);
+    }
+
+    function showMsg(txt, col, retry){
+      const msg = document.createElement('div');
+      msg.textContent = txt;
+      msg.style.cssText = 'position:absolute;top:30%;left:50%;transform:translate(-50%,-50%) scale(0);font-family:Montserrat,sans-serif;font-size:clamp(28px,7vw,64px);font-weight:900;color:'+col+';text-shadow:0 0 30px '+col+';letter-spacing:2px;transition:transform 0.3s cubic-bezier(.22,.68,0,1.2);pointer-events:none;white-space:nowrap;';
+      document.getElementById('goal-container').appendChild(msg);
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          msg.style.transform = 'translate(-50%,-50%) scale(1)';
+        });
+      });
+
+      if(retry){
+        setTimeout(function(){
+          msg.remove();
+          resetShot();
+        }, 1200);
+      }
+    }
+
+    function resetShot(){
+      zones.forEach(function(z){ z.style.pointerEvents=''; });
+      keeper.removeAttribute('transform');
+      ball.style.transition = 'all 0.3s ease';
+      ball.style.left = '50%';
+      ball.style.top  = 'auto';
+      ball.style.bottom = '-10px';
+      ball.style.transform = 'translateX(-50%)';
+      hint.textContent = 'Klikni na gol da sutiraš';
+    }
+
+    function flashNet(){
+      const overlay2 = document.createElement('div');
+      overlay2.style.cssText = 'position:absolute;inset:0;background:rgba(255,203,5,0.28);border-radius:4px;pointer-events:none;animation:netFlash 0.5s ease forwards;';
+      document.getElementById('goal-container').appendChild(overlay2);
+      const s = document.createElement('style');
+      s.textContent = '@keyframes netFlash{0%{opacity:1}100%{opacity:0}}';
+      document.head.appendChild(s);
+      setTimeout(function(){ overlay2.remove(); }, 600);
+    }
+  })();
+  </script>
 
   <svg width="0" height="0" style="position:absolute">
     <defs>
