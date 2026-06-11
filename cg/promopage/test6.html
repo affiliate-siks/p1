@@ -1177,13 +1177,13 @@
 
   <!-- AUDIO -->
   <iframe id="yt-crowd"
-    src=""  data-src="https://www.youtube.com/embed/VklWk_v9Dg4?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
+    src=""  data-src="https://www.youtube.com/embed/VklWk_v9Dg4?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&enablejsapi=1"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
 
   <iframe id="yt-ambient"
-    src=""  data-src="https://www.youtube.com/embed/1nn18gHKv7I?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
+    src=""  data-src="https://www.youtube.com/embed/1nn18gHKv7I?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&enablejsapi=1"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
@@ -1263,51 +1263,47 @@
 
   <script>
   (function(){
-    const pill        = document.getElementById('audio-pill');
-    const crowdIframe = document.getElementById('yt-crowd');
+    const pill          = document.getElementById('audio-pill');
+    const crowdIframe   = document.getElementById('yt-crowd');
     const ambientIframe = document.getElementById('yt-ambient');
-    const closeBtn    = document.getElementById('audio-close');
+    const closeBtn      = document.getElementById('audio-close');
 
     const CROWD_SRC   = crowdIframe.getAttribute('data-src');
     const AMBIENT_SRC = ambientIframe.getAttribute('data-src');
-    // Fx8TrHj55ek is ~11 seconds (crowd cheer), delay ambient by that much
-    const CROWD_DURATION_MS = 4000; // whistle ~3-4s then ambient kicks in
 
     let muted = false;
-    let ambientStarted = false;
 
-    // Step 1: start crowd noise immediately
-    crowdIframe.src = CROWD_SRC;
+    /* set volume to 100 via YT IFrame API postMessage */
+    function maxVolume(iframe) {
+      setTimeout(function() {
+        try {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }),
+            '*'
+          );
+        } catch(e) {}
+      }, 1500);
+    }
 
-    // Step 2: after crowd ends, start ambient (no loop)
-    setTimeout(function() {
-      if (!muted) {
-        ambientIframe.src = AMBIENT_SRC;
-        ambientStarted = true;
-      }
-    }, CROWD_DURATION_MS);
+    /* start both videos simultaneously */
+    crowdIframe.src   = CROWD_SRC;
+    ambientIframe.src = AMBIENT_SRC;
+    maxVolume(crowdIframe);
+    maxVolume(ambientIframe);
 
     function setMute(m) {
       muted = m;
-      if (m) {
-        // mute: reload with mute=1
-        if (ambientStarted) {
-          ambientIframe.src = AMBIENT_SRC.replace('mute=0', 'mute=1');
-        }
-        crowdIframe.src = '';
-      } else {
-        // unmute: reload clean
-        if (ambientStarted) {
-          ambientIframe.src = AMBIENT_SRC;
-        }
-      }
+      const muteParam = m ? 'mute=1' : 'mute=0';
+      crowdIframe.src   = CROWD_SRC.replace('mute=0', muteParam);
+      ambientIframe.src = AMBIENT_SRC.replace('mute=0', muteParam);
+      if (!m) { maxVolume(crowdIframe); maxVolume(ambientIframe); }
       pill.classList.toggle('muted', m);
       document.getElementById('audio-label').textContent = m ? '\uD83D\uDD07 Bez zvuka' : '\u26BD Ambijent';
     }
 
     pill.addEventListener('click', function(e) {
       if (e.target === closeBtn || closeBtn.contains(e.target)) {
-        crowdIframe.src = '';
+        crowdIframe.src   = '';
         ambientIframe.src = '';
         pill.style.display = 'none';
       } else {
