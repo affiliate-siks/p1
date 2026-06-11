@@ -6,7 +6,7 @@
 <title>AdmiralBet Montenegro – Promocije SP 2026</title>
 <link rel="icon" type="image/x-icon" href="https://admiralbet.me/favicons/favicon-admiral-default.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://admiralbet.me">
 <link rel="dns-prefetch" href="https://res.cloudinary.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -691,48 +691,7 @@ body{
   }
 })();
 
-/* == AUDIO == */
-(function(){
-  var CU='https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3';
-  var WU='https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3';
-  var crowd=new Audio(CU);
-  var whistle=new Audio(WU);
-  crowd.preload='auto';crowd.volume=1;
-  whistle.preload='auto';whistle.volume=1;
-  var pill=document.getElementById('audio-pill');
-  var closeBtn=document.getElementById('audio-close');
-  var muted=false,started=false;
 
-  window.__playCrowd=function(){
-    if(started)return;
-    started=true;
-    crowd.volume=1;
-    crowd.play().catch(function(e){console.warn('crowd play:',e);});
-    if(window.__connectWave)window.__connectWave(crowd);
-  };
-
-  window.__startAudio=function(){
-    window.__playCrowd();
-    whistle.volume=1;
-    whistle.play().catch(function(){});
-    var ov=document.getElementById('overlay');
-    if(ov){ov.style.transition='opacity .3s';ov.style.opacity='0';setTimeout(function(){ov.remove();},320);}
-  };
-
-  function setMute(m){
-    muted=m;crowd.muted=m;whistle.muted=m;
-    pill.classList.toggle('muted',m);
-    document.getElementById('audio-label').textContent=m?'Bez zvuka':'Ambijent';
-  }
-
-  pill.addEventListener('click',function(e){
-    if(e.target===closeBtn||closeBtn.contains(e.target)){
-      crowd.pause();crowd.src='';
-      whistle.pause();whistle.src='';
-      pill.style.display='none';
-    }else setMute(!muted);
-  });
-})();
 
 /* ══ WAVE VISUALISER ══ */
 (function(){
@@ -769,7 +728,7 @@ body{
 
   window.__connectWave=function(audioEl){
     if(connected)return;
-    var el=audioEl||document.getElementById("snd-crowd");
+    var el=audioEl;
     if(!el)return;
     try{
       audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -860,5 +819,50 @@ body{
   requestAnimationFrame(tick);
 })();
 </script>
+
+  <script>
+  (function(){
+    var pill     = document.getElementById('audio-pill');
+    var closeBtn = document.getElementById('audio-close');
+    var crowd    = document.getElementById('snd-crowd');
+    var whistle  = document.getElementById('snd-whistle');
+    var muted    = false;
+
+    window.__playCrowd = function(){
+      crowd.volume = 1;
+      crowd.play().catch(function(){});
+      if(window.__connectWave) window.__connectWave(crowd);
+    };
+
+    window.__startAudio = function(){
+      window.__playCrowd();
+      whistle.volume = 1;
+      whistle.play().catch(function(){});
+      var overlay = document.getElementById('start-overlay');
+      if(overlay){
+        overlay.style.transition = 'opacity 0.3s';
+        overlay.style.opacity = '0';
+        setTimeout(function(){ overlay.remove(); }, 320);
+      }
+    };
+
+    function setMute(m){
+      muted = m;
+      crowd.muted = m; whistle.muted = m;
+      pill.classList.toggle('muted', m);
+      document.getElementById('audio-label').textContent = m ? 'Bez zvuka' : 'Ambijent';
+    }
+
+    pill.addEventListener('click', function(e){
+      if(e.target === closeBtn || closeBtn.contains(e.target)){
+        crowd.pause();   crowd.src = '';
+        whistle.pause(); whistle.src = '';
+        pill.style.display = 'none';
+      } else {
+        setMute(!muted);
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
