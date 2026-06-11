@@ -7,6 +7,9 @@
   <link rel="icon" type="image/x-icon" href="https://admiralbet.me/favicons/favicon-admiral-default.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="dns-prefetch" href="https://admiralbet.me">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
+  <link rel="dns-prefetch" href="https://www.youtube.com">
   <link rel="dns-prefetch" href="https://res.cloudinary.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1174,7 +1177,7 @@
 
   <!-- AUDIO -->
   <iframe id="yt-crowd"
-    src=""  data-src="https://www.youtube.com/embed/Fx8TrHj55ek?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
+    src=""  data-src="https://www.youtube.com/embed/Fx8TrHj55ek?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&start=5"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
@@ -1268,7 +1271,7 @@
     const CROWD_SRC   = crowdIframe.getAttribute('data-src');
     const AMBIENT_SRC = ambientIframe.getAttribute('data-src');
     // Fx8TrHj55ek is ~11 seconds (crowd cheer), delay ambient by that much
-    const CROWD_DURATION_MS = 11000;
+    const CROWD_DURATION_MS = 6500; // video starts at 5s, plays remaining ~6.5s
 
     let muted = false;
     let ambientStarted = false;
