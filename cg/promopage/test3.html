@@ -1174,13 +1174,13 @@
 
   <!-- AUDIO -->
   <iframe id="yt-crowd"
-    src="https://www.youtube.com/embed/Fx8TrHj55ek?autoplay=1&mute=0&controls=0&loop=0&playlist=Fx8TrHj55ek&playsinline=1"
+    src=""  data-src="https://www.youtube.com/embed/Fx8TrHj55ek?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
 
   <iframe id="yt-ambient"
-    src="https://www.youtube.com/embed/1nn18gHKv7I?autoplay=1&mute=0&controls=0&loop=1&playlist=1nn18gHKv7I&playsinline=1"
+    src=""  data-src="https://www.youtube.com/embed/1nn18gHKv7I?autoplay=1&mute=0&controls=0&loop=0&playsinline=1"
     allow="autoplay"
     style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
     tabindex="-1" aria-hidden="true"></iframe>
@@ -1260,22 +1260,52 @@
 
   <script>
   (function(){
-    const pill   = document.getElementById('audio-pill');
-    const iframe = document.getElementById('yt-ambient');
-    const close  = document.getElementById('audio-close');
-    let muted = false;
+    const pill        = document.getElementById('audio-pill');
+    const crowdIframe = document.getElementById('yt-crowd');
+    const ambientIframe = document.getElementById('yt-ambient');
+    const closeBtn    = document.getElementById('audio-close');
 
-    function setMute(m){
+    const CROWD_SRC   = crowdIframe.getAttribute('data-src');
+    const AMBIENT_SRC = ambientIframe.getAttribute('data-src');
+    // Fx8TrHj55ek is ~11 seconds (crowd cheer), delay ambient by that much
+    const CROWD_DURATION_MS = 11000;
+
+    let muted = false;
+    let ambientStarted = false;
+
+    // Step 1: start crowd noise immediately
+    crowdIframe.src = CROWD_SRC;
+
+    // Step 2: after crowd ends, start ambient (no loop)
+    setTimeout(function() {
+      if (!muted) {
+        ambientIframe.src = AMBIENT_SRC;
+        ambientStarted = true;
+      }
+    }, CROWD_DURATION_MS);
+
+    function setMute(m) {
       muted = m;
-      const base = 'https://www.youtube.com/embed/1nn18gHKv7I?loop=1&playlist=1nn18gHKv7I&playsinline=1&controls=0&autoplay=1&mute=';
-      iframe.src = base + (m ? '1' : '0');
+      if (m) {
+        // mute: reload with mute=1
+        if (ambientStarted) {
+          ambientIframe.src = AMBIENT_SRC.replace('mute=0', 'mute=1');
+        }
+        crowdIframe.src = '';
+      } else {
+        // unmute: reload clean
+        if (ambientStarted) {
+          ambientIframe.src = AMBIENT_SRC;
+        }
+      }
       pill.classList.toggle('muted', m);
       document.getElementById('audio-label').textContent = m ? '\uD83D\uDD07 Bez zvuka' : '\u26BD Ambijent';
     }
 
-    pill.addEventListener('click', function(e){
-      if(e.target === close || close.contains(e.target)){
-        iframe.src = '';
+    pill.addEventListener('click', function(e) {
+      if (e.target === closeBtn || closeBtn.contains(e.target)) {
+        crowdIframe.src = '';
+        ambientIframe.src = '';
         pill.style.display = 'none';
       } else {
         setMute(!muted);
