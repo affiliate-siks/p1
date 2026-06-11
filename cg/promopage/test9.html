@@ -665,7 +665,7 @@
 
     /* ── SECTION LABEL upgrade ── */
     .section-label::before {
-      content: '⚽';
+      content: '';
       font-size: 18px;
       margin-right: -4px;
     }
@@ -859,10 +859,10 @@
       setTimeout(function(){
         if(saved){
           // show SAVED, allow retry
-          showMsg('ODBRANJEN! 🧤', '#ff4455', true);
+          showMsg('ODBRANJEN!', '#ff4455', true);
         } else {
           // GOAL — flash net, start audio
-          showMsg('GOOOAL! ⚽', '#ffcb05', false);
+          showMsg('GOOOAL!', '#ffcb05', false);
           flashNet();
           window.__startAudio();
         }
@@ -935,7 +935,7 @@
     <div class="hero-inner">
       <!-- LEFT -->
       <div class="hero-left">
-        <span class="hero-eyebrow">⚽ FIFA World Cup 2026</span>
+        <span class="hero-eyebrow"> FIFA World Cup 2026</span>
         <h1 class="hero-title">
           Igraj Svjetsko<br>
           u <span>Admiralu!</span>
@@ -946,7 +946,7 @@
         </p>
         <a href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne&competition=Svetsko_prvenstvo_2026"
            class="hero-cta" target="_blank">
-          ⚽ Kladi se odmah
+          Kladi se odmah
         </a>
       </div>
 
@@ -967,7 +967,7 @@
   <main class="main-content">
 
     <div class="section-label">
-      <h2>🎁 Aktivne Promocije</h2>
+      <h2> Aktivne Promocije</h2>
       <div class="line"></div>
     </div>
 
@@ -1409,18 +1409,9 @@
   })();
   </script>
 
-  <!-- AUDIO -->
-  <iframe id="yt-crowd"
-    src=""  data-src="https://www.youtube.com/embed/VklWk_v9Dg4?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&enablejsapi=1"
-    allow="autoplay"
-    style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
-    tabindex="-1" aria-hidden="true"></iframe>
-
-  <iframe id="yt-ambient"
-    src=""  data-src="https://www.youtube.com/embed/1nn18gHKv7I?autoplay=1&mute=0&controls=0&loop=0&playsinline=1&enablejsapi=1"
-    allow="autoplay"
-    style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;left:-9999px;border:none;"
-    tabindex="-1" aria-hidden="true"></iframe>
+  <!-- AUDIO — native MP3, instant play -->
+  <audio id="snd-crowd"   src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3"   preload="auto"></audio>
+  <audio id="snd-whistle" src="https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3" preload="auto"></audio>
 
   <div id="audio-pill">
     <div id="audio-icon">
@@ -1429,67 +1420,34 @@
       <span class="bar" style="animation-delay:0.3s"></span>
       <span class="bar" style="animation-delay:0.45s"></span>
     </div>
-    <span id="audio-label">&#x26BD; Ambijent</span>
+    <span id="audio-label">Ambijent</span>
     <span id="audio-close">&#x2715;</span>
   </div>
 
   <style>
     #audio-pill {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+      display: flex; align-items: center; gap: 10px;
       background: rgba(0,21,64,0.88);
       border: 1px solid rgba(255,203,5,0.35);
-      border-radius: 40px;
-      padding: 8px 14px 8px 10px;
+      border-radius: 40px; padding: 8px 14px 8px 10px;
       backdrop-filter: blur(10px);
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-      user-select: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: pointer; font-family: 'Montserrat', sans-serif;
+      user-select: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
-    #audio-pill:hover {
-      border-color: rgba(255,203,5,0.7);
-      box-shadow: 0 4px 24px rgba(255,203,5,0.2);
-    }
-    #audio-icon {
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 18px;
-    }
-    .bar {
-      display: inline-block;
-      width: 3px;
-      background: #ffcb05;
-      border-radius: 2px;
-      animation: barAnim 0.8s ease-in-out infinite;
-    }
+    #audio-pill:hover { border-color: rgba(255,203,5,0.7); box-shadow: 0 4px 24px rgba(255,203,5,0.2); }
+    #audio-icon { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
+    .bar { display: inline-block; width: 3px; background: #ffcb05; border-radius: 2px; animation: barAnim 0.8s ease-in-out infinite; }
     .bar:nth-child(1) { animation-name: bar1; }
     .bar:nth-child(2) { animation-name: bar2; }
     .bar:nth-child(3) { animation-name: bar3; }
     .bar:nth-child(4) { animation-name: bar2; }
-    @keyframes bar1 { 0%,100%{height:4px}  50%{height:16px} }
-    @keyframes bar2 { 0%,100%{height:8px}  50%{height:18px} }
-    @keyframes bar3 { 0%,100%{height:12px} 50%{height:6px}  }
-    #audio-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-    #audio-close {
-      font-size: 15px;
-      color: rgba(255,255,255,0.45);
-      line-height: 1;
-      padding-left: 4px;
-      transition: color 0.2s;
-    }
+    @keyframes bar1 { 0%,100%{height:4px} 50%{height:16px} }
+    @keyframes bar2 { 0%,100%{height:8px} 50%{height:18px} }
+    @keyframes bar3 { 0%,100%{height:12px} 50%{height:6px} }
+    #audio-label { font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 0.5px; white-space: nowrap; }
+    #audio-close { font-size: 15px; color: rgba(255,255,255,0.45); line-height: 1; padding-left: 4px; transition: color 0.2s; }
     #audio-pill:hover #audio-close { color: #ff4455; }
     #audio-pill.muted .bar { animation: none !important; height: 4px !important; opacity: 0.35; }
     #audio-pill.muted #audio-label { color: rgba(255,255,255,0.45); }
@@ -1497,56 +1455,34 @@
 
   <script>
   (function(){
-    const pill          = document.getElementById('audio-pill');
-    const crowdIframe   = document.getElementById('yt-crowd');
-    const ambientIframe = document.getElementById('yt-ambient');
-    const closeBtn      = document.getElementById('audio-close');
-
-    const CROWD_SRC   = crowdIframe.getAttribute('data-src');
-    const AMBIENT_SRC = ambientIframe.getAttribute('data-src');
-
+    const pill    = document.getElementById('audio-pill');
+    const closeBtn= document.getElementById('audio-close');
+    const crowd   = document.getElementById('snd-crowd');
+    const whistle = document.getElementById('snd-whistle');
     let muted = false;
 
-    /* set volume to 100 via YT IFrame API postMessage */
-    function maxVolume(iframe) {
-      setTimeout(function() {
-        try {
-          iframe.contentWindow.postMessage(
-            JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }),
-            '*'
-          );
-        } catch(e) {}
-      }, 800);
-    }
-
-    /* called once user clicks the overlay */
     window.__startAudio = function() {
-      const overlay = document.getElementById('start-overlay');
+      var overlay = document.getElementById('start-overlay');
       if (overlay) {
         overlay.style.transition = 'opacity 0.3s';
         overlay.style.opacity = '0';
         setTimeout(function(){ overlay.remove(); }, 320);
       }
-      crowdIframe.src   = CROWD_SRC;
-      ambientIframe.src = AMBIENT_SRC;
-      maxVolume(crowdIframe);
-      maxVolume(ambientIframe);
+      crowd.volume = 1;   crowd.play().catch(function(){});
+      whistle.volume = 1; whistle.play().catch(function(){});
     };
 
     function setMute(m) {
       muted = m;
-      const muteParam = m ? 'mute=1' : 'mute=0';
-      crowdIframe.src   = CROWD_SRC.replace('mute=0', muteParam);
-      ambientIframe.src = AMBIENT_SRC.replace('mute=0', muteParam);
-      if (!m) { maxVolume(crowdIframe); maxVolume(ambientIframe); }
+      crowd.muted = m; whistle.muted = m;
       pill.classList.toggle('muted', m);
-      document.getElementById('audio-label').textContent = m ? '\uD83D\uDD07 Bez zvuka' : '\u26BD Ambijent';
+      document.getElementById('audio-label').textContent = m ? 'Bez zvuka' : 'Ambijent';
     }
 
     pill.addEventListener('click', function(e) {
       if (e.target === closeBtn || closeBtn.contains(e.target)) {
-        crowdIframe.src   = '';
-        ambientIframe.src = '';
+        crowd.pause();   crowd.src = '';
+        whistle.pause(); whistle.src = '';
         pill.style.display = 'none';
       } else {
         setMute(!muted);
