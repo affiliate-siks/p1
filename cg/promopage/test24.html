@@ -103,30 +103,9 @@ body{
     repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(0,100,30,.03) 80px,rgba(0,100,30,.03) 160px);
 }
 
-.page-bg::after{
-  content:'';
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,203,5,0.5) 1px, transparent 2px);
-  background-size:140px 140px, 220px 220px;
-  background-position:0 0, 70px 70px;
-  animation:sparkleMove 25s linear infinite;
-  opacity:0.25;
-}
-
-@keyframes sparkleMove{
-  from{transform:translateY(0);}
-  to{transform:translateY(-140px);}
-}
-
-
 /* ── MAIN ── */
 .main-content{
-  position:relative;z-index:2;max-width:1340px;margin:0 auto;
+  position:relative;z-index:1;max-width:1340px;margin:0 auto;
   padding:clamp(16px,3vw,36px) clamp(8px,2vw,20px) 60px;
 }
 .section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
@@ -167,9 +146,7 @@ body{
 @keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .promo-card{
   position:relative;
-  background:rgba(255,255,255,0.03);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  background:linear-gradient(160deg,rgba(20,28,46,0.82) 0%,rgba(13,20,32,0.82) 100%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border:1px solid rgba(255,255,255,.06);border-radius:12px;
   overflow:hidden;display:flex;flex-direction:column;
   transition:transform .28s cubic-bezier(.22,.68,0,1.2),box-shadow .28s,border-color .28s;
@@ -189,25 +166,8 @@ body{
 .promo-card-border svg{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px)}
 .border-path{fill:none;stroke:url(#goldGrad);stroke-width:1.5;stroke-dasharray:60 400;animation:borderDash 1.8s linear infinite}
 @keyframes borderDash{to{stroke-dashoffset:-460}}
-.promo-card-img-wrap{
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:220px;
-  background:transparent;
-}
-.promo-card-img{
-  width:100%;
-  height:100%;
-  max-height:220px;
-  object-fit:contain;
-  object-position:center;
-  display:block;
-  transition:transform .5s ease;
-  padding:12px;
-}
+.promo-card-img-wrap{position:relative;overflow:hidden}
+.promo-card-img{width:100%;aspect-ratio:430/258;object-fit:cover;display:block;transition:transform .5s ease}
 .promo-card:hover .promo-card-img{transform:scale(1.06)}
 .promo-card-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,transparent,#141c2e);pointer-events:none}
 .promo-card-img-wrap::before{
@@ -384,22 +344,18 @@ body{
     <canvas id="particles-canvas"></canvas>
     <div class="promo-grid">
       <!-- 1 -->
-      <div class="promo-card">
-        <div class="promo-card-border">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <rect class="border-path" x="0.75" y="0.75" width="98.5" height="98.5" rx="7"/>
-          </svg>
-        </div>
-        <div class="promo-card-img-wrap">
-        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/d4GnVz8Y/Chat-GPT-Image-Jun-12-2026-11-27-00-AM.png" alt="Bez stresa u nadoknadi">
-        </div>
-        <div class="promo-card-body">
-          <p>Za tipove Konačan ishod 1 i 2 računamo samo 90 minuta igre – ne padaš u nadoknadi!</p>
-          <div class="promo-card-actions">
-            <a href="https://admiralbet.me/promotions/bez-stresa-u-nadoknadi-1449" class="btn btn-secondary">Info</a>
-          </div>
-        </div>
-      </div>
+      <a href="https://admiralbet.me/promotions/bez-stresa-u-nadoknadi-1449"
+         class="promo-card"
+         style="text-decoration:none;"
+         target="_blank">
+
+        <img loading="lazy"
+             decoding="async"
+             class="promo-card-img"
+             src="https://i.ibb.co/6c0QMcHY/Chat-GPT-Image-Jun-12-2026-11-43-04-AM.png"
+             alt="Bez stresa u nadoknadi">
+
+      </a>
 
       <!-- 2 -->
       <div class="promo-card">
