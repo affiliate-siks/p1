@@ -224,6 +224,37 @@ body{
 /* ── GOAL OVERLAY STYLES ── */
 .gzone{cursor:crosshair}
 #overlay.done{pointer-events:none}
+
+.promo-card-image-only{
+  padding:0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  overflow:hidden;
+  display:block;
+}
+
+.promo-card-image-only::before,
+.promo-card-image-only::after{
+  display:none !important;
+}
+
+.promo-card-image-only .promo-card-img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+  margin:0;
+}
+
+.promo-card-image-only:hover .promo-card-img{
+  transform:none;
+}
+
 </style>
 </head>
 <body class="page-bg">
@@ -345,9 +376,9 @@ body{
     <div class="promo-grid">
       <!-- 1 -->
       <a href="https://admiralbet.me/promotions/bez-stresa-u-nadoknadi-1449"
-         class="promo-card"
-         style="text-decoration:none;"
-         target="_blank">
+         class="promo-card promo-card-image-only"
+         target="_blank"
+         style="text-decoration:none;">
 
         <img loading="lazy"
              decoding="async"
