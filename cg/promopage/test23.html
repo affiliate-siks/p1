@@ -23,33 +23,6 @@ body{
   overflow-x:hidden;min-height:100vh;
   width:100%;max-width:100vw;
 }
-body::before{
-  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(255,203,5,.18) 0%, transparent 26%),
-    radial-gradient(circle at 82% 28%, rgba(0,120,255,.16) 0%, transparent 25%),
-    radial-gradient(circle at 45% 82%, rgba(255,255,255,.09) 0%, transparent 22%),
-    linear-gradient(180deg,#070c18 0%,#061226 55%,#050a14 100%);
-  animation:moveGlow 16s ease-in-out infinite alternate;
-}
-body::after{
-  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,203,5,.20) 1px, transparent 1.6px);
-  background-size:52px 52px,86px 86px;
-  background-position:0 0,22px 18px;
-  opacity:.45;
-  animation:sparkle 14s linear infinite;
-}
-@keyframes moveGlow{
-  from{transform:translate(0,0) scale(1)}
-  to{transform:translate(-38px,-30px) scale(1.08)}
-}
-@keyframes sparkle{
-  from{background-position:0 0,22px 18px}
-  to{background-position:104px 104px,194px 190px}
-}
 
 /* ── BALLS CANVAS ── */
 #ball-wrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
@@ -119,20 +92,41 @@ body::after{
 
 /* ── PAGE BG ── */
 .page-bg{
-  background:transparent;
+  background:linear-gradient(180deg,#070c18 0%,#060e1c 100%);
   position:relative;
 }
 .page-bg::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:
-    repeating-linear-gradient(60deg,transparent,transparent 30px,rgba(255,203,5,.018) 30px,rgba(255,203,5,.018) 31px),
-    repeating-linear-gradient(-60deg,transparent,transparent 30px,rgba(255,203,5,.014) 30px,rgba(255,203,5,.014) 31px);
-  opacity:.75;
+    repeating-linear-gradient(60deg,transparent,transparent 30px,rgba(255,203,5,.015) 30px,rgba(255,203,5,.015) 31px),
+    repeating-linear-gradient(-60deg,transparent,transparent 30px,rgba(255,203,5,.015) 30px,rgba(255,203,5,.015) 31px),
+    repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(0,100,30,.03) 80px,rgba(0,100,30,.03) 160px);
 }
+
+.page-bg::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.7) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,203,5,0.5) 1px, transparent 2px);
+  background-size:140px 140px, 220px 220px;
+  background-position:0 0, 70px 70px;
+  animation:sparkleMove 25s linear infinite;
+  opacity:0.25;
+}
+
+@keyframes sparkleMove{
+  from{transform:translateY(0);}
+  to{transform:translateY(-140px);}
+}
+
 
 /* ── MAIN ── */
 .main-content{
-  position:relative;z-index:1;max-width:1340px;margin:0 auto;
+  position:relative;z-index:2;max-width:1340px;margin:0 auto;
   padding:clamp(16px,3vw,36px) clamp(8px,2vw,20px) 60px;
 }
 .section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
@@ -173,13 +167,13 @@ body::after{
 @keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .promo-card{
   position:relative;
-  background:rgba(255,255,255,.035);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.10);border-radius:12px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.06);border-radius:12px;
   overflow:hidden;display:flex;flex-direction:column;
-  transition:transform .28s cubic-bezier(.22,.68,0,1.2),box-shadow .28s,border-color .28s,background .28s;
+  transition:transform .28s cubic-bezier(.22,.68,0,1.2),box-shadow .28s,border-color .28s;
   animation:cardIn .5s ease both;
-  box-shadow:0 10px 34px rgba(0,0,0,.30);
 }
 .promo-card:nth-child(1){animation-delay:.05s}.promo-card:nth-child(2){animation-delay:.10s}
 .promo-card:nth-child(3){animation-delay:.15s}.promo-card:nth-child(4){animation-delay:.20s}
@@ -188,17 +182,34 @@ body::after{
 .promo-card:nth-child(9){animation-delay:.45s}.promo-card:nth-child(10){animation-delay:.50s}
 .promo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;z-index:2}
 .promo-card::after{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse at 50% 0%,rgba(255,203,5,.07),transparent 65%);opacity:0;transition:opacity .35s;pointer-events:none;z-index:1}
-.promo-card:hover{transform:translateY(-6px) scale(1.013);box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 34px rgba(255,203,5,.12),inset 0 0 0 1px rgba(255,203,5,.22);border-color:rgba(255,203,5,.32);background:rgba(255,255,255,.055)}
+.promo-card:hover{transform:translateY(-6px) scale(1.013);box-shadow:0 16px 44px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,203,5,.2);border-color:rgba(255,203,5,.28)}
 .promo-card:hover::before,.promo-card:hover::after{opacity:1}
 .promo-card-border{position:absolute;inset:0;border-radius:12px;pointer-events:none;z-index:3;opacity:0;transition:opacity .3s;overflow:hidden}
 .promo-card:hover .promo-card-border{opacity:1}
 .promo-card-border svg{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px)}
 .border-path{fill:none;stroke:url(#goldGrad);stroke-width:1.5;stroke-dasharray:60 400;animation:borderDash 1.8s linear infinite}
 @keyframes borderDash{to{stroke-dashoffset:-460}}
-.promo-card-img-wrap{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:220px;background:transparent}
-.promo-card-img{width:100%;height:100%;max-height:220px;aspect-ratio:430/258;object-fit:contain;object-position:center;display:block;transition:transform .5s ease;padding:12px}
-.promo-card:hover .promo-card-img{transform:scale(1.035)}
-.promo-card-img-wrap::after{content:none}
+.promo-card-img-wrap{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:220px;
+  background:transparent;
+}
+.promo-card-img{
+  width:100%;
+  height:100%;
+  max-height:220px;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  transition:transform .5s ease;
+  padding:12px;
+}
+.promo-card:hover .promo-card-img{transform:scale(1.06)}
+.promo-card-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(to bottom,transparent,#141c2e);pointer-events:none}
 .promo-card-img-wrap::before{
   content:'';position:absolute;top:0;left:-75%;width:50%;height:100%;
   background:linear-gradient(120deg,transparent,rgba(255,255,255,.12),transparent);
@@ -206,7 +217,7 @@ body::after{
 }
 .promo-card:hover .promo-card-img-wrap::before{opacity:1;animation:shine .6s ease forwards}
 @keyframes shine{from{left:-75%;opacity:1}to{left:125%;opacity:1}}
-.promo-card-body{padding:12px 14px 14px;display:flex;flex-direction:column;flex:1;background:rgba(7,12,24,.42);border-top:1px solid rgba(255,255,255,.06)}
+.promo-card-body{padding:12px 14px 14px;display:flex;flex-direction:column;flex:1}
 .promo-card-body h2{font-size:12px;font-weight:800;text-transform:uppercase;color:#fff;margin-bottom:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .promo-card-body p{font-size:10.5px;line-height:1.5;color:#7a8aaa;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .promo-card-actions{display:flex;justify-content:center;gap:7px;margin-top:10px;flex-wrap:wrap}
@@ -216,8 +227,7 @@ body::after{
 .btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}.btn-secondary:hover{background:rgba(255,203,5,.1)}
 @media(max-width:600px){
   .promo-card{border-radius:8px}
-  .promo-card-img-wrap{min-height:142px}
-  .promo-card-img{aspect-ratio:4/2.8;max-height:142px;padding:7px}
+  .promo-card-img{aspect-ratio:4/2.8}
   .promo-card-body{padding:8px 9px 10px}
   .promo-card-body h2{font-size:9px;margin-bottom:4px}
   .promo-card-body p{font-size:8.5px;-webkit-line-clamp:2}
