@@ -1990,7 +1990,7 @@ body.page-bg{
     function setupYouTubeCrowd(){
       var holder = document.createElement('div');
       holder.id = 'yt-crowd-player';
-      holder.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;';
+      holder.style.cssText = 'position:fixed;left:0;bottom:0;width:220px;height:140px;opacity:.01;pointer-events:none;z-index:-1;';
       document.body.appendChild(holder);
 
       window.onYouTubeIframeAPIReady = function(){
@@ -2009,6 +2009,9 @@ body.page-bg{
               ytReady = true;
               if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(muted ? 0 : 100);
               if (ytPendingPlay && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+            },
+            onError: function(e){
+              console.warn('youtube crowd audio failed:', e);
             }
           }
         });
@@ -2042,10 +2045,17 @@ body.page-bg{
     }
 
     window.__playCrowd = function(){
-      if (crowdStarted) return;
+      if (crowdStarted) {
+        if (ytReady && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+        return;
+      }
       crowdStarted = true;
+      muted = false;
       ytPendingPlay = true;
+      if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(100);
       if (ytReady && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+      pill.classList.remove('muted');
+      document.getElementById('audio-label').textContent = 'Ambijent';
     };
 
     window.__startAudio = function(){
@@ -2073,7 +2083,11 @@ body.page-bg{
         if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
         pill.style.display = 'none';
       } else {
-        setMute(!muted);
+        if (!crowdStarted) {
+          window.__playCrowd();
+        } else {
+          setMute(!muted);
+        }
       }
     });
   })();
