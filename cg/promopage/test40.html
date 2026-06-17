@@ -58,7 +58,7 @@ body{
 }
 .hero-bg{
   position:absolute;inset:0;
-  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat;
+  background:url('https://i.ibb.co/27fk5Jwh/landing-desktop.png') center/cover no-repeat;
   filter:brightness(.5) saturate(1.2);
 }
 .hero-bg::after{
@@ -262,7 +262,7 @@ body{
   background:#071225;
 }
 .hero-bg{
-  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat;
+  background:url('https://i.ibb.co/27fk5Jwh/landing-desktop.png') center/cover no-repeat;
   filter:brightness(.72) saturate(1.15);
 }
 .hero-bg::after{
@@ -1524,7 +1524,7 @@ body.page-bg{
 
 /* FINAL HERO RESPONSIVE IMAGE */
 .hero-bg{
-  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat !important;
+  background:url('https://i.ibb.co/27fk5Jwh/landing-desktop.png') center/cover no-repeat !important;
 }
 @media(max-width:700px){
   .hero-bg{
@@ -1547,7 +1547,7 @@ body.page-bg{
 .hero-bg{
   position:absolute !important;
   inset:0 !important;
-  background-image:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') !important;
+  background-image:url('https://i.ibb.co/27fk5Jwh/landing-desktop.png') !important;
   background-position:center center !important;
   background-size:contain !important;
   background-repeat:no-repeat !important;
@@ -1719,7 +1719,7 @@ body.page-bg{
 <section class="hero">
   <picture class="hero-picture">
     <source media="(max-width:700px)" srcset="https://i.ibb.co/S4KsGmDb/landing-1920x1080-720.png">
-    <img src="https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png" alt="Prati Mundijal uz najbolju ponudu u zemlji" class="hero-banner-img" loading="eager" decoding="async">
+    <img src="https://i.ibb.co/27fk5Jwh/landing-desktop.png" alt="Prati Mundijal uz najbolju ponudu u zemlji" class="hero-banner-img" loading="eager" decoding="async">
   </picture>
 </section>
 
@@ -2067,6 +2067,7 @@ body.page-bg{
     var ytPlayer = null;
     var ytReady = false;
     var ytPendingPlay = false;
+    var ytFallbackFrame = null;
 
     var actx = null;
     var crowdSource = null;
@@ -2108,6 +2109,17 @@ body.page-bg{
     }
     setupYouTubeCrowd();
 
+    function startYouTubeFallback(){
+      if (!ytFallbackFrame) {
+        ytFallbackFrame = document.createElement('iframe');
+        ytFallbackFrame.title = 'Ambijentalna muzika';
+        ytFallbackFrame.allow = 'autoplay; encrypted-media';
+        ytFallbackFrame.style.cssText = 'position:fixed;left:0;bottom:0;width:220px;height:140px;opacity:.01;pointer-events:none;z-index:-1;border:0;';
+        document.body.appendChild(ytFallbackFrame);
+      }
+      ytFallbackFrame.src = 'https://www.youtube.com/embed/' + YOUTUBE_CROWD_ID + '?autoplay=1&loop=1&playlist=' + YOUTUBE_CROWD_ID + '&controls=0&playsinline=1&rel=0';
+    }
+
     // Fetch + decode via Web Audio API — bypasses CSP sandbox on audio element
     function fetchAndPlay(url, loop, onSource) {
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2139,6 +2151,7 @@ body.page-bg{
       ytPendingPlay = true;
       if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(100);
       if (ytReady && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+      startYouTubeFallback();
       pill.classList.remove('muted');
       document.getElementById('audio-label').textContent = 'Ambijent';
     };
@@ -2158,6 +2171,10 @@ body.page-bg{
       muted = m;
       if (gainNode) gainNode.gain.value = m ? 0 : 1;
       if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(m ? 0 : 100);
+      if (ytFallbackFrame) {
+        if (m) ytFallbackFrame.src = '';
+        else startYouTubeFallback();
+      }
       pill.classList.toggle('muted', m);
       document.getElementById('audio-label').textContent = m ? 'Bez zvuka' : 'Ambijent';
     }
@@ -2166,6 +2183,7 @@ body.page-bg{
       if (e.target === closeBtn || closeBtn.contains(e.target)){
         if (crowdSource) { try { crowdSource.stop(); } catch(e){} }
         if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+        if (ytFallbackFrame) ytFallbackFrame.src = '';
         pill.style.display = 'none';
       } else {
         if (!crowdStarted) {
