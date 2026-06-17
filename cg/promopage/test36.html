@@ -1433,6 +1433,94 @@ body.page-bg{
     line-height:1.13 !important;
   }
 }
+
+/* FINAL RESPONSIVE POSITIONS */
+.main-content{
+  width:100% !important;
+  max-width:1180px !important;
+  margin-inline:auto !important;
+  padding-left:clamp(12px,3vw,22px) !important;
+  padding-right:clamp(12px,3vw,22px) !important;
+}
+.promo-grid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:clamp(14px,2.2vw,26px) !important;
+  align-items:start !important;
+  width:100% !important;
+  overflow:visible !important;
+}
+.promo-card{
+  width:100% !important;
+  min-width:0 !important;
+  height:clamp(150px,15vw,176px) !important;
+  min-height:clamp(150px,15vw,176px) !important;
+}
+.promo-card-image-only{
+  grid-column:1 / -1 !important;
+  width:100% !important;
+  max-width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  justify-self:stretch !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+.promo-card-image-only::before,
+.promo-card-image-only::after{
+  content:none !important;
+  display:none !important;
+}
+.promo-card-image-only .promo-card-img{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  max-width:100% !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  transform:none !important;
+  filter:none !important;
+  border-radius:0 !important;
+}
+@media(min-width:901px){
+  .promo-card-image-only .promo-card-img{
+    max-height:420px !important;
+  }
+}
+@media(max-width:900px){
+  .main-content{
+    max-width:620px !important;
+  }
+  .promo-grid{
+    grid-template-columns:1fr !important;
+  }
+  .promo-card{
+    height:clamp(142px,36vw,168px) !important;
+    min-height:clamp(142px,36vw,168px) !important;
+  }
+}
+@media(max-width:420px){
+  .main-content{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+  .promo-grid{
+    gap:14px !important;
+  }
+}
+
+/* FINAL REMOVE CARD GRID */
+.promo-card::after{
+  background:linear-gradient(115deg,rgba(255,255,255,.08) 0%,transparent 26%,transparent 74%,rgba(255,255,255,.04) 100%) !important;
+}
+.promo-card-img-wrap::before,
+.promo-card-img-wrap::after{
+  display:none !important;
+}
 </style>
 </head>
 <body class="page-bg">
@@ -1462,7 +1550,7 @@ body.page-bg{
     </svg>
   </div>
 
-  <img src="https://assets.football-logos.cc/logos/tournaments/1500x1500/fifa-world-cup-2026.31d2489d.png" style="width:clamp(40px,9vw,68px);height:clamp(40px,9vw,68px);object-fit:contain;margin-bottom:8px;flex-shrink:0;filter:drop-shadow(0 0 14px rgba(255,203,5,.6));" loading="eager" alt="">
+  <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" style="width:clamp(40px,9vw,68px);height:clamp(40px,9vw,68px);object-fit:contain;margin-bottom:8px;flex-shrink:0;filter:drop-shadow(0 0 14px rgba(255,203,5,.6));" loading="eager" alt="">
   <div class="ov-eyebrow">FIFA World Cup 2026</div>
   <div class="ov-title">Igraj Svjetsko u Admiralu!</div>
   <div class="ov-sub">Odaberi kut — sutiraj i uđi!</div>
@@ -1527,7 +1615,7 @@ body.page-bg{
 <section class="hero">
   <div class="hero-topbar">
     <img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" class="hero-logo-admiral" loading="eager" alt="AdmiralBet">
-    <img src="https://static.wikia.nocookie.net/logopedia/images/3/3b/FIFA_World_Cup_Canada_Mexico_USA_2026_Logo_With_World_Cup_%26_2026_Wordmarks_%28White_2%29.png/revision/latest/scale-to-width-down/249?cb=20260105224127" class="hero-logo-wc" loading="eager" alt="FIFA World Cup 2026">
+    <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" class="hero-logo-wc" loading="eager" alt="FIFA World Cup 2026">
   </div>
   <div class="hero-bg"></div>
   <div class="hero-grass"></div>
@@ -1544,7 +1632,7 @@ body.page-bg{
          class="hero-cta" target="_blank">Kladi se odmah</a>
     </div>
     <div class="hero-right">
-      <img src="https://assets.football-logos.cc/logos/tournaments/1500x1500/fifa-world-cup-2026.31d2489d.png" class="hero-wc" loading="eager" alt="FIFA World Cup 2026">
+      <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" class="hero-wc" loading="eager" alt="FIFA World Cup 2026">
       <span class="hero-wc-label">Official 2026</span>
     </div>
   </div>
@@ -1583,7 +1671,7 @@ body.page-bg{
 
       <!-- 4 Presjek -->
       <a href="https://admiralbet.me/promotions/admiralbet-tripleta-1416" class="promo-card-image-only" aria-label="Presjek - Tripleta">
-        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/TDCHTvpC/Untitled-design-2.png" alt="Presjek - Tripleta">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/CpbZmfJ3/Untitled-1920-x-1080-px-2.png" alt="Presjek - Tripleta">
       </a>
 
       <!-- 5 -->
@@ -1609,7 +1697,7 @@ body.page-bg{
 
       <!-- 8 Presjek -->
       <a href="https://admiralbet.me/promotions/admiralovih-11-spinback-1418" class="promo-card-image-only" aria-label="Presjek - Admiralovih 11 Spinback">
-        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/FLQZTrgt/Untitled-1920-x-1080-px.png" alt="Presjek - Admiralovih 11 Spinback">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/SXmvLPHK/Untitled-1920-x-1080-px-3.png" alt="Presjek - Admiralovih 11 Spinback">
       </a>
 
       <!-- 9 -->
@@ -1635,7 +1723,7 @@ body.page-bg{
 
       <!-- 12 Presjek -->
       <a href="https://admiralbet.me/promotions" class="promo-card-image-only" aria-label="Presjek - Loyalty">
-        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/4ZKc2txx/12.png" alt="Presjek - Loyalty">
+        <img loading="lazy" decoding="async" class="promo-card-img" src="https://i.ibb.co/ntmvzfH/Untitled-1920-x-1080-px-1.png" alt="Presjek - Loyalty">
       </a>
 
       <!-- 13 -->
