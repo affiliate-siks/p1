@@ -58,7 +58,7 @@ body{
 }
 .hero-bg{
   position:absolute;inset:0;
-  background:url('https://i.ibb.co/wF4BKbmf/9749de26-3221-4bab-9412-a9f1e34dc31b.png') center/cover no-repeat;
+  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat;
   filter:brightness(.5) saturate(1.2);
 }
 .hero-bg::after{
@@ -262,7 +262,7 @@ body{
   background:#071225;
 }
 .hero-bg{
-  background:url('https://i.ibb.co/wF4BKbmf/9749de26-3221-4bab-9412-a9f1e34dc31b.png') center/cover no-repeat;
+  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat;
   filter:brightness(.72) saturate(1.15);
 }
 .hero-bg::after{
@@ -1521,6 +1521,110 @@ body.page-bg{
 .promo-card-img-wrap::after{
   display:none !important;
 }
+
+/* FINAL HERO RESPONSIVE IMAGE */
+.hero-bg{
+  background:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') center/cover no-repeat !important;
+}
+@media(max-width:700px){
+  .hero-bg{
+    background:url('https://i.ibb.co/S4KsGmDb/landing-1920x1080-720.png') center/cover no-repeat !important;
+  }
+}
+
+/* FINAL HERO IMAGE ONLY */
+.hero{
+  width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  aspect-ratio:1920 / 720 !important;
+  display:block !important;
+  overflow:hidden !important;
+  background:#06112a !important;
+  border-bottom:0 !important;
+  box-shadow:none !important;
+}
+.hero-bg{
+  position:absolute !important;
+  inset:0 !important;
+  background-image:url('https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png') !important;
+  background-position:center center !important;
+  background-size:contain !important;
+  background-repeat:no-repeat !important;
+  filter:none !important;
+}
+.hero-bg::after{
+  content:none !important;
+  display:none !important;
+}
+.hero-topbar,
+.hero-inner,
+.hero-left,
+.hero-right,
+.hero-grass,
+.hero-eyebrow,
+.hero-title,
+.hero-sub,
+.hero-cta,
+.hero-wc,
+.hero-wc-label{
+  display:none !important;
+}
+@media(max-width:700px){
+  .hero{
+    aspect-ratio:1920 / 1080 !important;
+  }
+  .hero-bg{
+    background-image:url('https://i.ibb.co/S4KsGmDb/landing-1920x1080-720.png') !important;
+    background-size:contain !important;
+    background-position:center center !important;
+    background-repeat:no-repeat !important;
+  }
+}
+
+/* FINAL HERO TRUE BANNER */
+.hero{
+  width:100% !important;
+  max-width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  aspect-ratio:auto !important;
+  display:block !important;
+  overflow:hidden !important;
+  background:#06112a !important;
+  border:0 !important;
+  box-shadow:none !important;
+  line-height:0 !important;
+}
+.hero-picture{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  line-height:0 !important;
+}
+.hero-banner-img{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  max-width:100% !important;
+  object-fit:contain !important;
+  object-position:center !important;
+}
+.hero-bg,
+.hero-bg::after,
+.hero-topbar,
+.hero-inner,
+.hero-left,
+.hero-right,
+.hero-grass,
+.hero-eyebrow,
+.hero-title,
+.hero-sub,
+.hero-cta,
+.hero-wc,
+.hero-wc-label{
+  display:none !important;
+}
 </style>
 </head>
 <body class="page-bg">
@@ -1613,29 +1717,10 @@ body.page-bg{
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-topbar">
-    <img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" class="hero-logo-admiral" loading="eager" alt="AdmiralBet">
-    <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" class="hero-logo-wc" loading="eager" alt="FIFA World Cup 2026">
-  </div>
-  <div class="hero-bg"></div>
-  <div class="hero-grass"></div>
-  <div class="hero-inner">
-    <div class="hero-left">
-      <span class="hero-eyebrow">FIFA World Cup 2026</span>
-      <h1 class="hero-title">
-        <span class="hero-line">PRATI <span class="hero-accent">MUNDIJAL</span></span>
-        <span class="hero-line">UZ NAJBOLJU</span>
-        <span class="hero-line">PONUDU U ZEMLJI</span>
-      </h1>
-      <p class="hero-sub">Promo paketi, sport bonusi i casino akcije tokom cijelog Mundijala.</p>
-      <a href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne&competition=Svetsko_prvenstvo_2026"
-         class="hero-cta" target="_blank">Kladi se odmah</a>
-    </div>
-    <div class="hero-right">
-      <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" class="hero-wc" loading="eager" alt="FIFA World Cup 2026">
-      <span class="hero-wc-label">Official 2026</span>
-    </div>
-  </div>
+  <picture class="hero-picture">
+    <source media="(max-width:700px)" srcset="https://i.ibb.co/S4KsGmDb/landing-1920x1080-720.png">
+    <img src="https://i.ibb.co/hJ3DmzB0/landing-desktop-720.png" alt="Prati Mundijal uz najbolju ponudu u zemlji" class="hero-banner-img" loading="eager" decoding="async">
+  </picture>
 </section>
 
 <!-- MAIN -->
