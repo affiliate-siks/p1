@@ -111,8 +111,7 @@ body{
 .section-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .section-label h2{
   font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;
-  background:linear-gradient(90deg,#fff 60%,var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  color:#fff;
 }
 .section-label::before{content:'';display:none}
 .section-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--card-b),transparent)}
@@ -388,6 +387,7 @@ body.page-bg{
     radial-gradient(circle at 20% 0%, rgba(0,178,255,.16), transparent 36%),
     radial-gradient(circle at 88% 18%, rgba(255,203,5,.12), transparent 30%),
     linear-gradient(180deg,#050b18 0%,#081326 45%,#040916 100%) !important;
+  background-color:#050b18 !important;
 }
 .hero{
   min-height:clamp(250px,32vw,420px) !important;
@@ -2098,70 +2098,19 @@ body.page-bg{
 
   <script>
   (function(){
-    var YOUTUBE_CROWD_ID = "HmpzUm5j4OE";
+    var CROWD_URL = "https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Football%20_%20Soccer%20Stadium%20Ambience%20Sound%20Effect%20_%20Crowd%20Cheers%2C%20Claps%20%26%20Match%20Atmosphere%20%5BVklWk_v9Dg4%5D.mp3";
     var WHISTLE_URL = "https://raw.githubusercontent.com/affiliate-siks/p1/main/cg/promopage/Ending%20Whistle%20Of%20A%20Soccer_Football%20Match%20Sound%20Effect%20%5B1nn18gHKv7I%5D.mp3";
 
     var pill     = document.getElementById('audio-pill');
     var closeBtn = document.getElementById('audio-close');
     var muted    = false;
     var crowdStarted = false;
-    var ytPlayer = null;
-    var ytReady = false;
-    var ytPendingPlay = false;
-    var ytFallbackFrame = null;
-
+    var audioEl = null;
     var actx = null;
     var crowdSource = null;
     var gainNode = null;
 
-    function setupYouTubeCrowd(){
-      var holder = document.createElement('div');
-      holder.id = 'yt-crowd-player';
-      holder.style.cssText = 'position:fixed;left:0;bottom:0;width:220px;height:140px;opacity:.01;pointer-events:none;z-index:-1;';
-      document.body.appendChild(holder);
-
-      window.onYouTubeIframeAPIReady = function(){
-        ytPlayer = new YT.Player('yt-crowd-player', {
-          videoId: YOUTUBE_CROWD_ID,
-          playerVars: {
-            autoplay: 0,
-            controls: 0,
-            loop: 1,
-            playlist: YOUTUBE_CROWD_ID,
-            rel: 0,
-            playsinline: 1
-          },
-          events: {
-            onReady: function(){
-              ytReady = true;
-              if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(muted ? 0 : 100);
-              if (ytPendingPlay && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-            },
-            onError: function(e){
-              console.warn('youtube crowd audio failed:', e);
-            }
-          }
-        });
-      };
-
-      var tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
-    }
-    setupYouTubeCrowd();
-
-    function startYouTubeFallback(){
-      if (!ytFallbackFrame) {
-        ytFallbackFrame = document.createElement('iframe');
-        ytFallbackFrame.title = 'Ambijentalna muzika';
-        ytFallbackFrame.allow = 'autoplay; encrypted-media';
-        ytFallbackFrame.style.cssText = 'position:fixed;left:0;bottom:0;width:220px;height:140px;opacity:.01;pointer-events:none;z-index:-1;border:0;';
-        document.body.appendChild(ytFallbackFrame);
-      }
-      ytFallbackFrame.src = 'https://www.youtube.com/embed/' + YOUTUBE_CROWD_ID + '?autoplay=1&loop=1&playlist=' + YOUTUBE_CROWD_ID + '&controls=0&playsinline=1&rel=0';
-    }
-
-    // Fetch + decode via Web Audio API — bypasses CSP sandbox on audio element
+    // Fetch + decode via Web Audio API
     function fetchAndPlay(url, loop, onSource) {
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === 'suspended') actx.resume();
@@ -2183,16 +2132,13 @@ body.page-bg{
     }
 
     window.__playCrowd = function(){
-      if (crowdStarted) {
-        if (ytReady && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-        return;
-      }
+      if (crowdStarted) return;
       crowdStarted = true;
       muted = false;
-      ytPendingPlay = true;
-      if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(100);
-      if (ytReady && ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-      startYouTubeFallback();
+      fetchAndPlay(CROWD_URL, true, function(src, gain){
+        crowdSource = src;
+        gainNode = gain;
+      });
       pill.classList.remove('muted');
       document.getElementById('audio-label').textContent = 'Ambijent';
     };
@@ -2211,11 +2157,6 @@ body.page-bg{
     function setMute(m){
       muted = m;
       if (gainNode) gainNode.gain.value = m ? 0 : 1;
-      if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(m ? 0 : 100);
-      if (ytFallbackFrame) {
-        if (m) ytFallbackFrame.src = '';
-        else startYouTubeFallback();
-      }
       pill.classList.toggle('muted', m);
       document.getElementById('audio-label').textContent = m ? 'Bez zvuka' : 'Ambijent';
     }
@@ -2223,8 +2164,6 @@ body.page-bg{
     pill.addEventListener('click', function(e){
       if (e.target === closeBtn || closeBtn.contains(e.target)){
         if (crowdSource) { try { crowdSource.stop(); } catch(e){} }
-        if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
-        if (ytFallbackFrame) ytFallbackFrame.src = '';
         pill.style.display = 'none';
       } else {
         if (!crowdStarted) {
