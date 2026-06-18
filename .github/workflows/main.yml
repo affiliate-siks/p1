@@ -7,6 +7,7 @@ on:
 env:
   AWS_REGION: eu-central-1
   SOURCE_DIR: "."
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
 jobs:
   deploy:
@@ -79,24 +80,8 @@ jobs:
             --exclude ".git/*" \
             --exclude ".github/*"
 
-      - name: Get CloudFront distribution ID by bucket origin
-        id: cf
-        run: |
-          DIST_ID=$(aws cloudfront list-distributions \
-            --query "DistributionList.Items[?contains(Origins.Items[].DomainName, '$S3_BUCKET')].Id" \
-            --output text)
-          if [ -z "$DIST_ID" ] || [ "$DIST_ID" = "None" ]; then
-            echo "No CloudFront distribution found for bucket $S3_BUCKET — skipping invalidation."
-            echo "SKIP=true" >> $GITHUB_OUTPUT
-          else
-            echo "Found distribution: $DIST_ID"
-            echo "SKIP=false" >> $GITHUB_OUTPUT
-            echo "DIST_ID=$DIST_ID" >> $GITHUB_OUTPUT
-          fi
-
       - name: Invalidate CloudFront cache
-        if: steps.cf.outputs.SKIP == 'false'
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id "${{ steps.cf.outputs.DIST_ID }}" \
+            --distribution-id "${{ env.CLOUDFRONT_DISTRIBUTION_ID }}" \
             --paths "/*"
