@@ -1631,42 +1631,35 @@ body.page-bg{
   position:relative !important;
 }
 .hero-topbar{
-  position:absolute !important;
+  position:relative !important;
   top:0 !important;
   left:0 !important;
   right:0 !important;
-  height:58px !important;
+  height:clamp(50px,7vw,64px) !important;
   z-index:6 !important;
   display:flex !important;
   align-items:center !important;
   justify-content:space-between !important;
-  padding:0 26px !important;
+  padding:0 clamp(16px,4vw,28px) !important;
   background:linear-gradient(180deg,#0b3a86 0%,#061d4c 48%,#031333 100%) !important;
   box-shadow:0 2px 10px rgba(0,0,0,.28) !important;
   line-height:normal !important;
 }
 .hero-logo-admiral{
-  width:118px !important;
+  width:clamp(104px,18vw,136px) !important;
   height:auto !important;
   display:block !important;
 }
 .hero-logo-wc{
-  width:38px !important;
-  height:42px !important;
+  width:clamp(30px,5.5vw,42px) !important;
+  height:clamp(34px,6vw,48px) !important;
   object-fit:contain !important;
   display:block !important;
 }
 @media(max-width:420px){
   .hero-topbar{
-    height:56px !important;
-    padding:0 18px !important;
-  }
-  .hero-logo-admiral{
-    width:106px !important;
-  }
-  .hero-logo-wc{
-    width:34px !important;
-    height:39px !important;
+    height:52px !important;
+    padding:0 16px !important;
   }
 }
 </style>
