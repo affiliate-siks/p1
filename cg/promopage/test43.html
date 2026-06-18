@@ -1625,6 +1625,50 @@ body.page-bg{
 .hero-wc-label{
   display:none !important;
 }
+
+/* FINAL RESTORE HERO NAV BAR */
+.hero{
+  position:relative !important;
+}
+.hero-topbar{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  height:58px !important;
+  z-index:6 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  padding:0 26px !important;
+  background:linear-gradient(180deg,#0b3a86 0%,#061d4c 48%,#031333 100%) !important;
+  box-shadow:0 2px 10px rgba(0,0,0,.28) !important;
+  line-height:normal !important;
+}
+.hero-logo-admiral{
+  width:118px !important;
+  height:auto !important;
+  display:block !important;
+}
+.hero-logo-wc{
+  width:38px !important;
+  height:42px !important;
+  object-fit:contain !important;
+  display:block !important;
+}
+@media(max-width:420px){
+  .hero-topbar{
+    height:56px !important;
+    padding:0 18px !important;
+  }
+  .hero-logo-admiral{
+    width:106px !important;
+  }
+  .hero-logo-wc{
+    width:34px !important;
+    height:39px !important;
+  }
+}
 </style>
 </head>
 <body class="page-bg">
@@ -1717,6 +1761,10 @@ body.page-bg{
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-topbar">
+    <img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" class="hero-logo-admiral" loading="eager" alt="AdmiralBet">
+    <img src="https://assets.football-logos.cc/logos/tournaments/700x700/fifa-world-cup-2026--white.9ba8a004.png" class="hero-logo-wc" loading="eager" alt="FIFA World Cup 2026">
+  </div>
   <picture class="hero-picture">
     <source media="(max-width:700px)" srcset="https://i.ibb.co/S4KsGmDb/landing-1920x1080-720.png">
     <img src="https://i.ibb.co/27fk5Jwh/landing-desktop.png" alt="Prati Mundijal uz najbolju ponudu u zemlji" class="hero-banner-img" loading="eager" decoding="async">
