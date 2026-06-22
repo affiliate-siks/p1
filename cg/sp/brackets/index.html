@@ -49,15 +49,6 @@ button,input{font-family:inherit;cursor:pointer}
   display:flex;align-items:center;justify-content:space-between;
   height:64px;gap:20px;
 }
-.logo{display:flex;align-items:center;gap:10px}
-.logo-box{
-  background:var(--red);color:#fff;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18px;font-weight:900;padding:6px 10px;
-  border-radius:6px;letter-spacing:.5px;
-}
-.logo-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;letter-spacing:.5px}
-.logo-sub{font-size:12px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
 .nav-link{
   height:38px;padding:0 18px;
   border:1px solid var(--line);border-radius:7px;
@@ -66,7 +57,6 @@ button,input{font-family:inherit;cursor:pointer}
   text-transform:uppercase;letter-spacing:.5px;transition:.18s;
 }
 .nav-link:hover{border-color:var(--gold);color:var(--gold)}
-.nav-link.active{background:var(--gold);border-color:var(--gold);color:#111}
 
 /* ─── HERO ─── */
 .hero{
@@ -170,6 +160,13 @@ button,input{font-family:inherit;cursor:pointer}
   vertical-align:middle;
 }
 .round-tab.active .chip-score{background:rgba(0,0,0,.2);color:#111}
+.round-tab.sent{border-color:var(--gold);color:var(--gold)}
+.round-tab .chip-sent{
+  display:none;background:#1f7a3d;color:#fff;border-radius:4px;
+  font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;
+}
+.round-tab.sent .chip-sent{display:inline-block}
+.round-tab.sent.active .chip-sent{background:#0d4a22}
 
 /* ─── ROUND PANEL ─── */
 .round-panel{display:none}
@@ -249,10 +246,61 @@ button,input{font-family:inherit;cursor:pointer}
 }
 .pick-btn:hover{border-color:var(--gold3);color:var(--gold)}
 .pick-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
-.tbd-note{
-  font-size:11px;color:var(--muted2);text-align:center;
-  padding:16px;font-style:italic;
+.match-card.locked{opacity:.7}
+.match-card.locked .pick-btn{cursor:not-allowed}
+
+/* ─── PER-ROUND SUBMIT ─── */
+.round-submit-wrap{
+  margin-top:24px;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border:1px solid var(--line);border-radius:18px;
+  padding:24px;
 }
+.round-submit-wrap h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;
+  text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;
+}
+.round-submit-wrap p{color:var(--muted);font-size:13px;margin-bottom:18px}
+.round-form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+.field input{
+  width:100%;height:50px;
+  background:rgba(255,255,255,.06);border:1px solid var(--line);
+  border-radius:10px;padding:0 14px;
+  color:#fff;font-size:15px;outline:none;transition:.2s;
+}
+.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,184,0,.1)}
+.field input::placeholder{color:var(--muted2)}
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px}
+.check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--gold);margin-top:2px}
+.check-row label{font-size:13px;color:var(--muted);cursor:pointer}
+.check-row a{color:var(--gold);text-decoration:underline}
+.submit-btn{
+  width:100%;height:58px;margin-top:18px;border:none;border-radius:10px;
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.5px;cursor:not-allowed;transition:.2s;
+}
+.submit-btn.ready{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;cursor:pointer;
+}
+.submit-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,184,0,.3)}
+.submit-btn.done{background:#1f7a3d;color:#fff;cursor:default}
+.round-status{
+  display:none;margin-top:14px;padding:14px;border-radius:12px;
+  font-weight:700;font-size:14px;text-align:center;
+}
+.round-status.show{display:block}
+.round-status.ok{background:rgba(31,122,61,.18);border:1px solid rgba(31,122,61,.4);color:#7be0a0}
+.round-status.err{background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);color:#ff7080}
+.progress-bar-wrap{
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  border-radius:10px;padding:12px 16px;margin-bottom:16px;
+  display:flex;align-items:center;gap:14px;
+}
+.progress-bar-wrap .pb-text{font-size:13px;font-weight:700;white-space:nowrap;min-width:120px}
+.pb-track{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.pb-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:.3s}
 
 /* ─── CHAMPION BOX ─── */
 .champion-box{
@@ -270,57 +318,6 @@ button,input{font-family:inherit;cursor:pointer}
   color:var(--gold2);margin:8px 0;min-height:60px;
 }
 .champion-box .c-sub{font-size:13px;color:var(--muted)}
-
-/* ─── FORM ─── */
-.form-section{
-  background:linear-gradient(135deg,var(--card),var(--card2));
-  border:1px solid var(--line);border-radius:20px;
-  padding:36px;margin-top:40px;
-}
-.form-section h2{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:-1px;margin-bottom:6px;
-}
-.form-section p{color:var(--muted);font-size:14px;margin-bottom:24px}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.field label{display:block;font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
-.field input{
-  width:100%;height:50px;
-  background:rgba(255,255,255,.06);border:1px solid var(--line);
-  border-radius:10px;padding:0 14px;
-  color:#fff;font-size:15px;outline:none;transition:.2s;
-}
-.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,184,0,.1)}
-.field input::placeholder{color:var(--muted2)}
-.check-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px}
-.check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--gold);margin-top:2px}
-.check-row label{font-size:13px;color:var(--muted);cursor:pointer}
-.check-row a{color:var(--gold);text-decoration:underline}
-.submit-btn{
-  width:100%;height:58px;margin-top:20px;border:none;border-radius:10px;
-  background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);
-  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;
-  text-transform:uppercase;letter-spacing:.5px;cursor:not-allowed;transition:.2s;
-}
-.submit-btn.ready{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;cursor:pointer;
-}
-.submit-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,184,0,.3)}
-.success-box{
-  display:none;margin-top:14px;padding:16px;
-  background:rgba(255,184,0,.1);border:1px solid var(--line2);
-  border-radius:12px;color:var(--gold2);
-  font-weight:700;font-size:15px;text-align:center;
-}
-.success-box.show{display:block}
-.progress-bar-wrap{
-  background:rgba(255,255,255,.05);border:1px solid var(--line);
-  border-radius:10px;padding:12px 16px;margin-bottom:16px;
-  display:flex;align-items:center;gap:14px;
-}
-.progress-bar-wrap .pb-text{font-size:13px;font-weight:700;white-space:nowrap;min-width:120px}
-.pb-track{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-.pb-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:.3s}
 
 /* ─── RULES ─── */
 .rules-section{background:var(--navy2);border-top:1px solid var(--line);padding:50px 0}
@@ -351,7 +348,7 @@ button,input{font-family:inherit;cursor:pointer}
 @media(max-width:640px){
   .hero{padding:36px 16px 30px}
   .section{padding:10px 16px 40px}
-  .form-grid{grid-template-columns:1fr}
+  .round-form-grid{grid-template-columns:1fr}
   .round-tabs{gap:6px}
   .header-inner{padding:0 14px}
 }
@@ -362,16 +359,8 @@ button,input{font-family:inherit;cursor:pointer}
 <!-- HEADER -->
 <header class="header">
   <div class="header-inner">
-    <a href="admiralbet-grupna-faza.html" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;line-height:1;gap:0">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:1.5px;text-transform:uppercase">Admiral</span>
-      <span style="display:flex;align-items:center;gap:5px;margin-top:1px">
-        <span style="display:flex;flex-direction:column;gap:2px;margin-top:1px">
-          <span style="display:block;background:var(--gold);border-radius:1px;height:3px;width:28px"></span>
-          <span style="display:block;background:var(--gold);border-radius:1px;height:3px;width:22px"></span>
-          <span style="display:block;background:var(--gold);border-radius:1px;height:3px;width:16px"></span>
-        </span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--gold);letter-spacing:2px">BET</span>
-      </span>
+    <a href="admiralbet-grupna-faza.html" style="text-decoration:none;display:flex;align-items:center">
+      <img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" alt="AdmiralBet" style="height:36px;width:auto;display:block"/>
     </a>
     <div style="display:flex;gap:8px">
       <button class="nav-link" onclick="window.location='admiralbet-grupna-faza.html'">← Grupna faza</button>
@@ -387,7 +376,7 @@ button,input{font-family:inherit;cursor:pointer}
     <p>
       Predvidi pobjednike u svakoj rundi nokaut faze Svjetskog prvenstva 2026.
       Osvoji dio nagradnog fonda od <strong>5.000€ promo money</strong> — <strong>1.000€ po rundi</strong>.
-      Učešće je besplatno.
+      Svaku rundu šalješ posebno, učešće je besplatno.
     </p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="document.getElementById('bracket-sec').scrollIntoView({behavior:'smooth'})">Počni predikciju</button>
@@ -414,7 +403,7 @@ button,input{font-family:inherit;cursor:pointer}
 <!-- BRACKET -->
 <section class="section" id="bracket-sec">
   <h2 class="section-title">Popuni <span>bracket</span></h2>
-  <div class="section-sub">Za svaku rundu izaberi pobjednika svakog meča — 1 sat prije prve utakmice te runde</div>
+  <div class="section-sub">Izaberi pobjednika svakog meča u rundi, pa zaključaj baš tu rundu — najkasnije sat prije prve utakmice te runde</div>
 
   <div class="progress-bar-wrap">
     <span class="pb-text" id="pbText">0 / 31 mečeva</span>
@@ -427,33 +416,7 @@ button,input{font-family:inherit;cursor:pointer}
   <div class="champion-box" id="championBox">
     <div class="c-label">🏆 Tvoj predviđeni šampion</div>
     <div class="c-name" id="championName">—</div>
-    <div class="c-sub">Šampion se automatski popunjava na osnovu tvojih predikcija u finalu</div>
-  </div>
-
-  <!-- FORM -->
-  <div class="form-section" style="margin-top:40px" id="form-sec">
-    <h2>Zaključaj predikciju</h2>
-    <p>Unesi podatke za prijavu. Predikcija se zaključava sat vremena prije prve utakmice svake runde.</p>
-    <div class="form-grid">
-      <div class="field">
-        <label>Ime i prezime</label>
-        <input id="fName" placeholder="Npr. Marko Nikolić" oninput="checkForm()"/>
-      </div>
-      <div class="field">
-        <label>Email adresa</label>
-        <input id="fEmail" type="email" placeholder="Npr. marko@email.com" oninput="checkForm()"/>
-      </div>
-      <div class="field">
-        <label>Broj telefona</label>
-        <input id="fPhone" placeholder="Npr. 067 123 456" oninput="checkForm()"/>
-      </div>
-    </div>
-    <div class="check-row">
-      <input type="checkbox" id="fTerms" onchange="checkForm()"/>
-      <label for="fTerms">Prihvatam <a href="#rules-sec">pravila promocije</a> i saglasan/a sam sa uslovima učešća. 18+.</label>
-    </div>
-    <button class="submit-btn" id="submitBtn" disabled>Zaključaj predikciju →</button>
-    <div class="success-box" id="successBox">✓ Predikcija je uspješno sačuvana! Bićeš obaviješten/a email-om nakon svake runde.</div>
+    <div class="c-sub">Šampion se automatski popunjava na osnovu tvoje predikcije u finalu</div>
   </div>
 </section>
 
@@ -468,8 +431,8 @@ button,input{font-family:inherit;cursor:pointer}
           <li><b>Početak:</b> 28. jun 2026. (Runda 16)</li>
           <li><b>Kraj:</b> 19. jul 2026. (Finale)</li>
           <li>Rok za unos prognoza za svaku rundu: najkasnije <b>sat vremena</b> prije početka prve utakmice te runde.</li>
-          <li>Nakon toga izmjene nijesu moguće.</li>
-          <li>Učešće je besplatno. Svaki igrač može učestvovati jednom.</li>
+          <li>Svaka runda se šalje posebno; nakon roka izmjene nijesu moguće.</li>
+          <li>Učešće je besplatno. Svaki igrač učestvuje jednom po rundi.</li>
         </ul>
       </div>
       <div class="rule-block">
@@ -512,6 +475,11 @@ button,input{font-family:inherit;cursor:pointer}
 </footer>
 
 <script>
+/* ──────────────────────────────────────────────
+   APPS SCRIPT URL — zamijeni svojim /exec linkom
+   ────────────────────────────────────────────── */
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjCQzWPRcgVGloI7TjzLX7x888LmxZOJesiBMKntsqZtUphPur675-ewQ-VHyMsRX3/exec';
+
 const rounds=[
   {
     id:'r16',
@@ -577,7 +545,8 @@ const rounds=[
   }
 ];
 
-const selections={};
+const selections={};       // key "r16-0" -> team
+const sentRounds={};       // id -> true kad je runda poslata
 let totalPicks=0;
 rounds.forEach(r=>totalPicks+=r.matches.length);
 
@@ -588,7 +557,7 @@ function buildTabs(){
     const tab=document.createElement('button');
     tab.className='round-tab'+(ri===0?' active':'');
     tab.id='tab-'+r.id;
-    tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${r.matches.length}</span>`;
+    tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${r.matches.length}</span><span class="chip-sent">poslato</span>`;
     tab.onclick=()=>switchTab(r.id);
     tabs.appendChild(tab);
 
@@ -603,7 +572,7 @@ function buildTabs(){
 function buildPanel(r){
   const matchCards=r.matches.map((m,mi)=>{
     const key=`${r.id}-${mi}`;
-    return `<div class="match-card">
+    return `<div class="match-card" id="mc-${key}">
       <div class="match-head">
         <span class="match-num">Meč ${mi+1}</span>
         <span class="match-date">${r.date}</span>
@@ -615,18 +584,35 @@ function buildPanel(r){
           <div class="team-slot away"><div class="team-flag">🏟</div><div class="team-label">${m.away}<small>gost</small></div></div>
         </div>
         <div class="winner-pick">
-          <button class="pick-btn" data-key="${key}" data-team="${m.home}" onclick="pickWinner(this)">${m.home}</button>
-          <button class="pick-btn" data-key="${key}" data-team="${m.away}" onclick="pickWinner(this)">${m.away}</button>
+          <button class="pick-btn" data-key="${key}" data-round="${r.id}" data-team="${m.home}" onclick="pickWinner(this)">${m.home}</button>
+          <button class="pick-btn" data-key="${key}" data-round="${r.id}" data-team="${m.away}" onclick="pickWinner(this)">${m.away}</button>
         </div>
       </div>
     </div>`;
   }).join('');
+
   return `<div class="round-info-bar">
     <div class="ri-left"><h3>${r.label}</h3><p>Rok: ${r.deadline}</p></div>
     <div class="ri-right"><div class="nagrad">${r.nagrada}</div><div class="nagrad-lbl">Nagrada</div></div>
   </div>
   <div class="deadline-bar"><span class="deadline-dot"></span>Rok: Najkasnije sat vremena prije prve utakmice · ${r.date}</div>
-  <div class="matches-grid">${matchCards}</div>`;
+  <div class="matches-grid">${matchCards}</div>
+
+  <div class="round-submit-wrap">
+    <h3>Zaključaj rundu: ${r.label}</h3>
+    <p>Unesi podatke i pošalji predikciju za ovu rundu. Šalje se samo ova runda.</p>
+    <div class="round-form-grid">
+      <div class="field"><label>Ime i prezime</label><input id="name-${r.id}" placeholder="Npr. Marko Nikolić" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Email adresa</label><input id="email-${r.id}" type="email" placeholder="Npr. marko@email.com" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Broj telefona</label><input id="phone-${r.id}" placeholder="Npr. 067 123 456" oninput="checkRound('${r.id}')"/></div>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="terms-${r.id}" onchange="checkRound('${r.id}')"/>
+      <label for="terms-${r.id}">Prihvatam <a href="#rules-sec">pravila promocije</a> i saglasan/a sam sa uslovima učešća. 18+.</label>
+    </div>
+    <button class="submit-btn" id="submit-${r.id}" disabled onclick="submitRound('${r.id}')">Popuni sve mečeve i unesi podatke</button>
+    <div class="round-status" id="status-${r.id}"></div>
+  </div>`;
 }
 
 function switchTab(id){
@@ -637,6 +623,8 @@ function switchTab(id){
 }
 
 function pickWinner(btn){
+  const rid=btn.dataset.round;
+  if(sentRounds[rid]) return; // zaključana runda
   const key=btn.dataset.key;
   const team=btn.dataset.team;
   if(selections[key]===team){
@@ -644,13 +632,12 @@ function pickWinner(btn){
     btn.classList.remove('selected');
   } else {
     selections[key]=team;
-    const siblings=[...btn.parentElement.children];
-    siblings.forEach(b=>b.classList.remove('selected'));
+    [...btn.parentElement.children].forEach(b=>b.classList.remove('selected'));
     btn.classList.add('selected');
   }
   updateScores();
   updateChampion();
-  checkForm();
+  checkRound(rid);
 }
 
 function updateScores(){
@@ -666,31 +653,106 @@ function updateScores(){
 }
 
 function updateChampion(){
-  const finalKey0=`final-0`;
-  const champ=selections[finalKey0]||'—';
+  const champ=selections['final-0']||'—';
   document.getElementById('championName').textContent=champ;
 }
 
-function checkForm(){
-  const name=document.getElementById('fName').value.trim();
-  const email=document.getElementById('fEmail').value.trim();
-  const phone=document.getElementById('fPhone').value.trim();
-  const terms=document.getElementById('fTerms').checked;
-  const done=Object.keys(selections).length;
-  const ready=name&&email&&phone&&terms&&done>0;
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=!ready;
-  btn.classList.toggle('ready',ready);
-  if(ready) btn.textContent=`Zaključaj ${done} predikcija →`;
-  else btn.textContent='Popuni predikcije i unesi podatke';
+function roundComplete(r){
+  return r.matches.every((_,mi)=>selections[`${r.id}-${mi}`]);
 }
 
-document.getElementById('submitBtn').addEventListener('click',function(){
-  if(this.disabled)return;
-  document.getElementById('successBox').classList.add('show');
-  this.disabled=true;this.classList.remove('ready');
-  this.textContent='✓ Predikcija sačuvana';
-});
+function checkRound(rid){
+  if(sentRounds[rid]) return;
+  const r=rounds.find(x=>x.id===rid);
+  const name=document.getElementById('name-'+rid).value.trim();
+  const email=document.getElementById('email-'+rid).value.trim();
+  const phone=document.getElementById('phone-'+rid).value.trim();
+  const terms=document.getElementById('terms-'+rid).checked;
+  const filled=roundComplete(r);
+  const ready=name&&email&&phone&&terms&&filled;
+  const btn=document.getElementById('submit-'+rid);
+  btn.disabled=!ready;
+  btn.classList.toggle('ready',ready);
+  if(ready) btn.textContent=`Zaključaj ${r.label} →`;
+  else if(!filled) btn.textContent='Popuni sve mečeve u rundi';
+  else btn.textContent='Unesi sve podatke';
+}
+
+function showStatus(rid,msg,type){
+  const el=document.getElementById('status-'+rid);
+  el.textContent=msg;
+  el.className='round-status show '+type;
+}
+
+async function submitRound(rid){
+  const btn=document.getElementById('submit-'+rid);
+  if(btn.disabled||sentRounds[rid]) return;
+  const r=rounds.find(x=>x.id===rid);
+  const name=document.getElementById('name-'+rid).value.trim();
+  const email=document.getElementById('email-'+rid).value.trim();
+  const phone=document.getElementById('phone-'+rid).value.trim();
+
+  // sastavi predikcije ove runde
+  const picks=r.matches.map((m,mi)=>({
+    matchIndex:mi,
+    home:m.home,
+    away:m.away,
+    pick:selections[`${r.id}-${mi}`]
+  }));
+
+  btn.disabled=true;
+  btn.textContent='Slanje...';
+  showStatus(rid,'Slanje predikcije...','ok');
+
+  const payload={
+    action:'submitRound',
+    roundId:r.id,
+    roundLabel:r.label,
+    name,email,phone,
+    totalMatches:r.matches.length,
+    picks,
+    submittedAtClient:new Date().toISOString(),
+    pageUrl:location.href,
+    userAgent:navigator.userAgent
+  };
+
+  try{
+    const res=await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    if(data && data.success){
+      lockRound(rid);
+      showStatus(rid,'✓ Predikcija za '+r.label+' je sačuvana! Rezultat dobijaš email-om nakon runde.','ok');
+    }else{
+      btn.disabled=false; btn.classList.add('ready');
+      btn.textContent=`Zaključaj ${r.label} →`;
+      showStatus(rid,(data&&data.message)||'Greška pri slanju. Pokušaj ponovo.','err');
+    }
+  }catch(e){
+    btn.disabled=false; btn.classList.add('ready');
+    btn.textContent=`Zaključaj ${r.label} →`;
+    showStatus(rid,'Greška u konekciji. Pokušaj ponovo.','err');
+  }
+}
+
+function lockRound(rid){
+  sentRounds[rid]=true;
+  const r=rounds.find(x=>x.id===rid);
+  r.matches.forEach((_,mi)=>{
+    const mc=document.getElementById(`mc-${rid}-${mi}`);
+    if(mc) mc.classList.add('locked');
+  });
+  document.getElementById('tab-'+rid).classList.add('sent');
+  ['name','email','phone','terms'].forEach(f=>{
+    const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;
+  });
+  const btn=document.getElementById('submit-'+rid);
+  btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
+  btn.textContent='✓ '+r.label+' poslato';
+}
 
 buildTabs();
 </script>
