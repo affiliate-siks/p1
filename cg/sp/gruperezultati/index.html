@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konsenzus predikcija — SP 2026 Nokaut</title>
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --line:#21262d; --txt:#e6edf3; --muted:#8b949e;
+    --c1:#f0b429; --c2:#3fb950; --c3:#58a6ff; --admiral:#0b3d91;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:24px}
+  header{max-width:1100px;margin:0 auto 24px}
+  h1{font-size:24px;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:14px}
+  .legend{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;font-size:13px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card h2{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between}
+  .card h2 small{color:var(--muted);font-weight:400}
+  .row{margin:9px 0}
+  .rl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
+  .rl b{font-weight:600}
+  .rl span{color:var(--muted)}
+  .bar{height:18px;background:#0d1117;border-radius:5px;overflow:hidden}
+  .fill{height:100%;border-radius:5px;transition:width .6s}
+  .grp1 .fill{background:var(--c1)} .grp2 .fill{background:var(--c2)} .grp3 .fill{background:var(--c3)}
+  .poslabel{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:12px 0 4px}
+  footer{max-width:1100px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ Konsenzus predikcija — Svjetsko prvenstvo 2026</h1>
+  <div class="sub">AdmiralBet Nokaut izazov · plasman po grupama (1./2./3. mjesto)</div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--c1)"></i>1. mjesto</span>
+    <span><i class="dot" style="background:var(--c2)"></i>2. mjesto</span>
+    <span><i class="dot" style="background:var(--c3)"></i>3. mjesto</span>
+  </div>
+</header>
+<div class="grid" id="grid"></div>
+<footer>Prikazani su najčešće birani timovi za svaku poziciju, sa procentom prijava koje su ih izabrale.</footer>
+
+<script>
+// Konsenzus izveden iz 199 prijava. Vrijednosti = % prijava koje su tim stavile na tu poziciju.
+const N = 199;
+const data = {
+ "A":{name:"Grupa A",p1:[["Mexico",83],["Czechia",7],["South Korea",6]],p2:[["Czechia",46],["South Korea",38],["Mexico",9]],p3:[["South Korea",37],["Czechia",33],["South Africa",26]]},
+ "B":{name:"Grupa B",p1:[["Switzerland",92],["Canada",4],["Qatar",3]],p2:[["Canada",47],["Bosnia & Herzeg.",24],["Switzerland",16]],p3:[["Bosnia & Herzeg.",58],["Canada",24],["Qatar",13]]},
+ "C":{name:"Grupa C",p1:[["Brazil",96],["Morocco",3]],p2:[["Morocco",78],["Scotland",13],["Brazil",4]],p3:[["Scotland",72],["Morocco",17],["Haiti",4]]},
+ "D":{name:"Grupa D",p1:[["Türkiye",46],["USA",27],["Paraguay",15]],p2:[["USA",30],["Paraguay",24],["Türkiye",22]],p3:[["Paraguay",37],["Australia",30],["USA",18]]},
+ "E":{name:"Grupa E",p1:[["Germany",92],["Ecuador",4]],p2:[["Ecuador",47],["Ivory Coast",46]],p3:[["Ivory Coast",44],["Ecuador",43],["Curaçao",9]]},
+ "F":{name:"Grupa F",p1:[["Netherlands",78],["Sweden",8],["Japan",8]],p2:[["Japan",37],["Netherlands",20],["Sweden",20]],p3:[["Sweden",33],["Japan",30],["Tunisia",18]]},
+ "G":{name:"Grupa G",p1:[["Belgium",97]],p2:[["Egypt",61],["Iran",16],["Belgium",2]],p3:[["Iran",46],["New Zealand",24],["Egypt",18]]},
+ "H":{name:"Grupa H",p1:[["Spain",96],["Uruguay",3]],p2:[["Uruguay",83],["Spain",4]],p3:[["Saudi Arabia",58],["Cape Verde",26],["Uruguay",8]]},
+ "I":{name:"Grupa I",p1:[["France",95],["Norway",3]],p2:[["Norway",62],["Senegal",27],["France",3]],p3:[["Senegal",55],["Iraq",13],["Norway",13]]},
+ "J":{name:"Grupa J",p1:[["Argentina",98]],p2:[["Austria",73],["Algeria",18]],p3:[["Algeria",58],["Austria",24],["Jordan",10]]},
+ "K":{name:"Grupa K",p1:[["Portugal",93],["Colombia",5]],p2:[["Colombia",81],["Portugal",4]],p3:[["DR Congo",60],["Uzbekistan",30]]},
+ "L":{name:"Grupa L",p1:[["England",96],["Croatia",3]],p2:[["Croatia",51],["England",3],["Ghana",2]],p3:[["Ghana",54],["Croatia",40],["Panama",6]]}
+};
+
+const grid=document.getElementById('grid');
+function bars(arr,cls){
+  return arr.map(([t,p])=>`
+    <div class="row ${cls}">
+      <div class="rl"><b>${t}</b><span>${p}%</span></div>
+      <div class="bar"><div class="fill" style="width:${p}%"></div></div>
+    </div>`).join('');
+}
+for(const k of Object.keys(data)){
+  const d=data[k];
+  const el=document.createElement('div');
+  el.className='card';
+  el.innerHTML=`
+    <h2>${d.name} <small>${N} prijava</small></h2>
+    <div class="poslabel">1. mjesto</div>${bars(d.p1,'grp1')}
+    <div class="poslabel">2. mjesto</div>${bars(d.p2,'grp2')}
+    <div class="poslabel">3. mjesto</div>${bars(d.p3,'grp3')}`;
+  grid.appendChild(el);
+}
+</script>
+</body>
+</html>
