@@ -809,17 +809,6 @@
           </a>
         </div>
 
-        <div class="leaderboard-wrap">
-          <div class="leaderboard-head">
-            <h3>Top 20 najbržih</h3>
-            <p class="leaderboard-sub">Prikazuju se samo učesnici sa svim tačnim odgovorima. Najbržih 20 biće posebno istaknuto.</p>
-          </div>
-
-          <div class="leaderboard-list" id="leaderboardList">
-            <div class="leaderboard-empty">Učitavanje rang liste...</div>
-          </div>
-        </div>
-
         <div class="promo-banner-shell" id="promoBannerShell">
           <div class="promo-banner">
             <button type="button" class="promo-banner-close" id="promoBannerClose" aria-label="Zatvori">×</button>
@@ -978,7 +967,6 @@
   const finalCorrect = document.getElementById('finalCorrect');
   const finalTime = document.getElementById('finalTime');
   const finalStatus = document.getElementById('finalStatus');
-  const leaderboardList = document.getElementById('leaderboardList');
   const promoBannerShell = document.getElementById('promoBannerShell');
   const promoBannerClose = document.getElementById('promoBannerClose');
   const promoBannerLink = document.getElementById('promoBannerLink');
@@ -1163,23 +1151,6 @@
     return correct;
   }
 
-  function renderLeaderboard(items) {
-    if (!Array.isArray(items) || items.length === 0) {
-      leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista će biti prikazana čim stignu prvi validni rezultati.</div>';
-      return;
-    }
-
-    leaderboardList.innerHTML = items.map(item => {
-      return `
-        <div class="leaderboard-row">
-          <div class="leaderboard-rank">#${item.rank}</div>
-          <div class="leaderboard-name">${item.initials}</div>
-          <div class="leaderboard-time">${item.time}</div>
-        </div>
-      `;
-    }).join('');
-  }
-
   async function apiRequest(payload) {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -1226,19 +1197,6 @@
       pageUrl: location.href,
       referrer: document.referrer || ''
     });
-  }
-
-  async function fetchLeaderboard() {
-    try {
-      const data = await apiRequest({ action: 'getLeaderboard' });
-      if (data && data.success) {
-        renderLeaderboard(data.items || []);
-      } else {
-        renderLeaderboard([]);
-      }
-    } catch (error) {
-      leaderboardList.innerHTML = '<div class="leaderboard-empty">Rang lista trenutno nije dostupna.</div>';
-    }
   }
 
   initialsInput.addEventListener('input', () => {
@@ -1346,7 +1304,6 @@
       finalTime.textContent = formatTime(timeSeconds);
       finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
       showResult();
-      fetchLeaderboard();
     } catch (error) {
       nextBtn.disabled = false;
       setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
