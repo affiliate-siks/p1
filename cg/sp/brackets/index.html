@@ -10,353 +10,131 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#040c1a;
-  --navy2:#061325;
-  --navy3:#0b1e38;
-  --card:#0d2240;
-  --card2:#112a4e;
-  --gold:#FFB800;
-  --gold2:#ffd060;
-  --gold3:#cc9200;
-  --red:#E5001C;
-  --red2:#ff1f38;
-  --text:#ffffff;
-  --muted:rgba(255,255,255,.65);
-  --muted2:rgba(255,255,255,.38);
-  --line:rgba(255,255,255,.1);
-  --line2:rgba(255,184,0,.25);
+  --navy:#040c1a;--navy2:#061325;--navy3:#0b1e38;--card:#0d2240;--card2:#112a4e;
+  --gold:#FFB800;--gold2:#ffd060;--gold3:#cc9200;--red:#E5001C;--red2:#ff1f38;
+  --text:#ffffff;--muted:rgba(255,255,255,.65);--muted2:rgba(255,255,255,.38);
+  --line:rgba(255,255,255,.1);--line2:rgba(255,184,0,.25);
 }
 html{scroll-behavior:smooth}
-body{
-  font-family:'Barlow',sans-serif;
-  background:var(--navy);
-  color:var(--text);
-  overflow-x:hidden;
-  background-image:
-    radial-gradient(ellipse 80% 40% at 50% -10%,rgba(255,184,0,.07),transparent),
-    radial-gradient(ellipse 60% 30% at 0% 30%,rgba(229,0,28,.05),transparent);
-}
+body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--text);overflow-x:hidden;
+  background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(255,184,0,.07),transparent),radial-gradient(ellipse 60% 30% at 0% 30%,rgba(229,0,28,.05),transparent);}
 button,input{font-family:inherit;cursor:pointer}
-
-/* ─── HEADER ─── */
-.header{
-  position:sticky;top:0;z-index:30;
-  background:rgba(4,12,26,.92);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--line);
-}
-.header-inner{
-  max-width:1300px;margin:auto;padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  height:64px;gap:20px;
-}
-.nav-link{
-  height:38px;padding:0 18px;
-  border:1px solid var(--line);border-radius:7px;
-  background:transparent;color:var(--muted);
-  font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px;transition:.18s;
-}
+.header{position:sticky;top:0;z-index:30;background:rgba(4,12,26,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);}
+.header-inner{max-width:1300px;margin:auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px;}
+.nav-link{height:38px;padding:0 18px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:.18s;}
 .nav-link:hover{border-color:var(--gold);color:var(--gold)}
-
-/* ─── HERO ─── */
-.hero{
-  max-width:1300px;margin:auto;
-  padding:60px 20px 50px;
-  display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;
-}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);
-  border-radius:6px;padding:6px 12px;margin-bottom:20px;
-  font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
-  color:#ff7080;text-transform:uppercase;letter-spacing:1.5px;
-}
-.hero h1{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(56px,8vw,96px);font-weight:900;
-  line-height:.9;letter-spacing:-2px;text-transform:uppercase;
-}
+.hero{max-width:1300px;margin:auto;padding:60px 20px 50px;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);border-radius:6px;padding:6px 12px;margin-bottom:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#ff7080;text-transform:uppercase;letter-spacing:1.5px;}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(56px,8vw,96px);font-weight:900;line-height:.9;letter-spacing:-2px;text-transform:uppercase;}
 .hero h1 em{font-style:normal;color:var(--gold)}
 .hero h1 strong{color:var(--red);font-weight:900}
 .hero p{margin-top:20px;color:var(--muted);font-size:17px;line-height:1.65;max-width:560px}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
-.btn-primary{
-  height:52px;padding:0 28px;border:none;border-radius:8px;
-  background:var(--gold);color:#111;
-  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;
-  text-transform:uppercase;letter-spacing:.5px;transition:.2s;
-}
+.btn-primary{height:52px;padding:0 28px;border:none;border-radius:8px;background:var(--gold);color:#111;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;transition:.2s;}
 .btn-primary:hover{background:var(--gold2);transform:translateY(-2px)}
-.btn-outline{
-  height:52px;padding:0 28px;
-  border:1.5px solid var(--line);border-radius:8px;
-  background:transparent;color:#fff;
-  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.5px;transition:.2s;
-}
+.btn-outline{height:52px;padding:0 28px;border:1.5px solid var(--line);border-radius:8px;background:transparent;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:.2s;}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-
-/* ─── PRIZE STACKED ─── */
 .prizes-stack{display:flex;flex-direction:column;gap:12px}
-.prize-row{
-  background:linear-gradient(135deg,rgba(255,184,0,.12),rgba(255,184,0,.04));
-  border:1px solid rgba(255,184,0,.28);border-radius:14px;
-  padding:16px 20px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  position:relative;overflow:hidden;
-}
-.prize-row::after{
-  content:'';position:absolute;right:-20px;top:50%;transform:translateY(-50%);
-  width:80px;height:80px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,184,0,.12),transparent 70%);
-}
-.prize-row .info .round-lbl{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:13px;font-weight:700;color:var(--gold);
-  text-transform:uppercase;letter-spacing:1.2px;
-}
+.prize-row{background:linear-gradient(135deg,rgba(255,184,0,.12),rgba(255,184,0,.04));border:1px solid rgba(255,184,0,.28);border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;overflow:hidden;}
+.prize-row::after{content:'';position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,184,0,.12),transparent 70%);}
+.prize-row .info .round-lbl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;}
 .prize-row .info .round-date{font-size:12px;color:var(--muted2);margin-top:2px}
-.prize-row .amt{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:28px;font-weight:900;color:var(--gold2);white-space:nowrap;
-}
-.total-prize{
-  background:linear-gradient(135deg,rgba(255,184,0,.2),rgba(255,184,0,.06));
-  border:1.5px solid rgba(255,184,0,.45);border-radius:16px;
-  padding:20px;text-align:center;
-}
+.prize-row .amt{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--gold2);white-space:nowrap;}
+.total-prize{background:linear-gradient(135deg,rgba(255,184,0,.2),rgba(255,184,0,.06));border:1.5px solid rgba(255,184,0,.45);border-radius:16px;padding:20px;text-align:center;}
 .total-prize .lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px}
 .total-prize .big{font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--gold2);line-height:1;margin:4px 0}
 .total-prize .sub{font-size:13px;color:var(--muted)}
-
-/* ─── SECTION ─── */
 .section{max-width:1300px;margin:auto;padding:20px 20px 50px}
-.section-title{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(32px,4vw,48px);font-weight:900;
-  text-transform:uppercase;letter-spacing:-1px;margin-bottom:6px;
-}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;margin-bottom:6px;}
 .section-title span{color:var(--gold)}
 .section-sub{color:var(--muted);font-size:15px;margin-bottom:28px}
-
-/* ─── ROUND TABS ─── */
-.round-tabs{
-  display:flex;gap:8px;flex-wrap:wrap;
-  border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:24px;
-}
-.round-tab{
-  height:38px;padding:0 16px;
-  border:1px solid var(--line);border-radius:7px;
-  background:transparent;color:var(--muted);
-  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.3px;transition:.18s;
-}
+.round-tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:24px;}
+.round-tab{height:38px;padding:0 16px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:.18s;}
 .round-tab:hover{border-color:var(--gold3);color:var(--gold)}
 .round-tab.active{background:var(--gold);border-color:var(--gold);color:#111}
-.round-tab .chip-score{
-  display:inline-block;
-  background:rgba(0,0,0,.25);border-radius:4px;
-  font-size:10px;padding:1px 5px;margin-left:4px;
-  vertical-align:middle;
-}
+.round-tab .chip-score{display:inline-block;background:rgba(0,0,0,.25);border-radius:4px;font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
 .round-tab.active .chip-score{background:rgba(0,0,0,.2);color:#111}
 .round-tab.sent{border-color:var(--gold);color:var(--gold)}
-.round-tab .chip-sent{
-  display:none;background:#1f7a3d;color:#fff;border-radius:4px;
-  font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;
-}
+.round-tab .chip-sent{display:none;background:#1f7a3d;color:#fff;border-radius:4px;font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
 .round-tab.sent .chip-sent{display:inline-block}
 .round-tab.sent.active .chip-sent{background:#0d4a22}
-
-/* ─── ROUND PANEL ─── */
 .round-panel{display:none}
 .round-panel.active{display:block}
-.round-info-bar{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:12px;padding:14px 20px;margin-bottom:20px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-}
-.round-info-bar .ri-left h3{
-  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--gold2);
-  text-transform:uppercase;
-}
+.round-info-bar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.round-info-bar .ri-left h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--gold2);text-transform:uppercase;}
 .round-info-bar .ri-left p{font-size:13px;color:var(--muted);margin-top:2px}
-.round-info-bar .ri-right{
-  background:rgba(255,184,0,.12);border:1px solid var(--line2);
-  border-radius:8px;padding:8px 16px;text-align:center;
-}
+.round-info-bar .ri-right{background:rgba(255,184,0,.12);border:1px solid var(--line2);border-radius:8px;padding:8px 16px;text-align:center;}
 .round-info-bar .ri-right .nagrad{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--gold2)}
 .round-info-bar .ri-right .nagrad-lbl{font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
-.deadline-bar{
-  background:rgba(229,0,28,.1);border:1px solid rgba(229,0,28,.25);
-  border-radius:8px;padding:10px 14px;
-  font-size:13px;color:#ff7080;font-weight:600;
-  display:flex;align-items:center;gap:8px;margin-bottom:20px;
-}
+.deadline-bar{background:rgba(229,0,28,.1);border:1px solid rgba(229,0,28,.25);border-radius:8px;padding:10px 14px;font-size:13px;color:#ff7080;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:20px;}
 .deadline-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.4s ease infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-
-/* ─── MATCHES GRID ─── */
 .matches-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.match-card{
-  background:var(--card);border:1px solid var(--line);
-  border-radius:14px;overflow:hidden;
-  transition:.18s;
-}
+.match-card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.18s;}
 .match-card:hover{border-color:rgba(255,184,0,.2)}
-.match-head{
-  background:rgba(255,255,255,.04);border-bottom:1px solid var(--line);
-  padding:9px 14px;
-  display:flex;align-items:center;justify-content:space-between;
-}
+.match-head{background:rgba(255,255,255,.04);border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
 .match-head .match-num{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px}
 .match-head .match-date{font-size:11px;color:var(--muted2)}
 .match-body{padding:14px}
-.match-teams{
-  display:grid;grid-template-columns:1fr auto 1fr;
-  align-items:center;gap:8px;margin-bottom:14px;
-}
-.team-slot{
-  display:flex;align-items:center;gap:8px;
-}
+.match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:14px;}
+.team-slot{display:flex;align-items:center;gap:8px;}
 .team-slot.away{flex-direction:row-reverse;text-align:right}
-.team-flag{
-  width:32px;height:22px;border-radius:4px;
-  background:rgba(255,255,255,.08);border:1px solid var(--line);
-  font-size:16px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
+.team-flag{width:32px;height:22px;border-radius:4px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .team-label{font-size:14px;font-weight:700;line-height:1.2}
-.team-label small{display:block;font-size:11px;color:var(--muted2);font-weight:400}
-.vs-badge{
-  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;
-  color:var(--muted2);background:rgba(255,255,255,.06);
-  border-radius:6px;padding:4px 8px;white-space:nowrap;
-}
-.winner-pick{
-  display:flex;gap:6px;
-}
-.pick-btn{
-  flex:1;height:38px;
-  border-radius:8px;border:1px solid var(--line);
-  background:rgba(255,255,255,.04);color:var(--muted);
-  font-size:12px;font-weight:700;transition:.15s;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  padding:0 6px;
-}
-.pick-btn:hover{border-color:var(--gold3);color:var(--gold)}
+.team-label.tbd{color:var(--muted2)}
+.vs-badge{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--muted2);background:rgba(255,255,255,.06);border-radius:6px;padding:4px 8px;white-space:nowrap;}
+.winner-pick{display:flex;gap:6px;}
+.pick-btn{flex:1;height:38px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:700;transition:.15s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;}
+.pick-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
 .pick-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
+.pick-btn:disabled{opacity:.4;cursor:not-allowed}
 .match-card.locked{opacity:.7}
 .match-card.locked .pick-btn{cursor:not-allowed}
-
-/* ─── PER-ROUND SUBMIT ─── */
-.round-submit-wrap{
-  margin-top:24px;
-  background:linear-gradient(135deg,var(--card),var(--card2));
-  border:1px solid var(--line);border-radius:18px;
-  padding:24px;
-}
-.round-submit-wrap h3{
-  font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;
-  text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;
-}
+.match-card.waiting{opacity:.6}
+.round-submit-wrap{margin-top:24px;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:24px;}
+.round-submit-wrap h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;}
 .round-submit-wrap p{color:var(--muted);font-size:13px;margin-bottom:18px}
 .round-form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .field label{display:block;font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
-.field input{
-  width:100%;height:50px;
-  background:rgba(255,255,255,.06);border:1px solid var(--line);
-  border-radius:10px;padding:0 14px;
-  color:#fff;font-size:15px;outline:none;transition:.2s;
-}
+.field input{width:100%;height:50px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:0 14px;color:#fff;font-size:15px;outline:none;transition:.2s;}
 .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,184,0,.1)}
 .field input::placeholder{color:var(--muted2)}
 .check-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px}
 .check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--gold);margin-top:2px}
 .check-row label{font-size:13px;color:var(--muted);cursor:pointer}
 .check-row a{color:var(--gold);text-decoration:underline}
-.submit-btn{
-  width:100%;height:58px;margin-top:18px;border:none;border-radius:10px;
-  background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);
-  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;
-  text-transform:uppercase;letter-spacing:.5px;cursor:not-allowed;transition:.2s;
-}
-.submit-btn.ready{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;cursor:pointer;
-}
+.submit-btn{width:100%;height:58px;margin-top:18px;border:none;border-radius:10px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;cursor:not-allowed;transition:.2s;}
+.submit-btn.ready{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;cursor:pointer;}
 .submit-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,184,0,.3)}
 .submit-btn.done{background:#1f7a3d;color:#fff;cursor:default}
-.round-status{
-  display:none;margin-top:14px;padding:14px;border-radius:12px;
-  font-weight:700;font-size:14px;text-align:center;
-}
+.round-status{display:none;margin-top:14px;padding:14px;border-radius:12px;font-weight:700;font-size:14px;text-align:center;}
 .round-status.show{display:block}
 .round-status.ok{background:rgba(31,122,61,.18);border:1px solid rgba(31,122,61,.4);color:#7be0a0}
 .round-status.err{background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);color:#ff7080}
-.progress-bar-wrap{
-  background:rgba(255,255,255,.05);border:1px solid var(--line);
-  border-radius:10px;padding:12px 16px;margin-bottom:16px;
-  display:flex;align-items:center;gap:14px;
-}
+.progress-bar-wrap{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
 .progress-bar-wrap .pb-text{font-size:13px;font-weight:700;white-space:nowrap;min-width:120px}
 .pb-track{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
 .pb-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:.3s}
-
-/* ─── CHAMPION BOX ─── */
-.champion-box{
-  margin-top:28px;
-  background:linear-gradient(135deg,rgba(255,184,0,.18),rgba(255,184,0,.05));
-  border:2px solid rgba(255,184,0,.5);border-radius:20px;
-  padding:30px;text-align:center;
-}
-.champion-box .c-label{
-  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
-  color:var(--gold);text-transform:uppercase;letter-spacing:2px;
-}
-.champion-box .c-name{
-  font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;
-  color:var(--gold2);margin:8px 0;min-height:60px;
-}
+.champion-box{margin-top:28px;background:linear-gradient(135deg,rgba(255,184,0,.18),rgba(255,184,0,.05));border:2px solid rgba(255,184,0,.5);border-radius:20px;padding:30px;text-align:center;}
+.champion-box .c-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px;}
+.champion-box .c-name{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--gold2);margin:8px 0;min-height:60px;}
 .champion-box .c-sub{font-size:13px;color:var(--muted)}
-
-/* ─── RULES ─── */
 .rules-section{background:var(--navy2);border-top:1px solid var(--line);padding:50px 0}
 .rules-inner{max-width:1300px;margin:auto;padding:0 20px}
-.rules-inner h2{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(28px,3vw,40px);font-weight:900;
-  text-transform:uppercase;margin-bottom:24px;
-}
+.rules-inner h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3vw,40px);font-weight:900;text-transform:uppercase;margin-bottom:24px;}
 .rules-body{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .rule-block{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
 .rule-block h4{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .rule-block ul{padding-left:18px}
 .rule-block li{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:4px}
 .rule-block li b{color:var(--text);font-weight:700}
-.footer-note{
-  max-width:1300px;margin:auto;padding:20px 20px 40px;
-  font-size:11px;color:var(--muted2);line-height:1.65;
-  border-top:1px solid var(--line);margin-top:20px;
-}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:1050px){
-  .hero{grid-template-columns:1fr}
-  .prizes-stack{max-width:500px}
-  .matches-grid{grid-template-columns:1fr}
-}
-@media(max-width:640px){
-  .hero{padding:36px 16px 30px}
-  .section{padding:10px 16px 40px}
-  .round-form-grid{grid-template-columns:1fr}
-  .round-tabs{gap:6px}
-  .header-inner{padding:0 14px}
-}
+.footer-note{max-width:1300px;margin:auto;padding:20px 20px 40px;font-size:11px;color:var(--muted2);line-height:1.65;border-top:1px solid var(--line);margin-top:20px;}
+@media(max-width:1050px){.hero{grid-template-columns:1fr}.prizes-stack{max-width:500px}.matches-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.hero{padding:36px 16px 30px}.section{padding:10px 16px 40px}.round-form-grid{grid-template-columns:1fr}.round-tabs{gap:6px}.header-inner{padding:0 14px}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="header-inner">
     <a href="admiralbet-grupna-faza.html" style="text-decoration:none;display:flex;align-items:center">
@@ -368,22 +146,16 @@ button,input{font-family:inherit;cursor:pointer}
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <div>
     <div class="eyebrow">🏆 Nokaut faza · 5.000€ nagradni fond</div>
     <h1>Prognoziraj<br><em>šampiona!</em></h1>
-    <p>
-      Predvidi pobjednike u svakoj rundi nokaut faze Svjetskog prvenstva 2026.
-      Osvoji dio nagradnog fonda od <strong>5.000€ sport bonusa</strong> - <strong>1.000€ po rundi</strong>.
-      Svaku rundu šalješ posebno, učešće je besplatno.
-    </p>
+    <p>Predvidi pobjednike u svakoj rundi nokaut faze Svjetskog prvenstva 2026. Osvoji dio nagradnog fonda od <strong>5.000€ sport bonusa</strong> - <strong>1.000€ po rundi</strong>. Svaku rundu šalješ posebno, učešće je besplatno.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="document.getElementById('bracket-sec').scrollIntoView({behavior:'smooth'})">Počni predikciju</button>
       <button class="btn-outline" onclick="document.getElementById('rules-sec').scrollIntoView({behavior:'smooth'})">Pravila</button>
     </div>
   </div>
-
   <div>
     <div class="total-prize" style="margin-bottom:12px">
       <div class="lbl">Ukupni nagradni fond</div>
@@ -391,28 +163,24 @@ button,input{font-family:inherit;cursor:pointer}
       <div class="sub">sport bonusa · raspoređeno po rundama</div>
     </div>
     <div class="prizes-stack">
-      <div class="prize-row"><div class="info"><div class="round-lbl">Runda 16</div><div class="round-date">od 28. juna 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale</div><div class="round-date">od ~4. jula 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Polufinale</div><div class="round-date">od 14. jula 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Treće mjesto</div><div class="round-date">18. jul 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Finale</div><div class="round-date">19. jul 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Runda 32</div><div class="round-date">od 28. juna 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Runda 16</div><div class="round-date">od 4. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale</div><div class="round-date">od 9. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Polufinale</div><div class="round-date">14–15. jul 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Finale + 3. mjesto</div><div class="round-date">18–19. jul 2026.</div></div><div class="amt">1.000€</div></div>
     </div>
   </div>
 </section>
 
-<!-- BRACKET -->
 <section class="section" id="bracket-sec">
   <h2 class="section-title">Popuni <span>bracket</span></h2>
-  <div class="section-sub">Izaberi pobjednika svakog meča u rundi, pa zaključaj baš tu rundu - najkasnije sat prije prve utakmice te runde.</div>
-
+  <div class="section-sub">Izaberi pobjednika svakog meča - pobjednici se automatski prenose u narednu rundu. Svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
   <div class="progress-bar-wrap">
-    <span class="pb-text" id="pbText">0 / 31 meča</span>
+    <span class="pb-text" id="pbText">0 / 32 meča</span>
     <div class="pb-track"><div class="pb-fill" id="pbFill"></div></div>
   </div>
-
   <div class="round-tabs" id="roundTabs"></div>
   <div id="roundPanels"></div>
-
   <div class="champion-box" id="championBox">
     <div class="c-label">🏆 Tvoj predviđeni šampion</div>
     <div class="c-name" id="championName">—</div>
@@ -420,7 +188,6 @@ button,input{font-family:inherit;cursor:pointer}
   </div>
 </section>
 
-<!-- RULES -->
 <section class="rules-section" id="rules-sec">
   <div class="rules-inner">
     <h2>Pravila promocije</h2>
@@ -428,7 +195,7 @@ button,input{font-family:inherit;cursor:pointer}
       <div class="rule-block">
         <h4>Trajanje i rokovi</h4>
         <ul>
-          <li><b>Početak:</b> 28. jun 2026. (Runda 16)</li>
+          <li><b>Početak:</b> 28. jun 2026. (Runda 32)</li>
           <li><b>Kraj:</b> 19. jul 2026. (Finale)</li>
           <li>Rok za unos prognoza za svaku rundu je najkasnije <b>sat vremena</b> prije početka prve utakmice te runde.</li>
           <li>Svaka runda se šalje posebno i nakon roka izmjene nijesu moguće.</li>
@@ -476,92 +243,99 @@ button,input{font-family:inherit;cursor:pointer}
 </footer>
 
 <script>
-/* ──────────────────────────────────────────────
-   APPS SCRIPT URL — zamijeni svojim /exec linkom
-   ────────────────────────────────────────────── */
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjCQzWPRcgVGloI7TjzLX7x888LmxZOJesiBMKntsqZtUphPur675-ewQ-VHyMsRX3/exec';
 
 const rounds=[
-  {
-    id:'r16',
-    label:'Runda 16',
-    date:'od 28. jun 2026.',
-    nagrada:'1.000€',
-    deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 28. juna 2026. godine.',
-    matches:[
-      {home:'1A',away:'2B'},{home:'1C',away:'2D'},
-      {home:'1E',away:'2F'},{home:'1G',away:'2H'},
-      {home:'1I',away:'2J'},{home:'1K',away:'2L'},
-      {home:'1B',away:'2A'},{home:'1D',away:'2C'},
-      {home:'1F',away:'2E'},{home:'1H',away:'2G'},
-      {home:'1J',away:'2I'},{home:'1L',away:'2K'},
-      {home:'3rd#1',away:'3rd#2'},{home:'3rd#3',away:'3rd#4'},
-      {home:'3rd#5',away:'3rd#6'},{home:'3rd#7',away:'3rd#8'}
-    ]
-  },
-  {
-    id:'qf8',
-    label:'Četvrtfinale',
-    date:'od 4. jul 2026.',
-    nagrada:'1.000€',
-    deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.',
-    matches:[
-      {home:'W1',away:'W2'},{home:'W3',away:'W4'},
-      {home:'W5',away:'W6'},{home:'W7',away:'W8'},
-      {home:'W9',away:'W10'},{home:'W11',away:'W12'},
-      {home:'W13',away:'W14'},{home:'W15',away:'W16'}
-    ]
-  },
-  {
-    id:'qf4',
-    label:'Polufinale',
-    date:'14–15. jul 2026.',
-    nagrada:'1.000€',
-    deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 14. jula 2026. godine.',
-    matches:[
-      {home:'W QF1',away:'W QF2'},{home:'W QF3',away:'W QF4'},
-      {home:'W QF5',away:'W QF6'},{home:'W QF7',away:'W QF8'}
-    ]
-  },
-  {
-    id:'third',
-    label:'3. mjesto',
-    date:'18. jul 2026.',
-    nagrada:'1.000€',
-    deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 18. jula 2026. godine.',
-    matches:[
-      {home:'Gubitnik SF1',away:'Gubitnik SF2'},
-      {home:'Gubitnik SF3',away:'Gubitnik SF4'}
-    ]
-  },
-  {
-    id:'final',
-    label:'Finale',
-    date:'19. jul 2026.',
-    nagrada:'1.000€',
-    deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 19. jula 2026. godine.',
-    matches:[
-      {home:'Pobjednik SF1+SF2',away:'Pobjednik SF3+SF4'}
-    ]
-  }
+  {id:'r32',label:'Runda 32',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 28. juna 2026. godine.'},
+  {id:'r16',label:'Runda 16',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.'},
+  {id:'qf', label:'Četvrtfinale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 9. jula 2026. godine.'},
+  {id:'sf', label:'Polufinale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 14. jula 2026. godine.'},
+  {id:'tp', label:'3. mjesto',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 18. jula 2026. godine.'},
+  {id:'final',label:'Finale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 19. jula 2026. godine.'}
 ];
 
-const selections={};       // key "r16-0" -> team
-const sentRounds={};       // id -> true kad je runda poslata
-let totalPicks=0;
-rounds.forEach(r=>totalPicks+=r.matches.length);
+const FLAGS={GER:'🇩🇪',PAR:'🇵🇾',FRA:'🇫🇷',SWE:'🇸🇪',RSA:'🇿🇦',CAN:'🇨🇦',NED:'🇳🇱',MAR:'🇲🇦',POR:'🇵🇹',CRO:'🇭🇷',ESP:'🇪🇸',AUT:'🇦🇹',USA:'🇺🇸',BIH:'🇧🇦',BEL:'🇧🇪',SEN:'🇸🇳',BRA:'🇧🇷',JPN:'🇯🇵',CIV:'🇨🇮',NOR:'🇳🇴',MEX:'🇲🇽',ECU:'🇪🇨',ENG:'🏴',COD:'🇨🇩',ARG:'🇦🇷',CPV:'🇨🇻',AUS:'🇦🇺',EGY:'🇪🇬',SUI:'🇨🇭',ALG:'🇩🇿',COL:'🇨🇴',GHA:'🇬🇭'};
+const NAMES={GER:'Germany',PAR:'Paraguay',FRA:'France',SWE:'Sweden',RSA:'South Africa',CAN:'Canada',NED:'Netherlands',MAR:'Morocco',POR:'Portugal',CRO:'Croatia',ESP:'Spain',AUT:'Austria',USA:'USA',BIH:'Bosnia i Herc.',BEL:'Belgium',SEN:'Senegal',BRA:'Brazil',JPN:'Japan',CIV:"Côte d'Ivoire",NOR:'Norway',MEX:'Mexico',ECU:'Ecuador',ENG:'England',COD:'DR Congo',ARG:'Argentina',CPV:'Cabo Verde',AUS:'Australia',EGY:'Egypt',SUI:'Switzerland',ALG:'Algeria',COL:'Colombia',GHA:'Ghana'};
+
+const matches={
+  M74:{round:'r32',date:'28. jun',time:'22:30',t1:'GER',t2:'PAR',winnerTo:{m:'M89',slot:1}},
+  M77:{round:'r32',date:'29. jun',time:'23:00',t1:'FRA',t2:'SWE',winnerTo:{m:'M89',slot:2}},
+  M73:{round:'r32',date:'28. jun',time:'FT',   t1:'RSA',t2:'CAN',winnerTo:{m:'M90',slot:1}},
+  M75:{round:'r32',date:'30. jun',time:'03:00',t1:'NED',t2:'MAR',winnerTo:{m:'M90',slot:2}},
+  M83:{round:'r32',date:'3. jul', time:'01:00',t1:'POR',t2:'CRO',winnerTo:{m:'M93',slot:1}},
+  M84:{round:'r32',date:'2. jul', time:'21:00',t1:'ESP',t2:'AUT',winnerTo:{m:'M93',slot:2}},
+  M81:{round:'r32',date:'2. jul', time:'02:00',t1:'USA',t2:'BIH',winnerTo:{m:'M94',slot:1}},
+  M82:{round:'r32',date:'1. jul', time:'22:00',t1:'BEL',t2:'SEN',winnerTo:{m:'M94',slot:2}},
+  M76:{round:'r32',date:'29. jun',time:'19:00',t1:'BRA',t2:'JPN',winnerTo:{m:'M91',slot:1}},
+  M78:{round:'r32',date:'30. jun',time:'19:00',t1:'CIV',t2:'NOR',winnerTo:{m:'M91',slot:2}},
+  M79:{round:'r32',date:'1. jul', time:'03:00',t1:'MEX',t2:'ECU',winnerTo:{m:'M92',slot:1}},
+  M80:{round:'r32',date:'1. jul', time:'18:00',t1:'ENG',t2:'COD',winnerTo:{m:'M92',slot:2}},
+  M86:{round:'r32',date:'4. jul', time:'00:00',t1:'ARG',t2:'CPV',winnerTo:{m:'M95',slot:1}},
+  M88:{round:'r32',date:'3. jul', time:'20:00',t1:'AUS',t2:'EGY',winnerTo:{m:'M95',slot:2}},
+  M85:{round:'r32',date:'3. jul', time:'05:00',t1:'SUI',t2:'ALG',winnerTo:{m:'M96',slot:1}},
+  M87:{round:'r32',date:'4. jul', time:'03:30',t1:'COL',t2:'GHA',winnerTo:{m:'M96',slot:2}},
+
+  M89:{round:'r16',date:'4. jul', time:'23:00',src1:'M74',src2:'M77',winnerTo:{m:'M97',slot:1}},
+  M90:{round:'r16',date:'4. jul', time:'19:00',src1:'M73',src2:'M75',winnerTo:{m:'M97',slot:2}},
+  M93:{round:'r16',date:'7. jul', time:'02:00',src1:'M83',src2:'M84',winnerTo:{m:'M98',slot:1}},
+  M94:{round:'r16',date:'6. jul', time:'21:00',src1:'M81',src2:'M82',winnerTo:{m:'M98',slot:2}},
+  M91:{round:'r16',date:'5. jul', time:'22:00',src1:'M76',src2:'M78',winnerTo:{m:'M99',slot:1}},
+  M92:{round:'r16',date:'6. jul', time:'02:00',src1:'M79',src2:'M80',winnerTo:{m:'M99',slot:2}},
+  M95:{round:'r16',date:'7. jul', time:'22:00',src1:'M86',src2:'M88',winnerTo:{m:'M100',slot:1}},
+  M96:{round:'r16',date:'7. jul', time:'18:00',src1:'M85',src2:'M87',winnerTo:{m:'M100',slot:2}},
+
+  M97: {round:'qf',date:'9. jul', time:'22:00',src1:'M89',src2:'M90',winnerTo:{m:'M101',slot:1}},
+  M98: {round:'qf',date:'10. jul',time:'21:00',src1:'M93',src2:'M94',winnerTo:{m:'M101',slot:2}},
+  M99: {round:'qf',date:'11. jul',time:'23:00',src1:'M91',src2:'M92',winnerTo:{m:'M102',slot:1}},
+  M100:{round:'qf',date:'12. jul',time:'03:00',src1:'M95',src2:'M96',winnerTo:{m:'M102',slot:2}},
+
+  M101:{round:'sf',date:'14. jul',time:'21:00',src1:'M97',src2:'M98', winnerTo:{m:'M104',slot:1},loserTo:{m:'M103',slot:1}},
+  M102:{round:'sf',date:'15. jul',time:'21:00',src1:'M99',src2:'M100',winnerTo:{m:'M104',slot:2},loserTo:{m:'M103',slot:2}},
+
+  M103:{round:'tp',date:'18. jul',time:'21:00',src1:'M101',src2:'M102',srcType:'loser'},
+  M104:{round:'final',date:'19. jul',time:'21:00',src1:'M101',src2:'M102',srcType:'winner'}
+};
+
+const roundMatchIds={
+  r32:['M74','M77','M73','M75','M83','M84','M81','M82','M76','M78','M79','M80','M86','M88','M85','M87'],
+  r16:['M89','M90','M93','M94','M91','M92','M95','M96'],
+  qf:['M97','M98','M99','M100'],
+  sf:['M101','M102'],
+  tp:['M103'],
+  final:['M104']
+};
+
+const selections={};
+const sentRounds={};
+const totalPicks=Object.keys(matches).length;
+
+function teamOnSlot(mid,slot){
+  const m=matches[mid];
+  if(m.t1!==undefined){ return slot===1?m.t1:m.t2; }
+  const src=slot===1?m.src1:m.src2;
+  if(!selections[src]) return null;
+  if(m.srcType==='loser'){ return loserOf(src); }
+  return selections[src];
+}
+function loserOf(mid){
+  const w=selections[mid]; if(!w) return null;
+  const a=teamOnSlot(mid,1), b=teamOnSlot(mid,2);
+  if(a===null||b===null) return null;
+  return w===a?b:a;
+}
+function bothKnown(mid){ return teamOnSlot(mid,1)!==null && teamOnSlot(mid,2)!==null; }
 
 function buildTabs(){
   const tabs=document.getElementById('roundTabs');
   const panels=document.getElementById('roundPanels');
   rounds.forEach((r,ri)=>{
+    const cnt=roundMatchIds[r.id].length;
     const tab=document.createElement('button');
     tab.className='round-tab'+(ri===0?' active':'');
     tab.id='tab-'+r.id;
-    tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${r.matches.length}</span><span class="chip-sent">poslato</span>`;
+    tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${cnt}</span><span class="chip-sent">poslato</span>`;
     tab.onclick=()=>switchTab(r.id);
     tabs.appendChild(tab);
-
     const panel=document.createElement('div');
     panel.className='round-panel'+(ri===0?' active':'');
     panel.id='panel-'+r.id;
@@ -571,22 +345,21 @@ function buildTabs(){
 }
 
 function buildPanel(r){
-  const matchCards=r.matches.map((m,mi)=>{
-    const key=`${r.id}-${mi}`;
-    return `<div class="match-card" id="mc-${key}">
+  const cards=roundMatchIds[r.id].map((mid,idx)=>{
+    return `<div class="match-card" id="mc-${mid}">
       <div class="match-head">
-        <span class="match-num">Meč ${mi+1}</span>
-        <span class="match-date">${r.date}</span>
+        <span class="match-num">Meč ${idx+1} · ${mid}</span>
+        <span class="match-date">${matches[mid].date}${matches[mid].time?' · '+matches[mid].time:''}</span>
       </div>
       <div class="match-body">
         <div class="match-teams">
-          <div class="team-slot"><div class="team-flag">🏟</div><div class="team-label">${m.home}<small>domaćin</small></div></div>
+          <div class="team-slot"><div class="team-flag" id="flag-${mid}-1">🏟</div><div class="team-label tbd" id="name-${mid}-1">TBD</div></div>
           <div class="vs-badge">VS</div>
-          <div class="team-slot away"><div class="team-flag">🏟</div><div class="team-label">${m.away}<small>gost</small></div></div>
+          <div class="team-slot away"><div class="team-flag" id="flag-${mid}-2">🏟</div><div class="team-label tbd" id="name-${mid}-2">TBD</div></div>
         </div>
         <div class="winner-pick">
-          <button class="pick-btn" data-key="${key}" data-round="${r.id}" data-team="${m.home}" onclick="pickWinner(this)">${m.home}</button>
-          <button class="pick-btn" data-key="${key}" data-round="${r.id}" data-team="${m.away}" onclick="pickWinner(this)">${m.away}</button>
+          <button class="pick-btn" id="pick-${mid}-1" onclick="pickWinner('${mid}',1)" disabled>TBD</button>
+          <button class="pick-btn" id="pick-${mid}-2" onclick="pickWinner('${mid}',2)" disabled>TBD</button>
         </div>
       </div>
     </div>`;
@@ -597,15 +370,14 @@ function buildPanel(r){
     <div class="ri-right"><div class="nagrad">${r.nagrada}</div><div class="nagrad-lbl">Nagrada</div></div>
   </div>
   <div class="deadline-bar"><span class="deadline-dot"></span>Rok za popunjavanje: ${r.deadline}</div>
-  <div class="matches-grid">${matchCards}</div>
-
+  <div class="matches-grid">${cards}</div>
   <div class="round-submit-wrap">
     <h3>Zaključaj rundu: ${r.label}</h3>
     <p>Unesi podatke i pošalji predikciju za ovu rundu. Šalje se samo ova runda.</p>
     <div class="round-form-grid">
-      <div class="field"><label>Ime i prezime</label><input id="name-${r.id}" placeholder="Npr. Marko Nikolić" oninput="checkRound('${r.id}')"/></div>
-      <div class="field"><label>Email adresa</label><input id="email-${r.id}" type="email" placeholder="Npr. marko@email.com" oninput="checkRound('${r.id}')"/></div>
-      <div class="field"><label>Broj telefona</label><input id="phone-${r.id}" placeholder="Npr. 067 123 456" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Ime i prezime</label><input id="fname-${r.id}" placeholder="Npr. Marko Nikolić" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Email adresa</label><input id="femail-${r.id}" type="email" placeholder="Npr. marko@email.com" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Broj telefona</label><input id="fphone-${r.id}" placeholder="Npr. 067 123 456" oninput="checkRound('${r.id}')"/></div>
     </div>
     <div class="check-row">
       <input type="checkbox" id="terms-${r.id}" onchange="checkRound('${r.id}')"/>
@@ -623,53 +395,88 @@ function switchTab(id){
   document.getElementById('panel-'+id).classList.add('active');
 }
 
-function pickWinner(btn){
-  const rid=btn.dataset.round;
-  if(sentRounds[rid]) return; // zaključana runda
-  const key=btn.dataset.key;
-  const team=btn.dataset.team;
-  if(selections[key]===team){
-    delete selections[key];
-    btn.classList.remove('selected');
-  } else {
-    selections[key]=team;
-    [...btn.parentElement.children].forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-  }
+function pickWinner(mid,slot){
+  if(sentRounds[matches[mid].round]) return;
+  if(!bothKnown(mid)) return;
+  const team=teamOnSlot(mid,slot);
+  if(!team) return;
+  if(selections[mid]===team){ delete selections[mid]; }
+  else{ selections[mid]=team; }
+  propagate(mid);
+  renderAll();
+}
+
+function propagate(mid){
+  const m=matches[mid];
+  const affected=[];
+  if(m.winnerTo) affected.push(m.winnerTo.m);
+  if(m.loserTo) affected.push(m.loserTo.m);
+  affected.forEach(nid=>{
+    if(selections[nid]!==undefined){
+      const a=teamOnSlot(nid,1), b=teamOnSlot(nid,2);
+      if(selections[nid]!==a && selections[nid]!==b){ delete selections[nid]; }
+    }
+    propagate(nid);
+  });
+}
+
+function renderAll(){
+  Object.keys(matches).forEach(renderMatch);
   updateScores();
   updateChampion();
-  checkRound(rid);
+  rounds.forEach(r=>checkRound(r.id));
+}
+
+function renderMatch(mid){
+  const m=matches[mid];
+  const t1=teamOnSlot(mid,1), t2=teamOnSlot(mid,2);
+  const known=t1!==null&&t2!==null;
+  setSlot(mid,1,t1); setSlot(mid,2,t2);
+  const card=document.getElementById('mc-'+mid);
+  const b1=document.getElementById('pick-'+mid+'-1');
+  const b2=document.getElementById('pick-'+mid+'-2');
+  const locked=sentRounds[m.round];
+  card.classList.toggle('waiting',!known);
+  [[b1,t1],[b2,t2]].forEach(([btn,team])=>{
+    btn.textContent = team? (NAMES[team]||team) : 'TBD';
+    btn.disabled = !known || locked;
+    btn.classList.toggle('selected', team && selections[mid]===team);
+  });
+}
+
+function setSlot(mid,slot,team){
+  const nameEl=document.getElementById('name-'+mid+'-'+slot);
+  const flagEl=document.getElementById('flag-'+mid+'-'+slot);
+  if(team){ nameEl.textContent=NAMES[team]||team; nameEl.classList.remove('tbd'); flagEl.textContent=FLAGS[team]||'🏟'; }
+  else{ nameEl.textContent='TBD'; nameEl.classList.add('tbd'); flagEl.textContent='🏟'; }
 }
 
 function updateScores(){
   let done=0;
   rounds.forEach(r=>{
     let rdone=0;
-    r.matches.forEach((_,mi)=>{if(selections[`${r.id}-${mi}`])rdone++;});
+    roundMatchIds[r.id].forEach(mid=>{ if(selections[mid]) rdone++; });
     done+=rdone;
-    document.getElementById('score-'+r.id).textContent=`${rdone}/${r.matches.length}`;
+    document.getElementById('score-'+r.id).textContent=`${rdone}/${roundMatchIds[r.id].length}`;
   });
   document.getElementById('pbText').textContent=`${done} / ${totalPicks} meča`;
   document.getElementById('pbFill').style.width=`${(done/totalPicks)*100}%`;
 }
 
 function updateChampion(){
-  const champ=selections['final-0']||'—';
-  document.getElementById('championName').textContent=champ;
+  const champ=selections['M104'];
+  document.getElementById('championName').textContent=champ?(NAMES[champ]||champ):'—';
 }
 
-function roundComplete(r){
-  return r.matches.every((_,mi)=>selections[`${r.id}-${mi}`]);
-}
+function roundComplete(rid){ return roundMatchIds[rid].every(mid=>selections[mid]); }
 
 function checkRound(rid){
   if(sentRounds[rid]) return;
-  const r=rounds.find(x=>x.id===rid);
-  const name=document.getElementById('name-'+rid).value.trim();
-  const email=document.getElementById('email-'+rid).value.trim();
-  const phone=document.getElementById('phone-'+rid).value.trim();
+  const name=document.getElementById('fname-'+rid).value.trim();
+  const email=document.getElementById('femail-'+rid).value.trim();
+  const phone=document.getElementById('fphone-'+rid).value.trim();
   const terms=document.getElementById('terms-'+rid).checked;
-  const filled=roundComplete(r);
+  const filled=roundComplete(rid);
   const ready=name&&email&&phone&&terms&&filled;
   const btn=document.getElementById('submit-'+rid);
   btn.disabled=!ready;
@@ -689,73 +496,66 @@ async function submitRound(rid){
   const btn=document.getElementById('submit-'+rid);
   if(btn.disabled||sentRounds[rid]) return;
   const r=rounds.find(x=>x.id===rid);
-  const name=document.getElementById('name-'+rid).value.trim();
-  const email=document.getElementById('email-'+rid).value.trim();
-  const phone=document.getElementById('phone-'+rid).value.trim();
+  const name=document.getElementById('fname-'+rid).value.trim();
+  const email=document.getElementById('femail-'+rid).value.trim();
+  const phone=document.getElementById('fphone-'+rid).value.trim();
 
-  // sastavi predikcije ove runde
-  const picks=r.matches.map((m,mi)=>({
-    matchIndex:mi,
-    home:m.home,
-    away:m.away,
-    pick:selections[`${r.id}-${mi}`]
+  const picks=roundMatchIds[rid].map(mid=>({
+    matchId:mid,
+    team1:teamOnSlot(mid,1),
+    team2:teamOnSlot(mid,2),
+    pick:selections[mid]
   }));
 
-  btn.disabled=true;
-  btn.textContent='Slanje...';
+  btn.disabled=true; btn.textContent='Slanje...';
   showStatus(rid,'Slanje predikcije...','ok');
 
   const payload={
     action:'submitRound',
-    roundId:r.id,
+    roundId:rid,
     roundLabel:r.label,
     name,email,phone,
-    totalMatches:r.matches.length,
+    totalMatches:roundMatchIds[rid].length,
     picks,
+    predictedChampion:selections['M104']||null,
     submittedAtClient:new Date().toISOString(),
     pageUrl:location.href,
     userAgent:navigator.userAgent
   };
 
   try{
-    const res=await fetch(APPS_SCRIPT_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)
-    });
+    const res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
     const data=await res.json();
     if(data && data.success){
       lockRound(rid);
       showStatus(rid,'✓ Predikcija za '+r.label+' je sačuvana! Rezultat dobijaš email-om nakon runde.','ok');
     }else{
-      btn.disabled=false; btn.classList.add('ready');
-      btn.textContent='POŠALJI PREDIKCIJU';
+      btn.disabled=false; btn.classList.add('ready'); btn.textContent='POŠALJI PREDIKCIJU';
       showStatus(rid,(data&&data.message)||'Greška pri slanju. Pokušaj ponovo.','err');
     }
   }catch(e){
-    btn.disabled=false; btn.classList.add('ready');
-    btn.textContent='POŠALJI PREDIKCIJU';
+    btn.disabled=false; btn.classList.add('ready'); btn.textContent='POŠALJI PREDIKCIJU';
     showStatus(rid,'Greška u konekciji. Pokušaj ponovo.','err');
   }
 }
 
 function lockRound(rid){
   sentRounds[rid]=true;
-  const r=rounds.find(x=>x.id===rid);
-  r.matches.forEach((_,mi)=>{
-    const mc=document.getElementById(`mc-${rid}-${mi}`);
+  roundMatchIds[rid].forEach(mid=>{
+    const mc=document.getElementById('mc-'+mid);
     if(mc) mc.classList.add('locked');
+    ['1','2'].forEach(s=>{const b=document.getElementById('pick-'+mid+'-'+s); if(b) b.disabled=true;});
   });
   document.getElementById('tab-'+rid).classList.add('sent');
-  ['name','email','phone','terms'].forEach(f=>{
-    const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;
-  });
+  ['fname','femail','fphone','terms'].forEach(f=>{const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;});
   const btn=document.getElementById('submit-'+rid);
   btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
+  const r=rounds.find(x=>x.id===rid);
   btn.textContent='✓ '+r.label+' poslato';
 }
 
 buildTabs();
+renderAll();
 </script>
 </body>
 </html>
