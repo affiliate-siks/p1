@@ -62,7 +62,6 @@ button,input{font-family:inherit;cursor:pointer}
 .round-panel.active{display:block}
 .round-info-bar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .round-info-bar .ri-left h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--gold2);text-transform:uppercase;}
-.round-info-bar .ri-left p{font-size:13px;color:var(--muted);margin-top:2px}
 .round-info-bar .ri-right{background:rgba(255,184,0,.12);border:1px solid var(--line2);border-radius:8px;padding:8px 16px;text-align:center;}
 .round-info-bar .ri-right .nagrad{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--gold2)}
 .round-info-bar .ri-right .nagrad-lbl{font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
@@ -76,6 +75,26 @@ button,input{font-family:inherit;cursor:pointer}
 .match-head .match-num{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px}
 .match-head .match-date{font-size:11px;color:var(--muted2)}
 .match-body{padding:14px}
+/* R16 dvostepeni izbor */
+.pair-step{margin-bottom:10px}
+.pair-step .step-lbl{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.pair-step .step-lbl b{color:var(--gold)}
+.pair-row{display:flex;gap:6px}
+.opt-btn{flex:1;height:40px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:700;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.opt-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
+.opt-btn.selected{background:rgba(255,184,0,.18);border-color:var(--gold);color:var(--gold2)}
+.opt-btn:disabled{opacity:.4;cursor:not-allowed}
+.opt-btn .fl{font-size:14px}
+/* finalni izbor pobjednika meča */
+.final-step{margin-top:6px;padding-top:12px;border-top:1px dashed var(--line)}
+.final-step .step-lbl{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.win-row{display:flex;gap:6px}
+.win-btn{flex:1;height:44px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;font-weight:800;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.win-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
+.win-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
+.win-btn:disabled{opacity:.4;cursor:not-allowed}
+.win-btn .fl{font-size:15px}
+/* prosti meč (QF na dalje) */
 .match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:14px;}
 .team-slot{display:flex;align-items:center;gap:8px;}
 .team-slot.away{flex-direction:row-reverse;text-align:right}
@@ -89,7 +108,7 @@ button,input{font-family:inherit;cursor:pointer}
 .pick-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
 .pick-btn:disabled{opacity:.4;cursor:not-allowed}
 .match-card.locked{opacity:.7}
-.match-card.locked .pick-btn{cursor:not-allowed}
+.match-card.locked .pick-btn,.match-card.locked .opt-btn,.match-card.locked .win-btn{cursor:not-allowed}
 .match-card.waiting{opacity:.6}
 .round-submit-wrap{margin-top:24px;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:24px;}
 .round-submit-wrap h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;}
@@ -163,20 +182,20 @@ button,input{font-family:inherit;cursor:pointer}
       <div class="sub">sport bonusa · raspoređeno po rundama</div>
     </div>
     <div class="prizes-stack">
-      <div class="prize-row"><div class="info"><div class="round-lbl">Runda 32</div><div class="round-date">od 28. juna 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Runda 16</div><div class="round-date">od 4. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Round of 16</div><div class="round-date">od 4. jula 2026.</div></div><div class="amt">1.000€</div></div>
       <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale</div><div class="round-date">od 9. jula 2026.</div></div><div class="amt">1.000€</div></div>
       <div class="prize-row"><div class="info"><div class="round-lbl">Polufinale</div><div class="round-date">14–15. jul 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Finale + 3. mjesto</div><div class="round-date">18–19. jul 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">3. mjesto</div><div class="round-date">18. jul 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Finale</div><div class="round-date">19. jul 2026.</div></div><div class="amt">1.000€</div></div>
     </div>
   </div>
 </section>
 
 <section class="section" id="bracket-sec">
   <h2 class="section-title">Popuni <span>bracket</span></h2>
-  <div class="section-sub">Izaberi pobjednika svakog meča - pobjednici se automatski prenose u narednu rundu. Svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
+  <div class="section-sub">U Round of 16 prvo biraš ko prolazi iz svakog para, pa ko od ta dva ide dalje. Pobjednici se automatski prenose u naredne runde. Svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
   <div class="progress-bar-wrap">
-    <span class="pb-text" id="pbText">0 / 32 meča</span>
+    <span class="pb-text" id="pbText">0 / 16 mečeva</span>
     <div class="pb-track"><div class="pb-fill" id="pbFill"></div></div>
   </div>
   <div class="round-tabs" id="roundTabs"></div>
@@ -195,7 +214,7 @@ button,input{font-family:inherit;cursor:pointer}
       <div class="rule-block">
         <h4>Trajanje i rokovi</h4>
         <ul>
-          <li><b>Početak:</b> 28. jun 2026. (Runda 32)</li>
+          <li><b>Početak:</b> 4. jul 2026. (Round of 16)</li>
           <li><b>Kraj:</b> 19. jul 2026. (Finale)</li>
           <li>Rok za unos prognoza za svaku rundu je najkasnije <b>sat vremena</b> prije početka prve utakmice te runde.</li>
           <li>Svaka runda se šalje posebno i nakon roka izmjene nijesu moguće.</li>
@@ -246,75 +265,68 @@ button,input{font-family:inherit;cursor:pointer}
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjCQzWPRcgVGloI7TjzLX7x888LmxZOJesiBMKntsqZtUphPur675-ewQ-VHyMsRX3/exec';
 
 const rounds=[
-  {id:'r16',label:'Runda 16',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 28. juna 2026. godine.'},
-  {id:'r8', label:'Osmina finala',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.'},
-  {id:'qf', label:'Četvrtfinale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 9. jula 2026. godine.'},
-  {id:'sf', label:'Polufinale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 14. jula 2026. godine.'},
-  {id:'tp', label:'3. mjesto',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 18. jula 2026. godine.'},
-  {id:'final',label:'Finale',nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 19. jula 2026. godine.'}
+  {id:'r16',  label:'Round of 16',  nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.'},
+  {id:'qf',   label:'Četvrtfinale', nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 9. jula 2026. godine.'},
+  {id:'sf',   label:'Polufinale',   nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 14. jula 2026. godine.'},
+  {id:'tp',   label:'3. mjesto',    nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 18. jula 2026. godine.'},
+  {id:'final',label:'Finale',       nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 19. jula 2026. godine.'}
 ];
 
 const FLAGS={GER:'🇩🇪',PAR:'🇵🇾',FRA:'🇫🇷',SWE:'🇸🇪',RSA:'🇿🇦',CAN:'🇨🇦',NED:'🇳🇱',MAR:'🇲🇦',POR:'🇵🇹',CRO:'🇭🇷',ESP:'🇪🇸',AUT:'🇦🇹',USA:'🇺🇸',BIH:'🇧🇦',BEL:'🇧🇪',SEN:'🇸🇳',BRA:'🇧🇷',JPN:'🇯🇵',CIV:'🇨🇮',NOR:'🇳🇴',MEX:'🇲🇽',ECU:'🇪🇨',ENG:'🏴',COD:'🇨🇩',ARG:'🇦🇷',CPV:'🇨🇻',AUS:'🇦🇺',EGY:'🇪🇬',SUI:'🇨🇭',ALG:'🇩🇿',COL:'🇨🇴',GHA:'🇬🇭'};
 const NAMES={GER:'Germany',PAR:'Paraguay',FRA:'France',SWE:'Sweden',RSA:'South Africa',CAN:'Canada',NED:'Netherlands',MAR:'Morocco',POR:'Portugal',CRO:'Croatia',ESP:'Spain',AUT:'Austria',USA:'USA',BIH:'Bosnia i Herc.',BEL:'Belgium',SEN:'Senegal',BRA:'Brazil',JPN:'Japan',CIV:"Côte d'Ivoire",NOR:'Norway',MEX:'Mexico',ECU:'Ecuador',ENG:'England',COD:'DR Congo',ARG:'Argentina',CPV:'Cabo Verde',AUS:'Australia',EGY:'Egypt',SUI:'Switzerland',ALG:'Algeria',COL:'Colombia',GHA:'Ghana'};
 
+/* ── R16 mečevi: svaki spaja DVA para iz Runde 32 ──
+   pairA / pairB = parovi [tim1, tim2] iz R32.
+   id meča (M89..M96), winnerTo vodi u Četvrtfinale. */
+const r16Matches={
+  M90:{date:'4. jul', time:'19:00',pairA:['RSA','CAN'],pairB:['NED','MAR'],winnerTo:{m:'M97',slot:2}},
+  M89:{date:'4. jul', time:'23:00',pairA:['GER','PAR'],pairB:['FRA','SWE'],winnerTo:{m:'M97',slot:1}},
+  M91:{date:'5. jul', time:'22:00',pairA:['BRA','JPN'],pairB:['CIV','NOR'],winnerTo:{m:'M99',slot:1}},
+  M92:{date:'6. jul', time:'02:00',pairA:['MEX','ECU'],pairB:['ENG','COD'],winnerTo:{m:'M99',slot:2}},
+  M93:{date:'7. jul', time:'02:00',pairA:['POR','CRO'],pairB:['ESP','AUT'],winnerTo:{m:'M98',slot:1}},
+  M94:{date:'6. jul', time:'21:00',pairA:['USA','BIH'],pairB:['BEL','SEN'],winnerTo:{m:'M98',slot:2}},
+  M95:{date:'7. jul', time:'22:00',pairA:['ARG','CPV'],pairB:['AUS','EGY'],winnerTo:{m:'M100',slot:1}},
+  M96:{date:'7. jul', time:'18:00',pairA:['SUI','ALG'],pairB:['COL','GHA'],winnerTo:{m:'M100',slot:2}}
+};
+const r16Order=['M90','M89','M93','M94','M91','M92','M95','M96'];
+
+/* ── prosti mečevi (QF -> Finale) ── */
 const matches={
-  M74:{round:'r16',date:'28. jun',time:'22:30',t1:'GER',t2:'PAR',winnerTo:{m:'M89',slot:1}},
-  M77:{round:'r16',date:'29. jun',time:'23:00',t1:'FRA',t2:'SWE',winnerTo:{m:'M89',slot:2}},
-  M73:{round:'r16',date:'28. jun',time:'FT',   t1:'RSA',t2:'CAN',winnerTo:{m:'M90',slot:1}},
-  M75:{round:'r16',date:'30. jun',time:'03:00',t1:'NED',t2:'MAR',winnerTo:{m:'M90',slot:2}},
-  M83:{round:'r16',date:'3. jul', time:'01:00',t1:'POR',t2:'CRO',winnerTo:{m:'M93',slot:1}},
-  M84:{round:'r16',date:'2. jul', time:'21:00',t1:'ESP',t2:'AUT',winnerTo:{m:'M93',slot:2}},
-  M81:{round:'r16',date:'2. jul', time:'02:00',t1:'USA',t2:'BIH',winnerTo:{m:'M94',slot:1}},
-  M82:{round:'r16',date:'1. jul', time:'22:00',t1:'BEL',t2:'SEN',winnerTo:{m:'M94',slot:2}},
-  M76:{round:'r16',date:'29. jun',time:'19:00',t1:'BRA',t2:'JPN',winnerTo:{m:'M91',slot:1}},
-  M78:{round:'r16',date:'30. jun',time:'19:00',t1:'CIV',t2:'NOR',winnerTo:{m:'M91',slot:2}},
-  M79:{round:'r16',date:'1. jul', time:'03:00',t1:'MEX',t2:'ECU',winnerTo:{m:'M92',slot:1}},
-  M80:{round:'r16',date:'1. jul', time:'18:00',t1:'ENG',t2:'COD',winnerTo:{m:'M92',slot:2}},
-  M86:{round:'r16',date:'4. jul', time:'00:00',t1:'ARG',t2:'CPV',winnerTo:{m:'M95',slot:1}},
-  M88:{round:'r16',date:'3. jul', time:'20:00',t1:'AUS',t2:'EGY',winnerTo:{m:'M95',slot:2}},
-  M85:{round:'r16',date:'3. jul', time:'05:00',t1:'SUI',t2:'ALG',winnerTo:{m:'M96',slot:1}},
-  M87:{round:'r16',date:'4. jul', time:'03:30',t1:'COL',t2:'GHA',winnerTo:{m:'M96',slot:2}},
-
-  M89:{round:'r8',date:'4. jul', time:'23:00',src1:'M74',src2:'M77',winnerTo:{m:'M97',slot:1}},
-  M90:{round:'r8',date:'4. jul', time:'19:00',src1:'M73',src2:'M75',winnerTo:{m:'M97',slot:2}},
-  M93:{round:'r8',date:'7. jul', time:'02:00',src1:'M83',src2:'M84',winnerTo:{m:'M98',slot:1}},
-  M94:{round:'r8',date:'6. jul', time:'21:00',src1:'M81',src2:'M82',winnerTo:{m:'M98',slot:2}},
-  M91:{round:'r8',date:'5. jul', time:'22:00',src1:'M76',src2:'M78',winnerTo:{m:'M99',slot:1}},
-  M92:{round:'r8',date:'6. jul', time:'02:00',src1:'M79',src2:'M80',winnerTo:{m:'M99',slot:2}},
-  M95:{round:'r8',date:'7. jul', time:'22:00',src1:'M86',src2:'M88',winnerTo:{m:'M100',slot:1}},
-  M96:{round:'r8',date:'7. jul', time:'18:00',src1:'M85',src2:'M87',winnerTo:{m:'M100',slot:2}},
-
   M97: {round:'qf',date:'9. jul', time:'22:00',src1:'M89',src2:'M90',winnerTo:{m:'M101',slot:1}},
   M98: {round:'qf',date:'10. jul',time:'21:00',src1:'M93',src2:'M94',winnerTo:{m:'M101',slot:2}},
   M99: {round:'qf',date:'11. jul',time:'23:00',src1:'M91',src2:'M92',winnerTo:{m:'M102',slot:1}},
   M100:{round:'qf',date:'12. jul',time:'03:00',src1:'M95',src2:'M96',winnerTo:{m:'M102',slot:2}},
-
   M101:{round:'sf',date:'14. jul',time:'21:00',src1:'M97',src2:'M98', winnerTo:{m:'M104',slot:1},loserTo:{m:'M103',slot:1}},
   M102:{round:'sf',date:'15. jul',time:'21:00',src1:'M99',src2:'M100',winnerTo:{m:'M104',slot:2},loserTo:{m:'M103',slot:2}},
-
   M103:{round:'tp',date:'18. jul',time:'21:00',src1:'M101',src2:'M102',srcType:'loser'},
   M104:{round:'final',date:'19. jul',time:'21:00',src1:'M101',src2:'M102',srcType:'winner'}
 };
-
 const roundMatchIds={
-  r16:['M74','M77','M73','M75','M83','M84','M81','M82','M76','M78','M79','M80','M86','M88','M85','M87'],
-  r8:['M89','M90','M93','M94','M91','M92','M95','M96'],
   qf:['M97','M98','M99','M100'],
   sf:['M101','M102'],
   tp:['M103'],
   final:['M104']
 };
 
+/* ── stanje ──
+   qualA[mid] / qualB[mid] = ko prolazi iz para A / B (R16)
+   selections[mid] = pobjednik meča (i za R16 i za proste mečeve) */
+const qualA={}, qualB={};
 const selections={};
 const sentRounds={};
-const totalPicks=Object.keys(matches).length;
+const totalPicks=8 /*R16*/ + 4 + 2 + 1 + 1; // 16
 
+/* ── helperi za proste mečeve ── */
 function teamOnSlot(mid,slot){
   const m=matches[mid];
-  if(m.t1!==undefined){ return slot===1?m.t1:m.t2; }
   const src=slot===1?m.src1:m.src2;
+  // izvor je R16 meč?
+  if(r16Matches[src]!==undefined){
+    if(!selections[src]) return null;
+    return selections[src];
+  }
   if(!selections[src]) return null;
-  if(m.srcType==='loser'){ return loserOf(src); }
+  if(m.srcType==='loser') return loserOf(src);
   return selections[src];
 }
 function loserOf(mid){
@@ -325,11 +337,12 @@ function loserOf(mid){
 }
 function bothKnown(mid){ return teamOnSlot(mid,1)!==null && teamOnSlot(mid,2)!==null; }
 
+/* ── BUILD ── */
 function buildTabs(){
   const tabs=document.getElementById('roundTabs');
   const panels=document.getElementById('roundPanels');
   rounds.forEach((r,ri)=>{
-    const cnt=roundMatchIds[r.id].length;
+    const cnt=(r.id==='r16')?r16Order.length:roundMatchIds[r.id].length;
     const tab=document.createElement('button');
     tab.className='round-tab'+(ri===0?' active':'');
     tab.id='tab-'+r.id;
@@ -339,17 +352,51 @@ function buildTabs(){
     const panel=document.createElement('div');
     panel.className='round-panel'+(ri===0?' active':'');
     panel.id='panel-'+r.id;
-    panel.innerHTML=buildPanel(r);
+    panel.innerHTML=(r.id==='r16')?buildR16Panel(r):buildSimplePanel(r);
     panels.appendChild(panel);
   });
 }
 
-function buildPanel(r){
+function optBtn(mid,side,team){
+  return `<button class="opt-btn" id="opt-${mid}-${side}-${team}" onclick="pickQual('${mid}','${side}','${team}')"><span class="fl">${FLAGS[team]||'🏟'}</span>${NAMES[team]||team}</button>`;
+}
+
+function buildR16Panel(r){
+  const cards=r16Order.map((mid,idx)=>{
+    const m=r16Matches[mid];
+    return `<div class="match-card" id="mc-${mid}">
+      <div class="match-head">
+        <span class="match-num">Meč ${idx+1} · ${mid}</span>
+        <span class="match-date">${m.date} · ${m.time}</span>
+      </div>
+      <div class="match-body">
+        <div class="pair-step">
+          <div class="step-lbl">1 · Ko prolazi <b>(gornji par)</b></div>
+          <div class="pair-row">${optBtn(mid,'A',m.pairA[0])}${optBtn(mid,'A',m.pairA[1])}</div>
+        </div>
+        <div class="pair-step">
+          <div class="step-lbl">2 · Ko prolazi <b>(donji par)</b></div>
+          <div class="pair-row">${optBtn(mid,'B',m.pairB[0])}${optBtn(mid,'B',m.pairB[1])}</div>
+        </div>
+        <div class="final-step">
+          <div class="step-lbl">3 · Ko pobjeđuje i ide u četvrtfinale</div>
+          <div class="win-row">
+            <button class="win-btn" id="win-${mid}-A" onclick="pickR16Winner('${mid}','A')" disabled>—</button>
+            <button class="win-btn" id="win-${mid}-B" onclick="pickR16Winner('${mid}','B')" disabled>—</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return roundShell(r,cards);
+}
+
+function buildSimplePanel(r){
   const cards=roundMatchIds[r.id].map((mid,idx)=>{
     return `<div class="match-card" id="mc-${mid}">
       <div class="match-head">
         <span class="match-num">Meč ${idx+1} · ${mid}</span>
-        <span class="match-date">${matches[mid].date}${matches[mid].time?' · '+matches[mid].time:''}</span>
+        <span class="match-date">${matches[mid].date} · ${matches[mid].time}</span>
       </div>
       <div class="match-body">
         <div class="match-teams">
@@ -364,7 +411,10 @@ function buildPanel(r){
       </div>
     </div>`;
   }).join('');
+  return roundShell(r,cards);
+}
 
+function roundShell(r,cards){
   return `<div class="round-info-bar">
     <div class="ri-left"><h3>${r.label}</h3></div>
     <div class="ri-right"><div class="nagrad">${r.nagrada}</div><div class="nagrad-lbl">Nagrada</div></div>
@@ -395,39 +445,103 @@ function switchTab(id){
   document.getElementById('panel-'+id).classList.add('active');
 }
 
+/* ── R16: izbor ko prolazi iz para ── */
+function pickQual(mid,side,team){
+  if(sentRounds['r16']) return;
+  const cur=(side==='A')?qualA[mid]:qualB[mid];
+  if(cur===team){
+    // poništi kvalifikanta -> i pobjednik meča pada ako je bio taj
+    if(side==='A'){ delete qualA[mid]; } else { delete qualB[mid]; }
+    if(selections[mid]===team){ delete selections[mid]; clearDownstreamFrom(mid); }
+  }else{
+    if(side==='A'){ qualA[mid]=team; } else { qualB[mid]=team; }
+    // ako je odabrani pobjednik bio stari kvalifikant te strane -> resetuj pobjednika
+    if(selections[mid] && selections[mid]!==qualA[mid] && selections[mid]!==qualB[mid]){
+      delete selections[mid]; clearDownstreamFrom(mid);
+    }
+  }
+  renderAll();
+}
+
+/* ── R16: izbor pobjednika meča ── */
+function pickR16Winner(mid,side){
+  if(sentRounds['r16']) return;
+  const team=(side==='A')?qualA[mid]:qualB[mid];
+  if(!team) return;
+  if(selections[mid]===team){ delete selections[mid]; }
+  else { selections[mid]=team; }
+  clearDownstreamFrom(mid);
+  renderAll();
+}
+
+/* ── prosti meč izbor pobjednika ── */
 function pickWinner(mid,slot){
   if(sentRounds[matches[mid].round]) return;
   if(!bothKnown(mid)) return;
   const team=teamOnSlot(mid,slot);
   if(!team) return;
   if(selections[mid]===team){ delete selections[mid]; }
-  else{ selections[mid]=team; }
-  propagate(mid);
+  else { selections[mid]=team; }
+  clearDownstreamFrom(mid);
   renderAll();
 }
 
-function propagate(mid){
-  const m=matches[mid];
-  const affected=[];
-  if(m.winnerTo) affected.push(m.winnerTo.m);
-  if(m.loserTo) affected.push(m.loserTo.m);
-  affected.forEach(nid=>{
+/* ── reset svih zavisnih naniže ── */
+function clearDownstreamFrom(mid){
+  const wt = r16Matches[mid] ? r16Matches[mid].winnerTo : matches[mid].winnerTo;
+  const lt = matches[mid] ? matches[mid].loserTo : null;
+  [wt,lt].forEach(link=>{
+    if(!link) return;
+    const nid=link.m;
     if(selections[nid]!==undefined){
       const a=teamOnSlot(nid,1), b=teamOnSlot(nid,2);
       if(selections[nid]!==a && selections[nid]!==b){ delete selections[nid]; }
     }
-    propagate(nid);
+    clearDownstreamFrom(nid);
   });
 }
 
+/* ── RENDER ── */
 function renderAll(){
-  Object.keys(matches).forEach(renderMatch);
+  r16Order.forEach(renderR16);
+  Object.keys(matches).forEach(renderSimple);
   updateScores();
   updateChampion();
   rounds.forEach(r=>checkRound(r.id));
 }
 
-function renderMatch(mid){
+function renderR16(mid){
+  const m=r16Matches[mid];
+  const locked=sentRounds['r16'];
+  // dugmad parova
+  ['A','B'].forEach(side=>{
+    const pair=(side==='A')?m.pairA:m.pairB;
+    const qual=(side==='A')?qualA[mid]:qualB[mid];
+    pair.forEach(team=>{
+      const b=document.getElementById('opt-'+mid+'-'+side+'-'+team);
+      b.classList.toggle('selected',qual===team);
+      b.disabled=locked;
+    });
+  });
+  // dugmad pobjednika
+  const wa=document.getElementById('win-'+mid+'-A');
+  const wb=document.getElementById('win-'+mid+'-B');
+  const qa=qualA[mid], qb=qualB[mid];
+  setWin(wa,qa,mid,locked);
+  setWin(wb,qb,mid,locked);
+}
+function setWin(btn,team,mid,locked){
+  if(team){
+    btn.innerHTML=`<span class="fl">${FLAGS[team]||'🏟'}</span>${NAMES[team]||team}`;
+    btn.disabled=locked;
+  }else{
+    btn.textContent='—';
+    btn.disabled=true;
+  }
+  btn.classList.toggle('selected', team && selections[mid]===team);
+}
+
+function renderSimple(mid){
   const m=matches[mid];
   const t1=teamOnSlot(mid,1), t2=teamOnSlot(mid,2);
   const known=t1!==null&&t2!==null;
@@ -443,7 +557,6 @@ function renderMatch(mid){
     btn.classList.toggle('selected', team && selections[mid]===team);
   });
 }
-
 function setSlot(mid,slot,team){
   const nameEl=document.getElementById('name-'+mid+'-'+slot);
   const flagEl=document.getElementById('flag-'+mid+'-'+slot);
@@ -453,13 +566,19 @@ function setSlot(mid,slot,team){
 
 function updateScores(){
   let done=0;
-  rounds.forEach(r=>{
+  // R16
+  let r16done=0;
+  r16Order.forEach(mid=>{ if(selections[mid]) r16done++; });
+  done+=r16done;
+  document.getElementById('score-r16').textContent=`${r16done}/${r16Order.length}`;
+  // ostale
+  ['qf','sf','tp','final'].forEach(rid=>{
     let rdone=0;
-    roundMatchIds[r.id].forEach(mid=>{ if(selections[mid]) rdone++; });
+    roundMatchIds[rid].forEach(mid=>{ if(selections[mid]) rdone++; });
     done+=rdone;
-    document.getElementById('score-'+r.id).textContent=`${rdone}/${roundMatchIds[r.id].length}`;
+    document.getElementById('score-'+rid).textContent=`${rdone}/${roundMatchIds[rid].length}`;
   });
-  document.getElementById('pbText').textContent=`${done} / ${totalPicks} meča`;
+  document.getElementById('pbText').textContent=`${done} / ${totalPicks} mečeva`;
   document.getElementById('pbFill').style.width=`${(done/totalPicks)*100}%`;
 }
 
@@ -468,7 +587,11 @@ function updateChampion(){
   document.getElementById('championName').textContent=champ?(NAMES[champ]||champ):'—';
 }
 
-function roundComplete(rid){ return roundMatchIds[rid].every(mid=>selections[mid]); }
+/* runda kompletna? */
+function roundComplete(rid){
+  if(rid==='r16') return r16Order.every(mid=>qualA[mid]&&qualB[mid]&&selections[mid]);
+  return roundMatchIds[rid].every(mid=>selections[mid]);
+}
 
 function checkRound(rid){
   if(sentRounds[rid]) return;
@@ -496,16 +619,31 @@ async function submitRound(rid){
   const btn=document.getElementById('submit-'+rid);
   if(btn.disabled||sentRounds[rid]) return;
   const r=rounds.find(x=>x.id===rid);
+
   const name=document.getElementById('fname-'+rid).value.trim();
   const email=document.getElementById('femail-'+rid).value.trim();
   const phone=document.getElementById('fphone-'+rid).value.trim();
 
-  const picks=roundMatchIds[rid].map(mid=>({
-    matchId:mid,
-    team1:teamOnSlot(mid,1),
-    team2:teamOnSlot(mid,2),
-    pick:selections[mid]
-  }));
+  let picks;
+  if(rid==='r16'){
+    picks=r16Order.map(mid=>{
+      const m=r16Matches[mid];
+      return {
+        matchId:mid,
+        pairA:m.pairA, qualA:qualA[mid],
+        pairB:m.pairB, qualB:qualB[mid],
+        team1:qualA[mid], team2:qualB[mid],
+        pick:selections[mid]
+      };
+    });
+  }else{
+    picks=roundMatchIds[rid].map(mid=>({
+      matchId:mid,
+      team1:teamOnSlot(mid,1),
+      team2:teamOnSlot(mid,2),
+      pick:selections[mid]
+    }));
+  }
 
   btn.disabled=true; btn.textContent='Slanje...';
   showStatus(rid,'Slanje predikcije...','ok');
@@ -515,7 +653,7 @@ async function submitRound(rid){
     roundId:rid,
     roundLabel:r.label,
     name,email,phone,
-    totalMatches:roundMatchIds[rid].length,
+    totalMatches:picks.length,
     picks,
     predictedChampion:selections['M104']||null,
     submittedAtClient:new Date().toISOString(),
@@ -541,10 +679,10 @@ async function submitRound(rid){
 
 function lockRound(rid){
   sentRounds[rid]=true;
-  roundMatchIds[rid].forEach(mid=>{
+  const ids=(rid==='r16')?r16Order:roundMatchIds[rid];
+  ids.forEach(mid=>{
     const mc=document.getElementById('mc-'+mid);
     if(mc) mc.classList.add('locked');
-    ['1','2'].forEach(s=>{const b=document.getElementById('pick-'+mid+'-'+s); if(b) b.disabled=true;});
   });
   document.getElementById('tab-'+rid).classList.add('sent');
   ['fname','femail','fphone','terms'].forEach(f=>{const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;});
@@ -552,6 +690,7 @@ function lockRound(rid){
   btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
   const r=rounds.find(x=>x.id===rid);
   btn.textContent='✓ '+r.label+' poslato';
+  renderAll();
 }
 
 buildTabs();
