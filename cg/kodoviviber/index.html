@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="sr-ME">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmiralBET kod</title>
+  <style>
+    :root {
+      --bg-1: #08111f;
+      --bg-2: #0d1a30;
+      --bg-3: #13233e;
+      --panel: rgba(13, 24, 45, 0.96);
+      --panel-2: rgba(16, 30, 56, 0.98);
+      --line: rgba(255,255,255,0.10);
+      --line-strong: rgba(243, 200, 74, 0.18);
+      --text: #f7f9ff;
+      --muted: #b7c2e3;
+      --accent: #f3c84a;
+      --accent-2: #ffdf7c;
+      --danger: #ff7b7b;
+      --success: #3fd19b;
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --radius: 24px;
+      --max: 560px;
+    }
+
+    * { box-sizing: border-box; min-width: 0; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    button, input, textarea, select, a { font: inherit; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 20px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .section { margin: 18px 0; }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      width: min(220px, 62vw);
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 100%;
+    }
+
+    h1, h2, h3, p { word-wrap: break-word; overflow-wrap: anywhere; }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: clamp(28px, 6vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 4.2vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      text-align: center;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .countdown-box {
+      margin: 16px 0 18px;
+      border: 1px solid var(--line-strong);
+      background: rgba(243,200,74,.07);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .countdown-title {
+      margin: 0 0 10px;
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .countdown-item {
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      padding: 10px 6px;
+    }
+
+    .countdown-value {
+      display: block;
+      font-size: clamp(22px, 5vw, 32px);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown-label {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .timer-box {
+      margin: 0 0 18px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255,123,123,.07);
+      border-radius: 18px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .timer-title {
+      margin: 0 0 6px;
+      color: var(--danger);
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .timer-value {
+      font-size: clamp(26px, 6vw, 36px);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    input[type="text"], input[type="email"], input[type="tel"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      color: var(--text);
+      border-radius: 15px;
+      padding: 15px 16px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      min-height: 56px;
+    }
+
+    input::placeholder { color: rgba(183,194,227,.72); }
+
+    input:focus {
+      border-color: rgba(243,200,74,.55);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
+      background: rgba(255,255,255,.06);
+    }
+
+    .field-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .checkbox-row input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+      position: relative;
+      flex: 0 0 auto;
+      min-height: unset;
+    }
+
+    .checkbox-row input:checked {
+      border-color: rgba(243,200,74,.55);
+      background: rgba(243,200,74,.10);
+    }
+
+    .checkbox-row input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 58px;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 58px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      padding: 15px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+
+    .details-wrap {
+      margin-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 12px;
+    }
+
+    details { border-radius: 12px; }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .details-content {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 12px 13px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .form-shell, .result-shell { display: none; }
+    .form-shell.active, .result-shell.active { display: block; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .code-box {
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border-radius: 18px;
+      padding: 26px 14px;
+      text-align: center;
+    }
+
+    .code-box .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .code-box .value {
+      font-size: clamp(30px, 8vw, 46px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      color: var(--accent-2);
+      word-break: break-word;
+    }
+
+    .footer-space { height: 14px; }
+
+    @media (max-width: 760px) {
+      .wrap { width: min(var(--max), calc(100% - 14px)); padding-top: 12px; }
+      .card { padding: 18px 16px; border-radius: 20px; }
+      .sub { font-size: 15px; }
+      .btn-row { flex-direction: column; }
+      .btn-primary { width: 100%; min-height: 58px; }
+    }
+
+    @media (max-width: 420px) {
+      .wrap { width: calc(100% - 12px); }
+      .card { padding: 16px 14px; }
+      .logo-wrap { width: min(200px, 72vw); padding: 10px 12px; }
+      h1 { font-size: 28px; }
+      .countdown { gap: 6px; }
+      .countdown-item { padding: 9px 4px; border-radius: 12px; }
+      .countdown-label { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="section" id="registerSection">
+      <div class="card">
+        <div class="brand-block">
+          <div class="logo-wrap">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s"
+              alt="AdmiralBET logo"
+            />
+          </div>
+          <div class="brand-pill">AdmiralBET · Promo kod akcija</div>
+        </div>
+
+        <h1 id="mainTitle">Preuzmi svoj kod</h1>
+        <p class="sub" id="introText">Provjera dostupnosti termina...</p>
+
+        <div class="countdown-box" id="countdownBox" style="display:none;">
+          <p class="countdown-title">Sledeći termin počinje za</p>
+          <div class="countdown">
+            <div class="countdown-item">
+              <span class="countdown-value" id="countDays">00</span>
+              <span class="countdown-label">Dana</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countHours">00</span>
+              <span class="countdown-label">Sati</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countMinutes">00</span>
+              <span class="countdown-label">Min</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countSeconds">00</span>
+              <span class="countdown-label">Sek</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timer-box" id="activeTimerBox" style="display:none;">
+          <p class="timer-title">Termin aktivan još</p>
+          <div class="timer-value" id="activeTimerValue">10:00</div>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label for="fullName">Ime i prezime</label>
+            <input type="text" id="fullName" placeholder="Npr. Marko Petrović" autocomplete="name" />
+          </div>
+
+          <div>
+            <label for="email">Email adresa</label>
+            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" autocomplete="email" inputmode="email" />
+          </div>
+
+          <div>
+            <label for="phone">Broj telefona</label>
+            <input type="tel" id="phone" placeholder="Npr. +382 6X XXX XXX" autocomplete="tel" inputmode="tel" />
+          </div>
+
+          <div>
+            <label for="platformId">ID sa Admiralbet.me platforme</label>
+            <input type="text" id="platformId" placeholder="Unesi ID naloga" autocomplete="off" />
+            <div class="field-note">ID nalog mora biti registrovan na Admiralbet.me platformi.</div>
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="privacy" />
+          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u akciji.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="startBtn" disabled>Preuzmi kod</button>
+        </div>
+
+        <div class="status" id="registerStatus"></div>
+
+        <div class="details-wrap">
+          <details>
+            <summary>Detalji akcije</summary>
+            <div class="details-content">
+              <div class="detail-item">Kod je moguće preuzeti isključivo u aktivnom terminu, u trajanju od 10 minuta.</div>
+              <div class="detail-item">Broj kodova je ograničen — ko prvi popuni formu, taj i dobija kod.</div>
+              <div class="detail-item">Jedan email i jedan ID platforme mogu preuzeti kod samo jednom.</div>
+              <div class="detail-item">Termini akcije se objavljuju unaprijed.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section result-shell" id="resultSection">
+      <div class="card">
+        <h2>Čestitamo!</h2>
+        <p class="sub">Tvoj promo kod je uspješno rezervisan.</p>
+
+        <div class="result-grid">
+          <div class="code-box">
+            <span class="label">Tvoj kod</span>
+            <span class="value" id="finalCode">------</span>
+          </div>
+        </div>
+
+        <p class="sub" style="font-size:13px;">Sačuvaj kod — poslužiće ti za realizaciju ponude prema uputstvu akcije.</p>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
+  </div>
+
+  <script>
+    // ⚠️ Zamijeni sa svojim Apps Script Web App URL-om (Deploy > Web app)
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID/exec';
+
+    // Koliko dugo traje jedan termin (mora se poklapati sa VrijemeOd/VrijemeDo u sheetu)
+    const WINDOW_MINUTES = 10;
+
+    // Koliko često provjeravamo status kad forma nije aktivna (ms)
+    const POLL_INTERVAL_MS = 5000;
+
+    const registerStatus = document.getElementById('registerStatus');
+    const startBtn = document.getElementById('startBtn');
+    const introText = document.getElementById('introText');
+    const countdownBox = document.getElementById('countdownBox');
+    const activeTimerBox = document.getElementById('activeTimerBox');
+    const activeTimerValue = document.getElementById('activeTimerValue');
+    const countDays = document.getElementById('countDays');
+    const countHours = document.getElementById('countHours');
+    const countMinutes = document.getElementById('countMinutes');
+    const countSeconds = document.getElementById('countSeconds');
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const platformIdInput = document.getElementById('platformId');
+    const privacyInput = document.getElementById('privacy');
+    const registerSection = document.getElementById('registerSection');
+    const resultSection = document.getElementById('resultSection');
+    const finalCode = document.getElementById('finalCode');
+
+    let isActive = false;
+    let nextWindowStart = null;
+    let countdownInterval = null;
+    let activeTimerInterval = null;
+    let pollTimeout = null;
+    let activeWindowEndMs = null;
+
+    function setStatus(msg, type) {
+      registerStatus.textContent = msg || '';
+      registerStatus.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    function pad2(v) { return String(v).padStart(2, '0'); }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidPhone(phone) {
+      return /^[+0-9\s()-]{6,20}$/.test(phone);
+    }
+
+    function updateFormReady() {
+      const ok =
+        fullNameInput.value.trim().length >= 3 &&
+        isValidEmail(emailInput.value.trim()) &&
+        isValidPhone(phoneInput.value.trim()) &&
+        platformIdInput.value.trim().length >= 3 &&
+        privacyInput.checked &&
+        isActive;
+
+      startBtn.disabled = !ok;
+    }
+
+    [fullNameInput, emailInput, phoneInput, platformIdInput, privacyInput].forEach(el => {
+      el.addEventListener('input', updateFormReady);
+      el.addEventListener('change', updateFormReady);
+    });
+
+    function renderCountdownToNextWindow() {
+      if (!nextWindowStart) return;
+
+      const now = new Date();
+      const diff = nextWindowStart.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        clearInterval(countdownInterval);
+        pollStatus();
+        return;
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      countDays.textContent = pad2(days);
+      countHours.textContent = pad2(hours);
+      countMinutes.textContent = pad2(minutes);
+      countSeconds.textContent = pad2(seconds);
+    }
+
+    function renderActiveTimer() {
+      if (!activeWindowEndMs) return;
+
+      const now = Date.now();
+      const diff = activeWindowEndMs - now;
+
+      if (diff <= 0) {
+        clearInterval(activeTimerInterval);
+        isActive = false;
+        activeTimerBox.style.display = 'none';
+        updateFormReady();
+        setStatus('Termin je istekao.', 'error');
+        pollStatus();
+        return;
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      activeTimerValue.textContent = pad2(minutes) + ':' + pad2(seconds);
+    }
+
+    async function pollStatus() {
+      try {
+        const response = await fetch(APPS_SCRIPT_URL);
+        const data = await response.json();
+
+        if (!data.success) {
+          setStatus('Greška u komunikaciji sa serverom. Pokušavam ponovo...', 'error');
+          schedulePoll();
+          return;
+        }
+
+        if (data.active) {
+          isActive = true;
+          countdownBox.style.display = 'none';
+          clearInterval(countdownInterval);
+
+          activeWindowEndMs = Date.now() + WINDOW_MINUTES * 60 * 1000;
+          activeTimerBox.style.display = 'block';
+          clearInterval(activeTimerInterval);
+          activeTimerInterval = setInterval(renderActiveTimer, 1000);
+          renderActiveTimer();
+
+          introText.textContent = 'Termin je aktivan! Popuni podatke i preuzmi kod u naredne ' + WINDOW_MINUTES + ' minuta.';
+          setStatus('');
+          updateFormReady();
+        } else {
+          isActive = false;
+          activeTimerBox.style.display = 'none';
+          clearInterval(activeTimerInterval);
+          updateFormReady();
+
+          if (data.nextWindowStartIso) {
+            nextWindowStart = new Date(data.nextWindowStartIso);
+            countdownBox.style.display = 'block';
+            introText.textContent = 'Akcija trenutno nije aktivna. Sačekaj sledeći termin.';
+            setStatus('');
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(renderCountdownToNextWindow, 1000);
+            renderCountdownToNextWindow();
+          } else {
+            countdownBox.style.display = 'none';
+            introText.textContent = 'Trenutno nema zakazanih termina.';
+            setStatus('');
+          }
+
+          schedulePoll();
+        }
+      } catch (err) {
+        setStatus('Greška u komunikaciji sa serverom. Pokušavam ponovo...', 'error');
+        schedulePoll();
+      }
+    }
+
+    function schedulePoll() {
+      clearTimeout(pollTimeout);
+      pollTimeout = setTimeout(pollStatus, POLL_INTERVAL_MS);
+    }
+
+    startBtn.addEventListener('click', async () => {
+      if (!isActive) {
+        setStatus('Termin nije aktivan.', 'error');
+        return;
+      }
+
+      const fullName = fullNameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const phone = phoneInput.value.trim();
+      const platformId = platformIdInput.value.trim();
+
+      startBtn.disabled = true;
+      setStatus('');
+
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'claimCode',
+            fullName,
+            email,
+            phone,
+            platformId
+          })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          setStatus(data.message || 'Pokušaj ponovo.', 'error');
+          startBtn.disabled = false;
+          updateFormReady();
+          return;
+        }
+
+        clearInterval(activeTimerInterval);
+        clearInterval(countdownInterval);
+        clearTimeout(pollTimeout);
+
+        finalCode.textContent = data.code;
+        registerSection.style.display = 'none';
+        resultSection.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        setStatus('Pokušaj ponovo.', 'error');
+        startBtn.disabled = false;
+        updateFormReady();
+      }
+    });
+
+    pollStatus();
+  </script>
+</body>
+</html>
