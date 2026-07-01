@@ -120,55 +120,6 @@
       padding: 0 4px;
     }
 
-    .countdown-box {
-      margin: 16px 0 18px;
-      border: 1px solid var(--line-strong);
-      background: rgba(243,200,74,.07);
-      border-radius: 18px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .countdown-title {
-      margin: 0 0 10px;
-      color: var(--accent-2);
-      font-weight: 800;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    .countdown {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .countdown-item {
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      padding: 10px 6px;
-    }
-
-    .countdown-value {
-      display: block;
-      font-size: clamp(22px, 5vw, 32px);
-      line-height: 1;
-      font-weight: 900;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .countdown-label {
-      display: block;
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
     .timer-box {
       margin: 0 0 18px;
       border: 1px solid var(--line-strong);
@@ -407,9 +358,6 @@
       .card { padding: 16px 14px; }
       .logo-wrap { width: min(200px, 72vw); padding: 10px 12px; }
       h1 { font-size: 28px; }
-      .countdown { gap: 6px; }
-      .countdown-item { padding: 9px 4px; border-radius: 12px; }
-      .countdown-label { font-size: 10px; }
     }
   </style>
 </head>
@@ -429,28 +377,6 @@
 
         <h1 id="mainTitle">Preuzmi svoj kod</h1>
         <p class="sub" id="introText">Provjera dostupnosti termina...</p>
-
-        <div class="countdown-box" id="countdownBox" style="display:none;">
-          <p class="countdown-title">Sledeći termin počinje za</p>
-          <div class="countdown">
-            <div class="countdown-item">
-              <span class="countdown-value" id="countDays">00</span>
-              <span class="countdown-label">Dana</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="countHours">00</span>
-              <span class="countdown-label">Sati</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="countMinutes">00</span>
-              <span class="countdown-label">Min</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-value" id="countSeconds">00</span>
-              <span class="countdown-label">Sek</span>
-            </div>
-          </div>
-        </div>
 
         <div class="timer-box" id="activeTimerBox" style="display:none;">
           <p class="timer-title">Termin aktivan još</p>
@@ -526,7 +452,7 @@
 
   <script>
     // ⚠️ Zamijeni sa svojim Apps Script Web App URL-om (Deploy > Web app)
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz001ZkjhMbSOyJZYhy7rw5X0mCiVAF2i_p46rVWyjdIdYo_xCGn2ldkNcP_iM19HmX4A/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID/exec';
 
     // Koliko dugo traje jedan termin (mora se poklapati sa VrijemeOd/VrijemeDo u sheetu)
     const WINDOW_MINUTES = 10;
@@ -537,13 +463,8 @@
     const registerStatus = document.getElementById('registerStatus');
     const startBtn = document.getElementById('startBtn');
     const introText = document.getElementById('introText');
-    const countdownBox = document.getElementById('countdownBox');
     const activeTimerBox = document.getElementById('activeTimerBox');
     const activeTimerValue = document.getElementById('activeTimerValue');
-    const countDays = document.getElementById('countDays');
-    const countHours = document.getElementById('countHours');
-    const countMinutes = document.getElementById('countMinutes');
-    const countSeconds = document.getElementById('countSeconds');
     const fullNameInput = document.getElementById('fullName');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
@@ -554,8 +475,6 @@
     const finalCode = document.getElementById('finalCode');
 
     let isActive = false;
-    let nextWindowStart = null;
-    let countdownInterval = null;
     let activeTimerInterval = null;
     let pollTimeout = null;
     let activeWindowEndMs = null;
@@ -592,30 +511,6 @@
       el.addEventListener('change', updateFormReady);
     });
 
-    function renderCountdownToNextWindow() {
-      if (!nextWindowStart) return;
-
-      const now = new Date();
-      const diff = nextWindowStart.getTime() - now.getTime();
-
-      if (diff <= 0) {
-        clearInterval(countdownInterval);
-        pollStatus();
-        return;
-      }
-
-      const totalSeconds = Math.floor(diff / 1000);
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      countDays.textContent = pad2(days);
-      countHours.textContent = pad2(hours);
-      countMinutes.textContent = pad2(minutes);
-      countSeconds.textContent = pad2(seconds);
-    }
-
     function renderActiveTimer() {
       if (!activeWindowEndMs) return;
 
@@ -651,38 +546,28 @@
 
         if (data.active) {
           isActive = true;
-          countdownBox.style.display = 'none';
-          clearInterval(countdownInterval);
 
-          activeWindowEndMs = Date.now() + WINDOW_MINUTES * 60 * 1000;
+          activeWindowEndMs = data.windowEndIso
+            ? new Date(data.windowEndIso).getTime()
+            : Date.now() + WINDOW_MINUTES * 60 * 1000;
+
           activeTimerBox.style.display = 'block';
           clearInterval(activeTimerInterval);
           activeTimerInterval = setInterval(renderActiveTimer, 1000);
           renderActiveTimer();
 
-          introText.textContent = 'Termin je aktivan! Popuni podatke i preuzmi kod u naredne ' + WINDOW_MINUTES + ' minuta.';
+          introText.textContent = 'Akcija je aktivna! Popuni podatke i preuzmi kod prije nego termin istekne.';
           setStatus('');
           updateFormReady();
+          // Dok je aktivno ne treba nam poll — čekamo akciju korisnika ili istek tajmera.
         } else {
           isActive = false;
           activeTimerBox.style.display = 'none';
           clearInterval(activeTimerInterval);
           updateFormReady();
 
-          if (data.nextWindowStartIso) {
-            nextWindowStart = new Date(data.nextWindowStartIso);
-            countdownBox.style.display = 'block';
-            introText.textContent = 'Akcija trenutno nije aktivna. Sačekaj sledeći termin.';
-            setStatus('');
-            clearInterval(countdownInterval);
-            countdownInterval = setInterval(renderCountdownToNextWindow, 1000);
-            renderCountdownToNextWindow();
-          } else {
-            countdownBox.style.display = 'none';
-            introText.textContent = 'Trenutno nema zakazanih termina.';
-            setStatus('');
-          }
-
+          introText.textContent = 'Akcija trenutno nije dostupna. Provjeri ponovo kasnije.';
+          setStatus('');
           schedulePoll();
         }
       } catch (err) {
@@ -733,7 +618,6 @@
         }
 
         clearInterval(activeTimerInterval);
-        clearInterval(countdownInterval);
         clearTimeout(pollTimeout);
 
         finalCode.textContent = data.code;
