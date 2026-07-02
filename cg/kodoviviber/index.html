@@ -452,7 +452,7 @@
 
   <script>
     // ⚠️ Zamijeni sa svojim Apps Script Web App URL-om (Deploy > Web app)
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcudqKB9rYCfxG2zkwplGDe4zhhsF1eMsN3SrgzNowndxFJZps6sibTuMPOcNmIkvSgg/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDCUMJrTQ9kEO3ZLRbJYBOp1Ywb3dUdfjIErcm9kMBuWtSkVZZAMA7AJu3NELABFQDkg/exec';
 
     // Koliko dugo traje jedan termin (mora se poklapati sa VrijemeOd/VrijemeDo u sheetu)
     const WINDOW_MINUTES = 10;
@@ -533,6 +533,11 @@
       activeTimerValue.textContent = pad2(minutes) + ':' + pad2(seconds);
     }
 
+    // NAPOMENA (fix): "active" iz backenda znači "termin traje I ima
+    // slobodnih kodova". Ako je termin trenutno u toku ali su svi kodovi
+    // već potrošeni, backend šalje active:false, pa smo ovdje dodali
+    // "windowOpenButNoCodes" da se korisniku (i tebi pri testiranju) jasnije
+    // javi razlika, umjesto generičke poruke "akcija nije dostupna".
     async function pollStatus() {
       try {
         const response = await fetch(APPS_SCRIPT_URL);
@@ -566,7 +571,11 @@
           clearInterval(activeTimerInterval);
           updateFormReady();
 
-          introText.textContent = 'Akcija trenutno nije dostupna. Provjeri ponovo kasnije.';
+          if (data.windowEndIso && !data.hasFreeCode) {
+            introText.textContent = 'Termin je u toku, ali su svi kodovi za ovaj termin već iskorišćeni.';
+          } else {
+            introText.textContent = 'Akcija trenutno nije dostupna. Provjeri ponovo kasnije.';
+          }
           setStatus('');
           schedulePoll();
         }
