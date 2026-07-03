@@ -326,6 +326,28 @@
       text-align: center;
     }
 
+    .code-box-btn {
+      width: 100%;
+      display: block;
+      color: inherit;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .code-box-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(243,200,74,.55);
+    }
+
+    .code-box-btn:active {
+      transform: translateY(0);
+    }
+
+    .code-box-btn.copied {
+      border-color: rgba(63,209,155,.55);
+      background: linear-gradient(180deg, rgba(63,209,155,.10), rgba(63,209,155,.03));
+    }
+
     .code-box .label {
       display: block;
       font-size: 12px;
@@ -341,6 +363,22 @@
       letter-spacing: .06em;
       color: var(--accent-2);
       word-break: break-word;
+    }
+
+    .viber-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      text-align: center;
     }
 
     .footer-space { height: 14px; }
@@ -437,13 +475,28 @@
         <p class="sub">Tvoj promo kod je uspješno rezervisan.</p>
 
         <div class="result-grid">
-          <div class="code-box">
-            <span class="label">Tvoj kod</span>
+          <button type="button" class="code-box code-box-btn" id="codeBox" aria-label="Kopiraj kod">
+            <span class="label">Tvoj kod &middot; klikni da kopiraš</span>
             <span class="value" id="finalCode">------</span>
-          </div>
+          </button>
         </div>
 
-        <p class="sub" style="font-size:13px;">Sačuvaj kod — poslužiće ti za realizaciju ponude prema uputstvu akcije.</p>
+        <p class="status" id="copyStatus"></p>
+
+        <p class="sub" style="font-size:13px;">
+          Kod unosiš u sekciji <strong>Vaučer</strong> na Admiralbet.me platformi da bi realizovao/la ponudu.
+        </p>
+
+        <div class="btn-row">
+          <a
+            href="https://admiralbet.me/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="viber-btn"
+          >
+            Unesi kod na Admiralbet.me
+          </a>
+        </div>
       </div>
     </section>
 
@@ -473,6 +526,8 @@
     const registerSection = document.getElementById('registerSection');
     const resultSection = document.getElementById('resultSection');
     const finalCode = document.getElementById('finalCode');
+    const codeBox = document.getElementById('codeBox');
+    const copyStatus = document.getElementById('copyStatus');
 
     let isActive = false;
     let activeTimerInterval = null;
@@ -533,11 +588,6 @@
       activeTimerValue.textContent = pad2(minutes) + ':' + pad2(seconds);
     }
 
-    // NAPOMENA (fix): "active" iz backenda znači "termin traje I ima
-    // slobodnih kodova". Ako je termin trenutno u toku ali su svi kodovi
-    // već potrošeni, backend šalje active:false, pa smo ovdje dodali
-    // "windowOpenButNoCodes" da se korisniku (i tebi pri testiranju) jasnije
-    // javi razlika, umjesto generičke poruke "akcija nije dostupna".
     async function pollStatus() {
       try {
         const response = await fetch(APPS_SCRIPT_URL);
@@ -571,11 +621,7 @@
           clearInterval(activeTimerInterval);
           updateFormReady();
 
-          if (data.windowEndIso && !data.hasFreeCode) {
-            introText.textContent = 'Termin je u toku, ali su svi kodovi za ovaj termin već iskorišćeni.';
-          } else {
-            introText.textContent = 'Akcija trenutno nije dostupna. Provjeri ponovo kasnije.';
-          }
+          introText.textContent = 'Akcija trenutno nije dostupna. Provjeri ponovo kasnije.';
           setStatus('');
           schedulePoll();
         }
@@ -639,6 +685,39 @@
         updateFormReady();
       }
     });
+
+    async function copyCodeToClipboard() {
+      const code = finalCode.textContent.trim();
+      if (!code || code === '------') return;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(code);
+        } else {
+          const tmp = document.createElement('textarea');
+          tmp.value = code;
+          tmp.style.position = 'fixed';
+          tmp.style.opacity = '0';
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+        }
+
+        codeBox.classList.add('copied');
+        copyStatus.textContent = 'Kod je kopiran!';
+        copyStatus.className = 'status success';
+
+        setTimeout(() => {
+          codeBox.classList.remove('copied');
+        }, 1500);
+      } catch (err) {
+        copyStatus.textContent = 'Nije uspjelo kopiranje — kopiraj kod ručno.';
+        copyStatus.className = 'status error';
+      }
+    }
+
+    codeBox.addEventListener('click', copyCodeToClipboard);
 
     pollStatus();
   </script>
