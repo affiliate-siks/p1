@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="sr-ME">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmiralBET kviz</title>
+  <style>
+    :root {
+      --bg-1: #08111f;
+      --bg-2: #0d1a30;
+      --bg-3: #13233e;
+      --panel: rgba(13, 24, 45, 0.96);
+      --panel-2: rgba(16, 30, 56, 0.98);
+      --line: rgba(255,255,255,0.10);
+      --line-strong: rgba(243, 200, 74, 0.18);
+      --text: #f7f9ff;
+      --muted: #b7c2e3;
+      --accent: #f3c84a;
+      --accent-2: #ffdf7c;
+      --danger: #ff7b7b;
+      --success: #3fd19b;
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --radius: 24px;
+      --max: 560px;
+    }
+
+    * { box-sizing: border-box; min-width: 0; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    button, input, textarea, select, a { font: inherit; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 20px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .section { margin: 18px 0; }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      width: min(220px, 62vw);
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 100%;
+    }
+
+    h1, h2, h3, p { word-wrap: break-word; overflow-wrap: anywhere; }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: clamp(28px, 6vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 4.2vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+
+    h3 { margin: 0 0 12px; font-size: 18px; line-height: 1.2; }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .countdown-box {
+      margin: 16px 0 18px;
+      border: 1px solid var(--line-strong);
+      background: rgba(243,200,74,.07);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .countdown-title {
+      margin: 0 0 10px;
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .countdown-item {
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      padding: 10px 6px;
+    }
+
+    .countdown-value {
+      display: block;
+      font-size: clamp(22px, 5vw, 32px);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .countdown-label {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    input[type="text"], input[type="email"], input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      color: var(--text);
+      border-radius: 15px;
+      padding: 15px 16px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      min-height: 56px;
+    }
+
+    input[type="text"]::placeholder, input[type="email"]::placeholder {
+      color: rgba(183,194,227,.72);
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus {
+      border-color: rgba(243,200,74,.55);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
+      background: rgba(255,255,255,.06);
+    }
+
+    .field-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .checkbox-row input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .checkbox-row input:checked {
+      border-color: rgba(243,200,74,.55);
+      background: rgba(243,200,74,.10);
+    }
+
+    .checkbox-row input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 3px;
+      background: var(--accent);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 58px;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 58px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      padding: 15px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: var(--success); }
+
+    .details-wrap {
+      margin-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 12px;
+    }
+
+    details { border-radius: 12px; }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .details-content {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 12px 13px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .quiz-shell, .result-shell { display: none; }
+    .quiz-shell.active, .result-shell.active { display: block; }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .counter, .timer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .question-title {
+      font-size: clamp(22px, 4vw, 30px);
+      line-height: 1.3;
+      margin: 0 0 18px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .answer {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 15px 16px;
+      text-align: left;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.45;
+      width: 100%;
+      min-height: 58px;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .answer.selected {
+      border-color: rgba(243,200,74,.60);
+      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
+      background: rgba(243,200,74,.08);
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      margin-bottom: 16px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .22s ease;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .result-box {
+      border: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025));
+      border-radius: 18px;
+      padding: 18px 14px;
+      text-align: center;
+    }
+
+    .result-box .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      line-height: 1.4;
+    }
+
+    .result-box .value {
+      font-size: clamp(24px, 5vw, 36px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .result-box .value.status-value {
+      font-size: clamp(18px, 3.6vw, 28px);
+      white-space: nowrap;
+      word-break: normal;
+      overflow-wrap: normal;
+      display: block;
+      text-align: center;
+    }
+
+    .viber-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #111;
+      text-align: center;
+    }
+
+    .leaderboard-wrap {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .leaderboard-head {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .leaderboard-sub {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .leaderboard-row {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .leaderboard-rank {
+      font-weight: 800;
+      color: var(--accent-2);
+      font-size: 15px;
+    }
+
+    .leaderboard-name {
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .04em;
+    }
+
+    .leaderboard-time {
+      color: var(--muted);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .leaderboard-empty {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 14px;
+      padding: 14px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .promo-banner-shell {
+      display: none;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    .promo-banner-shell.active { display: block; }
+
+    .promo-banner {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      background: rgba(255,255,255,.03);
+    }
+
+    .promo-banner-link {
+      display: block;
+      width: 100%;
+    }
+
+    .promo-banner-link img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .promo-banner-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(8, 17, 31, .74);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      z-index: 2;
+    }
+
+    .promo-banner-close:hover {
+      transform: none;
+      background: rgba(8, 17, 31, .9);
+    }
+
+    .promo-redirect-note {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .promo-redirect-note strong {
+      color: var(--accent-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .footer-space { height: 14px; }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(var(--max), calc(100% - 14px));
+        padding-top: 12px;
+      }
+
+      .card {
+        padding: 18px 16px;
+        border-radius: 20px;
+      }
+
+      .sub { font-size: 15px; }
+
+      .quiz-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .counter, .timer {
+        width: 100%;
+        text-align: center;
+      }
+
+      .btn-row { flex-direction: column; }
+
+      .btn-primary, .answer, .viber-btn {
+        width: 100%;
+        min-height: 58px;
+      }
+
+      .result-grid { grid-template-columns: 1fr; }
+
+      .leaderboard-row {
+        grid-template-columns: 44px 1fr auto;
+        gap: 10px;
+        padding: 11px 12px;
+      }
+
+      .promo-banner-close {
+        top: 6px;
+        right: 6px;
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .wrap { width: calc(100% - 12px); }
+      .card { padding: 16px 14px; }
+
+      .logo-wrap {
+        width: min(200px, 72vw);
+        padding: 10px 12px;
+      }
+
+      h1 { font-size: 28px; }
+      .question-title { font-size: 22px; }
+
+      .answer {
+        padding: 14px;
+        font-size: 15px;
+      }
+
+      .countdown { gap: 6px; }
+
+      .countdown-item {
+        padding: 9px 4px;
+        border-radius: 12px;
+      }
+
+      .countdown-label { font-size: 10px; }
+
+      .leaderboard-row { grid-template-columns: 40px 1fr auto; }
+      .leaderboard-time { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="section" id="registerSection">
+      <div class="card">
+        <div class="brand-block">
+          <div class="logo-wrap">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s"
+              alt="AdmiralBET logo"
+            />
+          </div>
+          <div class="brand-pill">AdmiralBET Online · Instagram Sportski Kviz</div>
+        </div>
+
+        <h1>Sportski kviz</h1>
+        <p class="sub" id="introText">Kviz još nije aktivan. Kolo počinje 19.06.2026. u 15:45h.</p>
+
+        <div class="countdown-box" id="countdownBox">
+          <p class="countdown-title">Kviz počinje za</p>
+          <div class="countdown">
+            <div class="countdown-item">
+              <span class="countdown-value" id="countDays">00</span>
+              <span class="countdown-label">Dana</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countHours">00</span>
+              <span class="countdown-label">Sati</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countMinutes">00</span>
+              <span class="countdown-label">Min</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-value" id="countSeconds">00</span>
+              <span class="countdown-label">Sek</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div>
+            <label for="initials">Inicijali</label>
+            <input type="text" id="initials" placeholder="Npr. MP" maxlength="3" autocomplete="off" />
+          </div>
+
+          <div>
+            <label for="email">Email adresa</label>
+            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" autocomplete="email" inputmode="email" />
+            <div class="field-note">
+              Email mora biti registrovan na Admiralbet.me platformi.
+            </div>
+          </div>
+        </div>
+
+        <label class="checkbox-row">
+          <input type="checkbox" id="privacy" />
+          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu.</span>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="startBtn" disabled>Pokreni kviz</button>
+        </div>
+
+        <div class="status" id="registerStatus">Kviz još nije aktivan.</div>
+
+        <div class="details-wrap">
+          <details>
+            <summary>Detalji kampanje</summary>
+            <div class="details-content">
+              <div class="detail-item">Kolo počinje 19.06.2026. u 15:45h.</div>
+              <div class="detail-item">Kviz sadrži 20 pitanja.</div>
+              <div class="detail-item">Unose se samo inicijali i email.</div>
+              <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
+              <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme.</div>
+              <div class="detail-item">Tačni odgovori se ne prikazuju tokom ni nakon kviza.</div>
+              <div class="detail-item">Presjek rezultata radi se ponedjeljkom i petkom.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quiz-shell" id="quizSection">
+      <div class="card">
+        <div class="progress"><span id="progressBar"></span></div>
+
+        <div class="quiz-top">
+          <div class="counter" id="questionCounter">Pitanje 1 / 20</div>
+          <div class="timer">Vrijeme: <strong id="timerText">00:00</strong></div>
+        </div>
+
+        <h2 class="question-title" id="questionText"></h2>
+        <div class="answers" id="answersWrap"></div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
+        </div>
+
+        <div class="status" id="quizStatus"></div>
+      </div>
+    </section>
+
+    <section class="section result-shell" id="resultSection">
+      <div class="card">
+        <h2>Tvoj rezultat je zabilježen</h2>
+        <p class="sub">Prati rezultate ekskluzivno u Viber zajednici!</p>
+
+        <div class="result-grid">
+          <div class="result-box">
+            <span class="label">Tačnih odgovora</span>
+            <span class="value" id="finalCorrect">0/20</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Vrijeme</span>
+            <span class="value" id="finalTime">00:00</span>
+          </div>
+          <div class="result-box">
+            <span class="label">Status</span>
+            <span class="value status-value" id="finalStatus">Poslato</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <a
+            href="https://bit.ly/4ue09AX"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="viber-btn"
+          >
+            Pridruži se zajednici
+          </a>
+        </div>
+
+        <div class="promo-banner-shell" id="promoBannerShell">
+          <div class="promo-banner">
+            <button type="button" class="promo-banner-close" id="promoBannerClose" aria-label="Zatvori">×</button>
+            <a
+              href="https://bit.ly/4ue09AX"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="promo-banner-link"
+              id="promoBannerLink"
+              aria-label="Zajednica"
+            >
+              <img
+                src="https://admiralbet.me/assets/images/promotion/fdaiobijashuofihadsfuadsihfui.jpg"
+                alt="Zajednica"
+              />
+            </a>
+          </div>
+          <p class="promo-redirect-note" id="promoRedirectNote">
+            Preusmjeravanje za <strong id="promoRedirectCount">5</strong> sek...
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
+  </div>
+
+ <script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
+
+  // Kolo — 19.06.2026. u 15:45h (CEST, UTC+2)
+  const QUIZ_START_AT = new Date('2026-06-19T15:20:00+02:00');
+
+  // Link na koji vodi promo baner (i auto-redirect nakon submita)
+  const PROMO_BANNER_URL = 'https://bit.ly/4ue09AX';
+  const REDIRECT_SECONDS = 5;
+
+  const QUIZ_QUESTIONS = [
+    {
+      text: 'Koji fudbaler je na prvom Svjetskom prvenstvu ušao u istoriju i kao strijelac prvog autogola i kao izvođač prvog uspješno realizovanog penala?',
+      answers: ['Juan Carreño', 'Manuel Rosas', 'Guillermo Stábile'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koji fudbaler je 1934. postao prvi Afrikanac koji je postigao gol na Svjetskom prvenstvu, pri čemu je na istoj utakmici postigao oba gola svoje reprezentacije?',
+      answers: ['Abdelrahman Fawzi', 'Mahmoud Mokhtar', 'Houmane Jarir'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koja reprezentacija je na SP 1938. prvo odigrala 3:3 sa Rumunijom, zatim je savladala u ponovljenoj utakmici i plasirala se u četvrtfinale?',
+      answers: ['Kuba', 'Haiti', 'Holandska Istočna Indija'],
+      correctIndex: 0
+    },
+    {
+      text: 'Protiv koje reprezentacije je Urugvaj, u polufinalu SP 1954, doživio prvi poraz u istoriji svojih nastupa na svjetskim prvenstvima?',
+      answers: ['Zapadne Njemačke', 'Austrije', 'Mađarske'],
+      correctIndex: 2
+    },
+    {
+      text: 'Koja utakmica je završena prvim rezultatom 0:0 u istoriji svjetskih prvenstava?',
+      answers: ['Brazil – Engleska, 1958.', 'Švedska – Vels, 1958.', 'Zapadna Njemačka – Čehoslovačka, 1958.'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koji fudbaler je postigao jedini gol direktno iz kornera u istoriji muških svjetskih prvenstava, savladavši Lava Jašina 1962. godine?',
+      answers: ['Leonel Sánchez', 'Marcos Coll', 'Didí'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koja izmjena je bila prva zvanično izvršena izmjena igrača u istoriji svjetskih prvenstava?',
+      answers: ['Anatolij Puzach umjesto Viktora Serebryanikova', 'Heinz Flohe umjesto Wolfganga Overatha', 'Teófilo Cubillas umjesto Roberta Challea'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koji je fudbaler 1974. postao prvi igrač kojem je na Svjetskom prvenstvu fizički pokazana crvena kartica?',
+      answers: ['Giorgio Ferrini', 'Plácido Galindo', 'Carlos Caszely'],
+      correctIndex: 2
+    },
+    {
+      text: 'Koji fudbaler Haitija je na SP 1974. prekinuo niz Dina Zoffa od 1.142 minuta bez primljenog gola u reprezentativnom fudbalu?',
+      answers: ['Emmanuel Sanon', 'Philippe Vorbe', 'Guy Saint-Vil'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koji je holandski fudbaler na utakmici protiv Italije 1978. prvo postigao autogol, a zatim i regularan gol za svoju reprezentaciju?',
+      answers: ['Ruud Krol', 'Ernie Brandts', 'Arie Haan'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koja reprezentacija je na SP 1982. pobijedila Zapadnu Njemačku i Čile, ali je uprkos dvjema pobjedama eliminisana u grupnoj fazi?',
+      answers: ['Alžir', 'Kamerun', 'Honduras'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koji fudbaler drži rekord za najbrže isključenje na Svjetskom prvenstvu, nakon što je 1986. protiv Škotske dobio crveni karton poslije samo 56 sekundi?',
+      answers: ['Sergio Batista', 'José Batista', 'Víctor Diogo'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koji fudbaler je u polufinalu SP 1990. prekinuo rekordni niz Waltera Zenge od 517 minuta bez primljenog gola?',
+      answers: ['Jorge Burruchaga', 'Claudio Caniggia', 'Gustavo Dezotti'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koji je fudbaler jedini u istoriji postizao golove na svjetskim prvenstvima za dvije različite reprezentacije?',
+      answers: ['Davor Šuker', 'Predrag Mijatović', 'Robert Prosinečki'],
+      correctIndex: 2
+    },
+    {
+      text: 'Koji je golman 2006. postao prvi čuvar mreže koji je odbranio tri penala u jednom raspucavanju na Svjetskom prvenstvu?',
+      answers: ['Francesco Toldo', 'Ricardo', 'Sergio Goycochea'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koja je reprezentacija bila jedini neporaženi učesnik SP 2010, iako nije prošla grupnu fazu?',
+      answers: ['Paragvaj', 'Novi Zeland', 'Holandija'],
+      correctIndex: 1
+    },
+    {
+      text: 'Koja reprezentacija je na SP 2014. osvojila prvo mjesto u grupi u kojoj su se nalazila tri bivša svjetska prvaka?',
+      answers: ['Kostarika', 'Kolumbija', 'Belgija'],
+      correctIndex: 0
+    },
+    {
+      text: 'Koja reprezentacija je na SP 2018. prije finala odigrala po 120 minuta u tri uzastopne eliminacione utakmice?',
+      answers: ['Rusija', 'Engleska', 'Hrvatska'],
+      correctIndex: 2
+    },
+    {
+      text: 'Koji je fudbaler jedini nosio kapitensku traku svoje reprezentacije na pet različitih svjetskih prvenstava?',
+      answers: ['Lothar Matthäus', 'Rafael Márquez', 'Andrés Guardado'],
+      correctIndex: 1
+    },
+    {
+      text: 'Kojoj reprezentaciji je na SP 2022. dosuđeno pet penala tokom regularnog toka utakmica i produžetaka, ne računajući penal-raspucavanja?',
+      answers: ['Francuskoj', 'Argentini', 'Portugalu'],
+      correctIndex: 1
+    }
+  ];
+
+  const startBtn = document.getElementById('startBtn');
+  const registerStatus = document.getElementById('registerStatus');
+  const quizStatus = document.getElementById('quizStatus');
+  const registerSection = document.getElementById('registerSection');
+  const quizSection = document.getElementById('quizSection');
+  const resultSection = document.getElementById('resultSection');
+  const initialsInput = document.getElementById('initials');
+  const emailInput = document.getElementById('email');
+  const privacyInput = document.getElementById('privacy');
+  const questionCounter = document.getElementById('questionCounter');
+  const timerText = document.getElementById('timerText');
+  const questionText = document.getElementById('questionText');
+  const answersWrap = document.getElementById('answersWrap');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressBar = document.getElementById('progressBar');
+  const finalCorrect = document.getElementById('finalCorrect');
+  const finalTime = document.getElementById('finalTime');
+  const finalStatus = document.getElementById('finalStatus');
+  const promoBannerShell = document.getElementById('promoBannerShell');
+  const promoBannerClose = document.getElementById('promoBannerClose');
+  const promoBannerLink = document.getElementById('promoBannerLink');
+  const promoRedirectNote = document.getElementById('promoRedirectNote');
+  const promoRedirectCount = document.getElementById('promoRedirectCount');
+  const introText = document.getElementById('introText');
+  const countdownBox = document.getElementById('countdownBox');
+  const countDays = document.getElementById('countDays');
+  const countHours = document.getElementById('countHours');
+  const countMinutes = document.getElementById('countMinutes');
+  const countSeconds = document.getElementById('countSeconds');
+
+  let currentQuestion = 0;
+  let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+  let timerInterval = null;
+  let countdownInterval = null;
+  let redirectInterval = null;
+  let redirectDone = false;
+  let startTimeMs = null;
+  let participantToken = '';
+  let quizIsActive = false;
+
+  function setStatus(el, msg, type = '') {
+    el.textContent = msg || '';
+    el.className = 'status' + (type ? ' ' + type : '');
+  }
+
+  function pad2(value) {
+    return String(value).padStart(2, '0');
+  }
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = QUIZ_START_AT.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      quizIsActive = true;
+      startBtn.disabled = false;
+      countdownBox.style.display = 'none';
+      introText.textContent = 'Unesi inicijale i email adresu, pa pokreni kviz.';
+      setStatus(registerStatus, 'Kviz je aktivan.', 'success');
+
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+
+      return;
+    }
+
+    quizIsActive = false;
+    startBtn.disabled = true;
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    countDays.textContent = pad2(days);
+    countHours.textContent = pad2(hours);
+    countMinutes.textContent = pad2(minutes);
+    countSeconds.textContent = pad2(seconds);
+
+    introText.textContent = 'Kviz još nije aktivan. Kolo počinje 19.06.2026. u 15:45h.';
+    setStatus(registerStatus, 'Kviz još nije aktivan.', '');
+  }
+
+  function sanitizeInitials(value) {
+    return value
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-ZČĆŽŠĐ]/g, '')
+      .slice(0, 3);
+  }
+
+  function sanitizeEmail(value) {
+    return value.trim().toLowerCase();
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isValidInitials(initials) {
+    return /^[A-ZČĆŽŠĐ]{2,3}$/.test(initials);
+  }
+
+  function formatTime(totalSeconds) {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  }
+
+  function elapsedSeconds() {
+    if (!startTimeMs) return 0;
+    return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
+  }
+
+  function updateTimerUI() {
+    timerText.textContent = formatTime(elapsedSeconds());
+  }
+
+  function createParticipantToken(initials, email) {
+    return btoa(unescape(encodeURIComponent(initials + '|' + email + '|' + Date.now()))).replace(/=/g, '');
+  }
+
+  function showQuiz() {
+    registerSection.style.display = 'none';
+    quizSection.classList.add('active');
+    resultSection.classList.remove('active');
+    promoBannerShell.classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showResult() {
+    quizSection.classList.remove('active');
+    resultSection.classList.add('active');
+    promoBannerShell.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    startPromoRedirect();
+  }
+
+  function startPromoRedirect() {
+    if (redirectDone) return;
+
+    let remaining = REDIRECT_SECONDS;
+    promoRedirectCount.textContent = String(remaining);
+
+    if (redirectInterval) {
+      clearInterval(redirectInterval);
+    }
+
+    redirectInterval = setInterval(() => {
+      remaining -= 1;
+
+      if (remaining <= 0) {
+        clearInterval(redirectInterval);
+        promoRedirectCount.textContent = '0';
+        redirectDone = true;
+        window.location.href = PROMO_BANNER_URL;
+        return;
+      }
+
+      promoRedirectCount.textContent = String(remaining);
+    }, 1000);
+  }
+
+  function renderQuestion() {
+    const q = QUIZ_QUESTIONS[currentQuestion];
+    questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${QUIZ_QUESTIONS.length}`;
+    questionText.textContent = q.text;
+    progressBar.style.width = `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+    answersWrap.innerHTML = '';
+
+    q.answers.forEach((answerText, index) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
+      btn.textContent = answerText;
+
+      btn.addEventListener('click', () => {
+        selectedAnswers[currentQuestion] = index;
+        renderQuestion();
+        nextBtn.disabled = false;
+      });
+
+      answersWrap.appendChild(btn);
+    });
+
+    nextBtn.disabled = selectedAnswers[currentQuestion] === null;
+    nextBtn.textContent = currentQuestion === QUIZ_QUESTIONS.length - 1 ? 'Završi kviz' : 'Dalje';
+    setStatus(quizStatus, '');
+  }
+
+  function calculateScore() {
+    let correct = 0;
+    for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+      if (selectedAnswers[i] === QUIZ_QUESTIONS[i].correctIndex) {
+        correct++;
+      }
+    }
+    return correct;
+  }
+
+  async function apiRequest(payload) {
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error('Server error: ' + response.status);
+    }
+
+    return await response.json();
+  }
+
+  async function reserveEmail(initials, email) {
+    return apiRequest({
+      action: 'reserveParticipant',
+      initials,
+      name: initials,
+      email,
+      participantToken,
+      userAgent: navigator.userAgent,
+      pageUrl: location.href,
+      referrer: document.referrer || '',
+      utm_source: new URLSearchParams(location.search).get('utm_source') || '',
+      utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
+      utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
+    });
+  }
+
+  async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
+    return apiRequest({
+      action: 'submitQuiz',
+      initials,
+      name: initials,
+      email,
+      participantToken,
+      totalQuestions: QUIZ_QUESTIONS.length,
+      correctAnswers,
+      timeSeconds,
+      answers: selectedAnswers,
+      submittedAtClient: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      pageUrl: location.href,
+      referrer: document.referrer || ''
+    });
+  }
+
+  initialsInput.addEventListener('input', () => {
+    initialsInput.value = sanitizeInitials(initialsInput.value);
+  });
+
+  promoBannerClose.addEventListener('click', () => {
+    if (redirectInterval) {
+      clearInterval(redirectInterval);
+    }
+    redirectDone = true;
+    promoBannerShell.classList.remove('active');
+  });
+
+  startBtn.addEventListener('click', async () => {
+    updateCountdown();
+
+    if (!quizIsActive) {
+      setStatus(registerStatus, 'Kviz još nije aktivan. Kolo počinje 19.06.2026. u 15:45h.', 'error');
+      return;
+    }
+
+    const initials = sanitizeInitials(initialsInput.value);
+    const email = sanitizeEmail(emailInput.value);
+
+    if (!isValidInitials(initials)) {
+      setStatus(registerStatus, 'Unesi 2 ili 3 slova za inicijale.', 'error');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+      return;
+    }
+
+    if (!privacyInput.checked) {
+      setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
+      return;
+    }
+
+    startBtn.disabled = true;
+    setStatus(registerStatus, '');
+    participantToken = createParticipantToken(initials, email);
+
+    try {
+      const data = await reserveEmail(initials, email);
+
+      if (!data.success) {
+        if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
+          setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
+        } else if (data.message === 'Invalid email.') {
+          setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
+        } else if (data.message === 'Invalid initials.') {
+          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+        } else if (data.message === 'Invalid name.') {
+          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
+        } else if (data.message === 'Missing participant token.') {
+          setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+        } else {
+          setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
+        }
+
+        startBtn.disabled = false;
+        return;
+      }
+
+      startTimeMs = Date.now();
+      updateTimerUI();
+      timerInterval = setInterval(updateTimerUI, 1000);
+      currentQuestion = 0;
+      selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
+      renderQuestion();
+      showQuiz();
+    } catch (error) {
+      setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
+      startBtn.disabled = false;
+    }
+  });
+
+  nextBtn.addEventListener('click', async () => {
+    if (selectedAnswers[currentQuestion] === null) {
+      setStatus(quizStatus, 'Izaberi odgovor.', 'error');
+      return;
+    }
+
+    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+      currentQuestion++;
+      renderQuestion();
+      return;
+    }
+
+    nextBtn.disabled = true;
+    setStatus(quizStatus, '');
+
+    const initials = sanitizeInitials(initialsInput.value);
+    const email = sanitizeEmail(emailInput.value);
+    const correctAnswers = calculateScore();
+    const timeSeconds = elapsedSeconds();
+
+    try {
+      const data = await submitQuiz(initials, email, correctAnswers, timeSeconds);
+
+      clearInterval(timerInterval);
+      finalCorrect.textContent = `${correctAnswers}/${QUIZ_QUESTIONS.length}`;
+      finalTime.textContent = formatTime(timeSeconds);
+      finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
+      showResult();
+    } catch (error) {
+      nextBtn.disabled = false;
+      setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
+    }
+  });
+
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
