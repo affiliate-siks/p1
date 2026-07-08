@@ -110,7 +110,7 @@ button,input{font-family:inherit;cursor:pointer}
 .round-submit-wrap{margin-top:24px;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:24px;}
 .round-submit-wrap h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;}
 .round-submit-wrap p{color:var(--muted);font-size:13px;margin-bottom:18px}
-.round-form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.round-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .field label{display:block;font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
 .field input{width:100%;height:50px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:0 14px;color:#fff;font-size:15px;outline:none;transition:.2s;}
 .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,184,0,.1)}
@@ -259,7 +259,7 @@ button,input{font-family:inherit;cursor:pointer}
 </footer>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3xSKIIaSQsIiYtpzXwRrPsOg64drHBGGM2XiJgSTxOuF69ogNLBrE1piwIij0hRpw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAfZnKwewihDQCBjyfILZiFp3HxrttQ6Ju78yxPgoqfjfmY08nLXXgKdijs4O0UAu7/exec';
 
 const rounds=[
   {id:'r16',  label:'Round of 16',  nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.'},
@@ -428,6 +428,7 @@ function roundShell(r,cards){
       <div class="field"><label>Ime i prezime</label><input id="fname-${r.id}" placeholder="Npr. Marko Nikolić" oninput="checkRound('${r.id}')"/></div>
       <div class="field"><label>Email adresa</label><input id="femail-${r.id}" type="email" placeholder="Npr. marko@email.com" oninput="checkRound('${r.id}')"/></div>
       <div class="field"><label>Broj telefona</label><input id="fphone-${r.id}" placeholder="Npr. 067 123 456" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>ID igrača (admiralbet.me)</label><input id="fid-${r.id}" placeholder="Npr. 1234567" oninput="checkRound('${r.id}')"/></div>
     </div>
     <div class="check-row">
       <input type="checkbox" id="terms-${r.id}" onchange="checkRound('${r.id}')"/>
@@ -586,9 +587,10 @@ function checkRound(rid){
   const name=document.getElementById('fname-'+rid).value.trim();
   const email=document.getElementById('femail-'+rid).value.trim();
   const phone=document.getElementById('fphone-'+rid).value.trim();
+  const idNum=document.getElementById('fid-'+rid).value.trim();
   const terms=document.getElementById('terms-'+rid).checked;
   const filled=roundComplete(rid);
-  const ready=name&&email&&phone&&terms&&filled;
+  const ready=name&&email&&phone&&idNum&&terms&&filled;
   const btn=document.getElementById('submit-'+rid);
   btn.disabled=!ready;
   btn.classList.toggle('ready',ready);
@@ -611,6 +613,7 @@ async function submitRound(rid){
   const name=document.getElementById('fname-'+rid).value.trim();
   const email=document.getElementById('femail-'+rid).value.trim();
   const phone=document.getElementById('fphone-'+rid).value.trim();
+  const idNum=document.getElementById('fid-'+rid).value.trim();
 
   let picks;
   if(rid==='r16'){
@@ -640,7 +643,7 @@ async function submitRound(rid){
     action:'submitRound',
     roundId:rid,
     roundLabel:r.label,
-    name,email,phone,
+    name,email,phone,id:idNum,
     totalMatches:picks.length,
     picks,
     predictedChampion:selections['M104']||null,
@@ -673,7 +676,7 @@ function lockRound(rid){
     if(mc) mc.classList.add('locked');
   });
   document.getElementById('tab-'+rid).classList.add('sent');
-  ['fname','femail','fphone','terms'].forEach(f=>{const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;});
+  ['fname','femail','fphone','fid','terms'].forEach(f=>{const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;});
   const btn=document.getElementById('submit-'+rid);
   btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
   const r=rounds.find(x=>x.id===rid);
@@ -701,7 +704,7 @@ r16Order.forEach(function(mid){
   var mc = document.getElementById('mc-'+mid);
   if(mc) mc.classList.add('locked');
 });
-['fname','femail','fphone','terms'].forEach(function(f){
+['fname','femail','fphone','fid','terms'].forEach(function(f){
   var el = document.getElementById(f+'-r16');
   if(el) el.disabled = true;
 });
