@@ -180,7 +180,7 @@ button,input{font-family:inherit;cursor:pointer}
     </div>
     <div class="prizes-stack">
       <div class="prize-row"><div class="info"><div class="round-lbl">Round of 16 <span style="background:#1f7a3d;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">ZAVRŠENO</span></div><div class="round-date">4–7. jula 2026.</div></div><div class="amt">1.000€</div></div>
-      <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale</div><div class="round-date">od 9. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale <span style="background:#1f7a3d;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">ZAVRŠENO</span></div><div class="round-date">9–12. jula 2026.</div></div><div class="amt">1.000€</div></div>
       <div class="prize-row"><div class="info"><div class="round-lbl">Polufinale</div><div class="round-date">14–15. jul 2026.</div></div><div class="amt">1.000€</div></div>
       <div class="prize-row"><div class="info"><div class="round-lbl">3. mjesto</div><div class="round-date">18. jul 2026.</div></div><div class="amt">1.000€</div></div>
       <div class="prize-row"><div class="info"><div class="round-lbl">Finale</div><div class="round-date">19. jul 2026.</div></div><div class="amt">1.000€</div></div>
@@ -190,7 +190,7 @@ button,input{font-family:inherit;cursor:pointer}
 
 <section class="section" id="bracket-sec">
   <h2 class="section-title">Popuni <span>bracket</span></h2>
-  <div class="section-sub">Round of 16 je završena — rezultati su prikazani ispod (zaključani). Sada biraš pobjednike za Četvrtfinale, Polufinale, 3. mjesto i Finale. Pobjednici se automatski prenose u naredne runde, a svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
+  <div class="section-sub">Round of 16 i Četvrtfinale su završeni — rezultati su prikazani ispod (zaključani). Polufinale je sada Francuska–Španija i Engleska–Argentina. Biraš pobjednike za Polufinale, 3. mjesto i Finale. Pobjednici se automatski prenose u naredne runde, a svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
   <div class="progress-bar-wrap">
     <span class="pb-text" id="pbText">0 / 16 mečeva</span>
     <div class="pb-track"><div class="pb-fill" id="pbFill"></div></div>
@@ -287,14 +287,23 @@ const r16Order=['M90','M89','M93','M94','M91','M92','M95','M96'];
 /* ── ZVANIČNI (stvarni) rezultati Round of 16 — runda je zatvorena, ── */
 /* ── ovi rezultati se automatski prenose u Četvrtfinale.           ── */
 const OFFICIAL_R16 = {
-  M90:{A:'CAN',B:'MAR',winner:'MAR'},   // Morocco pob. Canada 3–0
-  M89:{A:'GER',B:'FRA',winner:'FRA'},   // France pob. Paraguay/Germany-side 1–0
-  M91:{A:'BRA',B:'NOR',winner:'NOR'},   // Norway pob. Brazil 2–1
-  M92:{A:'MEX',B:'ENG',winner:'ENG'},   // England pob. Mexico 3–2
-  M93:{A:'POR',B:'ESP',winner:'ESP'},   // Spain pob. Portugal 1–0
-  M94:{A:'USA',B:'BEL',winner:'BEL'},   // Belgium pob. USA 4–1
-  M95:{A:'ARG',B:'EGY',winner:'ARG'},   // Argentina pob. Egypt 3–2
-  M96:{A:'SUI',B:'COL',winner:'SUI'}    // Switzerland pob. Colombia (pen. 4–3)
+  M90:{A:'CAN',B:'MAR',winner:'MAR'},   // Morocco pob. Canada
+  M89:{A:'GER',B:'FRA',winner:'FRA'},   // France pob. Germany/Paraguay-side
+  M91:{A:'BRA',B:'NOR',winner:'NOR'},   // Norway pob. Brazil
+  M92:{A:'MEX',B:'ENG',winner:'ENG'},   // England pob. Mexico
+  M93:{A:'POR',B:'ESP',winner:'ESP'},   // Spain pob. Portugal
+  M94:{A:'USA',B:'BEL',winner:'BEL'},   // Belgium pob. USA
+  M95:{A:'ARG',B:'EGY',winner:'ARG'},   // Argentina pob. Egypt
+  M96:{A:'SUI',B:'COL',winner:'SUI'}    // Switzerland pob. Colombia (pen.)
+};
+
+/* ── ZVANIČNI (stvarni) rezultati Četvrtfinala — runda je zatvorena, ── */
+/* ── ovi rezultati se automatski prenose u Polufinale.              ── */
+const OFFICIAL_QF = {
+  M97:{A:'FRA',B:'MAR',winner:'FRA'},   // France pob. Morocco
+  M98:{A:'ESP',B:'BEL',winner:'ESP'},   // Spain pob. Belgium
+  M99:{A:'NOR',B:'ENG',winner:'ENG'},   // England pob. Norway
+  M100:{A:'ARG',B:'SUI',winner:'ARG'}   // Argentina pob. Switzerland
 };
 
 const matches={
@@ -344,13 +353,13 @@ function buildTabs(){
   rounds.forEach((r,ri)=>{
     const cnt=(r.id==='r16')?r16Order.length:roundMatchIds[r.id].length;
     const tab=document.createElement('button');
-    tab.className='round-tab'+(ri===0?' active':'');
+    tab.className='round-tab';
     tab.id='tab-'+r.id;
     tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${cnt}</span><span class="chip-sent">poslato</span>`;
     tab.onclick=()=>switchTab(r.id);
     tabs.appendChild(tab);
     const panel=document.createElement('div');
-    panel.className='round-panel'+(ri===0?' active':'');
+    panel.className='round-panel';
     panel.id='panel-'+r.id;
     panel.innerHTML=(r.id==='r16')?buildR16Panel(r):buildSimplePanel(r);
     panels.appendChild(panel);
@@ -488,6 +497,7 @@ function clearDownstreamFrom(mid){
   [wt,lt].forEach(link=>{
     if(!link) return;
     const nid=link.m;
+    if(sentRounds[matches[nid] ? matches[nid].round : null]) return;
     if(selections[nid]!==undefined){
       const a=teamOnSlot(nid,1), b=teamOnSlot(nid,2);
       if(selections[nid]!==a && selections[nid]!==b){ delete selections[nid]; }
@@ -684,40 +694,51 @@ function lockRound(rid){
   renderAll();
 }
 
-/* ── Zatvara Round of 16 i upisuje zvanične rezultate umjesto ── */
-/* ── da čeka korisnički unos. Poziva se jednom, pri učitavanju. ── */
-function lockR16WithOfficialResults(){
-  Object.keys(OFFICIAL_R16).forEach(function(mid){
-    qualA[mid] = OFFICIAL_R16[mid].A;
-    qualB[mid] = OFFICIAL_R16[mid].B;
-    selections[mid] = OFFICIAL_R16[mid].winner;
+/* ── Ručno zaključava rundu i upisuje zvanične rezultate umjesto ── */
+/* ── da čeka korisnički unos. Koristi se za R16 i QF.            ── */
+function lockRoundWithOfficialResults(rid, official){
+  Object.keys(official).forEach(function(mid){
+    qualA[mid] = official[mid].A;
+    qualB[mid] = official[mid].B;
+    selections[mid] = official[mid].winner;
   });
-  sentRounds['r16'] = true;
+  sentRounds[rid] = true;
+
+  const tab=document.getElementById('tab-'+rid);
+  tab.classList.add('sent');
+
+  const ids=(rid==='r16')?r16Order:roundMatchIds[rid];
+  ids.forEach(function(mid){
+    const mc=document.getElementById('mc-'+mid);
+    if(mc) mc.classList.add('locked');
+  });
+
+  ['fname','femail','fphone','fid','terms'].forEach(function(f){
+    const el=document.getElementById(f+'-'+rid);
+    if(el) el.disabled=true;
+  });
+
+  const deadlineBar=document.querySelector('#panel-'+rid+' .deadline-bar');
+  if(deadlineBar) deadlineBar.style.display='none';
+
+  const btn=document.getElementById('submit-'+rid);
+  btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
+  const r=rounds.find(x=>x.id===rid);
+  btn.textContent='✓ '+r.label+' — ZAVRŠENO';
 }
 
 buildTabs();
-lockR16WithOfficialResults();
 
-// UI zaključavanja za tab/panel Round of 16
-document.getElementById('tab-r16').classList.add('sent');
-r16Order.forEach(function(mid){
-  var mc = document.getElementById('mc-'+mid);
-  if(mc) mc.classList.add('locked');
-});
-['fname','femail','fphone','fid','terms'].forEach(function(f){
-  var el = document.getElementById(f+'-r16');
-  if(el) el.disabled = true;
-});
-var r16DeadlineBar = document.querySelector('#panel-r16 .deadline-bar');
-if(r16DeadlineBar) r16DeadlineBar.style.display = 'none';
-var r16Btn = document.getElementById('submit-r16');
-r16Btn.disabled = true;
-r16Btn.classList.remove('ready');
-r16Btn.classList.add('done');
-r16Btn.textContent = '✓ Round of 16 — ZAVRŠENO';
+// Zaključavanje Round of 16 sa zvaničnim rezultatima
+lockRoundWithOfficialResults('r16', OFFICIAL_R16);
 showStatus('r16','Round of 16 je zatvorena. Rezultati: Maroko, Francuska, Norveška, Engleska, Španija, Belgija, Argentina, Švajcarska (na penale).','ok');
 
-switchTab('qf');
+// Zaključavanje Četvrtfinala sa zvaničnim rezultatima
+lockRoundWithOfficialResults('qf', OFFICIAL_QF);
+showStatus('qf','Četvrtfinale je zatvoreno. Rezultati: Francuska, Španija, Engleska, Argentina.','ok');
+
+// Polufinale je sada aktivna runda za predikciju
+switchTab('sf');
 renderAll();
 </script>
 </body>
