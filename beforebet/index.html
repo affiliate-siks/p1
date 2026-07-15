@@ -418,6 +418,34 @@
   .chat-input-row input:focus{outline:none;border-color:var(--gold);}
   @media (max-width:640px){.chat-log{height:340px;}}
 
+  /* ---------- List toolbar (count + sort) ---------- */
+  .list-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .list-count{font-size:12px;color:var(--faint);}
+  .sort-select{background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:7px;font-size:12.5px;}
+  .sort-select:focus{outline:none;border-color:var(--gold);}
+
+  /* ---------- Trust stats bar (Home) ---------- */
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:36px;}
+  .stat-cell{background:var(--card);padding:16px 18px;text-align:center;}
+  .stat-num{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--gold);}
+  .stat-lbl{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+  @media (max-width:640px){.stats-bar{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- Admin overview stat strip ---------- */
+  .admin-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .admin-overview .kpi-box{padding:14px 16px;}
+  @media (max-width:900px){.admin-overview{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- Pinned notice (Community) ---------- */
+  .pinned-notice{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold);border-radius:8px;padding:10px 14px;font-size:11.5px;color:var(--dim);margin-bottom:14px;}
+  .pinned-notice b{color:var(--gold);}
+
+  /* ---------- Tier badge (Partners leaderboard) ---------- */
+  .tier-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:8px;margin-left:6px;}
+  .tier-badge.gold{background:rgba(201,162,39,.18);color:var(--gold);}
+  .tier-badge.silver{background:rgba(154,163,181,.18);color:#c3cad6;}
+  .tier-badge.bronze{background:rgba(216,154,106,.18);color:#d89a6a;}
+
   @media (max-width:380px){
     .hero h1{font-size:24px;}
     .op-mark{width:38px;height:38px;font-size:13px;}
@@ -605,6 +633,8 @@
         </div>
       </div>
 
+      <div class="stats-bar" id="statsBar"></div>
+
       <div class="head">
         <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Top rated</p><h2>Casinos this week</h2></div>
         <span class="sub" style="cursor:pointer;text-decoration:underline;" onclick="go('casino')">View all →</span>
@@ -640,10 +670,25 @@
       </div>
       <div id="ctab-casinos">
         <div class="chip-row" id="paymentChipRow"></div>
+        <div class="list-toolbar">
+          <span class="list-count" id="casinoCount"></span>
+          <select class="sort-select" id="casinoSort" onchange="renderCasinos()">
+            <option value="rating">Sort: Highest rated</option>
+            <option value="withdrawal">Sort: Fastest withdrawal</option>
+            <option value="games">Sort: Most games</option>
+          </select>
+        </div>
         <div class="op-list" id="casinoList"></div>
       </div>
       <div id="ctab-games" style="display:none;">
         <div class="chip-row" id="gameChipRow"></div>
+        <div class="list-toolbar">
+          <span class="list-count" id="gameCount"></span>
+          <select class="sort-select" id="gameSort" onchange="renderGames()">
+            <option value="name">Sort: A–Z</option>
+            <option value="rtp">Sort: Highest RTP</option>
+          </select>
+        </div>
         <div class="game-grid" id="gameGrid"></div>
       </div>
       <div id="ctab-providers" style="display:none;">
@@ -651,6 +696,13 @@
         <div class="provider-chip-grid" id="providerGrid"></div>
       </div>
       <div id="ctab-tournaments" style="display:none;">
+        <div class="list-toolbar">
+          <span class="list-count" id="tournamentCount"></span>
+          <select class="sort-select" id="tournamentSort" onchange="renderTournaments()">
+            <option value="ending">Sort: Ending soonest</option>
+            <option value="prize">Sort: Biggest prize</option>
+          </select>
+        </div>
         <div id="tournamentList"></div>
       </div>
     </section>
@@ -664,6 +716,14 @@
         <button data-btab="headtohead">Head-to-Head</button>
       </div>
       <div id="btab-reviews">
+        <div class="list-toolbar">
+          <span class="list-count" id="bkCount"></span>
+          <select class="sort-select" id="bkSort" onchange="renderBookmakers()">
+            <option value="rating">Sort: Highest rated</option>
+            <option value="safety">Sort: Highest Safety Index</option>
+            <option value="withdrawal">Sort: Fastest withdrawal</option>
+          </select>
+        </div>
         <div class="op-list" id="bkList"></div>
       </div>
       <div id="btab-odds" style="display:none;">
@@ -688,6 +748,13 @@
     <section class="view" id="view-bonuses">
       <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Offers</p><h2>Bonuses</h2></div></div>
       <div class="chip-row" id="bonusChipRow"></div>
+      <div class="list-toolbar">
+        <span class="list-count" id="bonusCount"></span>
+        <select class="sort-select" id="bonusSort" onchange="renderBonuses()">
+          <option value="expiry">Sort: Expiring soonest</option>
+          <option value="newest">Sort: Newest</option>
+        </select>
+      </div>
       <div class="bonus-grid" id="bonusGrid"></div>
     </section>
 
@@ -720,6 +787,7 @@
             <div class="chat-room-online" id="chatRoomOnline"></div>
           </div>
         </div>
+        <div class="pinned-notice" id="chatPinned"></div>
         <div class="chat-log" id="chatLog"></div>
         <div class="chat-input-row">
           <input type="text" id="chatInput" placeholder="Say something…" maxlength="200" onkeydown="if(event.key==='Enter')sendChatMessage()">
@@ -806,6 +874,7 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
       </div>
 
       <div id="atab-cms">
+        <div class="admin-overview" id="adminOverview"></div>
         <div class="admin-shell">
           <div class="admin-side" id="cmsSide">
             <button data-panel="operators" class="active">Operator profiles</button>
@@ -1496,9 +1565,38 @@ function simulateClick(id){
   alert('Simulated affiliate redirect →\n/go/'+id+'?sub_id=demo&mkt='+market.toLowerCase()+'\n\nLogs the click, tags sub-ID, checks geo-eligibility, then redirects.');
 }
 
+function renderStatsBar(){
+  const ops = [...bookmakers, ...casinos].filter(o=>o.market===market);
+  const reviewCount = ops.reduce((sum,o)=> sum + ((operatorExtras[o.id]||{}).reviews||[]).length, 0);
+  const avgSafety = ops.length ? (ops.reduce((s,o)=> s + ((operatorExtras[o.id]||{}).safety||0), 0) / ops.length).toFixed(1) : '—';
+  const stats = [
+    [ops.length, market==='UK' ? 'Operators reviewed' : 'Operatori recensiti'],
+    [reviewCount, market==='UK' ? 'Player reviews' : 'Recensioni giocatori'],
+    [avgSafety, market==='UK' ? 'Avg. Safety Index' : 'Indice sicurezza medio'],
+    ['2', market==='UK' ? 'Markets covered' : 'Mercati coperti'],
+  ];
+  document.getElementById('statsBar').innerHTML = stats.map(s=>`<div class="stat-cell"><div class="stat-num">${s[0]}</div><div class="stat-lbl">${s[1]}</div></div>`).join('');
+}
+
+function withdrawalRank(str){
+  const nums = (str.match(/\d+/g)||[]).map(Number);
+  let n = nums.length ? Math.max(...nums) : 999;
+  if(/day|giorni/i.test(str)) n *= 24;
+  return n;
+}
+
 function renderBookmakers(){
-  const list = bookmakers.filter(b=>b.market===market);
+  let list = bookmakers.filter(b=>b.market===market);
   document.getElementById('homeBkList').innerHTML = list.slice(0,3).map(b=>opRowHtml(b,'bk')).join('');
+
+  const sortEl = document.getElementById('bkSort');
+  const sortVal = sortEl ? sortEl.value : 'rating';
+  list = [...list].sort((a,b)=>{
+    if(sortVal==='safety') return ((operatorExtras[b.id]||{}).safety||0) - ((operatorExtras[a.id]||{}).safety||0);
+    if(sortVal==='withdrawal') return withdrawalRank(a.withdrawalTime) - withdrawalRank(b.withdrawalTime);
+    return b.rating - a.rating;
+  });
+  document.getElementById('bkCount').textContent = `${list.length} bookmaker${list.length===1?'':'s'} reviewed`;
   document.getElementById('bkList').innerHTML = list.map(b=>opRowHtml(b,'bk')).join('');
 }
 
@@ -1510,7 +1608,16 @@ function renderCasinos(){
 
   const allPay = ['All', ...new Set(list0.flatMap(c=>c.payments))];
   document.getElementById('paymentChipRow').innerHTML = allPay.map(p=>`<button class="chip ${p===activePaymentFilter?'active':''}" onclick="setPaymentFilter('${p}')">${p}</button>`).join('');
-  const filtered = list0.filter(c=>activePaymentFilter==='All'||c.payments.includes(activePaymentFilter));
+  let filtered = list0.filter(c=>activePaymentFilter==='All'||c.payments.includes(activePaymentFilter));
+
+  const sortEl = document.getElementById('casinoSort');
+  const sortVal = sortEl ? sortEl.value : 'rating';
+  filtered = [...filtered].sort((a,b)=>{
+    if(sortVal==='withdrawal') return withdrawalRank(a.withdrawalTime) - withdrawalRank(b.withdrawalTime);
+    if(sortVal==='games') return b.games - a.games;
+    return b.rating - a.rating;
+  });
+  document.getElementById('casinoCount').textContent = `${filtered.length} casino${filtered.length===1?'':'s'} found`;
   document.getElementById('casinoList').innerHTML = filtered.length ? filtered.map(c=>opRowHtml(c,'casino')).join('') : `<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos match this filter.</p>`;
 }
 function setPaymentFilter(p){ activePaymentFilter=p; renderCasinos(); }
@@ -1518,13 +1625,26 @@ function setPaymentFilter(p){ activePaymentFilter=p; renderCasinos(); }
 function renderGames(){
   const cats=['All',...gameCategories];
   document.getElementById('gameChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeGameFilter?'active':''}" onclick="setGameFilter('${c}')">${c}</button>`).join('');
-  const filtered = activeGameFilter==='All'?games:games.filter(g=>g.cat===activeGameFilter);
+  let filtered = activeGameFilter==='All'?games:games.filter(g=>g.cat===activeGameFilter);
+  const sortEl = document.getElementById('gameSort');
+  const sortVal = sortEl ? sortEl.value : 'name';
+  filtered = [...filtered].sort((a,b)=> sortVal==='rtp' ? b.rtp - a.rtp : a.name.localeCompare(b.name));
+  const cEl = document.getElementById('gameCount');
+  if(cEl) cEl.textContent = `${filtered.length} game${filtered.length===1?'':'s'}`;
   document.getElementById('gameGrid').innerHTML = filtered.map(g=>`<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;"><div class="game-name">${g.name}</div><div class="game-meta"><span>${g.provider}</span><span>RTP ${g.rtp}%</span></div></div>`).join('');
 }
 function setGameFilter(c){ activeGameFilter=c; renderGames(); }
 
 function renderTournaments(){
-  const filtered = tournaments.filter(t=>{ const c=casinos.find(x=>x.name===t.casino); return c && c.market===market; });
+  let filtered = tournaments.filter(t=>{ const c=casinos.find(x=>x.name===t.casino); return c && c.market===market; });
+  const sortEl = document.getElementById('tournamentSort');
+  const sortVal = sortEl ? sortEl.value : 'ending';
+  filtered = [...filtered].sort((a,b)=>{
+    if(sortVal==='prize') return parseFloat(b.prize.replace(/[^\d.]/g,'')) - parseFloat(a.prize.replace(/[^\d.]/g,''));
+    return a.endsInHrs - b.endsInHrs;
+  });
+  const cEl = document.getElementById('tournamentCount');
+  if(cEl) cEl.textContent = `${filtered.length} active tournament${filtered.length===1?'':'s'}`;
   document.getElementById('tournamentList').innerHTML = filtered.length ? filtered.map(t=>`
     <div class="tourn-row">
       <div><div class="tourn-name">${t.name}</div><div class="tourn-sub">${t.casino} · min stake ${t.minStake} · ends in ${t.endsInHrs}h</div></div>
@@ -1694,7 +1814,12 @@ function renderOdds(){
 function renderBonuses(){
   const cats=['All',...bonusCats];
   document.getElementById('bonusChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeBonusFilter?'active':''}" onclick="setBonusFilter('${c}')">${c}</button>`).join('');
-  const list = bonuses.filter(b=>b.market===market && (activeBonusFilter==='All'||b.cat===activeBonusFilter));
+  let list = bonuses.filter(b=>b.market===market && (activeBonusFilter==='All'||b.cat===activeBonusFilter));
+  const sortEl = document.getElementById('bonusSort');
+  const sortVal = sortEl ? sortEl.value : 'expiry';
+  list = [...list].sort((a,b)=> sortVal==='newest' ? (b.exclusive?1:0)-(a.exclusive?1:0) : a.expiresInHrs - b.expiresInHrs);
+  const cEl = document.getElementById('bonusCount');
+  if(cEl) cEl.textContent = `${list.length} offer${list.length===1?'':'s'} live`;
   document.getElementById('bonusGrid').innerHTML = list.map(b=>`
     <div class="bonus-card">
       ${b.exclusive?`<span class="exclusive-tag">Before Bet Exclusive</span>`:''}
@@ -1725,6 +1850,7 @@ function openChatRoom(id){
   document.getElementById('chatRoomView').style.display='block';
   document.getElementById('chatRoomTitle').textContent = activeChatTopic.name;
   document.getElementById('chatRoomOnline').innerHTML = `● ${activeChatTopic.online} online now`;
+  document.getElementById('chatPinned').innerHTML = `<b>Be respectful</b> — no spam, no links, no unlicensed operators. <button onclick="openLegal('guidelines')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Full guidelines</button>`;
   renderChatLog();
 }
 function closeChatRoom(){
@@ -1764,14 +1890,22 @@ function renderGuides(){
 }
 
 /* ---------- Partners ---------- */
+function partnerTier(clicks){
+  if(clicks>=10000) return ['Gold','gold'];
+  if(clicks>=2500) return ['Silver','silver'];
+  return ['Starter','bronze'];
+}
 function renderPartners(){
   const sorted=[...partners].sort((a,b)=>b.revenue-a.revenue);
-  document.getElementById('partnerLeaderboard').innerHTML = sorted.map((p,i)=>`
+  document.getElementById('partnerLeaderboard').innerHTML = sorted.map((p,i)=>{
+    const [tierName,tierClass] = partnerTier(p.clicks);
+    return `
     <div class="lead-row">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
-      <div class="partner-name-cell"><div class="partner-avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div>${p.name}<div><span class="kyc ${p.kyc?'ok':''}">${p.kyc?'KYC verified':'KYC pending'}</span></div></div></div>
+      <div class="partner-name-cell"><div class="partner-avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div>${p.name}<span class="tier-badge ${tierClass}">${tierName}</span><div><span class="kyc ${p.kyc?'ok':''}">${p.kyc?'KYC verified':'KYC pending'}</span></div></div></div>
       <span>${p.clicks.toLocaleString()}</span><span>${p.ftds}</span><span style="color:var(--gold);font-weight:700;">€${p.epc}</span><span style="font-weight:700;">€${p.revenue.toLocaleString()}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function renderBanners(){
   document.getElementById('bannerGrid').innerHTML = banners.map(b=>`
@@ -1800,6 +1934,20 @@ document.querySelectorAll('#adminTopTabs button').forEach(b=>b.addEventListener(
   document.getElementById('atab-analytics').style.display=t==='analytics'?'block':'none';
   if(t==='analytics') renderAnalytics();
 }));
+function renderAdminOverview(){
+  const totalOps = bookmakers.length + casinos.length;
+  const liveBonuses = bonuses.length;
+  const openComplaints = complaints.filter(c=>c.status==='Open').length;
+  const pendingKyc = partners.filter(p=>!p.kyc).length;
+  const stats = [
+    [totalOps, 'Operators live'],
+    [liveBonuses, 'Bonuses live'],
+    [openComplaints, 'Open complaints'],
+    [pendingKyc, 'Partners pending KYC'],
+  ];
+  document.getElementById('adminOverview').innerHTML = stats.map(s=>`<div class="kpi-box"><div class="num">${s[0]}</div><div class="lbl">${s[1]}</div></div>`).join('');
+}
+
 const cmsPanels = {
   operators: ()=>`<div class="admin-toolbar"><h3>Operator profiles</h3><button class="btn btn-gold">+ New</button></div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Commercial deal terms below are internal only — never shown on public pages.</p>
@@ -1868,6 +2016,7 @@ function renderCompliance(){
 /* ---------- init ---------- */
 function renderAll(){
   renderCompliance();
+  renderStatsBar();
   renderBookmakers();
   renderCasinos();
   renderBonuses();
@@ -1881,6 +2030,7 @@ renderPartners();
 renderBanners();
 renderComplaints();
 document.getElementById('cmsMain').innerHTML = cmsPanels.operators();
+renderAdminOverview();
 setTimeout(()=>document.getElementById('cookieBanner').classList.add('show'), 800);
 </script>
 </body>
