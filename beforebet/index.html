@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before Bet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --bg:#0B0C0F;
+    --panel:#15171B;
+    --card:#1B1E23;
+    --line:#2A2E35;
+    --text:#ECEDEE;
+    --dim:#9A9EA6;
+    --faint:#63676F;
+    --gold:#C9A227;
+    --gold-soft:rgba(201,162,39,.12);
+    --green:#3D8A5F;
+    --red:#B24B45;
+    --serif:'Fraunces',serif;
+    --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  ::selection{background:var(--gold);color:#000;}
+
+  #app{min-height:100vh;display:flex;flex-direction:column;}
+
+  /* ---------- Header ---------- */
+  header{position:sticky;top:0;z-index:50;background:rgba(11,12,15,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .topbar{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .logo{font-family:var(--serif);font-weight:700;font-size:20px;display:flex;align-items:center;gap:7px;}
+  .logo .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  nav.mainnav{display:flex;gap:2px;flex-wrap:wrap;}
+  nav.mainnav button{background:none;border:none;color:var(--dim);font-size:13.5px;font-weight:500;padding:9px 13px;border-radius:6px;}
+  nav.mainnav button:hover{color:var(--text);}
+  nav.mainnav button.active{color:var(--text);background:var(--panel);}
+  .header-right{display:flex;align-items:center;gap:14px;}
+  .icon-btn{background:none;border:1px solid var(--line);border-radius:7px;width:32px;height:32px;font-size:13px;color:var(--dim);}
+  .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .toggle{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:2px;}
+  .toggle button{background:none;border:none;color:var(--dim);font-size:12px;font-weight:600;padding:5px 12px;border-radius:14px;}
+  .toggle button.active{background:var(--gold);color:#1a1400;}
+
+  main{flex:1;max-width:1180px;margin:0 auto;width:100%;padding:36px 24px 90px;}
+  .view{display:none;}
+  .view.active{display:block;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+
+  footer{border-top:1px solid var(--line);padding:26px 24px;}
+  .foot-inner{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .foot-inner p{color:var(--faint);font-size:11.5px;margin:0;max-width:520px;line-height:1.6;}
+  .foot-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;}
+  .foot-links button{background:none;border:none;color:var(--faint);font-size:11px;text-decoration:underline;}
+  .foot-links button:hover{color:var(--gold);}
+
+  /* ---------- Compliance line ---------- */
+  .compliance{display:flex;align-items:center;gap:8px;color:var(--faint);font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:8px 12px;margin-bottom:28px;}
+  .compliance strong{color:var(--gold);font-weight:600;}
+
+  /* ---------- Section header pattern ---------- */
+  .head{display:flex;justify-content:space-between;align-items:flex-end;margin:44px 0 18px;}
+  .head:first-child{margin-top:0;}
+  .head .eyebrow{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;margin:0 0 5px;}
+  .head h2{font-family:var(--serif);font-size:23px;margin:0;font-weight:600;}
+  .head .sub{color:var(--faint);font-size:12px;}
+
+  /* ---------- Buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:7px;font-weight:600;font-size:13.5px;border:1px solid transparent;}
+  .btn-gold{background:var(--gold);color:#1a1400;}
+  .btn-gold:hover{background:#dbb52f;}
+  .btn-line{background:none;border-color:var(--line);color:var(--text);}
+  .btn-line:hover{border-color:var(--faint);}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:30px 0 8px;border-bottom:1px solid var(--line);margin-bottom:36px;}
+  .hero h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 12px;font-weight:600;max-width:600px;}
+  .hero h1 em{font-style:italic;color:var(--gold);}
+  .hero p{color:var(--dim);font-size:14.5px;max-width:480px;margin:0 0 20px;line-height:1.6;}
+  .hero-actions{display:flex;gap:10px;margin-bottom:26px;}
+
+  /* ---------- Subtabs ---------- */
+  .subtabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content;margin-bottom:24px;}
+  .subtabs button{background:none;border:none;color:var(--dim);font-size:12.5px;font-weight:500;padding:7px 15px;border-radius:6px;}
+  .subtabs button.active{background:var(--gold);color:#1a1400;font-weight:600;}
+
+  /* ---------- Review / listing card (operators: bookmakers + casinos) ---------- */
+  .op-list{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .op-row{background:var(--card);padding:18px 20px;display:grid;grid-template-columns:44px 1.6fr 1fr 1fr auto;gap:18px;align-items:center;}
+  .op-mark{width:44px;height:44px;border-radius:9px;background:var(--panel);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:15px;color:var(--gold);border:1px solid var(--line);position:relative;}
+  .op-name-wrap{min-width:0;}
+  .op-name-row{display:flex;align-items:center;gap:6px;}
+  .op-name{font-family:var(--serif);font-size:16.5px;font-weight:600;}
+  .op-featured{font-size:10px;color:var(--faint);border:1px solid var(--line);border-radius:10px;padding:1px 7px;cursor:help;}
+  .op-license{font-size:11.5px;color:var(--faint);margin-top:2px;}
+  .op-rating{display:flex;align-items:center;gap:5px;color:var(--gold);font-weight:700;font-size:14.5px;}
+  .op-rating .max{color:var(--faint);font-weight:400;font-size:11px;}
+  .op-bonus{font-size:12.5px;color:var(--dim);line-height:1.4;}
+  .op-actions{display:flex;gap:8px;}
+  .op-actions .btn{padding:8px 14px;font-size:12.5px;}
+  @media (max-width:860px){
+    .op-row{grid-template-columns:1fr;grid-template-areas:"a b" "c c" "d d";text-align:left;}
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:150;display:none;align-items:center;justify-content:center;padding:20px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:var(--card);border:1px solid var(--line);border-radius:12px;max-width:520px;width:100%;padding:26px;max-height:84vh;overflow-y:auto;}
+  .modal-close{float:right;background:none;border:none;color:var(--faint);font-size:20px;}
+  .modal-box h3{font-family:var(--serif);font-size:21px;margin:4px 0 3px;}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;}
+  .detail-cell{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:9px 11px;}
+  .detail-cell .k{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin-bottom:2px;}
+  .detail-cell .v{font-size:12.5px;font-weight:600;}
+  .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 16px;}
+  .tag{font-size:10.5px;color:var(--dim);border:1px solid var(--line);border-radius:5px;padding:3px 8px;}
+  .pc-list{display:flex;gap:16px;margin-bottom:16px;}
+  .pc-col{flex:1;font-size:12px;color:var(--dim);}
+  .pc-col div::before{margin-right:5px;}
+  .pc-col.pro div::before{content:'+';color:var(--green);}
+  .pc-col.con div::before{content:'–';color:var(--red);}
+  .fine{font-size:10.5px;color:var(--faint);margin-bottom:14px;}
+
+  /* ---------- Bonus cards ---------- */
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .chip{background:var(--panel);border:1px solid var(--line);color:var(--dim);font-size:12px;font-weight:500;padding:6px 13px;border-radius:16px;}
+  .chip.active{background:var(--gold);color:#1a1400;border-color:var(--gold);}
+  .bonus-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .bonus-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .bonus-cat{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:700;}
+  .bonus-title{font-family:var(--serif);font-size:17px;margin:5px 0;font-weight:600;}
+  .bonus-meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);margin-bottom:10px;}
+  .bonus-meta .exp{color:var(--red);font-weight:600;}
+  .bonus-terms{font-size:11px;color:var(--faint);margin-bottom:12px;line-height:1.5;}
+  @media (max-width:860px){.bonus-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Games ---------- */
+  .game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .game-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px;}
+  .game-name{font-weight:600;font-size:13px;margin-bottom:6px;}
+  .game-meta{font-size:10.5px;color:var(--faint);display:flex;justify-content:space-between;}
+  @media (max-width:860px){.game-grid{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- Tournaments ---------- */
+  .tourn-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .tourn-name{font-family:var(--serif);font-weight:600;font-size:15.5px;}
+  .tourn-sub{font-size:11.5px;color:var(--faint);}
+  .tourn-stats{display:flex;gap:20px;align-items:center;}
+  .tourn-stat{text-align:center;}
+  .tourn-stat .v{color:var(--gold);font-weight:700;font-size:15px;}
+  .tourn-stat .l{font-size:9.5px;color:var(--faint);text-transform:uppercase;}
+
+  /* ---------- Guides / news ---------- */
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .news-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;}
+  .news-cat{font-size:10px;text-transform:uppercase;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+  .news-title{font-family:var(--serif);font-size:15.5px;margin:6px 0;font-weight:600;line-height:1.3;}
+  .news-desc{font-size:11.5px;color:var(--dim);line-height:1.5;}
+  .news-date{font-size:10.5px;color:var(--faint);margin-top:8px;}
+  .guide-row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);}
+  .guide-row:last-child{border-bottom:none;}
+  .guide-num{font-family:var(--serif);color:var(--gold);font-size:17px;font-weight:700;width:26px;flex-shrink:0;}
+  .guide-title{font-weight:600;font-size:13.5px;}
+  .guide-desc{font-size:11.5px;color:var(--faint);margin-top:2px;}
+  @media (max-width:860px){.news-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Partners ---------- */
+  .lead-table{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .lead-row{display:grid;grid-template-columns:30px 1fr 90px 90px 80px 90px;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;}
+  .lead-row:last-child{border-bottom:none;}
+  .lead-row.head{color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--panel);}
+  .rank{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;background:var(--panel);color:var(--faint);border:1px solid var(--line);}
+  .rank.r1{background:var(--gold);color:#1a1400;border:none;}
+  .partner-avatar{width:30px;height:30px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);border:1px solid var(--line);}
+  .partner-name-cell{display:flex;align-items:center;gap:10px;}
+  .kyc{font-size:9.5px;padding:2px 7px;border-radius:9px;border:1px solid var(--line);color:var(--faint);}
+  .kyc.ok{color:var(--green);border-color:var(--green);}
+  @media (max-width:860px){.lead-row{grid-template-columns:26px 1fr 70px;}.lead-row span:nth-child(4),.lead-row span:nth-child(5){display:none;}}
+
+  .banner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .banner-mock{border-radius:9px;border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;color:#fff;position:relative;}
+  .banner-mock .bt{font-family:var(--serif);font-weight:700;font-size:14px;}
+  .banner-mock .bs{font-size:10.5px;opacity:.85;}
+  .banner-foot{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:8px;}
+  .banner-foot button{background:none;border:1px solid var(--line);color:var(--dim);padding:4px 10px;border-radius:5px;font-size:10.5px;}
+  @media (max-width:860px){.banner-grid{grid-template-columns:1fr;}}
+
+  .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;}
+  .kpi-box{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px;}
+  .kpi-box .num{font-family:var(--serif);font-size:21px;font-weight:600;}
+  .kpi-box .lbl{font-size:10.5px;color:var(--faint);margin-top:3px;}
+  @media (max-width:860px){.dash-grid{grid-template-columns:1fr 1fr;}}
+  .api-box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;font-family:monospace;font-size:11.5px;color:var(--green);white-space:pre;overflow-x:auto;}
+
+  /* ---------- Admin ---------- */
+  .admin-shell{display:grid;grid-template-columns:190px 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;min-height:460px;}
+  .admin-side{background:var(--panel);border-right:1px solid var(--line);padding:14px 0;}
+  .admin-side button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--dim);padding:9px 18px;font-size:12.5px;}
+  .admin-side button.active{color:var(--gold);background:var(--card);}
+  .admin-main{padding:22px;background:var(--card);}
+  .admin-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .admin-toolbar h3{font-family:var(--serif);font-size:18px;margin:0;}
+  .admin-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .admin-row .n{font-weight:500;}
+  .admin-row .m{color:var(--faint);font-size:11px;}
+  .pill{font-size:9.5px;padding:2px 8px;border-radius:9px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
+  .pill.ok{color:var(--green);border-color:var(--green);}
+  .pill.wait{color:var(--gold);border-color:var(--gold);}
+  .pill.off{color:var(--faint);}
+  .admintabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content;margin-bottom:20px;}
+  .admintabs button{background:none;border:none;color:var(--dim);font-size:12.5px;padding:7px 15px;border-radius:6px;}
+  .admintabs button.active{background:var(--gold);color:#1a1400;font-weight:600;}
+  @media (max-width:860px){.admin-shell{grid-template-columns:1fr;}}
+
+  /* ---------- odds table ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:11px 15px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;}
+  thead th{background:var(--panel);color:var(--faint);font-size:10px;text-transform:uppercase;font-weight:600;}
+  td.best{color:var(--gold);font-weight:700;}
+
+  /* ---------- age gate / cookie ---------- */
+  #agegate{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;}
+  #agegate.show{display:flex;}
+  #agegate h2{font-family:var(--serif);font-size:24px;margin-bottom:8px;}
+  #agegate p{color:var(--dim);max-width:400px;margin-bottom:20px;font-size:13.5px;}
+  .agegate-btns{display:flex;gap:10px;}
+  .cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:170;background:var(--card);border-top:1px solid var(--line);padding:14px 24px;display:none;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .cookie-banner.show{display:flex;}
+  .cookie-banner p{font-size:11.5px;color:var(--dim);margin:0;max-width:600px;}
+
+  /* ---------- search ---------- */
+  .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:180;display:none;align-items:flex-start;justify-content:center;padding-top:12vh;}
+  .search-overlay.show{display:flex;}
+  .search-box{width:100%;max-width:520px;padding:0 20px;}
+  .search-input{width:100%;padding:14px 16px;font-size:16px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--text);}
+  .search-input:focus{outline:none;border-color:var(--gold);}
+  .search-results{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .sres-row{padding:11px 15px;border-bottom:1px solid var(--line);font-size:13px;display:flex;justify-content:space-between;cursor:pointer;}
+  .sres-row:hover{background:var(--panel);}
+  .sres-row:last-child{border-bottom:none;}
+  .sres-row .t{font-size:10px;color:var(--faint);text-transform:uppercase;}
+
+  /* ---------- Operator detail page ---------- */
+  .back-link{background:none;border:none;color:var(--faint);font-size:12.5px;margin-bottom:18px;padding:0;}
+  .back-link:hover{color:var(--gold);}
+  .op-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:26px;flex-wrap:wrap;}
+  .op-page-mark{width:60px;height:60px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:20px;color:var(--gold);flex-shrink:0;}
+  .op-page-title{display:flex;align-items:center;gap:8px;}
+  .op-page-title h1{font-family:var(--serif);font-size:28px;font-weight:600;margin:0;}
+  .op-page-sub{color:var(--faint);font-size:12.5px;margin-top:4px;}
+  .op-page-score{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 22px;flex-shrink:0;}
+  .op-page-score .n{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--gold);}
+  .op-page-score .l{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;}
+
+  .op-page-grid{display:grid;grid-template-columns:1fr 300px;gap:36px;}
+  @media (max-width:900px){.op-page-grid{grid-template-columns:1fr;}}
+
+  .subrating-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .subrating-label{width:110px;font-size:12.5px;color:var(--dim);flex-shrink:0;}
+  .subrating-bar-wrap{flex:1;height:6px;background:var(--panel);border-radius:4px;overflow:hidden;}
+  .subrating-bar{height:100%;background:var(--gold);}
+  .subrating-val{width:30px;text-align:right;font-size:12px;color:var(--gold);font-weight:700;flex-shrink:0;}
+
+  .review-text p{font-size:13.5px;color:var(--dim);line-height:1.75;margin:0 0 16px;}
+  .verdict-box{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:16px 18px;margin-bottom:26px;}
+  .verdict-box .k{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:700;margin-bottom:6px;}
+
+  .faq-item{border-bottom:1px solid var(--line);padding:14px 0;}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:13.5px;font-weight:600;}
+  .faq-q .arrow{transition:transform .15s;color:var(--faint);}
+  .faq-item.open .faq-q .arrow{transform:rotate(45deg);}
+  .faq-a{display:none;font-size:12.5px;color:var(--dim);line-height:1.6;margin-top:10px;}
+  .faq-item.open .faq-a{display:block;}
+
+  .sidebar-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px;}
+  .sidebar-box h4{font-family:var(--serif);font-size:14.5px;margin:0 0 12px;font-weight:600;}
+
+  .similar-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;cursor:pointer;}
+  .similar-item:last-child{border-bottom:none;}
+  .similar-item:hover .similar-name{color:var(--gold);}
+  .similar-name{font-weight:600;}
+  .similar-rating{color:var(--gold);font-weight:700;font-size:12px;}
+
+  .tip-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 18px;margin-bottom:10px;}
+  .tip-sport{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);}
+  .tip-match{font-family:var(--serif);font-size:14.5px;font-weight:600;margin:2px 0;}
+  .tip-pred{font-size:12px;color:var(--gold);font-weight:600;}
+  .tip-conf-wrap{display:flex;align-items:center;gap:8px;}
+  .tip-conf-bar{width:80px;height:6px;background:var(--panel);border-radius:4px;overflow:hidden;}
+  .tip-conf-fill{height:100%;background:var(--gold);}
+  .tip-conf-val{font-size:12px;color:var(--faint);width:34px;text-align:right;}
+
+  /* ---------- Mobile nav (hamburger + drawer) ---------- */
+  .hamburger-btn{display:none;font-size:16px;}
+  .mobile-drawer{display:none;}
+  .mobile-drawer.open{display:block;border-top:1px solid var(--line);background:var(--panel);}
+  .mobile-nav{display:flex;flex-direction:column;padding:6px 12px 14px;}
+  .mobile-nav button{background:none;border:none;color:var(--dim);font-size:15px;font-weight:500;padding:13px 10px;text-align:left;border-bottom:1px solid var(--line);}
+  .mobile-nav button:last-child{border-bottom:none;}
+  .mobile-nav button.active{color:var(--gold);font-weight:700;}
+
+  /* =====================================================
+     RESPONSIVE — mobile-first breakpoints
+     ===================================================== */
+
+  /* Tablet & below (≤900px): tighten grids, stack side-by-side layouts */
+  @media (max-width:900px){
+    main{padding:26px 18px 70px;}
+    .topbar{padding:12px 16px;}
+    nav.mainnav{display:none;}
+    .hamburger-btn{display:inline-flex;align-items:center;justify-content:center;}
+    .header-right{gap:10px;}
+    .op-page-grid{grid-template-columns:1fr;}
+    .admin-shell{grid-template-columns:1fr;}
+    .admin-side{display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:10px 8px;gap:2px;}
+    .admin-side button{width:auto;white-space:nowrap;flex-shrink:0;}
+  }
+
+  /* Phones (≤640px): stack cards, full-width buttons, larger tap targets */
+  @media (max-width:640px){
+    main{padding:20px 14px 64px;}
+    .hero h1{font-size:27px;}
+    .hero p{font-size:13.5px;}
+    .hero-actions{flex-direction:column;}
+    .hero-actions .btn{justify-content:center;}
+    .head{flex-direction:column;align-items:flex-start;gap:6px;margin:32px 0 14px;}
+    .head h2{font-size:20px;}
+
+    .btn{padding:11px 16px;min-height:42px;}
+
+    /* Operator rows become stacked cards */
+    .op-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:16px;}
+    .op-mark{order:1;}
+    .op-name-wrap{order:2;flex:1;min-width:0;}
+    .op-rating{order:3;}
+    .op-bonus{order:4;flex-basis:100%;}
+    .op-actions{order:5;flex-basis:100%;display:flex;gap:8px;}
+    .op-actions .btn{flex:1;justify-content:center;}
+
+    /* Bonus / game / news / banner grids: single column */
+    .bonus-grid{grid-template-columns:1fr;}
+    .game-grid{grid-template-columns:1fr 1fr;}
+    .news-grid{grid-template-columns:1fr;}
+    .banner-grid{grid-template-columns:1fr;}
+    .dash-grid{grid-template-columns:1fr 1fr;}
+    .kpi-box .num{font-size:19px;}
+
+    /* Chips scroll horizontally instead of wrapping messily */
+    .chip-row{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+    .chip{flex-shrink:0;}
+    .subtabs{width:100%;overflow-x:auto;}
+    .admintabs{width:100%;overflow-x:auto;}
+
+    /* Partner leaderboard: drop secondary columns, keep name/EPC/revenue */
+    .lead-row{grid-template-columns:24px 1fr 70px;gap:8px;padding:12px 14px;}
+    .lead-row span:nth-child(3),.lead-row span:nth-child(4){display:none;}
+    .lead-row.head span:nth-child(3),.lead-row.head span:nth-child(4){display:none;}
+
+    /* Operator detail page */
+    .op-page-head{padding-bottom:18px;margin-bottom:20px;}
+    .op-page-title h1{font-size:22px;}
+    .op-page-score{padding:10px 16px;}
+    .op-page-score .n{font-size:24px;}
+    .subrating-label{width:88px;font-size:11.5px;}
+
+    /* Modals: near-fullscreen with comfortable padding */
+    .modal-box{padding:20px 18px;max-height:88vh;border-radius:14px;}
+
+    /* Cookie banner: stack actions under text */
+    .cookie-banner{flex-direction:column;align-items:stretch;padding:14px 16px;}
+    .cookie-banner > div{display:flex;gap:8px;}
+    .cookie-banner .btn{flex:1;justify-content:center;}
+
+    /* Search overlay: less top padding, full width input */
+    .search-overlay{padding-top:8vh;}
+
+    footer{padding:22px 16px;}
+    .foot-inner{flex-direction:column;gap:14px;}
+  }
+
+  /* Small phones (≤380px): trim further */
+  /* ---------- Home explore boxes ---------- */
+  .explore-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:40px;}
+  .explore-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 16px;cursor:pointer;transition:border-color .15s;}
+  .explore-card:hover{border-color:var(--gold);}
+  .explore-title{font-family:var(--serif);font-size:15px;font-weight:600;margin-bottom:5px;}
+  .explore-desc{font-size:11.5px;color:var(--faint);line-height:1.5;}
+  @media (max-width:900px){.explore-grid{grid-template-columns:repeat(3,1fr);}}
+  @media (max-width:640px){.explore-grid{grid-template-columns:1fr 1fr;}}
+
+  /* ---------- Community chat ---------- */
+  .chat-topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .chat-topic-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;cursor:pointer;transition:border-color .15s;}
+  .chat-topic-card:hover{border-color:var(--gold);}
+  .chat-topic-title{font-family:var(--serif);font-size:16px;font-weight:600;margin-bottom:4px;}
+  .chat-topic-desc{font-size:12px;color:var(--faint);margin-bottom:10px;}
+  .chat-online{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green);}
+  .chat-online .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(61,138,95,.25);}
+  @media (max-width:640px){.chat-topic-grid{grid-template-columns:1fr;}}
+
+  .chat-room-head{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px;}
+  .chat-room-title{font-family:var(--serif);font-size:20px;font-weight:600;}
+  .chat-room-online{font-size:12px;color:var(--green);margin-top:3px;}
+  .chat-log{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-bottom:12px;}
+  .chat-msg{font-size:13px;}
+  .chat-msg-top{display:flex;gap:8px;align-items:baseline;margin-bottom:2px;}
+  .chat-msg-user{font-weight:700;color:var(--gold);font-size:12.5px;}
+  .chat-msg-user.me{color:var(--green);}
+  .chat-msg-time{font-size:10.5px;color:var(--faint);}
+  .chat-msg-text{color:var(--dim);line-height:1.5;}
+  .chat-input-row{display:flex;gap:8px;}
+  .chat-input-row input{flex:1;padding:11px 14px;background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--text);font-size:13.5px;}
+  .chat-input-row input:focus{outline:none;border-color:var(--gold);}
+  @media (max-width:640px){.chat-log{height:340px;}}
+
+  @media (max-width:380px){
+    .hero h1{font-size:24px;}
+    .op-mark{width:38px;height:38px;font-size:13px;}
+    .game-grid{grid-template-columns:1fr;}
+    .dash-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Exclusive bonus ribbon ---------- */
+  .exclusive-tag{display:inline-block;background:var(--gold-soft);color:var(--gold);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:5px;margin-bottom:8px;}
+  .promo-code{background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:7px 10px;font-size:11.5px;color:var(--dim);margin-bottom:10px;font-family:monospace;}
+
+  /* ---------- Safety index + verified ---------- */
+  .safety-box{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-bottom:16px;}
+  .safety-ring{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:var(--serif);}
+  .safety-ring.high{background:rgba(61,138,95,.18);color:var(--green);border:2px solid var(--green);}
+  .safety-ring.mid{background:var(--gold-soft);color:var(--gold);border:2px solid var(--gold);}
+  .safety-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);}
+  .safety-desc{font-size:11.5px;color:var(--dim);}
+  .verified-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--green);border:1px solid var(--green);border-radius:10px;padding:1px 8px;font-weight:600;}
+  .op-updated{font-size:10.5px;color:var(--faint);}
+  .op-author{font-size:11px;color:var(--faint);}
+  .op-author b{color:var(--dim);}
+
+  /* ---------- User reviews ---------- */
+  .ureview-card{border-bottom:1px solid var(--line);padding:14px 0;}
+  .ureview-card:last-child{border-bottom:none;}
+  .ureview-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .ureview-user{font-weight:600;font-size:12.5px;}
+  .ureview-rating{color:var(--gold);font-size:12px;font-weight:700;}
+  .ureview-date{font-size:10.5px;color:var(--faint);}
+  .ureview-text{font-size:12.5px;color:var(--dim);line-height:1.6;}
+
+  /* ---------- Complaints Center ---------- */
+  .complaint-row{display:grid;grid-template-columns:120px 1fr 140px 110px 100px;gap:14px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .complaint-row.head{color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--panel);}
+  .complaint-row:last-child{border-bottom:none;}
+  .cstatus{font-size:10px;font-weight:700;padding:2px 9px;border-radius:9px;text-transform:uppercase;letter-spacing:.03em;display:inline-block;}
+  .cstatus.open{color:var(--gold);border:1px solid var(--gold);}
+  .cstatus.resolved{color:var(--green);border:1px solid var(--green);}
+  .cstatus.rejected{color:var(--faint);border:1px solid var(--line);}
+  @media (max-width:700px){.complaint-row{grid-template-columns:1fr 90px;}.complaint-row span:nth-child(1),.complaint-row span:nth-child(3),.complaint-row span:nth-child(4){display:none;}}
+
+  /* ---------- Glossary ---------- */
+  .glossary-item{padding:12px 0;border-bottom:1px solid var(--line);}
+  .glossary-item:last-child{border-bottom:none;}
+  .glossary-term{font-weight:700;font-size:13px;color:var(--gold);margin-bottom:3px;}
+  .glossary-def{font-size:12px;color:var(--dim);line-height:1.55;}
+
+  /* ---------- Newsletter ---------- */
+  .newsletter-box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 28px;margin-top:44px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  .newsletter-box h3{font-family:var(--serif);font-size:19px;margin:0 0 4px;font-weight:600;}
+  .newsletter-box p{color:var(--faint);font-size:12.5px;margin:0;max-width:380px;}
+  .newsletter-form{display:flex;gap:8px;flex-shrink:0;}
+  .newsletter-form input{padding:10px 13px;background:var(--panel);border:1px solid var(--line);border-radius:7px;color:var(--text);font-size:13px;width:220px;}
+  @media (max-width:640px){.newsletter-box{flex-direction:column;align-items:stretch;}.newsletter-form{flex-direction:column;}.newsletter-form input{width:100%;}}
+
+  /* ---------- Compare two ---------- */
+  .compare-picker{display:flex;gap:10px;align-items:center;margin-bottom:22px;flex-wrap:wrap;}
+  .compare-picker select{background:var(--panel);border:1px solid var(--line);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;}
+  .compare-table th, .compare-table td{text-align:left;}
+  .compare-winner{color:var(--gold);font-weight:700;}
+
+  /* ---------- Providers ---------- */
+  .provider-chip-grid{display:flex;flex-wrap:wrap;gap:8px;}
+  .provider-chip{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 16px;font-size:12.5px;cursor:pointer;}
+  .provider-chip:hover{border-color:var(--gold);}
+  .provider-chip .cnt{color:var(--faint);font-size:11px;margin-left:5px;}
+
+  /* Hidden scrollbars on horizontal-scroll strips (chips, tabs, tables) — keeps it clean, still scrollable */
+  .chip-row, .subtabs, .admintabs, .admin-side, .table-wrap{scrollbar-width:none;}
+  .chip-row::-webkit-scrollbar, .subtabs::-webkit-scrollbar, .admintabs::-webkit-scrollbar, .admin-side::-webkit-scrollbar, .table-wrap::-webkit-scrollbar{display:none;}
+
+  /* Comfortable tap targets on touch devices */
+  @media (max-width:640px){
+    .icon-btn{width:38px;height:38px;font-size:15px;}
+    .toggle button{padding:7px 13px;font-size:12.5px;}
+    nav.mainnav button, .mobile-nav button{min-height:40px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="agegate">
+  <h2>Confirm your age</h2>
+  <p id="agegate-copy">This site contains information about licensed betting and gaming operators.</p>
+  <div class="agegate-btns">
+    <button class="btn btn-gold" onclick="document.getElementById('agegate').classList.remove('show')">I am 18 or older</button>
+    <button class="btn btn-line" onclick="window.location.href='about:blank'">Exit</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="legalModal"><div class="modal-box"><div id="legalModalContent"></div></div></div>
+<div class="modal-overlay" id="applyModal"><div class="modal-box"><div id="applyModalContent"></div></div></div>
+<div class="modal-overlay" id="glossaryModal"><div class="modal-box"><div id="glossaryModalContent"></div></div></div>
+<div class="modal-overlay" id="reviewModal"><div class="modal-box"><div id="reviewModalContent"></div></div></div>
+
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <input class="search-input" id="searchInput" placeholder="Search casinos, bookmakers, guides…" oninput="runSearch()">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="cookie-banner" id="cookieBanner">
+  <p>We use cookies for analytics and affiliate attribution. See our <button onclick="openLegal('cookies')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;">Cookie Policy</button>.</p>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-line" onclick="document.getElementById('cookieBanner').classList.remove('show')">Reject non-essential</button>
+    <button class="btn btn-gold" onclick="document.getElementById('cookieBanner').classList.remove('show')">Accept all</button>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="topbar">
+      <div class="logo"><span class="dot"></span>Before Bet</div>
+      <nav class="mainnav" id="mainnav">
+        <button data-view="home" class="active">Home</button>
+        <button data-view="casino">Casino</button>
+        <button data-view="bookmakers">Bookmakers</button>
+        <button data-view="bonuses">Bonuses</button>
+        <button data-view="guides">Guides &amp; News</button>
+        <button data-view="community">Community</button>
+        <button data-view="partners">Partners</button>
+        <button data-view="admin">Admin</button>
+      </nav>
+      <div class="header-right">
+        <button class="icon-btn" onclick="openSearch()">⌕</button>
+        <div class="toggle" id="marketToggle">
+          <button data-market="UK" class="active">UK</button>
+          <button data-market="IT">IT</button>
+        </div>
+        <button class="icon-btn hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
+      </div>
+    </div>
+    <div class="mobile-drawer" id="mobileDrawer">
+      <nav class="mobile-nav" id="mobileNav">
+        <button data-view="home" class="active">Home</button>
+        <button data-view="casino">Casino</button>
+        <button data-view="bookmakers">Bookmakers</button>
+        <button data-view="bonuses">Bonuses</button>
+        <button data-view="guides">Guides &amp; News</button>
+        <button data-view="community">Community</button>
+        <button data-view="partners">Partners</button>
+        <button data-view="admin">Admin</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ HOME ============ -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Independent reviews since day one</p>
+        <h1>Compare before you <em>commit</em>.</h1>
+        <p>Licensed casinos and bookmakers, real bonus terms, and honest ratings — reviewed the same way for every operator.</p>
+        <div class="hero-actions">
+          <button class="btn btn-gold" onclick="go('casino')">Best Casinos</button>
+          <button class="btn btn-line" onclick="go('bookmakers')">Best Bookmakers</button>
+        </div>
+      </div>
+
+      <div class="compliance" id="complianceStrip"></div>
+
+      <div class="explore-grid">
+        <div class="explore-card" onclick="go('casino')">
+          <div class="explore-title">Casino</div>
+          <div class="explore-desc">Best licensed casinos, games and tournaments</div>
+        </div>
+        <div class="explore-card" onclick="go('bookmakers')">
+          <div class="explore-title">Bookmakers</div>
+          <div class="explore-desc">Odds compared across trusted sportsbooks</div>
+        </div>
+        <div class="explore-card" onclick="go('bonuses')">
+          <div class="explore-title">Bonuses</div>
+          <div class="explore-desc">Welcome offers, cashback and exclusive codes</div>
+        </div>
+        <div class="explore-card" onclick="go('guides')">
+          <div class="explore-title">Guides &amp; News</div>
+          <div class="explore-desc">Tips, predictions and how-to guides</div>
+        </div>
+        <div class="explore-card" onclick="go('partners')">
+          <div class="explore-title">Partners</div>
+          <div class="explore-desc">Promote Before Bet and earn commission</div>
+        </div>
+      </div>
+
+      <div class="head">
+        <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Top rated</p><h2>Casinos this week</h2></div>
+        <span class="sub" style="cursor:pointer;text-decoration:underline;" onclick="go('casino')">View all →</span>
+      </div>
+      <div class="op-list" id="homeCasinoList"></div>
+
+      <div class="head">
+        <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Top rated</p><h2>Bookmakers this week</h2></div>
+        <span class="sub" style="cursor:pointer;text-decoration:underline;" onclick="go('bookmakers')">View all →</span>
+      </div>
+      <div class="op-list" id="homeBkList"></div>
+
+      <div class="newsletter-box">
+        <div>
+          <h3>Never miss a bonus expiry</h3>
+          <p>Weekly email with new offers, odds movements worth knowing, and operator news. No spam, unsubscribe anytime.</p>
+        </div>
+        <div class="newsletter-form">
+          <input type="email" placeholder="you@email.com" id="newsletterEmail">
+          <button class="btn btn-gold" onclick="submitNewsletter()">Subscribe</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CASINO ============ -->
+    <section class="view" id="view-casino">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Casino</p><h2>Best Casinos, Games &amp; Tournaments</h2></div></div>
+      <div class="subtabs" id="casinoSubtabs">
+        <button data-ctab="casinos" class="active">Best Casinos</button>
+        <button data-ctab="games">Games</button>
+        <button data-ctab="providers">Providers</button>
+        <button data-ctab="tournaments">Tournaments</button>
+      </div>
+      <div id="ctab-casinos">
+        <div class="chip-row" id="paymentChipRow"></div>
+        <div class="op-list" id="casinoList"></div>
+      </div>
+      <div id="ctab-games" style="display:none;">
+        <div class="chip-row" id="gameChipRow"></div>
+        <div class="game-grid" id="gameGrid"></div>
+      </div>
+      <div id="ctab-providers" style="display:none;">
+        <p style="color:var(--faint);font-size:12px;margin:-4px 0 16px;">Tap a provider to see its games.</p>
+        <div class="provider-chip-grid" id="providerGrid"></div>
+      </div>
+      <div id="ctab-tournaments" style="display:none;">
+        <div id="tournamentList"></div>
+      </div>
+    </section>
+
+    <!-- ============ BOOKMAKERS ============ -->
+    <section class="view" id="view-bookmakers">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Sportsbook</p><h2>Bookmakers &amp; Odds</h2></div></div>
+      <div class="subtabs" id="bkSubtabs">
+        <button data-btab="reviews" class="active">Reviews</button>
+        <button data-btab="odds">Compare Odds</button>
+        <button data-btab="headtohead">Head-to-Head</button>
+      </div>
+      <div id="btab-reviews">
+        <div class="op-list" id="bkList"></div>
+      </div>
+      <div id="btab-odds" style="display:none;">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Match</th><th>Market</th><th>Northline</th><th>Vantage Bet</th><th>Ember &amp; Odds</th><th>Punters Reserve</th></tr></thead>
+            <tbody id="oddsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="btab-headtohead" style="display:none;">
+        <div class="compare-picker">
+          <select id="cmpA" onchange="renderCompare()"></select>
+          <span style="color:var(--faint);">vs</span>
+          <select id="cmpB" onchange="renderCompare()"></select>
+        </div>
+        <div class="table-wrap"><table class="compare-table"><tbody id="compareTbody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ============ BONUSES ============ -->
+    <section class="view" id="view-bonuses">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Offers</p><h2>Bonuses</h2></div></div>
+      <div class="chip-row" id="bonusChipRow"></div>
+      <div class="bonus-grid" id="bonusGrid"></div>
+    </section>
+
+    <!-- ============ GUIDES & NEWS ============ -->
+    <section class="view" id="view-guides">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Editorial</p><h2>Guides &amp; News</h2></div></div>
+      <div class="news-grid" id="newsGrid"></div>
+
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Predictions</p><h2>Tips this week</h2></div><span class="sub">Confidence = model + editor consensus</span></div>
+      <div id="tipsList"></div>
+
+      <div class="head"><div><h2 style="font-size:19px;">Getting started</h2></div></div>
+      <div id="guideList"></div>
+    </section>
+
+    <!-- ============ COMMUNITY ============ -->
+    <section class="view" id="view-community">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Live chat</p><h2>Community</h2></div></div>
+      <p style="color:var(--faint);font-size:12.5px;max-width:580px;margin:-6px 0 20px;">Drop-in chat rooms by topic — no threads, no karma, just quick conversation while it's happening. <button onclick="openLegal('guidelines')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Community Guidelines</button></p>
+
+      <div id="chatTopicView">
+        <div class="chat-topic-grid" id="chatTopicGrid"></div>
+      </div>
+
+      <div id="chatRoomView" style="display:none;">
+        <button class="back-link" onclick="closeChatRoom()">← All topics</button>
+        <div class="chat-room-head">
+          <div>
+            <div class="chat-room-title" id="chatRoomTitle"></div>
+            <div class="chat-room-online" id="chatRoomOnline"></div>
+          </div>
+        </div>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Say something…" maxlength="200" onkeydown="if(event.key==='Enter')sendChatMessage()">
+          <button class="btn btn-gold" onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PARTNERS ============ -->
+    <section class="view" id="view-partners">
+      <div class="head">
+        <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Publisher network</p><h2>Partners</h2></div>
+        <button class="btn btn-gold" onclick="openApply()">Apply as partner</button>
+      </div>
+      <div class="subtabs" id="partnerSubtabs">
+        <button data-ptab="program" class="active">Affiliate Program</button>
+        <button data-ptab="leaderboard">Leaderboard</button>
+        <button data-ptab="dashboard">My Dashboard</button>
+      </div>
+
+      <div id="ptab-program">
+        <div class="hero" style="border-bottom:none;padding-top:0;margin-bottom:12px;">
+          <h1 style="font-size:26px;">Promote Before Bet. Earn on every referral.</h1>
+          <p>Add your own tracking link to your site, newsletter or channel. When your visitors click through and register with an operator via Before Bet, you earn a share of what we earn — paid monthly, no minimum traffic required to start.</p>
+        </div>
+
+        <div class="bonus-grid" style="margin-bottom:30px;">
+          <div class="bonus-card"><span class="bonus-cat">Step 1</span><div class="bonus-title" style="font-size:15px;">Apply</div><div class="bonus-terms">Tell us where you'll place the link. Most applications are reviewed within 48h.</div></div>
+          <div class="bonus-card"><span class="bonus-cat">Step 2</span><div class="bonus-title" style="font-size:15px;">Get your link &amp; creatives</div><div class="bonus-terms">A unique tracking link plus ready-made banners in standard ad sizes.</div></div>
+          <div class="bonus-card"><span class="bonus-cat">Step 3</span><div class="bonus-title" style="font-size:15px;">Get paid monthly</div><div class="bonus-terms">Track clicks and earnings live in your dashboard; payouts run on the 1st of each month.</div></div>
+          <div class="bonus-card"><span class="bonus-cat">No cost</span><div class="bonus-title" style="font-size:15px;">Free to join</div><div class="bonus-terms">No setup fee, no minimum traffic commitment. Cancel anytime.</div></div>
+        </div>
+
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">Commission tiers</h2></div><span class="sub">Based on monthly referred clicks — you move up automatically</span></div>
+        <div class="table-wrap" style="margin-bottom:30px;">
+          <table>
+            <thead><tr><th>Tier</th><th>Monthly clicks</th><th>Your share</th></tr></thead>
+            <tbody>
+              <tr><td>Starter</td><td>Any</td><td style="color:var(--gold);font-weight:700;">15%</td></tr>
+              <tr><td>Silver</td><td>2,500+</td><td style="color:var(--gold);font-weight:700;">20%</td></tr>
+              <tr><td>Gold</td><td>10,000+</td><td style="color:var(--gold);font-weight:700;">25%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">FAQ</h2></div></div>
+        <div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How and when do I get paid?</span><span class="arrow">+</span></div><div class="faq-a">Monthly, on the 1st, via bank transfer or PayPal. No minimum payout threshold.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How long does the tracking cookie last?</span><span class="arrow">+</span></div><div class="faq-a">30 days from click — if your visitor registers within that window, you're credited even if they didn't convert on the first visit.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Can I promote specific operators only?</span><span class="arrow">+</span></div><div class="faq-a">Yes — your dashboard lets you generate links to any individual operator we list, or a general Before Bet link.</div></div>
+        </div>
+
+        <button class="btn btn-gold" style="margin-top:24px;" onclick="openApply()">Apply now</button>
+      </div>
+
+      <div id="ptab-leaderboard" style="display:none;">
+        <div class="lead-table">
+          <div class="lead-row head"><span>#</span><span>Partner</span><span>Clicks</span><span>FTDs</span><span>EPC</span><span>Revenue</span></div>
+          <div id="partnerLeaderboard"></div>
+        </div>
+        <div class="head"><div><h2 style="font-size:18px;">Creative library</h2></div></div>
+        <div class="banner-grid" id="bannerGrid"></div>
+      </div>
+      <div id="ptab-dashboard" style="display:none;">
+        <div class="dash-grid" id="dashKpiGrid"></div>
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">My links</h2></div></div>
+        <div class="table-wrap" style="margin-bottom:26px;">
+          <table><thead><tr><th>Operator</th><th>Link</th><th>Clicks</th><th>FTDs</th></tr></thead><tbody id="myLinksTbody"></tbody></table>
+        </div>
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">Payouts</h2></div></div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 18px;margin-bottom:26px;" id="invoiceList"></div>
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">API access</h2></div></div>
+        <div class="api-box">GET https://api.beforebet.com/v1/partners/me/stats
+Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
+      </div>
+    </section>
+
+    <!-- ============ ADMIN ============ -->
+    <section class="view" id="view-admin">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Internal tool</p><h2>Admin</h2></div></div>
+      <div class="admintabs" id="adminTopTabs">
+        <button data-atab="cms" class="active">Content (CMS)</button>
+        <button data-atab="analytics">Analytics</button>
+      </div>
+
+      <div id="atab-cms">
+        <div class="admin-shell">
+          <div class="admin-side" id="cmsSide">
+            <button data-panel="operators" class="active">Operator profiles</button>
+            <button data-panel="bonuses">Bonuses</button>
+            <button data-panel="links">Links &amp; redirects</button>
+            <button data-panel="postbacks">Postbacks (S2S)</button>
+            <button data-panel="placements">Featured placements</button>
+            <button data-panel="fraud">Fraud &amp; quality</button>
+            <button data-panel="abtest">A/B tests</button>
+            <button data-panel="users">Users &amp; roles</button>
+            <button data-panel="seo">SEO &amp; technical</button>
+            <button data-panel="audit">Audit log</button>
+          </div>
+          <div class="admin-main" id="cmsMain"></div>
+        </div>
+      </div>
+      <div id="atab-analytics" style="display:none;">
+        <div class="dash-grid" id="kpiGrid"></div>
+        <div class="head" style="margin-top:0;"><div><h2 style="font-size:16px;">EPC by operator (€)</h2></div></div>
+        <div class="table-wrap"><table><tbody id="epcTbody"></tbody></table></div>
+        <div class="head"><div><h2 style="font-size:16px;">Cohort / LTV</h2></div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Cohort</th><th>Players</th><th>M1</th><th>M3</th><th>M6</th><th>LTV</th></tr></thead><tbody id="cohortTbody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COMPLAINTS CENTER ============ -->
+    <section class="view" id="view-complaints">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Player protection</p><h2>Complaints Center</h2></div></div>
+      <p style="color:var(--faint);font-size:12.5px;max-width:580px;margin:-6px 0 20px;">Players can report unresolved issues with any listed operator. We contact the operator directly and publish the outcome — this record is never edited after resolution.</p>
+      <div class="chip-row" id="complaintChipRow"></div>
+      <div class="lead-table">
+        <div class="complaint-row head"><span>ID</span><span>Subject</span><span>Operator</span><span>Date</span><span>Status</span></div>
+        <div id="complaintList"></div>
+      </div>
+    </section>
+
+    <!-- ============ OPERATOR DETAIL PAGE ============ -->
+    <section class="view" id="view-operator">
+      <button class="back-link" id="opBackLink" onclick="go('casino')">← Back</button>
+      <div id="opPageContent"></div>
+    </section>
+
+    <!-- ============ PROVIDER DETAIL PAGE ============ -->
+    <section class="view" id="view-provider">
+      <button class="back-link" onclick="go('casino')">← Back to Casino</button>
+      <div id="providerPageContent"></div>
+    </section>
+
+    <!-- ============ GAME DETAIL PAGE ============ -->
+    <section class="view" id="view-game">
+      <button class="back-link" id="gameBackLink" onclick="go('casino')">← Back</button>
+      <div id="gamePageContent"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div>
+        <p id="footCompliance"></p>
+        <div class="foot-links">
+          <button onclick="openLegal('terms')">Terms</button>
+          <button onclick="openLegal('privacy')">Privacy</button>
+          <button onclick="openLegal('affiliate')">Affiliate Disclosure</button>
+          <button onclick="openLegal('cookies')">Cookies</button>
+          <button onclick="openLegal('about')">About</button>
+          <button onclick="openLegal('contact')">Contact</button>
+          <button onclick="openLegal('methodology')">How We Rate</button>
+          <button onclick="openGlossary()">Glossary</button>
+          <button onclick="go('complaints')">Complaints Center</button>
+        </div>
+      </div>
+      <p>Prototype build. Operator names, odds and figures are illustrative placeholders.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+let market = 'UK';
+
+const bookmakers = [
+  {id:'northline', name:'Northline', mark:'NL', rating:4.6, market:'UK', license:'UKGC 39482-A', bonus:'Bet £10, Get £30 in Free Bets', pros:['Fast withdrawals','Strong live odds'], cons:['Limited casino range'], cpa:'£120 CPA', payments:['Visa','Mastercard','PayPal','Apple Pay'], minDeposit:'£10', withdrawalTime:'Under 24h', currencies:['GBP'], languages:['English'], supportHours:'Live chat + phone, 8am–midnight', featured:true,
+    sub:{odds:4.8, support:4.3, payments:4.7, mobile:4.5},
+    review:["Northline has built its reputation on speed — both in how quickly odds move on its in-play markets and how fast withdrawals actually land. For UK bettors who compare a lot before placing, that combination matters more than a flashy welcome offer.",
+      "The Bet £10, Get £30 in Free Bets welcome offer is straightforward by UK standards: no complex staged unlocks, credited within 24 hours of a qualifying bet settling. Wagering is limited to the free bet stake itself, not a multiplier on top, which is friendlier than most.",
+      "Where Northline is thinner is casino and specials coverage — this is a sportsbook-first operator, and it shows. If in-play football and horse racing are your focus, it's one of the stronger UK options we've reviewed; if you also want a deep casino, pair it with a dedicated casino brand."],
+    faq:[["Is Northline licensed?","Yes — Northline operates under UKGC licence 39482-A, published on the operator's footer and verifiable via the UKGC register."],
+      ["How fast are withdrawals?","Most card and e-wallet withdrawals we tested landed within 24 hours; Apple Pay was typically faster."],
+      ["Does the welcome offer require a promo code?","No — the offer applies automatically to new UK accounts on qualifying deposits."]]},
+  {id:'vantage', name:'Vantage Bet', mark:'VB', rating:4.4, market:'UK', license:'UKGC 40217-C', bonus:'100% Deposit Match up to £50', pros:['Great mobile app','Wide market coverage'], cons:['Slower KYC'], cpa:'£95 CPA + RevShare', payments:['Visa','Mastercard','Skrill','Neteller','Paysafecard'], minDeposit:'£5', withdrawalTime:'1–3 days', currencies:['GBP'], languages:['English'], supportHours:'Live chat, 24/7',
+    sub:{odds:4.2, support:4.0, payments:4.3, mobile:4.8},
+    review:["Vantage Bet's mobile app is the standout — bet-builder tools and cash-out are noticeably smoother than most UK operators of a similar size, and market coverage stretches well beyond the big five leagues.",
+      "The 100% deposit match up to £50 is a solid mid-tier welcome offer with standard 5x wagering on the bonus amount. Minimum deposit of just £5 makes it accessible for smaller bankrolls testing the platform.",
+      "The one recurring friction point in our testing was account verification — new customers should expect KYC checks to take a little longer than the UK average, particularly around a first withdrawal."],
+    faq:[["What's the wagering requirement on the welcome bonus?","5x the bonus amount, sports only, within 30 days."],
+      ["Which payment methods are fastest?","Skrill and Neteller withdrawals were consistently the quickest in our testing."],
+      ["Is there a dedicated app?","Yes, for iOS and Android, rated among the better mobile experiences in the UK market."]]},
+  {id:'ember', name:'Ember & Odds', mark:'E&', rating:4.2, market:'UK', license:'UKGC 38821-B', bonus:'Acca Insurance up to £25', pros:['Best acca boosts'], cons:['Fewer payment methods'], cpa:'£110 CPA', payments:['Visa','PayPal'], minDeposit:'£10', withdrawalTime:'1–2 days', currencies:['GBP'], languages:['English'], supportHours:'Live chat + email, 9am–11pm',
+    sub:{odds:4.3, support:4.1, payments:3.8, mobile:4.0},
+    review:["Ember & Odds has carved a niche around accumulator bettors — acca insurance and boosted-odds promos appear more frequently here than at most competitors, refunding a leg as a free bet under set conditions.",
+      "Payment options are narrower than average — just Visa and PayPal at the time of review — which will rule this operator out for anyone who prefers e-wallets like Skrill or Neteller.",
+      "Overall a solid pick specifically for multi-bet bettors, less compelling as an all-round sportsbook if payment flexibility matters to you."],
+    faq:[["How does the acca insurance work?","If exactly one leg of a qualifying multi-bet loses, the stake is refunded as a free bet up to £25."],
+      ["Can I deposit with an e-wallet?","Not currently — Visa and PayPal are the only supported methods."]]},
+  {id:'punters', name:'Punters Reserve', mark:'PR', rating:4.0, market:'UK', license:'UKGC 41190-A', bonus:'£20 No Deposit Bonus', pros:['No deposit needed','Beginner friendly'], cons:['Lower max stakes'], cpa:'£60 CPA', payments:['Visa','Mastercard','PayPal','Paysafecard'], minDeposit:'£10', withdrawalTime:'Under 24h', currencies:['GBP'], languages:['English'], supportHours:'Live chat, 9am–9pm',
+    sub:{odds:3.9, support:4.2, payments:4.0, mobile:3.8},
+    review:["Punters Reserve's £20 no-deposit bonus is genuinely free to claim — no card details required beyond identity verification — making it a low-risk way to trial the platform before committing any funds.",
+      "The trade-off for a newer, smaller operator is lower maximum stakes on popular markets, which will frustrate higher-volume bettors but rarely matters for casual weekend punters.",
+      "Customer support was responsive in our testing, typically replying to live chat within a couple of minutes."],
+    faq:[["Do I need to deposit to claim the bonus?","No — the £20 is credited after account verification, no deposit required."],
+      ["Is there a maximum bet size?","Yes, caps are lower than larger operators, particularly on football coupons."]]},
+  {id:'cielo', name:'Cielo Bet', mark:'CB', rating:4.5, market:'IT', license:'ADM 00812.24', bonus:'Bonus di benvenuto fino a €50', pros:['Copertura ampia Serie A','App stabile'], cons:['Assistenza solo email'], cpa:'RevShare 30%', payments:['Visa','Mastercard','Skrill','Postepay'], minDeposit:'€10', withdrawalTime:'2–4 giorni', currencies:['EUR'], languages:['Italiano'], supportHours:'Live chat, 24/7', featured:true,
+    sub:{odds:4.6, support:3.9, payments:4.4, mobile:4.5},
+    review:["Cielo Bet copre in modo particolarmente approfondito la Serie A e la Serie B, con statistiche pre-partita più dettagliate rispetto alla media degli operatori ADM che abbiamo analizzato.",
+      "Il bonus di benvenuto fino a €50 richiede un deposito minimo di €10 e un rollover standard sulle quote minime richieste dalla normativa ADM — nulla di insolito, ma condizioni chiare fin da subito.",
+      "L'unico limite riscontrato riguarda l'assistenza clienti, disponibile solo via email: chi cerca una live chat immediata potrebbe trovarla mancante nei momenti di punta."],
+    faq:[["Cielo Bet è un operatore concessionario ADM?","Sì, licenza ADM 00812.24, verificabile nel registro pubblico ADM."],
+      ["Quali metodi di pagamento sono supportati?","Visa, Mastercard, Skrill e Postepay."],
+      ["È disponibile un'app dedicata?","Sì, per iOS e Android, con buone valutazioni di stabilità."]]},
+  {id:'ferro', name:'Ferro Bet', mark:'FB', rating:4.3, market:'IT', license:'ADM 00745.19', bonus:'Quote maggiorate sul weekend', pros:['Statistiche dettagliate'], cons:['Prelievi più lenti'], cpa:'RevShare 25%', payments:['Visa','Postepay','Skrill'], minDeposit:'€10', withdrawalTime:'3–5 giorni', currencies:['EUR'], languages:['Italiano'], supportHours:'Email only, replies within 24h',
+    sub:{odds:4.4, support:4.0, payments:3.7, mobile:4.1},
+    review:["Ferro Bet punta molto sulle statistiche pre-partita e sulle quote maggiorate del weekend, un formato che premia chi segue attentamente il calendario di Serie A prima di piazzare la giocata.",
+      "I tempi di prelievo sono il punto debole rilevato nella nostra analisi — 3-5 giorni lavorativi, più lenti della media degli operatori ADM comparabili.",
+      "Nel complesso un buon operatore per chi cerca approfondimento statistico, meno indicato per chi dà priorità alla velocità di incasso."],
+    faq:[["Quanto tempo richiede un prelievo?","In media 3-5 giorni lavorativi secondo la nostra analisi."],
+      ["Le quote maggiorate sono automatiche?","Sì, applicate automaticamente sulle partite selezionate del weekend."]]},
+  {id:'lira', name:'Lira Sport', mark:'LS', rating:4.1, market:'IT', license:'ADM 00901.22', bonus:'Cashback mensile 10%', pros:['Buon programma fedeltà'], cons:['App meno intuitiva'], cpa:'RevShare 28%', payments:['Visa','Mastercard','Neteller'], minDeposit:'€15', withdrawalTime:'2–3 giorni', currencies:['EUR'], languages:['Italiano'], supportHours:'Live chat, 9am–10pm',
+    sub:{odds:4.0, support:4.2, payments:4.1, mobile:3.6},
+    review:["Il cashback mensile del 10% sulle perdite nette è il punto di forza di Lira Sport, calcolato automaticamente a fine mese senza bisogno di richiesta manuale.",
+      "Il programma fedeltà premia la costanza più del volume di gioco, un approccio che favorisce gli scommettitori abituali rispetto a chi punta a bonus una tantum.",
+      "L'app mobile ha ricevuto le valutazioni più basse del gruppo nella nostra analisi di usabilità — funzionale, ma con un'interfaccia meno intuitiva rispetto ai concorrenti diretti."],
+    faq:[["Come si riceve il cashback?","Calcolato automaticamente a fine mese e accreditato sul conto gioco, massimale €100."],
+      ["Il deposito minimo è alto?","€15, leggermente superiore alla media ADM ma comunque accessibile."]]},
+];
+
+const casinos = [
+  {id:'goldenreel', name:'Golden Reel Casino', mark:'GR', rating:4.7, market:'UK', license:'UKGC 42210-A', bonus:'100% up to £200 + 100 Free Spins', payments:['Visa','Mastercard','PayPal','Skrill','Apple Pay'], minDeposit:'£10', withdrawalTime:'Under 24h', deal:'RevShare 32%', games:1840, pros:['Huge slot library','Fast payouts'], cons:['No phone support'], featured:true,
+    sub:{games:4.9, support:4.0, payments:4.8, mobile:4.5},
+    review:["With over 1,840 titles, Golden Reel Casino has one of the widest slot libraries of any UK-facing casino we've reviewed, spanning every major studio from NetEnt to Pragmatic Play alongside a well-stocked live casino floor.",
+      "The 100% match up to £200 plus 100 free spins is front-loaded but fair: 35x wagering on the bonus amount, standard for the UK market, with the free spins released in daily batches over ten days.",
+      "Withdrawals were consistently processed within 24 hours across every method we tested — genuinely one of the fastest payout operators in this review set. The only gap is support: no phone line, email and live chat only."],
+    faq:[["How many games does Golden Reel Casino offer?","Over 1,840 at the time of this review, spanning slots, table games and live casino."],
+      ["Is phone support available?","No — support is via live chat and email only."],
+      ["How long do withdrawals take?","Under 24 hours across all payment methods tested."]]},
+  {id:'novacasino', name:'Nova Casino', mark:'NC', rating:4.5, market:'UK', license:'UKGC 41876-B', bonus:'50 Free Spins No Deposit', payments:['Visa','Neteller','Paysafecard'], minDeposit:'£10', withdrawalTime:'1–2 days', deal:'RevShare 28%', games:1210, pros:['Great live casino','Weekly tournaments'], cons:['Withdrawal cap £4k/week'],
+    sub:{games:4.4, support:4.3, payments:4.2, mobile:4.6},
+    review:["Nova Casino's 50 free spins with no deposit required is one of the more generous no-strings offers in the UK market, credited automatically after identity verification.",
+      "The live casino selection and weekly slot tournaments are the strongest reasons to choose Nova over competitors of similar size — tournament leaderboards refresh every Monday with real cash prizes.",
+      "The main limitation is a £4,000 weekly withdrawal cap, which is generous for most players but worth knowing in advance if you play at higher stakes."],
+    faq:[["Is there a withdrawal limit?","Yes, £4,000 per week across all payment methods."],
+      ["How often do tournaments run?","Weekly, resetting every Monday with new prize pools."]]},
+  {id:'vaultcasino', name:'Diamond Vault', mark:'DV', rating:4.3, market:'UK', license:'UKGC 40655-C', bonus:'Cashback 10% every Monday', payments:['Visa','Mastercard','PayPal'], minDeposit:'£15', withdrawalTime:'1–3 days', deal:'£100 CPA', games:960, pros:['Strong VIP program'], cons:['Smaller game catalogue'],
+    sub:{games:3.9, support:4.1, payments:4.0, mobile:4.0},
+    review:["Diamond Vault's weekly 10% cashback on net losses, credited automatically every Monday, is a stand-out retention mechanic that rewards regular play more consistently than one-off deposit bonuses.",
+      "The VIP program adds tiered perks — faster withdrawals, dedicated account management and periodic free spin drops — for players who stick around, which fits an operator clearly built for retention over acquisition.",
+      "At 960 titles, the game catalogue is noticeably smaller than the market leaders in this review, though the core slot and table game selection covers the essentials well."],
+    faq:[["How is the cashback calculated?","10% of net losses over the previous week, credited automatically each Monday, capped at £100."],
+      ["Is there a VIP program?","Yes — tiered, with faster withdrawals and a dedicated contact at higher levels."]]},
+  {id:'auroracasino', name:'Casino Aurora', mark:'CA', rating:4.6, market:'IT', license:'ADM 00932.23', bonus:'Bonus fino a €300 + 50 giri gratis', payments:['Visa','Postepay','Skrill'], minDeposit:'€10', withdrawalTime:'2–4 giorni', deal:'RevShare 30%', games:1450, pros:['Torneo slot settimanale','App fluida'], cons:['Bonus con wagering alto'], featured:true,
+    sub:{games:4.7, support:4.1, payments:4.3, mobile:4.6},
+    review:["Casino Aurora organizza un torneo slot settimanale con classifica in tempo reale, una delle funzionalità più coinvolgenti tra gli operatori ADM analizzati in questa categoria.",
+      "Il bonus di benvenuto fino a €300 più 50 giri gratis è generoso, ma il requisito di puntata è più alto della media (40x) — da leggere con attenzione prima di accettare l'offerta.",
+      "L'app mobile si è comportata in modo fluido durante tutti i test, senza rallentamenti anche con più giochi live aperti contemporaneamente."],
+    faq:[["Il torneo slot è gratuito?","Sì, la partecipazione è gratuita per chi soddisfa il requisito di puntata minimo settimanale."],
+      ["Qual è il requisito di puntata sul bonus?","40x l'importo del bonus, superiore alla media degli operatori ADM comparabili."]]},
+  {id:'fortunapalace', name:'Fortuna Palace', mark:'FP', rating:4.4, market:'IT', license:'ADM 00889.21', bonus:'20 giri gratis senza deposito', payments:['Visa','Mastercard','Postepay'], minDeposit:'€10', withdrawalTime:'3–5 giorni', deal:'RevShare 26%', games:1080, pros:['Buon casinò live'], cons:['Assistenza solo in orario ufficio'],
+    sub:{games:4.2, support:3.6, payments:3.9, mobile:4.1},
+    review:["I 20 giri gratis senza deposito di Fortuna Palace sono accreditati subito dopo la verifica dell'account, senza bisogno di inserire i dati della carta.",
+      "Il casinò live è il punto di forza dell'operatore, con diversi tavoli in italiano e croupier dedicati nelle fasce orarie di punta.",
+      "L'assistenza clienti è disponibile solo in orario ufficio (9-18), un limite reale per chi gioca la sera o nel weekend e ha bisogno di supporto immediato."],
+    faq:[["L'assistenza è disponibile 24/7?","No, solo in orario ufficio, dalle 9 alle 18 nei giorni lavorativi."],
+      ["Ci sono tavoli live in italiano?","Sì, con croupier dedicati nelle fasce orarie di punta."]]},
+];
+
+const games = [
+  {id:'book-of-fortune', name:'Book of Fortune', cat:'Slots', provider:'NetEnt', rtp:96.1, theme:'Egypt', desc:'A 5-reel Egyptian-themed slot with an expanding symbol feature during free spins — the mechanic that made this style of game popular across the industry.'},
+  {id:'gems-bonanza', name:'Gems Bonanza', cat:'Slots', provider:'Pragmatic Play', rtp:96.5, theme:'Gems', desc:'A cascading-wins slot where winning symbols disappear and new ones drop in, with a multiplier that climbs the longer a cascade chain runs.'},
+  {id:'tropical-fruits-deluxe', name:'Tropical Fruits Deluxe', cat:'Slots', provider:"Play'n GO", rtp:95.8, theme:'Fruits', desc:'A modern take on the classic fruit machine format, with a gamble feature and a straightforward paytable aimed at low-volatility, frequent-win play.'},
+  {id:'golden-pharaoh', name:'Golden Pharaoh', cat:'Slots', provider:'Blueprint Gaming', rtp:96.3, theme:'Egypt', desc:'A higher-volatility Egyptian slot with stacked wilds and a pick-me bonus round that awards one of four progressive-style cash prizes.'},
+  {id:'european-roulette-pro', name:'European Roulette Pro', cat:'Roulette', provider:'Evolution', rtp:97.3, theme:'Classic', desc:'Single-zero European roulette with a full call-bet racetrack layout, favoured for its lower house edge versus American double-zero wheels.'},
+  {id:'live-roulette-studio', name:'Live Roulette Studio', cat:'Live Casino', provider:'Evolution', rtp:97.3, theme:'Live', desc:'A real dealer, real wheel live-streamed table with multi-camera angles and side bets like Neighbours and Racetrack available on-screen.'},
+  {id:'classic-blackjack', name:'Classic Blackjack', cat:'Blackjack', provider:'Microgaming', rtp:99.5, theme:'Classic', desc:'Standard 6-deck blackjack with late surrender and double-after-split allowed — rule set matters more than theme here, and this one favours the player.'},
+  {id:'live-blackjack-vip', name:'Live Blackjack VIP', cat:'Live Casino', provider:'Evolution', rtp:99.4, theme:'Live', desc:'A higher-stakes live blackjack table with a dedicated dealer, aimed at players who have outgrown standard-limit live tables.'},
+  {id:'jackpot-video-poker', name:'Jackpot Video Poker', cat:'Video Poker', provider:'Merkur Gaming', rtp:98.0, theme:'Classic', desc:'Jacks-or-better video poker with an optional progressive side-bet for a royal flush jackpot on top of the standard paytable.'},
+  {id:'diamond-scratch', name:'Diamond Scratch', cat:'Scratch Cards', provider:'NetEnt', rtp:94.2, theme:'Gems', desc:'A fast, single-screen scratch card game — no reels or paylines, just an instant reveal, popular with players who want quick rounds.'},
+];
+const gameCategories = ['Slots','Roulette','Blackjack','Live Casino','Video Poker','Scratch Cards'];
+
+const providerInfo = {
+  'NetEnt':'A Swedish-founded studio and one of the longest-established slot providers in regulated markets, known for consistent RTPs and early adoption of cascading-reel mechanics.',
+  'Pragmatic Play':'A high-output studio releasing new slots and live tables monthly, widely licensed across UK and Italian-facing casinos for its cascading and cluster-pay mechanics.',
+  "Play'n GO":'A Swedish studio focused on mobile-first slot design, popular for licensed and original titles with straightforward, low-volatility paytables.',
+  'Blueprint Gaming':'A UK-founded studio known for higher-volatility slots and licensed-brand tie-ins, commonly featured in UKGC-regulated casino libraries.',
+  'Evolution':'The dominant live-dealer studio globally, operating studios in multiple countries and setting the technical standard for live roulette and blackjack streaming.',
+  'Microgaming':'One of the oldest software providers in online gambling, still widely used for classic table game rule sets like the blackjack variant listed here.',
+  'Merkur Gaming':'A German-founded provider with a strong video poker and classic slot catalogue, popular with players who prefer traditional mechanics over modern bonus features.',
+};
+
+const tournaments = [
+  {name:'Weekend Slot Race', casino:'Golden Reel Casino', prize:'£5,000', entrants:842, minStake:'£0.50', endsInHrs:30},
+  {name:'High Roller Roulette Cup', casino:'Nova Casino', prize:'£2,500', entrants:210, minStake:'£5', endsInHrs:56},
+  {name:'Torneo Slot del Weekend', casino:'Casino Aurora', prize:'€3,000', entrants:615, minStake:'€0.40', endsInHrs:24},
+  {name:'Coppa Live Blackjack', casino:'Fortuna Palace', prize:'€1,800', entrants:150, minStake:'€10', endsInHrs:68},
+];
+
+const bonuses = [
+  {market:'UK', cat:'Welcome', title:'Bet £10, Get £30 in Free Bets', op:'Northline', expiresInHrs:41, terms:'New customers only. Min deposit £10. 18+ BeGambleAware.org.', exclusive:true, code:'BEFOREBET30'},
+  {market:'UK', cat:'Deposit Match', title:'100% up to £200 + 100 Free Spins', op:'Golden Reel Casino', expiresInHrs:60, terms:'New players only. Wagering 35x. 18+.'},
+  {market:'UK', cat:'No Deposit', title:'£20 No Deposit Bonus', op:'Punters Reserve', expiresInHrs:70, terms:'Account verification required. Max withdrawal £50. 18+.'},
+  {market:'UK', cat:'Cashback', title:'Cashback 10% every Monday', op:'Diamond Vault', expiresInHrs:96, terms:'Applies to net losses. Max cashback £100/week.'},
+  {market:'IT', cat:'Benvenuto', title:'Bonus di benvenuto fino a €50', op:'Cielo Bet', expiresInHrs:52, terms:'Solo nuovi clienti. Deposito minimo €10. Operatore ADM.', exclusive:true, code:'BEFOREBET50'},
+  {market:'IT', cat:'Deposit Match', title:'Bonus fino a €300 + 50 giri gratis', op:'Casino Aurora', expiresInHrs:80, terms:'Nuovi giocatori. Wagering 30x. Gioco responsabile.'},
+  {market:'IT', cat:'No Deposit', title:'20 giri gratis senza deposito', op:'Fortuna Palace', expiresInHrs:40, terms:'Verifica account richiesta. ADM 00889.21.'},
+  {market:'IT', cat:'Cashback', title:'Cashback mensile 10%', op:'Lira Sport', expiresInHrs:96, terms:'Calcolato a fine mese. Massimale €100.'},
+];
+const bonusCats = ['Welcome','Deposit Match','No Deposit','Cashback'];
+
+const newsPosts = {
+  UK:[
+    {cat:'Preview', title:'Riverside FC vs Old Mill Town: five things to watch', desc:'Form, injuries and market movements before kickoff.', date:'2 Jul 2026'},
+    {cat:'Operator News', title:'Northline extends live streaming to lower leagues', desc:'What the update means for in-play bettors.', date:'29 Jun 2026'},
+    {cat:'Market Watch', title:'Why acca insurance offers are getting more generous', desc:'How operators are competing on refund terms.', date:'25 Jun 2026'},
+  ],
+  IT:[
+    {cat:'Anteprima', title:'Serie A: cinque squadre da seguire', desc:'Statistiche e tendenze prima della nuova stagione.', date:'2 lug 2026'},
+    {cat:'Novità', title:'Cielo Bet aggiorna la copertura statistiche live', desc:'Cosa cambia per chi segue le partite in diretta.', date:'29 giu 2026'},
+    {cat:'Osservatorio', title:'Come leggere le quote maggiorate del weekend', desc:'Guida pratica alle promozioni più comuni.', date:'25 giu 2026'},
+  ]
+};
+const guides = {
+  UK:[
+    {title:'How to choose a licensed bookmaker', desc:'What UKGC licensing means and how to verify it.'},
+    {title:'Understanding wagering requirements', desc:'How to read the small print on bonus offers.'},
+    {title:'Setting deposit limits and self-exclusion', desc:'Responsible gambling tools every UK operator provides.'},
+  ],
+  IT:[
+    {title:'Come riconoscere un operatore ADM', desc:'Cosa verificare prima di registrarsi.'},
+    {title:'Capire i requisiti di scommessa', desc:'Come leggere le condizioni dei bonus.'},
+    {title:'Strumenti di gioco responsabile', desc:'Autoesclusione e limiti di deposito.'},
+  ]
+};
+
+/* ---------- Community chat topics ---------- */
+const chatTopics = {
+  UK:[
+    {id:'premier-league', name:'Premier League Chat', desc:'Matchday chat, team news, injury updates', online:38,
+      messages:[
+        ['DaveM_UK','2h ago','Anyone else think the ref missed a clear penalty there?'],
+        ['punter_kate','1h ago','Odds on the derby moved a lot after that lineup news'],
+        ['footy_fran','46m ago','Northline had the best price on over 2.5 for this one'],
+        ['GaryB','12m ago','Kickoff in 20, who else is watching'],
+      ]},
+    {id:'casino-bonuses', name:'Casino Bonuses', desc:'Compare offers, wagering questions, wins', online:22,
+      messages:[
+        ['slotsfan22','3h ago','Golden Reel free spins credited within an hour for me'],
+        ['careful_carla','1h ago','Does anyone know if the Nova Casino offer stacks with existing balance?'],
+        ['newtogambling','20m ago','First time claiming a no deposit bonus, a bit nervous lol'],
+      ]},
+    {id:'live-betting','name':'Live Betting','desc':'In-play tips and odds movement chat','online':15,
+      messages:[
+        ['accaboy','40m ago','Odds swinging fast on that second half'],
+        ['mobile_first_bettor','18m ago','Cash out now or hold? 1-0 up at 60 mins'],
+      ]},
+    {id:'new-here', name:'New Here?', desc:'Questions from newcomers, no judgment', online:11,
+      messages:[
+        ['first_timer','5h ago','Total beginner — whats the difference between CPA and RevShare mentioned in the guides?'],
+        ['punter_kate','4h ago','Welcome! Check the Glossary in the footer, explains it well'],
+        ['first_timer','3h ago','Found it, thanks!'],
+      ]},
+  ],
+  IT:[
+    {id:'serie-a', name:'Serie A Chat', desc:'Discussioni partita, formazioni, infortuni', online:29,
+      messages:[
+        ['marco_scommesse','2h ago','Formazione ufficiale uscita, cambia tutto secondo me'],
+        ['giulia_bet','1h ago','Cielo Bet aveva la quota migliore su questo match'],
+        ['paolo_r','15m ago','Si parte tra poco, chi altro segue stasera'],
+      ]},
+    {id:'bonus-casino', name:'Bonus Casinò', desc:'Confronto offerte, domande su rollover', online:17,
+      messages:[
+        ['sara_gioca','3h ago','Il torneo di Casino Aurora è partito, chi partecipa?'],
+        ['live_casino_fan','1h ago','Qualcuno sa se il bonus Fortuna Palace richiede codice?'],
+      ]},
+    {id:'scommesse-live', name:'Scommesse Live', desc:'Quote in tempo reale e consigli in-play', online:9,
+      messages:[
+        ['giulia_bet','30m ago','Quota schizzata dopo il rosso'],
+      ]},
+    {id:'nuovi-utenti', name:'Nuovi Utenti', desc:'Domande per chi inizia ora, zero giudizi', online:6,
+      messages:[
+        ['new_player_it','4h ago','Qualcuno mi spiega cosa significa RTP nel glossario?'],
+        ['marco_scommesse','3h ago','È la percentuale di ritorno teorico del gioco, guarda il Glossario nel footer'],
+      ]},
+  ],
+};
+let activeChatTopic = null;
+
+const matches = [
+  {home:'Riverside FC', away:'Old Mill Town', market:'Match Winner', odds:[2.10,2.05,2.15,1.98]},
+  {home:'North Harbour', away:'Castlegate United', market:'Match Winner', odds:[1.85,1.90,1.88,1.79]},
+  {home:'Bright Star Athletic', away:'Vale Rangers', market:'Over/Under 2.5', odds:[1.95,1.92,2.00,1.89]},
+  {home:'Iron Bridge City', away:'Sable Wanderers', market:'Match Winner', odds:[3.20,3.10,3.30,3.05]},
+];
+
+const tips = {
+  UK:[
+    {sport:'Football', match:'Riverside FC vs Old Mill Town', pred:'Riverside FC to win', confidence:78},
+    {sport:'Football', match:'North Harbour vs Castlegate United', pred:'Under 2.5 goals', confidence:64},
+    {sport:'Tennis', match:'Marek Ostrowski vs Théo Lambert', pred:'Ostrowski in straight sets', confidence:58},
+  ],
+  IT:[
+    {sport:'Calcio', match:'Riverside FC vs Old Mill Town', pred:'Vittoria Riverside FC', confidence:78},
+    {sport:'Calcio', match:'North Harbour vs Castlegate United', pred:'Under 2.5 gol', confidence:64},
+    {sport:'Tennis', match:'Marek Ostrowski vs Théo Lambert', pred:'Ostrowski in due set', confidence:58},
+  ]
+};
+
+const partners = [
+  {name:'Marko Petrović Media', clicks:18420, ftds:612, epc:'6.90', kyc:true, revenue:4224},
+  {name:'PunterHub Network', clicks:15980, ftds:498, epc:'6.10', kyc:true, revenue:3037},
+  {name:'OddsDaily Blog', clicks:11230, ftds:301, epc:'5.40', kyc:true, revenue:1625},
+  {name:'BetTips Weekly', clicks:8760, ftds:194, epc:'4.65', kyc:true, revenue:902},
+  {name:'Calcio Analytics IT', clicks:6410, ftds:122, epc:'3.90', kyc:false, revenue:476},
+];
+const banners = [
+  {brand:'Northline', size:'728×90', copy:'Bet £10, Get £30 Free', c1:'#0B0C0F', c2:'#3D6FBE'},
+  {brand:'Golden Reel Casino', size:'300×250', copy:'100% Match up to £200', c1:'#0B0C0F', c2:'#C9A227'},
+  {brand:'Cielo Bet', size:'300×600', copy:'Bonus fino a €50', c1:'#0B0C0F', c2:'#3D8A5F'},
+];
+const myLinks = [
+  {op:'Northline', clicks:6210, ftds:214},
+  {op:'Golden Reel Casino', clicks:5480, ftds:186},
+  {op:'Ember & Odds', clicks:3990, ftds:132},
+];
+const invoices = [
+  {id:'INV-2026-06', period:'Jun 2026', amount:3810, status:'Paid'},
+  {id:'INV-2026-05', period:'May 2026', amount:3295, status:'Paid'},
+  {id:'INV-2026-07', period:'Jul 2026', amount:4224, status:'Pending'},
+];
+const cohorts = [
+  {name:'Apr 2026', players:340, m1:'€18', m3:'€41', m6:'€68', ltv:'€94'},
+  {name:'May 2026', players:410, m1:'€21', m3:'€46', m6:'—', ltv:'€88 (proj.)'},
+  {name:'Jun 2026', players:295, m1:'€19', m3:'—', m6:'—', ltv:'€82 (proj.)'},
+];
+const legalContent = {
+  terms:{title:'Terms of Service', body:'Governs use of the Before Bet website. Before Bet is an independent media and comparison site — it is not a bookmaker or casino operator and does not accept wagers.'},
+  privacy:{title:'Privacy Policy', body:'Explains what data Before Bet collects (device info, click events, cookies) and how it is used for analytics and affiliate attribution. Users can exercise GDPR rights (access, deletion, portability) at any time.'},
+  affiliate:{title:'Affiliate Disclosure', body:'Before Bet contains affiliate links. If you click through and register with an operator, Before Bet may earn a commission at no extra cost to you. Some operators may also pay for placement within our listings — where that happens it is indicated with a small "Partner" marker next to the listing. Commercial relationships never change the underlying rating.'},
+  cookies:{title:'Cookie Policy', body:'Essential cookies keep the site functional. Analytics cookies measure traffic. Affiliate-attribution cookies record which partner referred a click, typically for 30 days.'},
+  about:{title:'About Before Bet', body:'Before Bet helps players compare licensed operators, odds and offers before they play. We publish independent reviews across the UK and Italy.'},
+  contact:{title:'Contact', body:'General: hello@beforebet.com\nPartnerships: partners@beforebet.com'},
+  methodology:{title:'How We Rate', body:'Every operator is scored on four dimensions — Games/Odds, Support, Payments and Mobile — tested first-hand by our editorial team, not supplied by the operator. The overall star rating is a weighted average of these four scores. The Safety Index is scored separately and measures trustworthiness specifically: license standing, clarity of terms, payout consistency and complaint history. A high star rating and a low Safety Index can coexist — for example a slick, feature-rich operator with a poor complaints record. We recommend reading both numbers together, not just the star rating.\n\nPaid placements (marked "Partner") can move an operator higher in a list. They never change either score. Our team re-tests every listed operator at least once per quarter.'},
+  guidelines:{title:'Community Guidelines', body:'Community chat rooms are for quick, casual conversation about betting and gaming topics — not for betting tipster spam, links to other sites, or abuse. Be respectful of other players. No sharing of personal contact details. No promotion of unlicensed operators. Messages are logged and moderated; repeated violations result in a chat ban. This is a live chat, not a support channel — for account issues, contact the operator directly or use our Complaints Center.'},
+};
+
+/* ---------- Authors ---------- */
+const authors = {
+  UK:[{name:'J. Whitfield', role:'Senior Editor, Sportsbooks'},{name:'R. Adeyemi', role:'Casino Reviews Lead'}],
+  IT:[{name:'L. Bianchi', role:'Redattore Senior, Scommesse'},{name:'F. Conti', role:'Responsabile Recensioni Casinò'}],
+};
+function authorFor(kind, seed){
+  const list = authors[market];
+  return list[seed % list.length];
+}
+
+/* ---------- Operator extras: safety index, verification, last updated, user reviews ---------- */
+const operatorExtras = {
+  northline: {safety:8.9, verified:true, updated:'3 Jul 2026', reviews:[
+    {user:'DaveM_UK', rating:5, date:'28 Jun 2026', text:'Withdrawals really do land same-day. Been with them 6 months, no issues.'},
+    {user:'punter_kate', rating:4, date:'14 Jun 2026', text:'Good odds on in-play football. Support took a while to reply once but sorted it.'},
+  ]},
+  vantage: {safety:8.2, verified:true, updated:'29 Jun 2026', reviews:[
+    {user:'mobile_first_bettor', rating:5, date:'20 Jun 2026', text:'Best app I have used for cash-out speed. KYC took 3 days though.'},
+  ]},
+  ember: {safety:7.8, verified:false, updated:'18 Jun 2026', reviews:[
+    {user:'accaboy', rating:4, date:'10 Jun 2026', text:'Acca insurance paid out as described. Wish they took Skrill.'},
+  ]},
+  punters: {safety:7.4, verified:false, updated:'22 Jun 2026', reviews:[
+    {user:'newtogambling', rating:4, date:'5 Jun 2026', text:'Good for a first account, no deposit bonus was genuinely free.'},
+  ]},
+  cielo: {safety:8.6, verified:true, updated:'2 Jul 2026', reviews:[
+    {user:'marco_scommesse', rating:5, date:'25 Jun 2026', text:'Ottima copertura Serie A, prelievi puntuali entro 3 giorni.'},
+  ]},
+  ferro: {safety:7.6, verified:false, updated:'15 Jun 2026', reviews:[
+    {user:'giulia_bet', rating:3, date:'8 Jun 2026', text:'Statistiche ottime ma il prelievo ha impiegato 5 giorni.'},
+  ]},
+  lira: {safety:7.9, verified:true, updated:'19 Jun 2026', reviews:[
+    {user:'paolo_r', rating:4, date:'11 Jun 2026', text:'Cashback accreditato puntualmente ogni mese, app migliorabile.'},
+  ]},
+  goldenreel: {safety:9.1, verified:true, updated:'4 Jul 2026', reviews:[
+    {user:'slotsfan22', rating:5, date:'29 Jun 2026', text:'Incredible game selection, withdrew £400 in under a day.'},
+    {user:'careful_carla', rating:4, date:'16 Jun 2026', text:'Great library, wish there was a phone line for support.'},
+  ]},
+  novacasino: {safety:8.3, verified:true, updated:'27 Jun 2026', reviews:[
+    {user:'tourney_tim', rating:5, date:'21 Jun 2026', text:'Won £120 in the weekly slot race, paid out with no fuss.'},
+  ]},
+  vaultcasino: {safety:7.7, verified:false, updated:'13 Jun 2026', reviews:[
+    {user:'loyalplayer', rating:4, date:'7 Jun 2026', text:'VIP manager actually responds. Smaller game range though.'},
+  ]},
+  auroracasino: {safety:8.5, verified:true, updated:'1 Jul 2026', reviews:[
+    {user:'sara_gioca', rating:5, date:'24 Jun 2026', text:'Torneo settimanale molto divertente, app velocissima.'},
+  ]},
+  fortunapalace: {safety:7.5, verified:false, updated:'9 Jun 2026', reviews:[
+    {user:'live_casino_fan', rating:4, date:'2 Jun 2026', text:'Ottimo casinò live, assistenza solo di giorno è un limite.'},
+  ]},
+};
+
+/* ---------- Complaints Center ---------- */
+const complaints = [
+  {id:'BB-2026-114', operator:'Ferro Bet', subject:'Withdrawal delayed beyond stated timeframe', status:'Resolved', date:'20 Jun 2026'},
+  {id:'BB-2026-121', operator:'Fortuna Palace', subject:'Support unresponsive outside office hours', status:'Open', date:'1 Jul 2026'},
+  {id:'BB-2026-108', operator:'Diamond Vault', subject:'Bonus wagering requirement disputed', status:'Resolved', date:'12 Jun 2026'},
+  {id:'BB-2026-127', operator:'Ember & Odds', subject:'Account verification taking longer than expected', status:'Open', date:'6 Jul 2026'},
+  {id:'BB-2026-099', operator:'Punters Reserve', subject:'Stake limit applied without notice', status:'Rejected', date:'29 May 2026'},
+];
+const complaintStatuses = ['All','Open','Resolved','Rejected'];
+
+/* ---------- Glossary ---------- */
+const glossary = [
+  ['RTP (Return to Player)','The theoretical percentage of wagered money a game returns to players over the long run.'],
+  ['Wagering requirement','How many times bonus funds (or bonus+deposit) must be bet before a withdrawal is allowed.'],
+  ['CPA','Cost Per Acquisition — a fixed affiliate payment per qualifying new depositor.'],
+  ['RevShare','Revenue Share — an ongoing percentage of the net losses of a referred player, paid to the affiliate.'],
+  ['FTD','First Time Deposit — the first real-money deposit a new player makes.'],
+  ['KYC','Know Your Customer — identity verification required before withdrawals.'],
+  ['Negative carryover','A RevShare condition where a losing month for the operator can be carried forward against future affiliate earnings.'],
+  ['Safety Index','The independent trust score used across Before Bet, separate from the star rating — see "How We Rate".'],
+];
+
+/* ============================================================
+   NAV
+   ============================================================ */
+function go(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('#mainnav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  closeMobileNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('#mainnav button, #mobileNav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
+
+function toggleMobileNav(){ document.getElementById('mobileDrawer').classList.toggle('open'); }
+function closeMobileNav(){ document.getElementById('mobileDrawer').classList.remove('open'); }
+
+document.querySelectorAll('#marketToggle button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    market=b.dataset.market;
+    activePaymentFilter='All'; activeGameFilter='All'; activeBonusFilter='All';
+    document.querySelectorAll('#marketToggle button').forEach(x=>x.classList.toggle('active',x===b));
+    renderAll();
+    if(market==='IT'){
+      document.getElementById('agegate-copy').textContent='Questo sito contiene informazioni su operatori di gioco autorizzati ADM. Accesso consentito solo ai maggiorenni.';
+      document.getElementById('agegate').classList.add('show');
+    }
+  });
+});
+
+/* ---------- search ---------- */
+function openSearch(){ document.getElementById('searchOverlay').classList.add('show'); document.getElementById('searchInput').value=''; document.getElementById('searchResults').innerHTML=''; setTimeout(()=>document.getElementById('searchInput').focus(),50); }
+function closeSearch(){ document.getElementById('searchOverlay').classList.remove('show'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); } });
+function runSearch(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const box = document.getElementById('searchResults');
+  if(!q){ box.innerHTML=''; return; }
+  const res=[];
+  bookmakers.filter(b=>b.market===market).forEach(b=>{ if(b.name.toLowerCase().includes(q)) res.push({l:b.name,t:'Bookmaker',a:()=>openOperatorPage('bk',b.id)}); });
+  casinos.filter(c=>c.market===market).forEach(c=>{ if(c.name.toLowerCase().includes(q)) res.push({l:c.name,t:'Casino',a:()=>openOperatorPage('casino',c.id)}); });
+  newsPosts[market].forEach(p=>{ if(p.title.toLowerCase().includes(q)) res.push({l:p.title,t:'News',a:()=>go('guides')}); });
+  box.innerHTML = res.length ? res.slice(0,8).map((r,i)=>`<div class="sres-row" onclick="searchClick(${i})"><span>${r.l}</span><span class="t">${r.t}</span></div>`).join('') : `<div class="sres-row">No matches</div>`;
+  window._sres = res;
+}
+function searchClick(i){ closeSearch(); window._sres[i].a(); }
+
+/* ---------- legal / apply modals ---------- */
+function openLegal(k){
+  const c = legalContent[k];
+  document.getElementById('legalModalContent').innerHTML = `<button class="modal-close" onclick="closeLegal()">&times;</button><h3>${c.title}</h3><p style="color:var(--faint);font-size:11px;margin:2px 0 12px;">Last updated 1 Jul 2026</p><p style="font-size:12.5px;color:var(--dim);line-height:1.7;">${c.body.replace(/\n/g,'<br>')}</p>`;
+  document.getElementById('legalModal').classList.add('show');
+}
+function closeLegal(){ document.getElementById('legalModal').classList.remove('show'); }
+
+function openGlossary(){
+  document.getElementById('glossaryModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeGlossary()">&times;</button>
+    <h3>Glossary</h3>
+    <p style="color:var(--faint);font-size:11px;margin:2px 0 12px;">Common terms used across our reviews</p>
+    <div>${glossary.map(g=>`<div class="glossary-item"><div class="glossary-term">${g[0]}</div><div class="glossary-def">${g[1]}</div></div>`).join('')}</div>
+  `;
+  document.getElementById('glossaryModal').classList.add('show');
+}
+function closeGlossary(){ document.getElementById('glossaryModal').classList.remove('show'); }
+
+function openWriteReview(kind,id){
+  document.getElementById('reviewModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+    <h3>Write a review</h3>
+    <p style="color:var(--faint);font-size:12px;margin-bottom:14px;">Reviews are moderated before publishing to keep them genuine.</p>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px;">
+      <input placeholder="Display name" style="padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);">
+      <select style="padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);">
+        <option>5 stars</option><option>4 stars</option><option>3 stars</option><option>2 stars</option><option>1 star</option>
+      </select>
+      <textarea placeholder="Your experience with this operator…" rows="4" style="padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-family:inherit;resize:vertical;"></textarea>
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="submitReview('${kind}','${id}')">Submit for moderation</button>`;
+  document.getElementById('reviewModal').classList.add('show');
+}
+function closeReviewModal(){ document.getElementById('reviewModal').classList.remove('show'); }
+function submitReview(kind,id){
+  document.getElementById('reviewModalContent').innerHTML = `<button class="modal-close" onclick="closeReviewModal()">&times;</button><h3>Thanks — received</h3><p style="color:var(--dim);font-size:13px;">Simulated submission. In production this would enter a moderation queue before appearing publicly.</p>`;
+}
+
+function submitNewsletter(){
+  const email = document.getElementById('newsletterEmail').value.trim();
+  const box = document.querySelector('.newsletter-form');
+  if(!email || !email.includes('@')){ document.getElementById('newsletterEmail').style.borderColor='var(--red)'; return; }
+  box.innerHTML = `<span style="color:var(--green);font-size:13px;font-weight:600;">✓ Subscribed — check your inbox to confirm.</span>`;
+}
+function openApply(){
+  document.getElementById('applyModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeApply()">&times;</button>
+    <h3>Apply as a partner</h3>
+    <p style="color:var(--faint);font-size:12px;margin-bottom:14px;">KYC review typically completes within 48h.</p>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px;">
+      <input placeholder="Company / publisher name" style="padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);">
+      <input placeholder="Contact email" style="padding:9px 11px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);">
+      <div style="border:1px dashed var(--line);border-radius:6px;padding:14px;text-align:center;font-size:11.5px;color:var(--faint);">Drop KYC document here</div>
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="submitApply()">Submit application</button>`;
+  document.getElementById('applyModal').classList.add('show');
+}
+function closeApply(){ document.getElementById('applyModal').classList.remove('show'); }
+function submitApply(){
+  document.getElementById('applyModalContent').innerHTML = `<button class="modal-close" onclick="closeApply()">&times;</button><h3>Application received</h3><p style="color:var(--dim);font-size:13px;">This would create a partner record with status "KYC pending" for the affiliate manager to review.</p>`;
+}
+
+/* ============================================================
+   OPERATOR (bookmaker + casino share the same list/modal renderer)
+   ============================================================ */
+function opRowHtml(o, kind){
+  const featuredTag = o.featured ? `<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>` : '';
+  return `
+  <div class="op-row">
+    <div class="op-mark">${o.mark}</div>
+    <div class="op-name-wrap">
+      <div class="op-name-row"><span class="op-name">${o.name}</span>${featuredTag}</div>
+      <div class="op-license">${o.license}</div>
+    </div>
+    <div class="op-rating">★ ${o.rating} <span class="max">/5</span></div>
+    <div class="op-bonus">${o.bonus}</div>
+    <div class="op-actions">
+      <button class="btn btn-line" onclick="openOperatorPage('${kind}','${o.id}')">Review</button>
+      <button class="btn btn-gold" onclick="simulateClick('${o.id}')">${market==='UK'?'Claim':'Vedi'}</button>
+    </div>
+  </div>`;
+}
+
+function subratingLabels(kind){
+  return kind==='casino'
+    ? [['games','Games'],['support','Support'],['payments','Payments'],['mobile','Mobile']]
+    : [['odds','Odds & Markets'],['support','Support'],['payments','Payments'],['mobile','Mobile']];
+}
+
+function openOperatorPage(kind, id){
+  const list = kind==='casino' ? casinos : bookmakers;
+  const o = list.find(x=>x.id===id);
+  const backView = kind==='casino' ? 'casino' : 'bookmakers';
+  document.getElementById('opBackLink').setAttribute('onclick', `go('${backView}')`);
+  document.getElementById('opBackLink').textContent = `← Back to ${kind==='casino'?'Casino':'Bookmakers'}`;
+
+  const extras = operatorExtras[o.id] || {safety:8.0, verified:false, updated:'—', reviews:[]};
+  const author = authorFor(kind, o.id.length);
+  const safetyClass = extras.safety >= 8.3 ? 'high' : 'mid';
+
+  const subs = subratingLabels(kind).map(([key,label])=>{
+    const val = o.sub ? o.sub[key] : 4.0;
+    return `<div class="subrating-row">
+      <span class="subrating-label">${label}</span>
+      <div class="subrating-bar-wrap"><div class="subrating-bar" style="width:${(val/5*100).toFixed(0)}%;"></div></div>
+      <span class="subrating-val">${val}</span>
+    </div>`;
+  }).join('');
+
+  const reviewParas = (o.review||[]).map(p=>`<p>${p}</p>`).join('');
+  const faqHtml = (o.faq||[]).map((f,i)=>`
+    <div class="faq-item" id="faq-${o.id}-${i}">
+      <div class="faq-q" onclick="toggleFaq('${o.id}',${i})"><span>${f[0]}</span><span class="arrow">+</span></div>
+      <div class="faq-a">${f[1]}</div>
+    </div>`).join('');
+
+  const userReviewsHtml = extras.reviews.length ? extras.reviews.map(r=>`
+    <div class="ureview-card">
+      <div class="ureview-top"><span class="ureview-user">${r.user}</span><span class="ureview-rating">★ ${r.rating}/5</span></div>
+      <div class="ureview-date">${r.date}</div>
+      <div class="ureview-text" style="margin-top:4px;">${r.text}</div>
+    </div>`).join('') : `<p style="font-size:12px;color:var(--faint);">No player reviews yet — be the first.</p>`;
+
+  const similar = list.filter(x=>x.id!==o.id && x.market===o.market).slice(0,3).map(x=>`
+    <div class="similar-item" onclick="openOperatorPage('${kind}','${x.id}')">
+      <span class="similar-name">${x.name}</span><span class="similar-rating">★ ${x.rating}</span>
+    </div>`).join('');
+
+  const extraDetail = kind==='casino' ? `<div class="detail-cell"><div class="k">Games</div><div class="v">${o.games}</div></div>` : `<div class="detail-cell"><div class="k">Support</div><div class="v">${o.supportHours||'Live chat'}</div></div>`;
+
+  document.getElementById('opPageContent').innerHTML = `
+    <div class="op-page-head">
+      <div style="display:flex;gap:16px;">
+        <div class="op-page-mark">${o.mark}</div>
+        <div>
+          <div class="op-page-title"><h1>${o.name}</h1>${o.featured?`<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>`:''}${extras.verified?`<span class="verified-badge" title="License and terms independently verified by our editorial team">✓ Verified</span>`:''}</div>
+          <div class="op-page-sub">${o.license} · ${market==='UK'?'Reviewed for the UK market':'Recensito per il mercato italiano'}</div>
+          <div class="op-author" style="margin-top:6px;">Reviewed by <b>${author.name}</b>, ${author.role} · <span class="op-updated">Last updated ${extras.updated}</span></div>
+        </div>
+      </div>
+      <div class="op-page-score"><div class="n">${o.rating}</div><div class="l">out of 5</div></div>
+    </div>
+
+    <div class="op-page-grid">
+      <div>
+        <div class="safety-box">
+          <div class="safety-ring ${safetyClass}">${extras.safety}</div>
+          <div>
+            <div class="safety-label">Safety Index</div>
+            <div class="safety-desc">Independent trust score — license standing, payout consistency and complaint history. Separate from the star rating above. <button onclick="openLegal('methodology')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">How we calculate this</button></div>
+          </div>
+        </div>
+
+        <div class="verdict-box">
+          <div class="k">${o.bonus}</div>
+          <div style="font-size:12.5px;color:var(--dim);">${market==='UK' ? '18+ BeGambleAware.org. Terms apply.' : 'Vietato ai minori. Operatore concessionario ADM.'}</div>
+        </div>
+
+        <h3 style="font-family:var(--serif);font-size:16px;margin:0 0 12px;">Our review</h3>
+        <div class="review-text">${reviewParas}</div>
+
+        <div class="pc-list" style="margin-top:6px;">
+          <div class="pc-col pro">${o.pros.map(p=>`<div>${p}</div>`).join('')}</div>
+          <div class="pc-col con">${o.cons.map(c=>`<div>${c}</div>`).join('')}</div>
+        </div>
+
+        <h3 style="font-family:var(--serif);font-size:16px;margin:28px 0 4px;">Frequently asked questions</h3>
+        <div>${faqHtml}</div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:28px 0 4px;">
+          <h3 style="font-family:var(--serif);font-size:16px;margin:0;">Player reviews (${extras.reviews.length})</h3>
+          <button class="btn btn-line" style="padding:7px 13px;font-size:12px;" onclick="openWriteReview('${kind}','${o.id}')">Write a review</button>
+        </div>
+        <div>${userReviewsHtml}</div>
+      </div>
+
+      <div>
+        <div class="sidebar-box">
+          <h4>Rated on</h4>
+          ${subs}
+        </div>
+        <div class="sidebar-box">
+          <h4>Quick facts</h4>
+          <div class="detail-grid" style="grid-template-columns:1fr;">
+            <div class="detail-cell"><div class="k">Min deposit</div><div class="v">${o.minDeposit}</div></div>
+            <div class="detail-cell"><div class="k">Withdrawal time</div><div class="v">${o.withdrawalTime}</div></div>
+            ${extraDetail}
+            <div class="detail-cell"><div class="k">Currencies</div><div class="v">${(o.currencies||[market==='UK'?'GBP':'EUR']).join(', ')}</div></div>
+          </div>
+          <div class="tag-row">${o.payments.map(p=>`<span class="tag">${p}</span>`).join('')}</div>
+        </div>
+        <div class="sidebar-box">
+          <h4>Similar operators</h4>
+          ${similar || '<p style="font-size:12px;color:var(--faint);">No other entries for this market yet.</p>'}
+        </div>
+        <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${o.id}')">${market==='UK'?'Claim Bonus':'Vedi Offerta'}</button>
+      </div>
+    </div>
+  `;
+  go('operator');
+}
+function toggleFaq(id,i){
+  document.getElementById(`faq-${id}-${i}`).classList.toggle('open');
+}
+
+function closeOpModal(){ /* legacy no-op: modal replaced by full operator page */ }
+function simulateClick(id){
+  closeOpModal();
+  alert('Simulated affiliate redirect →\n/go/'+id+'?sub_id=demo&mkt='+market.toLowerCase()+'\n\nLogs the click, tags sub-ID, checks geo-eligibility, then redirects.');
+}
+
+function renderBookmakers(){
+  const list = bookmakers.filter(b=>b.market===market);
+  document.getElementById('homeBkList').innerHTML = list.slice(0,3).map(b=>opRowHtml(b,'bk')).join('');
+  document.getElementById('bkList').innerHTML = list.map(b=>opRowHtml(b,'bk')).join('');
+}
+
+/* ---------- Casino ---------- */
+let activePaymentFilter='All', activeGameFilter='All', activeBonusFilter='All';
+function renderCasinos(){
+  const list0 = casinos.filter(c=>c.market===market);
+  document.getElementById('homeCasinoList').innerHTML = list0.slice(0,3).map(c=>opRowHtml(c,'casino')).join('');
+
+  const allPay = ['All', ...new Set(list0.flatMap(c=>c.payments))];
+  document.getElementById('paymentChipRow').innerHTML = allPay.map(p=>`<button class="chip ${p===activePaymentFilter?'active':''}" onclick="setPaymentFilter('${p}')">${p}</button>`).join('');
+  const filtered = list0.filter(c=>activePaymentFilter==='All'||c.payments.includes(activePaymentFilter));
+  document.getElementById('casinoList').innerHTML = filtered.length ? filtered.map(c=>opRowHtml(c,'casino')).join('') : `<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos match this filter.</p>`;
+}
+function setPaymentFilter(p){ activePaymentFilter=p; renderCasinos(); }
+
+function renderGames(){
+  const cats=['All',...gameCategories];
+  document.getElementById('gameChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeGameFilter?'active':''}" onclick="setGameFilter('${c}')">${c}</button>`).join('');
+  const filtered = activeGameFilter==='All'?games:games.filter(g=>g.cat===activeGameFilter);
+  document.getElementById('gameGrid').innerHTML = filtered.map(g=>`<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;"><div class="game-name">${g.name}</div><div class="game-meta"><span>${g.provider}</span><span>RTP ${g.rtp}%</span></div></div>`).join('');
+}
+function setGameFilter(c){ activeGameFilter=c; renderGames(); }
+
+function renderTournaments(){
+  const filtered = tournaments.filter(t=>{ const c=casinos.find(x=>x.name===t.casino); return c && c.market===market; });
+  document.getElementById('tournamentList').innerHTML = filtered.length ? filtered.map(t=>`
+    <div class="tourn-row">
+      <div><div class="tourn-name">${t.name}</div><div class="tourn-sub">${t.casino} · min stake ${t.minStake} · ends in ${t.endsInHrs}h</div></div>
+      <div class="tourn-stats">
+        <div class="tourn-stat"><div class="v">${t.prize}</div><div class="l">Prize</div></div>
+        <div class="tourn-stat"><div class="v">${t.entrants}</div><div class="l">Entrants</div></div>
+        <button class="btn btn-gold" onclick="simulateClick('${(casinos.find(x=>x.name===t.casino)||{}).id||''}')">Join</button>
+      </div>
+    </div>`).join('') : `<p style="color:var(--faint);font-size:13px;">No active tournaments for this market.</p>`;
+}
+
+/* ---------- Providers: directory + dedicated page ---------- */
+function renderProviders(){
+  const counts = {};
+  games.forEach(g=>{ counts[g.provider] = (counts[g.provider]||0)+1; });
+  document.getElementById('providerGrid').innerHTML = Object.keys(counts).sort().map(p=>
+    `<div class="provider-chip" onclick="openProviderPage('${p.replace(/'/g,"\\'")}')">${p}<span class="cnt">${counts[p]} games</span></div>`
+  ).join('');
+}
+
+function openProviderPage(provider){
+  const list = games.filter(g=>g.provider===provider);
+  const allProviders = Object.keys(providerInfo).sort();
+  const idx = allProviders.indexOf(provider);
+  const prevP = allProviders[(idx-1+allProviders.length)%allProviders.length];
+  const nextP = allProviders[(idx+1)%allProviders.length];
+
+  document.getElementById('providerPageContent').innerHTML = `
+    <div class="op-page-head">
+      <div>
+        <div class="op-page-title"><h1>${provider}</h1></div>
+        <div class="op-page-sub">${list.length} games listed · Software provider</div>
+      </div>
+    </div>
+    <div class="review-text" style="max-width:640px;"><p>${providerInfo[provider] || 'Software provider featured across our listed casinos.'}</p></div>
+
+    <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">Games from ${provider}</h3>
+    <div class="game-grid">${list.map(g=>`<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;"><div class="game-name">${g.name}</div><div class="game-meta"><span>${g.cat}</span><span>RTP ${g.rtp}%</span></div></div>`).join('')}</div>
+
+    <div class="compare-picker" style="margin-top:30px;justify-content:space-between;">
+      <button class="btn btn-line" onclick="openProviderPage('${prevP.replace(/'/g,"\\'")}')">← ${prevP}</button>
+      <button class="btn btn-line" onclick="openProviderPage('${nextP.replace(/'/g,"\\'")}')">${nextP} →</button>
+    </div>
+  `;
+  go('provider');
+}
+
+/* ---------- Game detail page ---------- */
+function openGamePage(id){
+  const g = games.find(x=>x.id===id);
+  const sameCat = games.filter(x=>x.cat===g.cat && x.id!==g.id);
+  const sameProvider = games.filter(x=>x.provider===g.provider && x.id!==g.id);
+  document.getElementById('gameBackLink').setAttribute('onclick', `openProviderPage('${g.provider.replace(/'/g,"\\'")}')`);
+  document.getElementById('gameBackLink').textContent = `← Back to ${g.provider}`;
+
+  const casinosWithGame = casinos.filter(c=>c.market===market).slice(0,2);
+
+  document.getElementById('gamePageContent').innerHTML = `
+    <div class="op-page-head">
+      <div>
+        <div class="op-page-title"><h1>${g.name}</h1></div>
+        <div class="op-page-sub">${g.cat} · <span onclick="openProviderPage('${g.provider.replace(/'/g,"\\'")}')" style="text-decoration:underline;cursor:pointer;color:var(--gold);">${g.provider}</span> · Theme: ${g.theme}</div>
+      </div>
+      <div class="op-page-score"><div class="n">${g.rtp}%</div><div class="l">RTP</div></div>
+    </div>
+
+    <div class="op-page-grid">
+      <div>
+        <div class="review-text"><p>${g.desc}</p></div>
+        <button class="btn btn-gold" onclick="alert('Simulated demo launch — in production this opens a free-play version of ${g.name.replace(/'/g,"\\'")} in-browser, no deposit required.')">Play Demo</button>
+
+        <h3 style="font-family:var(--serif);font-size:16px;margin:28px 0 12px;">Play this game at</h3>
+        <div class="op-list">${casinosWithGame.map(c=>opRowHtml(c,'casino')).join('') || '<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos listed for this market yet.</p>'}</div>
+      </div>
+      <div>
+        <div class="sidebar-box">
+          <h4>More ${g.cat}</h4>
+          ${sameCat.length ? sameCat.slice(0,4).map(x=>`<div class="similar-item" onclick="openGamePage('${x.id}')"><span class="similar-name">${x.name}</span><span class="similar-rating">RTP ${x.rtp}%</span></div>`).join('') : '<p style="font-size:12px;color:var(--faint);">No other games in this category yet.</p>'}
+        </div>
+        <div class="sidebar-box">
+          <h4>More from ${g.provider}</h4>
+          ${sameProvider.length ? sameProvider.slice(0,4).map(x=>`<div class="similar-item" onclick="openGamePage('${x.id}')"><span class="similar-name">${x.name}</span><span class="similar-rating">RTP ${x.rtp}%</span></div>`).join('') : '<p style="font-size:12px;color:var(--faint);">No other games from this provider yet.</p>'}
+        </div>
+      </div>
+    </div>
+  `;
+  go('game');
+}
+
+
+/* ---------- Head-to-head compare ---------- */
+function initCompare(){
+  const list = bookmakers.filter(b=>b.market===market);
+  const opts = list.map(b=>`<option value="${b.id}">${b.name}</option>`).join('');
+  document.getElementById('cmpA').innerHTML = opts;
+  document.getElementById('cmpB').innerHTML = opts;
+  if(list[1]) document.getElementById('cmpB').value = list[1].id;
+  renderCompare();
+}
+function renderCompare(){
+  const a = bookmakers.find(x=>x.id===document.getElementById('cmpA').value);
+  const b = bookmakers.find(x=>x.id===document.getElementById('cmpB').value);
+  if(!a||!b) return;
+  const rows = [
+    ['Rating', a.rating, b.rating, true],
+    ['Welcome offer', a.bonus, b.bonus, false],
+    ['Min deposit', a.minDeposit, b.minDeposit, false],
+    ['Withdrawal time', a.withdrawalTime, b.withdrawalTime, false],
+    ['Payment methods', a.payments.join(', '), b.payments.join(', '), false],
+    ['Safety Index', (operatorExtras[a.id]||{}).safety||'—', (operatorExtras[b.id]||{}).safety||'—', true],
+  ];
+  document.getElementById('compareTbody').innerHTML = rows.map(r=>{
+    const numeric = r[3];
+    const aWin = numeric && parseFloat(r[1]) > parseFloat(r[2]);
+    const bWin = numeric && parseFloat(r[2]) > parseFloat(r[1]);
+    return `<tr><td style="color:var(--faint);width:150px;">${r[0]}</td><td class="${aWin?'compare-winner':''}">${r[1]}</td><td class="${bWin?'compare-winner':''}">${r[2]}</td></tr>`;
+  }).join('');
+}
+
+/* ---------- Complaints Center ---------- */
+let activeComplaintFilter='All';
+function renderComplaints(){
+  document.getElementById('complaintChipRow').innerHTML = complaintStatuses.map(s=>
+    `<button class="chip ${s===activeComplaintFilter?'active':''}" onclick="setComplaintFilter('${s}')">${s}</button>`).join('');
+  const list = complaints.filter(c=>activeComplaintFilter==='All'||c.status===activeComplaintFilter);
+  document.getElementById('complaintList').innerHTML = list.map(c=>`
+    <div class="complaint-row">
+      <span style="color:var(--faint);font-family:monospace;font-size:11px;">${c.id}</span>
+      <span>${c.subject}</span>
+      <span>${c.operator}</span>
+      <span style="color:var(--faint);">${c.date}</span>
+      <span class="cstatus ${c.status.toLowerCase()}">${c.status}</span>
+    </div>`).join('');
+}
+function setComplaintFilter(s){ activeComplaintFilter=s; renderComplaints(); }
+
+document.querySelectorAll('#casinoSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#casinoSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.ctab;
+  document.getElementById('ctab-casinos').style.display=t==='casinos'?'block':'none';
+  document.getElementById('ctab-games').style.display=t==='games'?'block':'none';
+  document.getElementById('ctab-providers').style.display=t==='providers'?'block':'none';
+  document.getElementById('ctab-tournaments').style.display=t==='tournaments'?'block':'none';
+  if(t==='games') renderGames();
+  if(t==='providers') renderProviders();
+  if(t==='tournaments') renderTournaments();
+}));
+
+document.querySelectorAll('#bkSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#bkSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.btab;
+  document.getElementById('btab-reviews').style.display=t==='reviews'?'block':'none';
+  document.getElementById('btab-odds').style.display=t==='odds'?'block':'none';
+  document.getElementById('btab-headtohead').style.display=t==='headtohead'?'block':'none';
+  if(t==='headtohead') initCompare();
+}));
+
+/* ---------- Odds ---------- */
+function renderOdds(){
+  document.getElementById('oddsTbody').innerHTML = matches.map(m=>{
+    const best=Math.max(...m.odds);
+    return `<tr><td>${m.home} vs ${m.away}</td><td>${m.market}</td>${m.odds.map(o=>`<td class="${o===best?'best':''}">${o.toFixed(2)}</td>`).join('')}</tr>`;
+  }).join('');
+}
+
+/* ---------- Bonuses ---------- */
+function renderBonuses(){
+  const cats=['All',...bonusCats];
+  document.getElementById('bonusChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeBonusFilter?'active':''}" onclick="setBonusFilter('${c}')">${c}</button>`).join('');
+  const list = bonuses.filter(b=>b.market===market && (activeBonusFilter==='All'||b.cat===activeBonusFilter));
+  document.getElementById('bonusGrid').innerHTML = list.map(b=>`
+    <div class="bonus-card">
+      ${b.exclusive?`<span class="exclusive-tag">Before Bet Exclusive</span>`:''}
+      <span class="bonus-cat">${b.cat} · ${b.op}</span>
+      <div class="bonus-title">${b.title}</div>
+      <div class="bonus-meta"><span>Expires in <span class="exp">${b.expiresInHrs}h</span></span></div>
+      <div class="bonus-terms">${b.terms}</div>
+      ${b.exclusive?`<div class="promo-code">Code: <strong>${b.code}</strong></div>`:''}
+      <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${b.op.toLowerCase().replace(/[^a-z]/g,'')}')">${market==='UK'?'Claim':'Vedi'}</button>
+    </div>`).join('');
+}
+function setBonusFilter(c){ activeBonusFilter=c; renderBonuses(); }
+
+/* ---------- Guides & news ---------- */
+/* ---------- Community chat ---------- */
+function renderChatTopics(){
+  const list = chatTopics[market];
+  document.getElementById('chatTopicGrid').innerHTML = list.map(t=>`
+    <div class="chat-topic-card" onclick="openChatRoom('${t.id}')">
+      <div class="chat-topic-title">${t.name}</div>
+      <div class="chat-topic-desc">${t.desc}</div>
+      <div class="chat-online"><span class="dot"></span>${t.online} online</div>
+    </div>`).join('');
+}
+function openChatRoom(id){
+  activeChatTopic = chatTopics[market].find(t=>t.id===id);
+  document.getElementById('chatTopicView').style.display='none';
+  document.getElementById('chatRoomView').style.display='block';
+  document.getElementById('chatRoomTitle').textContent = activeChatTopic.name;
+  document.getElementById('chatRoomOnline').innerHTML = `● ${activeChatTopic.online} online now`;
+  renderChatLog();
+}
+function closeChatRoom(){
+  activeChatTopic = null;
+  document.getElementById('chatTopicView').style.display='block';
+  document.getElementById('chatRoomView').style.display='none';
+}
+function renderChatLog(){
+  const log = document.getElementById('chatLog');
+  log.innerHTML = activeChatTopic.messages.map(m=>`
+    <div class="chat-msg">
+      <div class="chat-msg-top"><span class="chat-msg-user ${m[0]==='You'?'me':''}">${m[0]}</span><span class="chat-msg-time">${m[1]}</span></div>
+      <div class="chat-msg-text">${m[2]}</div>
+    </div>`).join('');
+  log.scrollTop = log.scrollHeight;
+}
+function sendChatMessage(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text || !activeChatTopic) return;
+  activeChatTopic.messages.push(['You','now', text.replace(/</g,'&lt;')]);
+  input.value='';
+  renderChatLog();
+}
+
+function renderGuides(){
+
+  document.getElementById('newsGrid').innerHTML = newsPosts[market].map(p=>`
+    <div class="news-card"><span class="news-cat">${p.cat}</span><div class="news-title">${p.title}</div><div class="news-desc">${p.desc}</div><div class="news-date">${p.date}</div></div>`).join('');
+  document.getElementById('tipsList').innerHTML = tips[market].map(t=>`
+    <div class="tip-row">
+      <div><div class="tip-sport">${t.sport}</div><div class="tip-match">${t.match}</div><div class="tip-pred">${t.pred}</div></div>
+      <div class="tip-conf-wrap"><div class="tip-conf-bar"><div class="tip-conf-fill" style="width:${t.confidence}%;"></div></div><span class="tip-conf-val">${t.confidence}%</span></div>
+    </div>`).join('');
+  document.getElementById('guideList').innerHTML = guides[market].map((g,i)=>`
+    <div class="guide-row"><div class="guide-num">${String(i+1).padStart(2,'0')}</div><div><div class="guide-title">${g.title}</div><div class="guide-desc">${g.desc}</div></div></div>`).join('');
+}
+
+/* ---------- Partners ---------- */
+function renderPartners(){
+  const sorted=[...partners].sort((a,b)=>b.revenue-a.revenue);
+  document.getElementById('partnerLeaderboard').innerHTML = sorted.map((p,i)=>`
+    <div class="lead-row">
+      <div class="rank ${i===0?'r1':''}">${i+1}</div>
+      <div class="partner-name-cell"><div class="partner-avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div>${p.name}<div><span class="kyc ${p.kyc?'ok':''}">${p.kyc?'KYC verified':'KYC pending'}</span></div></div></div>
+      <span>${p.clicks.toLocaleString()}</span><span>${p.ftds}</span><span style="color:var(--gold);font-weight:700;">€${p.epc}</span><span style="font-weight:700;">€${p.revenue.toLocaleString()}</span>
+    </div>`).join('');
+}
+function renderBanners(){
+  document.getElementById('bannerGrid').innerHTML = banners.map(b=>`
+    <div><div class="banner-mock" style="height:120px;background:linear-gradient(135deg,${b.c1},${b.c2});"><span class="bt">${b.brand}</span><span class="bs">${b.copy}</span></div>
+    <div class="banner-foot"><span>${b.size}</span><button onclick="alert('Simulated download — sub-ID auto-embedded.')">Download</button></div></div>`).join('');
+}
+function renderDashboard(){
+  document.getElementById('dashKpiGrid').innerHTML = [['€4,224','Revenue (30d)'],['18,420','Clicks'],['612','FTDs'],['€6.90','EPC']].map(k=>`<div class="kpi-box"><div class="num">${k[0]}</div><div class="lbl">${k[1]}</div></div>`).join('');
+  document.getElementById('myLinksTbody').innerHTML = myLinks.map(l=>`<tr><td>${l.op}</td><td style="font-family:monospace;font-size:11px;color:var(--faint);">/go/${l.op.toLowerCase().replace(/[^a-z]/g,'')}?sub_id=marko</td><td>${l.clicks.toLocaleString()}</td><td>${l.ftds}</td></tr>`).join('');
+  document.getElementById('invoiceList').innerHTML = invoices.map(i=>`<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px;"><span>${i.id} · ${i.period}</span><span><strong>€${i.amount.toLocaleString()}</strong> <span class="pill ${i.status==='Paid'?'ok':'wait'}">${i.status}</span></span></div>`).join('');
+}
+document.querySelectorAll('#partnerSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#partnerSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.ptab;
+  document.getElementById('ptab-program').style.display=t==='program'?'block':'none';
+  document.getElementById('ptab-leaderboard').style.display=t==='leaderboard'?'block':'none';
+  document.getElementById('ptab-dashboard').style.display=t==='dashboard'?'block':'none';
+  if(t==='dashboard') renderDashboard();
+}));
+
+/* ---------- Admin ---------- */
+document.querySelectorAll('#adminTopTabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#adminTopTabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.atab;
+  document.getElementById('atab-cms').style.display=t==='cms'?'block':'none';
+  document.getElementById('atab-analytics').style.display=t==='analytics'?'block':'none';
+  if(t==='analytics') renderAnalytics();
+}));
+const cmsPanels = {
+  operators: ()=>`<div class="admin-toolbar"><h3>Operator profiles</h3><button class="btn btn-gold">+ New</button></div>
+    <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Commercial deal terms below are internal only — never shown on public pages.</p>
+    ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">${o.name}</div><div class="m">${o.license} · ${o.market} · <span style="color:var(--gold);">${o.cpa||o.deal||'—'}</span> (internal)</div></div><span class="pill ok">Published</span></div>`).join('')}`,
+  bonuses: ()=>`<div class="admin-toolbar"><h3>Bonuses</h3><button class="btn btn-gold">+ New</button></div>
+    ${bonuses.map((b,i)=>`<div class="admin-row"><div><div class="n">${b.title}</div><div class="m">${b.op} · auto-expires in ${b.expiresInHrs}h</div></div><span class="pill ${i%3===0?'wait':'ok'}">${i%3===0?'Scheduled':'Published'}</span></div>`).join('')}`,
+  links: ()=>`<div class="admin-toolbar"><h3>Links &amp; redirects</h3></div>
+    ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">/go/${o.id}</div><div class="m">Geo: ${o.market} only · sub-ID passthrough</div></div><span class="pill ok">Active</span></div>`).join('')}`,
+  postbacks: ()=>`<div class="admin-toolbar"><h3>Postbacks (server-to-server)</h3></div>
+    ${[
+      ['Northline','FTD','sub_id=marko_petrovic','€25.00','2 min ago'],
+      ['Golden Reel Casino','Registration','sub_id=oddsdaily_blog','—','6 min ago'],
+      ['Cielo Bet','FTD','sub_id=calcio_analytics_it','€18.50','14 min ago'],
+    ].map(r=>`<div class="admin-row"><div><div class="n">${r[0]} — ${r[1]}</div><div class="m">${r[2]} · received ${r[4]}</div></div><span class="pill ok">${r[3]==='—'?'Logged':r[3]}</span></div>`).join('')}
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Each postback is matched to the original click via sub-ID before revenue is credited to a partner.</p>`,
+  abtest: ()=>`<div class="admin-toolbar"><h3>A/B tests</h3><button class="btn btn-gold">+ New test</button></div>
+    ${[
+      {name:'Bookmaker card CTA copy', variants:[['"Claim"',4.8],['"Get Offer"',3.6],['"Play Now"',6.2]]},
+      {name:'Bonus card layout', variants:[['Countdown visible',5.4],['No countdown',3.9]]},
+    ].map(t=>{
+      const max=Math.max(...t.variants.map(v=>v[1]));
+      return `<div style="margin-bottom:18px;"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">${t.name}</div>
+        ${t.variants.map(v=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <span style="width:130px;font-size:12px;color:var(--dim);">${v[0]}</span>
+          <div style="flex:1;background:var(--panel);border-radius:5px;height:20px;overflow:hidden;"><div style="height:100%;background:${v[1]===max?'var(--green)':'var(--faint)'};width:${(v[1]/8*100).toFixed(0)}%;"></div></div>
+          <span style="width:40px;text-align:right;font-size:12px;">${v[1]}%</span>
+        </div>`).join('')}</div>`;
+    }).join('')}`,
+  seo: ()=>`<div class="admin-toolbar"><h3>SEO &amp; technical</h3></div>
+    ${[['sitemap.xml','214 URLs indexed, auto-regenerated on publish','ok'],['robots.txt','Disallows /admin, /partners/dashboard, /go/','ok'],['Schema markup — Review/Rating','Applied to all operator pages','ok'],['Hreflang (en-GB / it-IT)','Mapped to market switch','ok']].map(s=>`<div class="admin-row"><div><div class="n">${s[0]}</div><div class="m">${s[1]}</div></div><span class="pill ${s[2]}">Healthy</span></div>`).join('')}`,
+  placements: ()=>`<div class="admin-toolbar"><h3>Featured placements</h3><button class="btn btn-gold">+ New placement</button></div>
+    ${[...bookmakers,...casinos].filter(o=>o.featured).map(o=>`<div class="admin-row"><div><div class="n">${o.name}</div><div class="m">Paid placement · disclosed via "Partner" marker · rating unaffected</div></div><span class="pill wait">Active</span></div>`).join('')}
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Placements only affect list position — never the underlying rating. Every placement carries a visible (if discreet) "Partner" marker to stay compliant with UK ASA and Italian ADM disclosure rules.</p>`,
+  fraud: ()=>`<div class="admin-toolbar"><h3>Fraud &amp; quality</h3></div>
+    ${[['sub_id: fb_ads_2291','Click spike — 340 clicks in 4 min','wait'],['sub_id: telegram_promo_18','High volume, near-zero conversion','wait'],['sub_id: organic_seo','No anomalies','ok']].map(f=>`<div class="admin-row"><div class="n">${f[0]}</div><div style="display:flex;align-items:center;gap:10px;"><span class="m">${f[1]}</span><span class="pill ${f[2]}">${f[2]==='ok'?'Clean':'Flagged'}</span></div></div>`).join('')}`,
+  users: ()=>`<div class="admin-toolbar"><h3>Users &amp; roles</h3><button class="btn btn-gold">+ Invite</button></div>
+    ${[['Admin User','Admin'],['Editor One','Editor'],['Affiliate Manager','Affiliate Manager'],['Editor Two','Editor'],['Analyst User','Analyst (view-only)']].map(u=>`<div class="admin-row"><div class="n">${u[0]}</div><span class="pill off">${u[1]}</span></div>`).join('')}`,
+  audit: ()=>`<div class="admin-toolbar"><h3>Audit log</h3></div>
+    ${['08 Jul 2026, 14:12 — Admin updated Northline bonus copy','07 Jul 2026, 19:03 — System auto-unpublished expired offer','06 Jul 2026, 09:55 — Admin changed affiliate link for Vantage Bet'].map(l=>`<div class="admin-row"><div class="m">${l}</div></div>`).join('')}`
+};
+document.querySelectorAll('#cmsSide button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#cmsSide button').forEach(x=>x.classList.toggle('active',x===b));
+  document.getElementById('cmsMain').innerHTML = cmsPanels[b.dataset.panel]();
+}));
+
+function renderAnalytics(){
+  const ops = [...bookmakers,...casinos].filter(o=>o.market===market);
+  document.getElementById('kpiGrid').innerHTML = [['12,480','Clicks'],['3.8%','Click → Reg'],['41%','Reg → FTD'],['€6.85','Avg EPC']].map(k=>`<div class="kpi-box"><div class="num">${k[0]}</div><div class="lbl">${k[1]}</div></div>`).join('');
+  document.getElementById('epcTbody').innerHTML = ops.map(o=>`<tr><td>${o.name}</td><td style="color:var(--gold);font-weight:700;">€${(Math.random()*4+3).toFixed(2)}</td></tr>`).join('');
+  document.getElementById('cohortTbody').innerHTML = cohorts.map(c=>`<tr><td>${c.name}</td><td>${c.players}</td><td>${c.m1}</td><td>${c.m3}</td><td>${c.m6}</td><td class="best">${c.ltv}</td></tr>`).join('');
+}
+
+/* ---------- compliance ---------- */
+function renderCompliance(){
+  const strip=document.getElementById('complianceStrip');
+  const foot=document.getElementById('footCompliance');
+  if(market==='UK'){
+    strip.innerHTML = `<strong>18+</strong> Gamble responsibly — BeGambleAware.org. This page contains affiliate links.`;
+    foot.innerHTML = `18+. BeGambleAware.org. Contains affiliate links to UKGC-licensed operators.`;
+  } else {
+    strip.innerHTML = `<strong>Contenuto editoriale</strong> — operatori concessionari ADM. Vietato ai minori. Gioca con moderazione.`;
+    foot.innerHTML = `Vietato ai minori di 18 anni. Il gioco può causare dipendenza. Operatori concessionari ADM.`;
+  }
+}
+
+/* ---------- init ---------- */
+function renderAll(){
+  renderCompliance();
+  renderBookmakers();
+  renderCasinos();
+  renderBonuses();
+  renderGuides();
+  closeChatRoom();
+  renderChatTopics();
+}
+renderAll();
+renderOdds();
+renderPartners();
+renderBanners();
+renderComplaints();
+document.getElementById('cmsMain').innerHTML = cmsPanels.operators();
+setTimeout(()=>document.getElementById('cookieBanner').classList.add('show'), 800);
+</script>
+</body>
+</html>
