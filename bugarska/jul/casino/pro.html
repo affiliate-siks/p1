@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Casino Starter Pack — AdmiralBet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #060b1f;
+    --navy-2: #0d1740;
+    --gold: #ffd400;
+    --gold-2: #ffb800;
+    --red: #e2001a;
+    --blue: #1450d6;
+    --blue-2: #0a2b8f;
+    --cream: #f4efe2;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Poppins', Arial, sans-serif;
+    overflow: hidden;
+    background: #04070f;
+  }
+
+  body { position: relative; min-height: 100vh; }
+
+  /* ---------- LAYER 0: BACKGROUND VIDEO (blurred) ---------- */
+  .bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: blur(14px) saturate(1.15) brightness(0.7);
+    transform: scale(1.15);
+  }
+
+  /* dark + brand-color tint over the video so content pops */
+  .bg-tint {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(circle at 78% 12%, rgba(255,212,0,0.20), transparent 45%),
+      radial-gradient(circle at 10% 90%, rgba(226,0,26,0.22), transparent 45%),
+      linear-gradient(150deg, rgba(3,6,14,0.82) 0%, rgba(9,16,45,0.72) 45%, rgba(3,6,14,0.88) 100%);
+  }
+
+  .bg-speedlines {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.10;
+    background-image: repeating-linear-gradient(
+      115deg, rgba(255,212,0,0.9) 0px, rgba(255,212,0,0.9) 2px,
+      transparent 2px, transparent 60px
+    );
+  }
+
+  .bg-frame {
+    position: fixed;
+    inset: 8px;
+    z-index: 3;
+    border: 3px solid rgba(255,212,0,0.6);
+    border-radius: 20px;
+    box-shadow: inset 0 0 80px rgba(255,212,0,0.16), 0 0 60px rgba(0,0,0,0.8);
+    pointer-events: none;
+  }
+
+  .full-link {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+  }
+
+  /* ---------- FALLING COINS ---------- */
+  .coins-container {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .coin {
+    position: absolute;
+    top: -8%;
+    font-size: 1.6rem;
+    opacity: 0.5;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    animation-name: coinFall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+
+  @keyframes coinFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    8%   { opacity: 0.5; }
+    92%  { opacity: 0.5; }
+    100% { transform: translateY(115vh) rotate(340deg); opacity: 0; }
+  }
+
+  /* ---------- CONTENT PANEL ---------- */
+  .content-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 92%;
+    max-width: 620px;
+    z-index: 6;
+    text-align: center;
+    background: rgba(4, 8, 22, 0.58);
+    border: 1.5px solid rgba(255, 212, 0, 0.45);
+    border-radius: 26px;
+    padding: clamp(1.6rem, 4vw, 2.6rem) clamp(1.4rem, 5vw, 2.4rem);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: linear-gradient(180deg, var(--blue), var(--blue-2));
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(0.9rem, 2.4vw, 1.15rem);
+    letter-spacing: 1.5px;
+    padding: 0.5rem 1.4rem;
+    border-radius: 30px;
+    box-shadow: 0 8px 20px rgba(20,80,214,0.55);
+    margin-bottom: 1.4rem;
+    text-transform: uppercase;
+    animation: badgeFlash 1.6s infinite;
+  }
+  .badge::before { content: "🔥"; }
+
+  @keyframes badgeFlash {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.35); }
+  }
+
+  /* ---------- BOLD, HIGH-CONTRAST HEADLINE ---------- */
+  .headline-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.85;
+    letter-spacing: 1px;
+    font-size: clamp(4.2rem, 20vw, 8rem);
+    margin: 0;
+    color: var(--gold);
+    -webkit-text-stroke: 3px #1a1200;
+    text-shadow:
+      0 4px 0 #a87700,
+      0 10px 24px rgba(0,0,0,0.85),
+      0 0 45px rgba(255,212,0,0.75);
+  }
+
+  .headline-label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: clamp(1.6rem, 6vw, 2.4rem);
+    color: #ffffff;
+    margin-top: -0.3rem;
+    text-shadow: 0 4px 14px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
+  }
+
+  .headline-divider {
+    width: 60%;
+    height: 2px;
+    margin: 1rem auto;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .headline-extra {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 5.5vw, 2.2rem);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(180deg, var(--blue), var(--blue-2));
+    padding: 0.4rem 1.3rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(20,80,214,0.5);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  }
+  .headline-extra .plus-num {
+    color: var(--gold);
+  }
+
+  .hook-text {
+    margin-top: 1.5rem;
+    font-size: clamp(1.05rem, 3vw, 1.35rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+    text-shadow: 0 3px 14px rgba(0,0,0,0.9);
+  }
+  .hook-text .glow { color: var(--gold); }
+
+  .urgency-text {
+    margin-top: 0.9rem;
+    font-size: clamp(0.85rem, 2.4vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #ffb3b3;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  }
+
+  /* ---------- CLICKBAIT CTA ---------- */
+  .cta-wrapper {
+    position: fixed;
+    bottom: clamp(16px, 4vh, 34px);
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .cta-button {
+    pointer-events: auto;
+    width: 92%;
+    max-width: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: clamp(1rem, 3vw, 1.35rem);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.15rem, 4vw, 1.6rem);
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #1a1200;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fff066, var(--gold) 55%, var(--gold-2));
+    box-shadow: 0 14px 30px rgba(0,0,0,0.7), 0 0 40px rgba(255,212,0,0.9);
+    border: 2px solid rgba(255,255,255,0.6);
+    animation: pulse 1.5s infinite;
+  }
+  .cta-button:active { transform: scale(0.95); }
+  .cta-button::after { content: "➜"; font-size: 1.3em; }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 14px 30px rgba(0,0,0,0.7), 0 0 28px rgba(255,212,0,0.8); transform: scale(1); }
+    50% { box-shadow: 0 14px 38px rgba(0,0,0,0.7), 0 0 55px rgba(255,212,0,1); transform: scale(1.035); }
+  }
+
+  .cta-note {
+    pointer-events: none;
+    margin-top: 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #d9d9e8;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    text-align: center;
+  }
+
+  /* ---------- RESPONSIVE TUNING ---------- */
+  @media (max-width: 480px) {
+    .content-box { top: 42%; }
+    .cta-note { max-width: 90%; margin-left: auto; margin-right: auto; }
+  }
+
+  @media (max-height: 600px) {
+    .content-box { top: 40%; padding: 1.2rem 1.3rem; }
+    .badge { margin-bottom: 0.7rem; }
+    .hook-text { margin-top: 0.8rem; }
+    .urgency-text { margin-top: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+  <video class="bg-video" autoplay muted loop playsinline preload="auto">
+    <source src="https://d2w8nejxl5cqxv.cloudfront.net/bugarska/casgrl.mp4" type="video/mp4">
+  </video>
+  <div class="bg-tint"></div>
+  <div class="bg-speedlines"></div>
+  <div class="bg-frame"></div>
+  <a href="https://admiralbetbgtrack.com/ti3n7totg" class="full-link" id="fullLink"></a>
+  <div class="coins-container" id="coinsContainer"></div>
+
+  <div class="content-box">
+    <span class="badge">Изтича скоро!</span>
+
+    <h1 class="headline-num">100%</h1>
+    <span class="headline-label">Бонус</span>
+
+    <div class="headline-divider"></div>
+
+    <span class="headline-extra">+ <span class="plus-num">500</span> Фрий Спина</span>
+
+    <div class="hook-text">
+      Твоят <span class="glow">приветствен бонус</span> е само на едно докосване.
+    </div>
+    <div class="urgency-text">
+      Хиляди вече го взеха този юли — не изоставай.
+    </div>
+  </div>
+
+  <div class="cta-wrapper">
+    <a href="https://admiralbetbgtrack.com/ti3n7totg" class="cta-button" id="ctaButton">
+      Вземи сега
+    </a>
+    <div class="cta-note">18+ | Играй отговорно | Важат Общи условия</div>
+  </div>
+
+  <script>
+    // Scatter subtle falling coins across the screen (decorative, non-blocking)
+    (function () {
+      var container = document.getElementById('coinsContainer');
+      var symbols = ['🪙', '💰'];
+      var count = 16;
+      for (var i = 0; i < count; i++) {
+        var coin = document.createElement('span');
+        coin.className = 'coin';
+        coin.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        coin.style.left = (Math.random() * 100) + 'vw';
+        coin.style.fontSize = (1.1 + Math.random() * 1.3) + 'rem';
+        coin.style.animationDuration = (7 + Math.random() * 8) + 's';
+        coin.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(coin);
+      }
+    })();
+
+    // Preserve and forward all UTM / query parameters to the destination link
+    (function () {
+      var params = window.location.search;
+      if (params) {
+        var links = [document.getElementById('fullLink'), document.getElementById('ctaButton')];
+        links.forEach(function (link) {
+          if (!link) return;
+          var base = link.getAttribute('href');
+          var separator = base.indexOf('?') === -1 ? '?' : '&';
+          link.setAttribute('href', base + separator + params.substring(1));
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
