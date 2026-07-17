@@ -21,6 +21,7 @@
     --red:#B24B45;
     --serif:'Fraunces',serif;
     --body:'Inter',sans-serif;
+    --bottomnav-h:64px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);}
@@ -310,20 +311,22 @@
 
   /* Tablet & below (≤900px): tighten grids, stack side-by-side layouts */
   @media (max-width:900px){
-    main{padding:26px 18px 70px;}
+    main{padding:26px 18px calc(70px + var(--bottomnav-h));}
     .topbar{padding:12px 16px;}
     nav.mainnav{display:none;}
     .hamburger-btn{display:inline-flex;align-items:center;justify-content:center;}
-    .header-right{gap:10px;}
+    .header-right{gap:8px;}
     .op-page-grid{grid-template-columns:1fr;}
     .admin-shell{grid-template-columns:1fr;}
     .admin-side{display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:10px 8px;gap:2px;}
     .admin-side button{width:auto;white-space:nowrap;flex-shrink:0;}
+    .cookie-banner{bottom:var(--bottomnav-h);}
+    .header-right .toggle{display:none;}
   }
 
   /* Phones (≤640px): stack cards, full-width buttons, larger tap targets */
   @media (max-width:640px){
-    main{padding:20px 14px 64px;}
+    main{padding:20px 14px calc(64px + var(--bottomnav-h));}
     .hero h1{font-size:27px;}
     .hero p{font-size:13.5px;}
     .hero-actions{flex-direction:column;}
@@ -518,12 +521,64 @@
   .chip-row, .subtabs, .admintabs, .admin-side, .table-wrap{scrollbar-width:none;}
   .chip-row::-webkit-scrollbar, .subtabs::-webkit-scrollbar, .admintabs::-webkit-scrollbar, .admin-side::-webkit-scrollbar, .table-wrap::-webkit-scrollbar{display:none;}
 
+  /* ---------- Mobile bottom nav (stake.com-style, app-like, thumb zone) ---------- */
+  .bottom-nav{display:none;}
+  @media (max-width:900px){
+    .bottom-nav{
+      display:flex;position:fixed;bottom:0;left:0;right:0;z-index:40;
+      background:rgba(21,23,27,.97);backdrop-filter:blur(10px);
+      border-top:1px solid var(--line);
+      padding:5px 2px calc(4px + env(safe-area-inset-bottom));
+    }
+    .bottom-nav button{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      background:none;border:none;color:var(--faint);font-size:9.5px;font-weight:600;
+      padding:6px 2px;min-height:52px;letter-spacing:.01em;
+    }
+    .bottom-nav button .bn-icon{font-size:18px;line-height:1;}
+    .bottom-nav button.active{color:var(--gold);}
+  }
+
+  /* ---------- Header: account icon (visible on both desktop and mobile — was missing entirely before) + search-mode transform (mobile) ---------- */
+  .topbar-search{display:none;align-items:center;gap:10px;max-width:1180px;margin:0 auto;padding:14px 24px;}
+  header.search-mode .topbar{display:none;}
+  header.search-mode .topbar-search{display:flex;}
+  .topbar-search input{
+    flex:1;background:var(--panel);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;color:var(--text);font-size:15px;
+  }
+  .topbar-search input:focus{outline:none;border-color:var(--gold);}
+  .topbar-search .search-close{background:none;border:none;color:var(--dim);font-size:20px;padding:4px 6px;flex-shrink:0;}
+  .search-dropdown{display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border-bottom:1px solid var(--line);max-height:60vh;overflow-y:auto;z-index:55;}
+  header.search-mode .search-dropdown{display:block;}
+  .search-chip-row{display:flex;gap:8px;flex-wrap:wrap;padding:4px 24px 14px;}
+  .search-dropdown .sres-row{padding:12px 24px;}
+  .search-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:45;display:none;}
+  header.search-mode ~ .search-backdrop, body:has(header.search-mode) .search-backdrop{display:block;}
+
+  /* ---------- Mobile drawer: market switcher lives here now, not in the header row ---------- */
+  .drawer-market-row{display:flex;align-items:center;justify-content:space-between;padding:14px 10px 10px;border-bottom:1px solid var(--line);}
+  .drawer-market-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;}
+  .drawer-market-note{font-size:10.5px;color:var(--faint);padding:0 10px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;line-height:1.5;}
+
+  /* ---------- Account modal ---------- */
+  .account-tabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;margin-bottom:18px;}
+  .account-tabs button{flex:1;background:none;border:none;color:var(--dim);font-size:12.5px;font-weight:600;padding:8px;border-radius:6px;}
+  .account-tabs button.active{background:var(--gold);color:#1a1400;}
+  .account-value-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .account-value-item{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--dim);}
+  .account-value-item .mark{color:var(--gold);font-weight:700;flex-shrink:0;}
+  .account-form{display:flex;flex-direction:column;gap:9px;}
+  .account-form input{padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13.5px;}
+  .account-form input:focus{outline:none;border-color:var(--gold);}
+
   /* Comfortable tap targets on touch devices */
   @media (max-width:640px){
     .icon-btn{width:38px;height:38px;font-size:15px;}
     .toggle button{padding:7px 13px;font-size:12.5px;}
     nav.mainnav button, .mobile-nav button{min-height:40px;}
   }
+
 </style>
 </head>
 <body>
@@ -541,13 +596,7 @@
 <div class="modal-overlay" id="applyModal"><div class="modal-box"><div id="applyModalContent"></div></div></div>
 <div class="modal-overlay" id="glossaryModal"><div class="modal-box"><div id="glossaryModalContent"></div></div></div>
 <div class="modal-overlay" id="reviewModal"><div class="modal-box"><div id="reviewModalContent"></div></div></div>
-
-<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
-  <div class="search-box">
-    <input class="search-input" id="searchInput" placeholder="Search casinos, bookmakers, guides…" oninput="runSearch()">
-    <div class="search-results" id="searchResults"></div>
-  </div>
-</div>
+<div class="modal-overlay" id="accountModal"><div class="modal-box"><div id="accountModalContent"></div></div></div>
 
 <div class="cookie-banner" id="cookieBanner">
   <p>We use cookies for analytics and affiliate attribution. See our <button onclick="openLegal('cookies')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;">Cookie Policy</button>.</p>
@@ -558,7 +607,7 @@
 </div>
 
 <div id="app">
-  <header>
+  <header id="siteHeader">
     <div class="topbar">
       <div class="logo"><span class="dot"></span>Before Bet</div>
       <nav class="mainnav" id="mainnav">
@@ -572,7 +621,8 @@
         <button data-view="admin">Admin</button>
       </nav>
       <div class="header-right">
-        <button class="icon-btn" onclick="openSearch()">⌕</button>
+        <button class="icon-btn" onclick="openSearch()" aria-label="Search">⌕</button>
+        <button class="icon-btn header-account-btn" onclick="openAccount()" aria-label="Account">☺</button>
         <div class="toggle" id="marketToggle">
           <button data-market="UK" class="active">UK</button>
           <button data-market="IT">IT</button>
@@ -580,19 +630,43 @@
         <button class="icon-btn hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
       </div>
     </div>
+
+    <!-- Search transforms the whole header row on click — no separate overlay to hunt for -->
+    <div class="topbar-search" id="topbarSearch">
+      <input class="search-input" id="searchInput" placeholder="Casino, slot or bonus…" oninput="runSearch()">
+      <button class="search-close" onclick="closeSearch()" aria-label="Close search">&times;</button>
+    </div>
+    <div class="search-dropdown" id="searchDropdown">
+      <div class="search-chip-row" id="searchChipRow"></div>
+      <div class="search-results" id="searchResults" style="border:none;border-radius:0;background:none;"></div>
+    </div>
+
     <div class="mobile-drawer" id="mobileDrawer">
+      <div class="drawer-market-row">
+        <span class="drawer-market-label">Market</span>
+        <div class="toggle" id="marketToggleMobile">
+          <button data-market="UK" class="active">UK</button>
+          <button data-market="IT">IT</button>
+        </div>
+      </div>
+      <p class="drawer-market-note">Auto-detected from your location by default. Only switch manually if you're browsing from elsewhere — content and operators shown are matched to the selected market.</p>
       <nav class="mobile-nav" id="mobileNav">
         <button data-view="home" class="active">Home</button>
-        <button data-view="casino">Casino</button>
-        <button data-view="bookmakers">Bookmakers</button>
-        <button data-view="bonuses">Bonuses</button>
-        <button data-view="guides">Guides &amp; News</button>
-        <button data-view="community">Community</button>
         <button data-view="partners">Partners</button>
         <button data-view="admin">Admin</button>
       </nav>
     </div>
   </header>
+  <div class="search-backdrop" id="searchBackdrop" onclick="closeSearch()"></div>
+
+  <!-- Fixed bottom nav — mobile only, thumb-zone primary navigation -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button data-view="casino"><span class="bn-icon">🎰</span>Casino</button>
+    <button data-view="bookmakers"><span class="bn-icon">🎲</span>Kladionice</button>
+    <button data-view="bonuses"><span class="bn-icon">🎁</span>Bonusi</button>
+    <button data-view="guides"><span class="bn-icon">📰</span>Vodiči</button>
+    <button data-view="community"><span class="bn-icon">💬</span>Zajednica</button>
+  </nav>
 
   <main>
 
@@ -1315,35 +1389,55 @@ function go(v){
   document.getElementById('view-'+v).classList.add('active');
   document.querySelectorAll('#mainnav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   closeMobileNav();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-document.querySelectorAll('#mainnav button, #mobileNav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
+document.querySelectorAll('#mainnav button, #mobileNav button, #bottomNav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
 
 function toggleMobileNav(){ document.getElementById('mobileDrawer').classList.toggle('open'); }
 function closeMobileNav(){ document.getElementById('mobileDrawer').classList.remove('open'); }
 
-document.querySelectorAll('#marketToggle button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    market=b.dataset.market;
-    activePaymentFilter='All'; activeGameFilter='All'; activeBonusFilter='All';
-    document.querySelectorAll('#marketToggle button').forEach(x=>x.classList.toggle('active',x===b));
-    renderAll();
-    if(market==='IT'){
-      document.getElementById('agegate-copy').textContent='Questo sito contiene informazioni su operatori di gioco autorizzati ADM. Accesso consentito solo ai maggiorenni.';
-      document.getElementById('agegate').classList.add('show');
-    }
-  });
+/* Market toggle now exists twice (desktop header row + mobile drawer) — keep both in sync */
+function setMarket(newMarket){
+  market = newMarket;
+  activePaymentFilter='All'; activeGameFilter='All'; activeBonusFilter='All';
+  document.querySelectorAll('#marketToggle button, #marketToggleMobile button').forEach(x=>x.classList.toggle('active', x.dataset.market===market));
+  renderAll();
+  if(market==='IT'){
+    document.getElementById('agegate-copy').textContent='Questo sito contiene informazioni su operatori di gioco autorizzati ADM. Accesso consentito solo ai maggiorenni.';
+    document.getElementById('agegate').classList.add('show');
+  }
+}
+document.querySelectorAll('#marketToggle button, #marketToggleMobile button').forEach(b=>{
+  b.addEventListener('click',()=>setMarket(b.dataset.market));
 });
 
-/* ---------- search ---------- */
-function openSearch(){ document.getElementById('searchOverlay').classList.add('show'); document.getElementById('searchInput').value=''; document.getElementById('searchResults').innerHTML=''; setTimeout(()=>document.getElementById('searchInput').focus(),50); }
-function closeSearch(){ document.getElementById('searchOverlay').classList.remove('show'); }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); } });
+/* ---------- search: transforms the header itself (mobile-pattern), not a separate overlay ---------- */
+const trendingQueries = {
+  UK:['bet365 bonus','free bets no deposit','Premier League odds','fastest withdrawal'],
+  IT:['bonus benvenuto','Serie A quote','giri gratis','ADM licenza'],
+};
+function openSearch(){
+  document.getElementById('siteHeader').classList.add('search-mode');
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchResults').innerHTML='';
+  renderSearchChips();
+  setTimeout(()=>document.getElementById('searchInput').focus(),50);
+}
+function closeSearch(){ document.getElementById('siteHeader').classList.remove('search-mode'); }
+function renderSearchChips(){
+  document.getElementById('searchChipRow').innerHTML = trendingQueries[market].map(q=>
+    `<button class="chip" onclick="document.getElementById('searchInput').value='${q.replace(/'/g,"\\'")}';runSearch();">${q}</button>`
+  ).join('');
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); } });
 function runSearch(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const box = document.getElementById('searchResults');
-  if(!q){ box.innerHTML=''; return; }
+  const chipRow = document.getElementById('searchChipRow');
+  if(!q){ box.innerHTML=''; chipRow.style.display='flex'; return; }
+  chipRow.style.display='none';
   const res=[];
   bookmakers.filter(b=>b.market===market).forEach(b=>{ if(b.name.toLowerCase().includes(q)) res.push({l:b.name,t:'Bookmaker',a:()=>openOperatorPage('bk',b.id)}); });
   casinos.filter(c=>c.market===market).forEach(c=>{ if(c.name.toLowerCase().includes(q)) res.push({l:c.name,t:'Casino',a:()=>openOperatorPage('casino',c.id)}); });
@@ -1352,6 +1446,50 @@ function runSearch(){
   window._sres = res;
 }
 function searchClick(i){ closeSearch(); window._sres[i].a(); }
+
+/* ---------- account: value shown before the form, per player type ---------- */
+let accountTab = 'create';
+function openAccount(){ accountTab='create'; renderAccountModal(); document.getElementById('accountModal').classList.add('show'); }
+function closeAccount(){ document.getElementById('accountModal').classList.remove('show'); }
+function setAccountTab(t){ accountTab=t; renderAccountModal(); }
+function renderAccountModal(){
+  const isUK = market==='UK';
+  const values = isUK ? [
+    ['★','Save your favourite casinos and bookmakers for quick access'],
+    ['⚡','Get an alert the moment an odds price or a bonus you\'re tracking changes'],
+    ['🎁','Keep a running history of the bonuses you\'ve already claimed, so you never double up'],
+    ['💬','Join Community chat rooms under your own name'],
+  ] : [
+    ['★','Salva i tuoi casinò e bookmaker preferiti per un accesso rapido'],
+    ['⚡','Ricevi un avviso quando cambia una quota o un bonus che stai seguendo'],
+    ['🎁','Tieni traccia dei bonus già richiesti, per non duplicarli'],
+    ['💬','Partecipa alle chat della Community con il tuo nome'],
+  ];
+  const isCreate = accountTab==='create';
+  document.getElementById('accountModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeAccount()">&times;</button>
+    <h3>${isUK?'Your account':'Il tuo account'}</h3>
+    <div class="account-tabs">
+      <button class="${isCreate?'active':''}" onclick="setAccountTab('create')">${isUK?'Create account':'Crea account'}</button>
+      <button class="${!isCreate?'active':''}" onclick="setAccountTab('signin')">${isUK?'Sign in':'Accedi'}</button>
+    </div>
+    ${isCreate ? `
+      <p style="color:var(--faint);font-size:11.5px;margin:-8px 0 14px;">${isUK?'Before Bet is a review site, not a bookmaker — this account is for your Before Bet experience only, not for placing bets.':'Before Bet è un sito di recensioni, non un bookmaker — questo account riguarda solo la tua esperienza su Before Bet.'}</p>
+      <div class="account-value-grid">
+        ${values.map(v=>`<div class="account-value-item"><span class="mark">${v[0]}</span><span>${v[1]}</span></div>`).join('')}
+      </div>
+    ` : ''}
+    <div class="account-form">
+      <input type="email" placeholder="${isUK?'Email':'Email'}">
+      <input type="password" placeholder="${isUK?'Password':'Password'}">
+      <button class="btn btn-gold" style="justify-content:center;margin-top:4px;" onclick="submitAccount()">${isCreate ? (isUK?'Create free account':'Crea account gratuito') : (isUK?'Sign in':'Accedi')}</button>
+    </div>`;
+}
+function submitAccount(){
+  document.getElementById('accountModalContent').innerHTML = `<button class="modal-close" onclick="closeAccount()">&times;</button><h3>${market==='UK'?'You\'re in':'Fatto'}</h3><p style="color:var(--dim);font-size:13px;">Simulated — in production this creates the session and returns you to where you were.</p>`;
+}
+
+
 
 /* ---------- legal / apply modals ---------- */
 function openLegal(k){
