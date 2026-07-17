@@ -1,1259 +1,753 @@
 <!doctype html>
 <html lang="sr-ME">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdmiralBET kviz</title>
-  <style>
-    :root {
-      --bg-1: #08111f;
-      --bg-2: #0d1a30;
-      --bg-3: #13233e;
-      --panel: rgba(13, 24, 45, 0.96);
-      --panel-2: rgba(16, 30, 56, 0.98);
-      --line: rgba(255,255,255,0.10);
-      --line-strong: rgba(243, 200, 74, 0.18);
-      --text: #f7f9ff;
-      --muted: #b7c2e3;
-      --accent: #f3c84a;
-      --accent-2: #ffdf7c;
-      --danger: #ff7b7b;
-      --success: #3fd19b;
-      --shadow: 0 18px 50px rgba(0,0,0,.30);
-      --radius: 24px;
-      --max: 560px;
-    }
-
-    * { box-sizing: border-box; min-width: 0; }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
-      overflow-x: hidden;
-    }
-
-    img { max-width: 100%; display: block; }
-
-    button, input, textarea, select, a { font: inherit; }
-
-    .wrap {
-      width: min(var(--max), calc(100% - 20px));
-      margin: 0 auto;
-      padding: 16px 0 24px;
-    }
-
-    .section { margin: 18px 0; }
-
-    .card {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
-        linear-gradient(180deg, var(--panel-2), var(--panel));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      padding: 22px;
-    }
-
-    .brand-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-
-    .logo-wrap {
-      width: min(220px, 62vw);
-      padding: 12px 16px;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: rgba(255,255,255,.03);
-    }
-
-    .brand-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-      max-width: 100%;
-    }
-
-    h1, h2, h3, p { word-wrap: break-word; overflow-wrap: anywhere; }
-
-    h1 {
-      margin: 0 0 10px;
-      text-align: center;
-      font-size: clamp(28px, 6vw, 42px);
-      line-height: 1.05;
-      letter-spacing: -.03em;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: clamp(22px, 4.2vw, 30px);
-      line-height: 1.15;
-      letter-spacing: -.02em;
-    }
-
-    h3 { margin: 0 0 12px; font-size: 18px; line-height: 1.2; }
-
-    .sub {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.55;
-      text-align: center;
-      padding: 0 4px;
-    }
-
-    .countdown-box {
-      margin: 16px 0 18px;
-      border: 1px solid var(--line-strong);
-      background: rgba(243,200,74,.07);
-      border-radius: 18px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .countdown-title {
-      margin: 0 0 10px;
-      color: var(--accent-2);
-      font-weight: 800;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    .countdown {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .countdown-item {
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      padding: 10px 6px;
-    }
-
-    .countdown-value {
-      display: block;
-      font-size: clamp(22px, 5vw, 32px);
-      line-height: 1;
-      font-weight: 900;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .countdown-label {
-      display: block;
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: var(--muted);
-    }
-
-    input[type="text"], input[type="email"], input[type="checkbox"] {
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    input[type="text"], input[type="email"] {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.045);
-      color: var(--text);
-      border-radius: 15px;
-      padding: 15px 16px;
-      font-size: 16px;
-      outline: none;
-      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
-      min-height: 56px;
-    }
-
-    input[type="text"]::placeholder, input[type="email"]::placeholder {
-      color: rgba(183,194,227,.72);
-    }
-
-    input[type="text"]:focus, input[type="email"]:focus {
-      border-color: rgba(243,200,74,.55);
-      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
-      background: rgba(255,255,255,.06);
-    }
-
-    .field-note {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .checkbox-row input {
-      margin-top: 2px;
-      width: 18px;
-      height: 18px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: rgba(255,255,255,.04);
-      position: relative;
-      flex: 0 0 auto;
-    }
-
-    .checkbox-row input:checked {
-      border-color: rgba(243,200,74,.55);
-      background: rgba(243,200,74,.10);
-    }
-
-    .checkbox-row input:checked::after {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      border-radius: 3px;
-      background: var(--accent);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform .18s ease, opacity .18s ease, background .18s ease;
-      -webkit-tap-highlight-color: transparent;
-      min-height: 58px;
-    }
-
-    button:hover { transform: translateY(-1px); }
-
-    button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-primary {
-      width: 100%;
-      min-height: 58px;
-      background: linear-gradient(180deg, var(--accent), var(--accent-2));
-      color: #111;
-      padding: 15px 20px;
-      border-radius: 16px;
-      font-size: 16px;
-    }
-
-    .status {
-      min-height: 22px;
-      margin-top: 12px;
-      font-size: 14px;
-      line-height: 1.45;
-      color: var(--muted);
-    }
-
-    .status.error { color: var(--danger); }
-    .status.success { color: var(--success); }
-
-    .details-wrap {
-      margin-top: 14px;
-      border-top: 1px solid rgba(255,255,255,.06);
-      padding-top: 12px;
-    }
-
-    details { border-radius: 12px; }
-
-    summary {
-      list-style: none;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      user-select: none;
-    }
-
-    summary::-webkit-details-marker { display: none; }
-
-    .details-content {
-      margin-top: 10px;
-      display: grid;
-      gap: 8px;
-    }
-
-    .detail-item {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      padding: 12px 13px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .quiz-shell, .result-shell { display: none; }
-    .quiz-shell.active, .result-shell.active { display: block; }
-
-    .quiz-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .counter, .timer {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      border-radius: 14px;
-      padding: 11px 14px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .question-title {
-      font-size: clamp(22px, 4vw, 30px);
-      line-height: 1.3;
-      margin: 0 0 18px;
-    }
-
-    .answers {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .answer {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 16px;
-      padding: 15px 16px;
-      text-align: left;
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1.45;
-      width: 100%;
-      min-height: 58px;
-      white-space: normal;
-      word-break: break-word;
-    }
-
-    .answer.selected {
-      border-color: rgba(243,200,74,.60);
-      box-shadow: 0 0 0 4px rgba(243,200,74,.10);
-      background: rgba(243,200,74,.08);
-    }
-
-    .progress {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(255,255,255,.08);
-      margin-bottom: 16px;
-    }
-
-    .progress span {
-      display: block;
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      transition: width .22s ease;
-    }
-
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin: 20px 0;
-    }
-
-    .result-box {
-      border: 1px solid var(--line-strong);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025));
-      border-radius: 18px;
-      padding: 18px 14px;
-      text-align: center;
-    }
-
-    .result-box .label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 7px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      line-height: 1.4;
-    }
-
-    .result-box .value {
-      font-size: clamp(24px, 5vw, 36px);
-      font-weight: 800;
-      letter-spacing: -.03em;
-      line-height: 1.1;
-      word-break: break-word;
-    }
-
-    .result-box .value.status-value {
-      font-size: clamp(18px, 3.6vw, 28px);
-      white-space: nowrap;
-      word-break: normal;
-      overflow-wrap: normal;
-      display: block;
-      text-align: center;
-    }
-
-    .viber-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      min-height: 58px;
-      padding: 15px 18px;
-      border-radius: 16px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 16px;
-      background: linear-gradient(180deg, var(--accent), var(--accent-2));
-      color: #111;
-      text-align: center;
-    }
-
-    .leaderboard-wrap {
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(255,255,255,.07);
-    }
-
-    .leaderboard-head {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .leaderboard-sub {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 0;
-    }
-
-    .leaderboard-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .leaderboard-row {
-      display: grid;
-      grid-template-columns: 54px 1fr auto;
-      align-items: center;
-      gap: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      padding: 12px 14px;
-    }
-
-    .leaderboard-rank {
-      font-weight: 800;
-      color: var(--accent-2);
-      font-size: 15px;
-    }
-
-    .leaderboard-name {
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: .04em;
-    }
-
-    .leaderboard-time {
-      color: var(--muted);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .leaderboard-empty {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      padding: 14px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .promo-banner-shell {
-      display: none;
-      margin-top: 18px;
-      width: 100%;
-    }
-
-    .promo-banner-shell.active { display: block; }
-
-    .promo-banner {
-      position: relative;
-      width: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 14px 34px rgba(0,0,0,.28);
-      background: rgba(255,255,255,.03);
-    }
-
-    .promo-banner-link {
-      display: block;
-      width: 100%;
-    }
-
-    .promo-banner-link img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .promo-banner-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 34px;
-      height: 34px;
-      min-height: 34px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(8, 17, 31, .74);
-      color: #fff;
-      font-size: 18px;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      z-index: 2;
-    }
-
-    .promo-banner-close:hover {
-      transform: none;
-      background: rgba(8, 17, 31, .9);
-    }
-
-    .promo-redirect-note {
-      margin-top: 10px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .promo-redirect-note strong {
-      color: var(--accent-2);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .footer-space { height: 14px; }
-
-    @media (max-width: 760px) {
-      .wrap {
-        width: min(var(--max), calc(100% - 14px));
-        padding-top: 12px;
-      }
-
-      .card {
-        padding: 18px 16px;
-        border-radius: 20px;
-      }
-
-      .sub { font-size: 15px; }
-
-      .quiz-top {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .counter, .timer {
-        width: 100%;
-        text-align: center;
-      }
-
-      .btn-row { flex-direction: column; }
-
-      .btn-primary, .answer, .viber-btn {
-        width: 100%;
-        min-height: 58px;
-      }
-
-      .result-grid { grid-template-columns: 1fr; }
-
-      .leaderboard-row {
-        grid-template-columns: 44px 1fr auto;
-        gap: 10px;
-        padding: 11px 12px;
-      }
-
-      .promo-banner-close {
-        top: 6px;
-        right: 6px;
-        width: 32px;
-        height: 32px;
-        min-height: 32px;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .wrap { width: calc(100% - 12px); }
-      .card { padding: 16px 14px; }
-
-      .logo-wrap {
-        width: min(200px, 72vw);
-        padding: 10px 12px;
-      }
-
-      h1 { font-size: 28px; }
-      .question-title { font-size: 22px; }
-
-      .answer {
-        padding: 14px;
-        font-size: 15px;
-      }
-
-      .countdown { gap: 6px; }
-
-      .countdown-item {
-        padding: 9px 4px;
-        border-radius: 12px;
-      }
-
-      .countdown-label { font-size: 10px; }
-
-      .leaderboard-row { grid-template-columns: 40px 1fr auto; }
-      .leaderboard-time { font-size: 13px; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Prognoziraj Šampiona! | AdmiralBet World Cup 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#040c1a;--navy2:#061325;--navy3:#0b1e38;--card:#0d2240;--card2:#112a4e;
+  --gold:#FFB800;--gold2:#ffd060;--gold3:#cc9200;--red:#E5001C;--red2:#ff1f38;
+  --text:#ffffff;--muted:rgba(255,255,255,.65);--muted2:rgba(255,255,255,.38);
+  --line:rgba(255,255,255,.1);--line2:rgba(255,184,0,.25);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--navy);color:var(--text);overflow-x:hidden;
+  background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(255,184,0,.07),transparent),radial-gradient(ellipse 60% 30% at 0% 30%,rgba(229,0,28,.05),transparent);}
+button,input{font-family:inherit;cursor:pointer}
+.header{position:sticky;top:0;z-index:30;background:rgba(4,12,26,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);}
+.header-inner{max-width:1300px;margin:auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px;}
+.nav-link{height:38px;padding:0 18px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:.18s;}
+.nav-link:hover{border-color:var(--gold);color:var(--gold)}
+.hero{max-width:1300px;margin:auto;padding:60px 20px 50px;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);border-radius:6px;padding:6px 12px;margin-bottom:20px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#ff7080;text-transform:uppercase;letter-spacing:1.5px;}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(56px,8vw,96px);font-weight:900;line-height:.9;letter-spacing:-2px;text-transform:uppercase;}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero h1 strong{color:var(--red);font-weight:900}
+.hero p{margin-top:20px;color:var(--muted);font-size:17px;line-height:1.65;max-width:560px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn-primary{height:52px;padding:0 28px;border:none;border-radius:8px;background:var(--gold);color:#111;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;transition:.2s;}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-outline{height:52px;padding:0 28px;border:1.5px solid var(--line);border-radius:8px;background:transparent;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:.2s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.prizes-stack{display:flex;flex-direction:column;gap:12px}
+.prize-row{background:linear-gradient(135deg,rgba(255,184,0,.12),rgba(255,184,0,.04));border:1px solid rgba(255,184,0,.28);border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;overflow:hidden;}
+.prize-row::after{content:'';position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,184,0,.12),transparent 70%);}
+.prize-row .info .round-lbl{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;}
+.prize-row .info .round-date{font-size:12px;color:var(--muted2);margin-top:2px}
+.prize-row .amt{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--gold2);white-space:nowrap;}
+.total-prize{background:linear-gradient(135deg,rgba(255,184,0,.2),rgba(255,184,0,.06));border:1.5px solid rgba(255,184,0,.45);border-radius:16px;padding:20px;text-align:center;}
+.total-prize .lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px}
+.total-prize .big{font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--gold2);line-height:1;margin:4px 0}
+.total-prize .sub{font-size:13px;color:var(--muted)}
+.section{max-width:1300px;margin:auto;padding:20px 20px 50px}
+.section-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;margin-bottom:6px;}
+.section-title span{color:var(--gold)}
+.section-sub{color:var(--muted);font-size:15px;margin-bottom:28px}
+.round-tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:24px;}
+.round-tab{height:38px;padding:0 16px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:.18s;}
+.round-tab:hover{border-color:var(--gold3);color:var(--gold)}
+.round-tab.active{background:var(--gold);border-color:var(--gold);color:#111}
+.round-tab .chip-score{display:inline-block;background:rgba(0,0,0,.25);border-radius:4px;font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
+.round-tab.active .chip-score{background:rgba(0,0,0,.2);color:#111}
+.round-tab.sent{border-color:var(--gold);color:var(--gold)}
+.round-tab .chip-sent{display:none;background:#1f7a3d;color:#fff;border-radius:4px;font-size:10px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
+.round-tab.sent .chip-sent{display:inline-block}
+.round-tab.sent.active .chip-sent{background:#0d4a22}
+.round-panel{display:none}
+.round-panel.active{display:block}
+.round-info-bar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.round-info-bar .ri-left h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--gold2);text-transform:uppercase;}
+.round-info-bar .ri-right{background:rgba(255,184,0,.12);border:1px solid var(--line2);border-radius:8px;padding:8px 16px;text-align:center;}
+.round-info-bar .ri-right .nagrad{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--gold2)}
+.round-info-bar .ri-right .nagrad-lbl{font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.deadline-bar{background:rgba(229,0,28,.1);border:1px solid rgba(229,0,28,.25);border-radius:8px;padding:10px 14px;font-size:13px;color:#ff7080;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.deadline-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.4s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.matches-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.match-card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.18s;}
+.match-card:hover{border-color:rgba(255,184,0,.2)}
+.match-head{background:rgba(255,255,255,.04);border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
+.match-head .match-num{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px}
+.match-head .match-date{font-size:11px;color:var(--muted2)}
+.match-body{padding:14px}
+.pair-step{margin-bottom:10px}
+.pair-step .step-lbl{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.pair-step .step-lbl b{color:var(--gold)}
+.pair-row{display:flex;gap:6px}
+.opt-btn{flex:1;height:40px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:700;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.opt-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
+.opt-btn.selected{background:rgba(255,184,0,.18);border-color:var(--gold);color:var(--gold2)}
+.opt-btn:disabled{opacity:.4;cursor:not-allowed}
+.opt-btn .fl{font-size:14px}
+.final-step{margin-top:6px;padding-top:12px;border-top:1px dashed var(--line)}
+.final-step .step-lbl{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.win-row{display:flex;gap:6px}
+.win-btn{flex:1;height:44px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;font-weight:800;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.win-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
+.win-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
+.win-btn:disabled{opacity:.4;cursor:not-allowed}
+.win-btn .fl{font-size:15px}
+.match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:14px;}
+.team-slot{display:flex;align-items:center;gap:8px;}
+.team-slot.away{flex-direction:row-reverse;text-align:right}
+.team-flag{width:32px;height:22px;border-radius:4px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.team-label{font-size:14px;font-weight:700;line-height:1.2}
+.team-label.tbd{color:var(--muted2)}
+.vs-badge{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;color:var(--muted2);background:rgba(255,255,255,.06);border-radius:6px;padding:4px 8px;white-space:nowrap;}
+.winner-pick{display:flex;gap:6px;}
+.pick-btn{flex:1;height:38px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:700;transition:.15s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px;}
+.pick-btn:hover:not(:disabled){border-color:var(--gold3);color:var(--gold)}
+.pick-btn.selected{background:var(--gold);border-color:var(--gold);color:#111}
+.pick-btn:disabled{opacity:.4;cursor:not-allowed}
+.match-card.locked{opacity:.7}
+.match-card.locked .pick-btn,.match-card.locked .opt-btn,.match-card.locked .win-btn{cursor:not-allowed}
+.match-card.waiting{opacity:.6}
+.round-submit-wrap{margin-top:24px;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:24px;}
+.round-submit-wrap h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:4px;}
+.round-submit-wrap p{color:var(--muted);font-size:13px;margin-bottom:18px}
+.round-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+.field input{width:100%;height:50px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:0 14px;color:#fff;font-size:15px;outline:none;transition:.2s;}
+.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,184,0,.1)}
+.field input::placeholder{color:var(--muted2)}
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px}
+.check-row input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--gold);margin-top:2px}
+.check-row label{font-size:13px;color:var(--muted);cursor:pointer}
+.check-row a{color:var(--gold);text-decoration:underline}
+.submit-btn{width:100%;height:58px;margin-top:18px;border:none;border-radius:10px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;cursor:not-allowed;transition:.2s;}
+.submit-btn.ready{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;cursor:pointer;}
+.submit-btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,184,0,.3)}
+.submit-btn.done{background:#1f7a3d;color:#fff;cursor:default}
+.round-status{display:none;margin-top:14px;padding:14px;border-radius:12px;font-weight:700;font-size:14px;text-align:center;}
+.round-status.show{display:block}
+.round-status.ok{background:rgba(31,122,61,.18);border:1px solid rgba(31,122,61,.4);color:#7be0a0}
+.round-status.err{background:rgba(229,0,28,.12);border:1px solid rgba(229,0,28,.3);color:#ff7080}
+.progress-bar-wrap{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
+.progress-bar-wrap .pb-text{font-size:13px;font-weight:700;white-space:nowrap;min-width:120px}
+.pb-track{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.pb-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:.3s}
+.champion-box{margin-top:28px;background:linear-gradient(135deg,rgba(255,184,0,.18),rgba(255,184,0,.05));border:2px solid rgba(255,184,0,.5);border-radius:20px;padding:30px;text-align:center;}
+.champion-box .c-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px;}
+.champion-box .c-name{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--gold2);margin:8px 0;min-height:60px;}
+.champion-box .c-sub{font-size:13px;color:var(--muted)}
+.rules-section{background:var(--navy2);border-top:1px solid var(--line);padding:50px 0}
+.rules-inner{max-width:1300px;margin:auto;padding:0 20px}
+.rules-inner h2{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3vw,40px);font-weight:900;text-transform:uppercase;margin-bottom:24px;}
+.rules-body{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.rule-block{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.rule-block h4{font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.rule-block ul{padding-left:18px}
+.rule-block li{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:4px}
+.rule-block li b{color:var(--text);font-weight:700}
+.footer-note{max-width:1300px;margin:auto;padding:20px 20px 40px;font-size:11px;color:var(--muted2);line-height:1.65;border-top:1px solid var(--line);margin-top:20px;}
+@media(max-width:1050px){.hero{grid-template-columns:1fr}.prizes-stack{max-width:500px}.matches-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.hero{padding:36px 16px 30px}.section{padding:10px 16px 40px}.round-form-grid{grid-template-columns:1fr}.round-tabs{gap:6px}.header-inner{padding:0 14px}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="section" id="registerSection">
-      <div class="card">
-        <div class="brand-block">
-          <div class="logo-wrap">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s"
-              alt="AdmiralBET logo"
-            />
-          </div>
-          <div class="brand-pill">AdmiralBET Online · Instagram Sportski Kviz</div>
-        </div>
 
-        <h1>Sportski kviz</h1>
-        <p class="sub" id="introText">Unesi inicijale i email adresu, pa pokreni kviz.</p>
-
-        <div class="form-grid">
-          <div>
-            <label for="initials">Inicijali</label>
-            <input type="text" id="initials" placeholder="Npr. MP" maxlength="3" autocomplete="off" />
-          </div>
-
-          <div>
-            <label for="email">Email adresa</label>
-            <input type="email" id="email" placeholder="Upiši email adresu" maxlength="120" autocomplete="email" inputmode="email" />
-            <div class="field-note">
-              Email mora biti registrovan na Admiralbet.me platformi.
-            </div>
-          </div>
-        </div>
-
-        <label class="checkbox-row">
-          <input type="checkbox" id="privacy" />
-          <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu.</span>
-        </label>
-
-        <div class="btn-row">
-          <button class="btn-primary" id="startBtn">Pokreni kviz</button>
-        </div>
-
-        <div class="status" id="registerStatus"></div>
-
-        <div class="details-wrap">
-          <details>
-            <summary>Detalji kampanje</summary>
-            <div class="details-content">
-              <div class="detail-item">Kviz sadrži 20 pitanja.</div>
-              <div class="detail-item">Unose se samo inicijali i email.</div>
-              <div class="detail-item">Jedan email može učestvovati samo jednom.</div>
-              <div class="detail-item">Nakon završetka vidiš samo svoj rezultat i svoje vrijeme.</div>
-              <div class="detail-item">Tačni odgovori se ne prikazuju tokom ni nakon kviza.</div>
-              <div class="detail-item">Presjek rezultata radi se ponedjeljkom i petkom.</div>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="section quiz-shell" id="quizSection">
-      <div class="card">
-        <div class="progress"><span id="progressBar"></span></div>
-
-        <div class="quiz-top">
-          <div class="counter" id="questionCounter">Pitanje 1 / 20</div>
-          <div class="timer">Vrijeme: <strong id="timerText">00:00</strong></div>
-        </div>
-
-        <h2 class="question-title" id="questionText"></h2>
-        <div class="answers" id="answersWrap"></div>
-
-        <div class="btn-row">
-          <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
-        </div>
-
-        <div class="status" id="quizStatus"></div>
-      </div>
-    </section>
-
-    <section class="section result-shell" id="resultSection">
-      <div class="card">
-        <h2>Tvoj rezultat je zabilježen</h2>
-        <p class="sub">Prati rezultate ekskluzivno u Viber zajednici!</p>
-
-        <div class="result-grid">
-          <div class="result-box">
-            <span class="label">Tačnih odgovora</span>
-            <span class="value" id="finalCorrect">0/20</span>
-          </div>
-          <div class="result-box">
-            <span class="label">Vrijeme</span>
-            <span class="value" id="finalTime">00:00</span>
-          </div>
-          <div class="result-box">
-            <span class="label">Status</span>
-            <span class="value status-value" id="finalStatus">Poslato</span>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <a
-            href="https://bit.ly/4ue09AX"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="viber-btn"
-          >
-            Pridruži se zajednici
-          </a>
-        </div>
-
-        <div class="promo-banner-shell" id="promoBannerShell">
-          <div class="promo-banner">
-            <button type="button" class="promo-banner-close" id="promoBannerClose" aria-label="Zatvori">×</button>
-            <a
-              href="https://bit.ly/4ue09AX"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="promo-banner-link"
-              id="promoBannerLink"
-              aria-label="Zajednica"
-            >
-              <img
-                src="https://admiralbet.me/assets/images/promotion/fdaiobijashuofihadsfuadsihfui.jpg"
-                alt="Zajednica"
-              />
-            </a>
-          </div>
-          <p class="promo-redirect-note" id="promoRedirectNote">
-            Preusmjeravanje za <strong id="promoRedirectCount">5</strong> sek...
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer-space"></div>
+<header class="header">
+  <div class="header-inner">
+    <a href="admiralbet-grupna-faza.html" style="text-decoration:none;display:flex;align-items:center">
+      <img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" alt="AdmiralBet" style="height:36px;width:auto;display:block"/>
+    </a>
+    <div style="display:flex;gap:8px">
+      <button class="nav-link" onclick="window.location='admiralbet-grupna-faza.html'">← Grupna faza</button>
+    </div>
   </div>
+</header>
 
- <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrto0qakUl-wFAk_cqY7f1NYlKIzVpJdfVcTKQf2HLpDu7iYGxznjXxE9sv1_35xPt/exec';
+<section class="hero">
+  <div>
+    <div class="eyebrow">🏆 Nokaut faza · 5.000€ nagradni fond</div>
+    <h1>Prognoziraj<br><em>šampiona!</em></h1>
+    <p>Predvidi pobjednike u svakoj rundi nokaut faze Svjetskog prvenstva 2026. Osvoji dio nagradnog fonda od <strong>5.000€ sport bonusa</strong> - <strong>1.000€ po rundi</strong>. Svaku rundu šalješ posebno, učešće je besplatno.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('bracket-sec').scrollIntoView({behavior:'smooth'})">Počni predikciju</button>
+      <button class="btn-outline" onclick="document.getElementById('rules-sec').scrollIntoView({behavior:'smooth'})">Pravila</button>
+    </div>
+  </div>
+  <div>
+    <div class="total-prize" style="margin-bottom:12px">
+      <div class="lbl">Ukupni nagradni fond</div>
+      <div class="big">€5.000</div>
+      <div class="sub">sport bonusa · raspoređeno po rundama</div>
+    </div>
+    <div class="prizes-stack">
+      <div class="prize-row"><div class="info"><div class="round-lbl">Round of 16 <span style="background:#1f7a3d;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">ZAVRŠENO</span></div><div class="round-date">4–7. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Četvrtfinale <span style="background:#1f7a3d;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">ZAVRŠENO</span></div><div class="round-date">9–12. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Polufinale <span style="background:#1f7a3d;color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;">ZAVRŠENO</span></div><div class="round-date">14–15. jula 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">3. mjesto</div><div class="round-date">18. jul 2026.</div></div><div class="amt">1.000€</div></div>
+      <div class="prize-row"><div class="info"><div class="round-lbl">Finale</div><div class="round-date">19. jul 2026.</div></div><div class="amt">1.000€</div></div>
+    </div>
+  </div>
+</section>
 
-  // Link na koji vodi promo baner (i auto-redirect nakon submita)
-  const PROMO_BANNER_URL = 'https://bit.ly/4ue09AX';
-  const REDIRECT_SECONDS = 5;
+<section class="section" id="bracket-sec">
+  <h2 class="section-title">Popuni <span>bracket</span></h2>
+  <div class="section-sub">Round of 16, Četvrtfinale i Polufinale su završeni — rezultati su prikazani ispod (zaključani). Finale je Španija–Argentina, a za 3. mjesto igraju Francuska–Engleska. Biraš pobjednike za ta dva meča. Svaku rundu zaključavaš posebno, najkasnije sat prije prve utakmice te runde.</div>
+  <div class="progress-bar-wrap">
+    <span class="pb-text" id="pbText">0 / 16 mečeva</span>
+    <div class="pb-track"><div class="pb-fill" id="pbFill"></div></div>
+  </div>
+  <div class="round-tabs" id="roundTabs"></div>
+  <div id="roundPanels"></div>
+  <div class="champion-box" id="championBox">
+    <div class="c-label">🏆 Tvoj predviđeni šampion</div>
+    <div class="c-name" id="championName">—</div>
+    <div class="c-sub">Šampion se automatski popunjava na osnovu tvoje predikcije u finalu.</div>
+  </div>
+</section>
 
-  const QUIZ_QUESTIONS = [
-    {
-      text: 'Koja reprezentacija je osvojila najviše titula prvaka svijeta?',
-      answers: ['Njemačka', 'Brazil', 'Italija'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koje su jedine dvije reprezentacije koje su uspjele da osvoje dva uzastopna svjetska prvenstva?',
-      answers: ['Brazil i Argentina', 'Italija i Brazil', 'Njemačka i Italija'],
-      correctIndex: 1
-    },
-    {
-      text: 'Ko je jedini fudbaler koji je osvojio tri titule svjetskog prvaka kao igrač?',
-      answers: ['Pelé', 'Cafu', 'Franz Beckenbauer'],
-      correctIndex: 0
-    },
-    {
-      text: 'Ko je jedini fudbaler koji je postigao gol u finalima dva uzastopna svjetska prvenstva i oba puta osvojio titulu?',
-      answers: ['Pele', 'Vava', 'Ronaldo Nazário'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koji fudbaler drži rekord sa 13 postignutih golova na jednom svjetskom prvenstvu?',
-      answers: ['Just Fontaine', 'Sándor Kocsis', 'Eusébio'],
-      correctIndex: 0
-    },
-    {
-      text: 'Ko je jedini igrač koji je postigao pet golova na jednoj utakmici Svjetskog prvenstva?',
-      answers: ['Gabriel Batistuta', 'Oleg Salenko', 'Miroslav Klose'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koji fudbaler je zaključno sa 2022. odigrao najviše utakmica na svjetskim prvenstvima?',
-      answers: ['Lothar Matthäus', 'Lionel Messi', 'Paolo Maldini'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koji selektor drži rekord sa 25 vođenih utakmica na svjetskim prvenstvima?',
-      answers: ['Helmut Schön', 'Joachim Löw', 'Mário Zagallo'],
-      correctIndex: 0
-    },
-    {
-      text: 'Ko je najmlađi strijelac u istoriji svjetskih prvenstava?',
-      answers: ['Michael Owen', 'Kylian Mbappé', 'Pelé'],
-      correctIndex: 2
-    },
-    {
-      text: 'Ko je najstariji fudbaler koji je postigao gol na Svjetskom prvenstvu?',
-      answers: ['Roger Milla', 'Pepe', 'Cuauhtémoc Blanco'],
-      correctIndex: 0
-    },
-    {
-      text: 'Ko je najstariji igrač koji je nastupio na jednoj utakmici Svjetskog prvenstva?',
-      answers: ['Faryd Mondragón', 'Essam El-Hadary', 'Pat Jennings'],
-      correctIndex: 1
-    },
-    {
-      text: 'Ko je postigao najbrži gol u istoriji svjetskih prvenstava, nakon približno 11 sekundi igre?',
-      answers: ['Clint Dempsey', 'Bryan Robson', 'Hakan Şükür'],
-      correctIndex: 2
-    },
-    {
-      text: 'Koja utakmica je najefikasnija u istoriji svjetskih prvenstava, sa ukupno 12 golova?',
-      answers: ['Mađarska – Salvador 10:1', 'Austrija – Švajcarska 7:5', 'Brazil – Poljska 6:5'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koja reprezentacija drži rekord sa 27 postignutih golova na jednom svjetskom prvenstvu?',
-      answers: ['Brazil 1970.', 'Njemačka 2014.', 'Mađarska 1954.'],
-      correctIndex: 2
-    },
-    {
-      text: 'Koje finale Svjetskog prvenstva je imalo najviše pogodaka?',
-      answers: ['Brazil – Švedska 5:2, 1958.', 'Engleska – Zapadna Njemačka 4:2, 1966.', 'Argentina – Francuska 3:3, 2022.'],
-      correctIndex: 0
-    },
-    {
-      text: 'Na kojem Svjetskom prvenstvu nije odigrana klasična finalna utakmica, već je šampion odlučen kroz završnu grupu?',
-      answers: ['1934. godine u Italiji', '1950. godine u Brazilu', '1954. godine u Švajcarskoj'],
-      correctIndex: 1
-    },
-    {
-      text: 'Koje finale je prvo u istoriji svjetskih prvenstava odlučeno izvođenjem jedanaesteraca?',
-      answers: ['Brazil – Italija, 1994.', 'Francuska – Italija, 2006.', 'Argentina – Zapadna Njemačka, 1990.'],
-      correctIndex: 0
-    },
-    {
-      text: 'Ko je jedini golman koji je osvojio Zlatnu loptu za najboljeg igrača Svjetskog prvenstva?',
-      answers: ['Gianluigi Buffon', 'Manuel Neuer', 'Oliver Kahn'],
-      correctIndex: 2
-    },
-    {
-      text: 'Koja reprezentacija je postala prva afrička selekcija koja se plasirala u polufinale Svjetskog prvenstva?',
-      answers: ['Kamerun', 'Maroko', 'Senegal'],
-      correctIndex: 1
-    },
-    {
-      text: 'Ko je prvi fudbaler koji je postigao najmanje jedan pogodak na pet različitih svjetskih prvenstava?',
-      answers: ['Cristiano Ronaldo', 'Lionel Messi', 'Miroslav Klose'],
-      correctIndex: 0
-    }
-  ];
+<section class="rules-section" id="rules-sec">
+  <div class="rules-inner">
+    <h2>Pravila promocije</h2>
+    <div class="rules-body">
+      <div class="rule-block">
+        <h4>Trajanje i rokovi</h4>
+        <ul>
+          <li><b>Početak:</b> 4. jul 2026. (Round of 16)</li>
+          <li><b>Kraj:</b> 19. jul 2026. (Finale)</li>
+          <li>Rok za unos prognoza za svaku rundu je najkasnije <b>sat vremena</b> prije početka prve utakmice te runde.</li>
+          <li>Svaka runda se šalje posebno i nakon roka izmjene nijesu moguće.</li>
+          <li>Učešće je besplatno. Svaki igrač može učestvovati samo jednom po rundi.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h4>Nagrađivanje po rundama</h4>
+        <ul>
+          <li>Nagradni fond: <b>5.000€</b> sport bonusa raspoređen po rundama sa <b>1.000€ po rundi</b>.</li>
+          <li>Fond od 1.000€ po rundi dijeli se ravnomjerno između svih učesnika te runde koji ostvare <b>tačnost preko 60%</b> pogođenih pobjednika.</li>
+          <li>Ukoliko nijedan učesnik ne pređe prag od 60% tačnosti, nagrada ide igraču/igračima sa <b>najvišom ostvarenom tačnošću</b> u toj rundi.</li>
+          <li>Rezultati se objavljuju u roku od <b>48h</b> po završetku svake runde.</li>
+          <li>Dobitnici se obavještavaju putem email-a koji su koristili prilikom prijave.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h4>Uslovi sport bonusa</h4>
+        <ul>
+          <li>Bonus prihvatiti u sekciji <b>PROMOTIVNE AKTIVNOSTI</b> na nalogu.</li>
+          <li>Obrtni uslov: <b>1x iznos bonusa</b>.</li>
+          <li>Uslov bonusa: Min. 5 parova po tiketu sa minimalnom kvotom po paru: <b>1,50</b>.</li>
+          <li>Maksimalni dobitak sa sport bonusom: <b>2x iznos bonusa</b>.</li>
+          <li>Trajanje bonusa: <b>7 dana</b> od dodjele.</li>
+        </ul>
+      </div>
+      <div class="rule-block">
+        <h4>Opšte napomene</h4>
+        <ul>
+          <li>Mogu učestvovati svi registrovani igrači na sajtu <a href="https://www.admiralbet.me">www.admiralbet.me</a>.</li>
+          <li>Tokom popunjavanja prognoze potrebno je unijeti ime i prezime, email adresu i broj telefona.</li>
+          <li>Uneseni podaci moraju biti isti kao i na admiralbet.me nalogu. U suprotnom, nagrade neće biti dodijeljene.</li>
+          <li>Priređivač zadržava pravo izmjene, prekida ili prilagođavanja promocije u bilo kom trenutku.</li>
+          <li>Rezultati mogu biti poništeni u slučaju tehničkih ili očiglednih grešaka.</li>
+          <li>Primjenjuju se važeća Opšta pravila i Uslovi korišćenja Priređivača.</li>
+          <li>Za više informacija tu je: <b>AdmiralBet Chat podrška</b>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-  const startBtn = document.getElementById('startBtn');
-  const registerStatus = document.getElementById('registerStatus');
-  const quizStatus = document.getElementById('quizStatus');
-  const registerSection = document.getElementById('registerSection');
-  const quizSection = document.getElementById('quizSection');
-  const resultSection = document.getElementById('resultSection');
-  const initialsInput = document.getElementById('initials');
-  const emailInput = document.getElementById('email');
-  const privacyInput = document.getElementById('privacy');
-  const questionCounter = document.getElementById('questionCounter');
-  const timerText = document.getElementById('timerText');
-  const questionText = document.getElementById('questionText');
-  const answersWrap = document.getElementById('answersWrap');
-  const nextBtn = document.getElementById('nextBtn');
-  const progressBar = document.getElementById('progressBar');
-  const finalCorrect = document.getElementById('finalCorrect');
-  const finalTime = document.getElementById('finalTime');
-  const finalStatus = document.getElementById('finalStatus');
-  const promoBannerShell = document.getElementById('promoBannerShell');
-  const promoBannerClose = document.getElementById('promoBannerClose');
-  const promoBannerLink = document.getElementById('promoBannerLink');
-  const promoRedirectNote = document.getElementById('promoRedirectNote');
-  const promoRedirectCount = document.getElementById('promoRedirectCount');
-  const introText = document.getElementById('introText');
+<footer class="footer-note">
+  *Priređivač zadržava pravo da u bilo kojem trenutku izmijeni, prekine ili prilagodi promociju. Rezultati promocije mogu biti poništeni ako se utvrdi da su nastali zbog tehničkih ili očiglednih grešaka, uključujući netačne isplate izazvane mašinskom ili ljudskom greškom. Na promociju se primjenjuju važeća Opšta pravila i Uslovi korišćenja. <strong>18+ · Igraj odgovorno</strong>
+</footer>
 
-  let currentQuestion = 0;
-  let selectedAnswers = new Array(QUIZ_QUESTIONS.length).fill(null);
-  let timerInterval = null;
-  let redirectInterval = null;
-  let redirectDone = false;
-  let startTimeMs = null;
-  let participantToken = '';
-  let quizIsActive = true;
-  let activeQuestions = QUIZ_QUESTIONS;
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3xSKIIaSQsIiYtpzXwRrPsOg64drHBGGM2XiJgSTxOuF69ogNLBrE1piwIij0hRpw/exec';
 
-  function shuffleArray(arr) {
-    const copy = arr.slice();
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy;
+const rounds=[
+  {id:'r16',  label:'Round of 16',  nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 4. jula 2026. godine.'},
+  {id:'qf',   label:'Četvrtfinale', nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 9. jula 2026. godine.'},
+  {id:'sf',   label:'Polufinale',   nagrada:'1.000€',deadline:'Najkasnije sat vremena prije prve utakmice koja počinje 14. jula 2026. godine.'},
+  {id:'tp',   label:'3. mjesto',    nagrada:'1.000€',deadline:'Najkasnije do 10:00h — utakmica Francuska–Engleska počinje u 11:00h, 18. jula 2026. godine.'},
+  {id:'final',label:'Finale',       nagrada:'1.000€',deadline:'Najkasnije sat vremena prije utakmice koja počinje 19. jula 2026. godine.'}
+];
+
+const FLAGS={GER:'🇩🇪',PAR:'🇵🇾',FRA:'🇫🇷',SWE:'🇸🇪',RSA:'🇿🇦',CAN:'🇨🇦',NED:'🇳🇱',MAR:'🇲🇦',POR:'🇵🇹',CRO:'🇭🇷',ESP:'🇪🇸',AUT:'🇦🇹',USA:'🇺🇸',BIH:'🇧🇦',BEL:'🇧🇪',SEN:'🇸🇳',BRA:'🇧🇷',JPN:'🇯🇵',CIV:'🇨🇮',NOR:'🇳🇴',MEX:'🇲🇽',ECU:'🇪🇨',ENG:'🏴',COD:'🇨🇩',ARG:'🇦🇷',CPV:'🇨🇻',AUS:'🇦🇺',EGY:'🇪🇬',SUI:'🇨🇭',ALG:'🇩🇿',COL:'🇨🇴',GHA:'🇬🇭'};
+const NAMES={GER:'Germany',PAR:'Paraguay',FRA:'France',SWE:'Sweden',RSA:'South Africa',CAN:'Canada',NED:'Netherlands',MAR:'Morocco',POR:'Portugal',CRO:'Croatia',ESP:'Spain',AUT:'Austria',USA:'USA',BIH:'Bosnia i Herc.',BEL:'Belgium',SEN:'Senegal',BRA:'Brazil',JPN:'Japan',CIV:"Côte d'Ivoire",NOR:'Norway',MEX:'Mexico',ECU:'Ecuador',ENG:'England',COD:'DR Congo',ARG:'Argentina',CPV:'Cabo Verde',AUS:'Australia',EGY:'Egypt',SUI:'Switzerland',ALG:'Algeria',COL:'Colombia',GHA:'Ghana'};
+
+const r16Matches={
+  M90:{date:'4. jul', time:'19:00',pairA:['RSA','CAN'],pairB:['NED','MAR'],winnerTo:{m:'M97',slot:2}},
+  M89:{date:'4. jul', time:'23:00',pairA:['GER','PAR'],pairB:['FRA','SWE'],winnerTo:{m:'M97',slot:1}},
+  M91:{date:'5. jul', time:'22:00',pairA:['BRA','JPN'],pairB:['CIV','NOR'],winnerTo:{m:'M99',slot:1}},
+  M92:{date:'6. jul', time:'02:00',pairA:['MEX','ECU'],pairB:['ENG','COD'],winnerTo:{m:'M99',slot:2}},
+  M93:{date:'7. jul', time:'02:00',pairA:['POR','CRO'],pairB:['ESP','AUT'],winnerTo:{m:'M98',slot:1}},
+  M94:{date:'6. jul', time:'21:00',pairA:['USA','BIH'],pairB:['BEL','SEN'],winnerTo:{m:'M98',slot:2}},
+  M95:{date:'7. jul', time:'22:00',pairA:['ARG','CPV'],pairB:['AUS','EGY'],winnerTo:{m:'M100',slot:1}},
+  M96:{date:'7. jul', time:'18:00',pairA:['SUI','ALG'],pairB:['COL','GHA'],winnerTo:{m:'M100',slot:2}}
+};
+const r16Order=['M90','M89','M93','M94','M91','M92','M95','M96'];
+
+/* ── ZVANIČNI (stvarni) rezultati Round of 16 — runda je zatvorena, ── */
+/* ── ovi rezultati se automatski prenose u Četvrtfinale.           ── */
+const OFFICIAL_R16 = {
+  M90:{A:'CAN',B:'MAR',winner:'MAR'},   // Morocco pob. Canada 3–0
+  M89:{A:'GER',B:'FRA',winner:'FRA'},   // France pob. Paraguay/Germany-side 1–0
+  M91:{A:'BRA',B:'NOR',winner:'NOR'},   // Norway pob. Brazil 2–1
+  M92:{A:'MEX',B:'ENG',winner:'ENG'},   // England pob. Mexico 3–2
+  M93:{A:'POR',B:'ESP',winner:'ESP'},   // Spain pob. Portugal 1–0
+  M94:{A:'USA',B:'BEL',winner:'BEL'},   // Belgium pob. USA 4–1
+  M95:{A:'ARG',B:'EGY',winner:'ARG'},   // Argentina pob. Egypt 3–2
+  M96:{A:'SUI',B:'COL',winner:'SUI'}    // Switzerland pob. Colombia (pen. 4–3)
+};
+
+/* ── ZVANIČNI (stvarni) rezultati Četvrtfinala — runda je zatvorena, ── */
+/* ── ovi rezultati se automatski prenose u Polufinale.              ── */
+const OFFICIAL_QF = {
+  M97:{A:'FRA',B:'MAR',winner:'FRA'},   // France pob. Morocco
+  M98:{A:'ESP',B:'BEL',winner:'ESP'},   // Spain pob. Belgium
+  M99:{A:'NOR',B:'ENG',winner:'ENG'},   // England pob. Norway
+  M100:{A:'ARG',B:'SUI',winner:'ARG'}   // Argentina pob. Switzerland
+};
+
+/* ── ZVANIČNI (stvarni) rezultati Polufinala — runda je zatvorena,  ── */
+/* ── pobjednici idu u Finale, poraženi u meč za 3. mjesto.          ── */
+const OFFICIAL_SF = {
+  M101:{A:'FRA',B:'ESP',winner:'ESP'},  // Spain pob. France
+  M102:{A:'ENG',B:'ARG',winner:'ARG'}   // Argentina pob. England
+};
+
+const matches={
+  M97: {round:'qf',date:'9. jul', time:'22:00',src1:'M89',src2:'M90',winnerTo:{m:'M101',slot:1}},
+  M98: {round:'qf',date:'10. jul',time:'21:00',src1:'M93',src2:'M94',winnerTo:{m:'M101',slot:2}},
+  M99: {round:'qf',date:'11. jul',time:'23:00',src1:'M91',src2:'M92',winnerTo:{m:'M102',slot:1}},
+  M100:{round:'qf',date:'12. jul',time:'03:00',src1:'M95',src2:'M96',winnerTo:{m:'M102',slot:2}},
+  M101:{round:'sf',date:'14. jul',time:'21:00',src1:'M97',src2:'M98', winnerTo:{m:'M104',slot:1},loserTo:{m:'M103',slot:1}},
+  M102:{round:'sf',date:'15. jul',time:'21:00',src1:'M99',src2:'M100',winnerTo:{m:'M104',slot:2},loserTo:{m:'M103',slot:2}},
+  M103:{round:'tp',date:'18. jul',time:'11:00',src1:'M101',src2:'M102',srcType:'loser'},
+  M104:{round:'final',date:'19. jul',time:'21:00',src1:'M101',src2:'M102',srcType:'winner'}
+};
+const roundMatchIds={
+  qf:['M97','M98','M99','M100'],
+  sf:['M101','M102'],
+  tp:['M103'],
+  final:['M104']
+};
+
+const qualA={}, qualB={};
+const selections={};
+const sentRounds={};
+const totalPicks=8 /*R16*/ + 4 + 2 + 1 + 1; // 16
+
+function teamOnSlot(mid,slot){
+  const m=matches[mid];
+  const src=slot===1?m.src1:m.src2;
+  if(r16Matches[src]!==undefined){
+    if(!selections[src]) return null;
+    return selections[src];
   }
+  if(!selections[src]) return null;
+  if(m.srcType==='loser') return loserOf(src);
+  return selections[src];
+}
+function loserOf(mid){
+  const w=selections[mid]; if(!w) return null;
+  const a=teamOnSlot(mid,1), b=teamOnSlot(mid,2);
+  if(a===null||b===null) return null;
+  return w===a?b:a;
+}
+function bothKnown(mid){ return teamOnSlot(mid,1)!==null && teamOnSlot(mid,2)!==null; }
 
-  function buildShuffledQuestions() {
-    return QUIZ_QUESTIONS.map((q) => {
-      const order = shuffleArray([0, 1, 2]);
-      const newAnswers = order.map((originalIndex) => q.answers[originalIndex]);
-      const newCorrectIndex = order.indexOf(q.correctIndex);
+function buildTabs(){
+  const tabs=document.getElementById('roundTabs');
+  const panels=document.getElementById('roundPanels');
+  rounds.forEach((r,ri)=>{
+    const cnt=(r.id==='r16')?r16Order.length:roundMatchIds[r.id].length;
+    const tab=document.createElement('button');
+    tab.className='round-tab'+(ri===0?' active':'');
+    tab.id='tab-'+r.id;
+    tab.innerHTML=`${r.label} <span class="chip-score" id="score-${r.id}">0/${cnt}</span><span class="chip-sent">poslato</span>`;
+    tab.onclick=()=>switchTab(r.id);
+    tabs.appendChild(tab);
+    const panel=document.createElement('div');
+    panel.className='round-panel'+(ri===0?' active':'');
+    panel.id='panel-'+r.id;
+    panel.innerHTML=(r.id==='r16')?buildR16Panel(r):buildSimplePanel(r);
+    panels.appendChild(panel);
+  });
+}
+
+function optBtn(mid,side,team){
+  return `<button class="opt-btn" id="opt-${mid}-${side}-${team}" onclick="pickQual('${mid}','${side}','${team}')"><span class="fl">${FLAGS[team]||'🏟'}</span>${NAMES[team]||team}</button>`;
+}
+
+function buildR16Panel(r){
+  const cards=r16Order.map((mid,idx)=>{
+    const m=r16Matches[mid];
+    return `<div class="match-card" id="mc-${mid}">
+      <div class="match-head">
+        <span class="match-num">Meč ${idx+1} · ${mid}</span>
+        <span class="match-date">${m.date} · ${m.time}</span>
+      </div>
+      <div class="match-body">
+        <div class="pair-step">
+          <div class="step-lbl">1 · Ko prolazi <b>(gornji par)</b></div>
+          <div class="pair-row">${optBtn(mid,'A',m.pairA[0])}${optBtn(mid,'A',m.pairA[1])}</div>
+        </div>
+        <div class="pair-step">
+          <div class="step-lbl">2 · Ko prolazi <b>(donji par)</b></div>
+          <div class="pair-row">${optBtn(mid,'B',m.pairB[0])}${optBtn(mid,'B',m.pairB[1])}</div>
+        </div>
+        <div class="final-step">
+          <div class="step-lbl">3 · Ko pobjeđuje i ide u četvrtfinale</div>
+          <div class="win-row">
+            <button class="win-btn" id="win-${mid}-A" onclick="pickR16Winner('${mid}','A')" disabled>—</button>
+            <button class="win-btn" id="win-${mid}-B" onclick="pickR16Winner('${mid}','B')" disabled>—</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return roundShell(r,cards);
+}
+
+function buildSimplePanel(r){
+  const cards=roundMatchIds[r.id].map((mid,idx)=>{
+    return `<div class="match-card" id="mc-${mid}">
+      <div class="match-head">
+        <span class="match-num">Meč ${idx+1} · ${mid}</span>
+        <span class="match-date">${matches[mid].date} · ${matches[mid].time}</span>
+      </div>
+      <div class="match-body">
+        <div class="match-teams">
+          <div class="team-slot"><div class="team-flag" id="flag-${mid}-1">🏟</div><div class="team-label tbd" id="name-${mid}-1">TBD</div></div>
+          <div class="vs-badge">VS</div>
+          <div class="team-slot away"><div class="team-flag" id="flag-${mid}-2">🏟</div><div class="team-label tbd" id="name-${mid}-2">TBD</div></div>
+        </div>
+        <div class="winner-pick">
+          <button class="pick-btn" id="pick-${mid}-1" onclick="pickWinner('${mid}',1)" disabled>TBD</button>
+          <button class="pick-btn" id="pick-${mid}-2" onclick="pickWinner('${mid}',2)" disabled>TBD</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return roundShell(r,cards);
+}
+
+function roundShell(r,cards){
+  return `<div class="round-info-bar">
+    <div class="ri-left"><h3>${r.label}</h3></div>
+    <div class="ri-right"><div class="nagrad">${r.nagrada}</div><div class="nagrad-lbl">Nagrada</div></div>
+  </div>
+  <div class="deadline-bar"><span class="deadline-dot"></span>Rok za popunjavanje: ${r.deadline}</div>
+  <div class="matches-grid">${cards}</div>
+  <div class="round-submit-wrap">
+    <h3>Zaključaj rundu: ${r.label}</h3>
+    <p>Unesi podatke i pošalji predikciju za ovu rundu. Šalje se samo ova runda.</p>
+    <div class="round-form-grid">
+      <div class="field"><label>Ime i prezime</label><input id="fname-${r.id}" placeholder="Npr. Marko Nikolić" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Email adresa</label><input id="femail-${r.id}" type="email" placeholder="Npr. marko@email.com" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>Broj telefona</label><input id="fphone-${r.id}" placeholder="Npr. 067 123 456" oninput="checkRound('${r.id}')"/></div>
+      <div class="field"><label>ID igrača (admiralbet.me)</label><input id="fid-${r.id}" placeholder="Npr. 1234567" oninput="checkRound('${r.id}')"/></div>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="terms-${r.id}" onchange="checkRound('${r.id}')"/>
+      <label for="terms-${r.id}">Prihvatam <a href="https://d2w8nejxl5cqxv.cloudfront.net/cg/sp/brackets/index.html#rules-sec">Pravila promocije</a> i saglasan/a sam sa uslovima učešća. 18+.</label>
+    </div>
+    <button class="submit-btn" id="submit-${r.id}" disabled onclick="submitRound('${r.id}')">POŠALJI PREDIKCIJU</button>
+    <div class="round-status" id="status-${r.id}"></div>
+  </div>`;
+}
+
+function switchTab(id){
+  document.querySelectorAll('.round-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.round-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+function pickQual(mid,side,team){
+  if(sentRounds['r16']) return;
+  const cur=(side==='A')?qualA[mid]:qualB[mid];
+  if(cur===team){
+    if(side==='A'){ delete qualA[mid]; } else { delete qualB[mid]; }
+    if(selections[mid]===team){ delete selections[mid]; clearDownstreamFrom(mid); }
+  }else{
+    if(side==='A'){ qualA[mid]=team; } else { qualB[mid]=team; }
+    if(selections[mid] && selections[mid]!==qualA[mid] && selections[mid]!==qualB[mid]){
+      delete selections[mid]; clearDownstreamFrom(mid);
+    }
+  }
+  renderAll();
+}
+
+function pickR16Winner(mid,side){
+  if(sentRounds['r16']) return;
+  const team=(side==='A')?qualA[mid]:qualB[mid];
+  if(!team) return;
+  if(selections[mid]===team){ delete selections[mid]; }
+  else { selections[mid]=team; }
+  clearDownstreamFrom(mid);
+  renderAll();
+}
+
+function pickWinner(mid,slot){
+  if(sentRounds[matches[mid].round]) return;
+  if(!bothKnown(mid)) return;
+  const team=teamOnSlot(mid,slot);
+  if(!team) return;
+  if(selections[mid]===team){ delete selections[mid]; }
+  else { selections[mid]=team; }
+  clearDownstreamFrom(mid);
+  renderAll();
+}
+
+function clearDownstreamFrom(mid){
+  const wt = r16Matches[mid] ? r16Matches[mid].winnerTo : matches[mid].winnerTo;
+  const lt = matches[mid] ? matches[mid].loserTo : null;
+  [wt,lt].forEach(link=>{
+    if(!link) return;
+    const nid=link.m;
+    if(sentRounds[matches[nid] ? matches[nid].round : null]) return;
+    if(selections[nid]!==undefined){
+      const a=teamOnSlot(nid,1), b=teamOnSlot(nid,2);
+      if(selections[nid]!==a && selections[nid]!==b){ delete selections[nid]; }
+    }
+    clearDownstreamFrom(nid);
+  });
+}
+
+function renderAll(){
+  r16Order.forEach(renderR16);
+  Object.keys(matches).forEach(renderSimple);
+  updateScores();
+  updateChampion();
+  rounds.forEach(r=>checkRound(r.id));
+}
+
+function renderR16(mid){
+  const m=r16Matches[mid];
+  const locked=sentRounds['r16'];
+  ['A','B'].forEach(side=>{
+    const pair=(side==='A')?m.pairA:m.pairB;
+    const qual=(side==='A')?qualA[mid]:qualB[mid];
+    pair.forEach(team=>{
+      const b=document.getElementById('opt-'+mid+'-'+side+'-'+team);
+      b.classList.toggle('selected',qual===team);
+      b.disabled=locked;
+    });
+  });
+  const wa=document.getElementById('win-'+mid+'-A');
+  const wb=document.getElementById('win-'+mid+'-B');
+  const qa=qualA[mid], qb=qualB[mid];
+  setWin(wa,qa,mid,locked);
+  setWin(wb,qb,mid,locked);
+}
+function setWin(btn,team,mid,locked){
+  if(team){
+    btn.innerHTML=`<span class="fl">${FLAGS[team]||'🏟'}</span>${NAMES[team]||team}`;
+    btn.disabled=locked;
+  }else{
+    btn.textContent='—';
+    btn.disabled=true;
+  }
+  btn.classList.toggle('selected', team && selections[mid]===team);
+}
+
+function renderSimple(mid){
+  const m=matches[mid];
+  const t1=teamOnSlot(mid,1), t2=teamOnSlot(mid,2);
+  const known=t1!==null&&t2!==null;
+  setSlot(mid,1,t1); setSlot(mid,2,t2);
+  const card=document.getElementById('mc-'+mid);
+  const b1=document.getElementById('pick-'+mid+'-1');
+  const b2=document.getElementById('pick-'+mid+'-2');
+  const locked=sentRounds[m.round];
+  card.classList.toggle('waiting',!known);
+  [[b1,t1],[b2,t2]].forEach(([btn,team])=>{
+    btn.textContent = team? (NAMES[team]||team) : 'TBD';
+    btn.disabled = !known || locked;
+    btn.classList.toggle('selected', team && selections[mid]===team);
+  });
+}
+function setSlot(mid,slot,team){
+  const nameEl=document.getElementById('name-'+mid+'-'+slot);
+  const flagEl=document.getElementById('flag-'+mid+'-'+slot);
+  if(team){ nameEl.textContent=NAMES[team]||team; nameEl.classList.remove('tbd'); flagEl.textContent=FLAGS[team]||'🏟'; }
+  else{ nameEl.textContent='TBD'; nameEl.classList.add('tbd'); flagEl.textContent='🏟'; }
+}
+
+function updateScores(){
+  let done=0;
+  let r16done=0;
+  r16Order.forEach(mid=>{ if(selections[mid]) r16done++; });
+  done+=r16done;
+  document.getElementById('score-r16').textContent=`${r16done}/${r16Order.length}`;
+  ['qf','sf','tp','final'].forEach(rid=>{
+    let rdone=0;
+    roundMatchIds[rid].forEach(mid=>{ if(selections[mid]) rdone++; });
+    done+=rdone;
+    document.getElementById('score-'+rid).textContent=`${rdone}/${roundMatchIds[rid].length}`;
+  });
+  document.getElementById('pbText').textContent=`${done} / ${totalPicks} mečeva`;
+  document.getElementById('pbFill').style.width=`${(done/totalPicks)*100}%`;
+}
+
+function updateChampion(){
+  const champ=selections['M104'];
+  document.getElementById('championName').textContent=champ?(NAMES[champ]||champ):'—';
+}
+
+function roundComplete(rid){
+  if(rid==='r16') return r16Order.every(mid=>qualA[mid]&&qualB[mid]&&selections[mid]);
+  return roundMatchIds[rid].every(mid=>selections[mid]);
+}
+
+function checkRound(rid){
+  if(sentRounds[rid]) return;
+  const name=document.getElementById('fname-'+rid).value.trim();
+  const email=document.getElementById('femail-'+rid).value.trim();
+  const phone=document.getElementById('fphone-'+rid).value.trim();
+  const idNum=document.getElementById('fid-'+rid).value.trim();
+  const terms=document.getElementById('terms-'+rid).checked;
+  const filled=roundComplete(rid);
+  const ready=name&&email&&phone&&idNum&&terms&&filled;
+  const btn=document.getElementById('submit-'+rid);
+  btn.disabled=!ready;
+  btn.classList.toggle('ready',ready);
+  if(ready) btn.textContent='POŠALJI PREDIKCIJU';
+  else if(!filled) btn.textContent='Popuni sve mečeve u rundi';
+  else btn.textContent='Unesi sve podatke';
+}
+
+function showStatus(rid,msg,type){
+  const el=document.getElementById('status-'+rid);
+  el.textContent=msg;
+  el.className='round-status show '+type;
+}
+
+async function submitRound(rid){
+  const btn=document.getElementById('submit-'+rid);
+  if(btn.disabled||sentRounds[rid]) return;
+  const r=rounds.find(x=>x.id===rid);
+
+  const name=document.getElementById('fname-'+rid).value.trim();
+  const email=document.getElementById('femail-'+rid).value.trim();
+  const phone=document.getElementById('fphone-'+rid).value.trim();
+  const idNum=document.getElementById('fid-'+rid).value.trim();
+
+  let picks;
+  if(rid==='r16'){
+    picks=r16Order.map(mid=>{
+      const m=r16Matches[mid];
       return {
-        text: q.text,
-        answers: newAnswers,
-        correctIndex: newCorrectIndex
+        matchId:mid,
+        pairA:m.pairA, qualA:qualA[mid],
+        pairB:m.pairB, qualB:qualB[mid],
+        team1:qualA[mid], team2:qualB[mid],
+        pick:selections[mid]
       };
     });
+  }else{
+    picks=roundMatchIds[rid].map(mid=>({
+      matchId:mid,
+      team1:teamOnSlot(mid,1),
+      team2:teamOnSlot(mid,2),
+      pick:selections[mid]
+    }));
   }
 
-  function setStatus(el, msg, type = '') {
-    el.textContent = msg || '';
-    el.className = 'status' + (type ? ' ' + type : '');
-  }
+  btn.disabled=true; btn.textContent='Slanje...';
+  showStatus(rid,'Slanje predikcije...','ok');
 
-  function sanitizeInitials(value) {
-    return value
-      .trim()
-      .toUpperCase()
-      .replace(/[^A-ZČĆŽŠĐ]/g, '')
-      .slice(0, 3);
-  }
+  const payload={
+    action:'submitRound',
+    roundId:rid,
+    roundLabel:r.label,
+    name,email,phone,id:idNum,
+    totalMatches:picks.length,
+    picks,
+    predictedChampion:selections['M104']||null,
+    submittedAtClient:new Date().toISOString(),
+    pageUrl:location.href,
+    userAgent:navigator.userAgent
+  };
 
-  function sanitizeEmail(value) {
-    return value.trim().toLowerCase();
-  }
-
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  function isValidInitials(initials) {
-    return /^[A-ZČĆŽŠĐ]{2,3}$/.test(initials);
-  }
-
-  function formatTime(totalSeconds) {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-  }
-
-  function elapsedSeconds() {
-    if (!startTimeMs) return 0;
-    return Math.max(0, Math.floor((Date.now() - startTimeMs) / 1000));
-  }
-
-  function updateTimerUI() {
-    timerText.textContent = formatTime(elapsedSeconds());
-  }
-
-  function createParticipantToken(initials, email) {
-    return btoa(unescape(encodeURIComponent(initials + '|' + email + '|' + Date.now()))).replace(/=/g, '');
-  }
-
-  function showQuiz() {
-    registerSection.style.display = 'none';
-    quizSection.classList.add('active');
-    resultSection.classList.remove('active');
-    promoBannerShell.classList.remove('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function showResult() {
-    quizSection.classList.remove('active');
-    resultSection.classList.add('active');
-    promoBannerShell.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    startPromoRedirect();
-  }
-
-  function startPromoRedirect() {
-    if (redirectDone) return;
-
-    let remaining = REDIRECT_SECONDS;
-    promoRedirectCount.textContent = String(remaining);
-
-    if (redirectInterval) {
-      clearInterval(redirectInterval);
+  try{
+    const res=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(data && data.success){
+      lockRound(rid);
+      showStatus(rid,'✓ Predikcija za '+r.label+' je sačuvana! Rezultat dobijaš email-om nakon runde.','ok');
+    }else{
+      btn.disabled=false; btn.classList.add('ready'); btn.textContent='POŠALJI PREDIKCIJU';
+      showStatus(rid,(data&&data.message)||'Greška pri slanju. Pokušaj ponovo.','err');
     }
-
-    redirectInterval = setInterval(() => {
-      remaining -= 1;
-
-      if (remaining <= 0) {
-        clearInterval(redirectInterval);
-        promoRedirectCount.textContent = '0';
-        redirectDone = true;
-        window.location.href = PROMO_BANNER_URL;
-        return;
-      }
-
-      promoRedirectCount.textContent = String(remaining);
-    }, 1000);
+  }catch(e){
+    btn.disabled=false; btn.classList.add('ready'); btn.textContent='POŠALJI PREDIKCIJU';
+    showStatus(rid,'Greška u konekciji. Pokušaj ponovo.','err');
   }
+}
 
-  function renderQuestion() {
-    const q = activeQuestions[currentQuestion];
-    questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${activeQuestions.length}`;
-    questionText.textContent = q.text;
-    progressBar.style.width = `${((currentQuestion + 1) / activeQuestions.length) * 100}%`;
-    answersWrap.innerHTML = '';
+function lockRound(rid){
+  sentRounds[rid]=true;
+  const ids=(rid==='r16')?r16Order:roundMatchIds[rid];
+  ids.forEach(mid=>{
+    const mc=document.getElementById('mc-'+mid);
+    if(mc) mc.classList.add('locked');
+  });
+  document.getElementById('tab-'+rid).classList.add('sent');
+  ['fname','femail','fphone','fid','terms'].forEach(f=>{const el=document.getElementById(f+'-'+rid); if(el) el.disabled=true;});
+  const btn=document.getElementById('submit-'+rid);
+  btn.disabled=true; btn.classList.remove('ready'); btn.classList.add('done');
+  const r=rounds.find(x=>x.id===rid);
+  btn.textContent='✓ '+r.label+' poslato';
+  renderAll();
+}
 
-    q.answers.forEach((answerText, index) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'answer' + (selectedAnswers[currentQuestion] === index ? ' selected' : '');
-      btn.textContent = answerText;
+/* ── Zaključava zadatu rundu i upisuje zvanične rezultate umjesto ── */
+/* ── da čeka korisnički unos. Koristi se za R16, QF, SF, itd.     ── */
+function lockRoundWithOfficialResults(rid, official){
+  Object.keys(official).forEach(function(mid){
+    qualA[mid] = official[mid].A;
+    qualB[mid] = official[mid].B;
+    selections[mid] = official[mid].winner;
+  });
+  sentRounds[rid] = true;
 
-      btn.addEventListener('click', () => {
-        selectedAnswers[currentQuestion] = index;
-        renderQuestion();
-        nextBtn.disabled = false;
-      });
+  document.getElementById('tab-'+rid).classList.add('sent');
 
-      answersWrap.appendChild(btn);
-    });
-
-    nextBtn.disabled = selectedAnswers[currentQuestion] === null;
-    nextBtn.textContent = currentQuestion === activeQuestions.length - 1 ? 'Završi kviz' : 'Dalje';
-    setStatus(quizStatus, '');
-  }
-
-  function calculateScore() {
-    let correct = 0;
-    for (let i = 0; i < activeQuestions.length; i++) {
-      if (selectedAnswers[i] === activeQuestions[i].correctIndex) {
-        correct++;
-      }
-    }
-    return correct;
-  }
-
-  async function apiRequest(payload) {
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      throw new Error('Server error: ' + response.status);
-    }
-
-    return await response.json();
-  }
-
-  async function reserveEmail(initials, email) {
-    return apiRequest({
-      action: 'reserveParticipant',
-      initials,
-      name: initials,
-      email,
-      participantToken,
-      userAgent: navigator.userAgent,
-      pageUrl: location.href,
-      referrer: document.referrer || '',
-      utm_source: new URLSearchParams(location.search).get('utm_source') || '',
-      utm_medium: new URLSearchParams(location.search).get('utm_medium') || '',
-      utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
-    });
-  }
-
-  async function submitQuiz(initials, email, correctAnswers, timeSeconds) {
-    return apiRequest({
-      action: 'submitQuiz',
-      initials,
-      name: initials,
-      email,
-      participantToken,
-      totalQuestions: activeQuestions.length,
-      correctAnswers,
-      timeSeconds,
-      answers: selectedAnswers,
-      submittedAtClient: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      pageUrl: location.href,
-      referrer: document.referrer || ''
-    });
-  }
-
-  initialsInput.addEventListener('input', () => {
-    initialsInput.value = sanitizeInitials(initialsInput.value);
+  const ids = (rid==='r16') ? r16Order : roundMatchIds[rid];
+  ids.forEach(function(mid){
+    const mc = document.getElementById('mc-'+mid);
+    if(mc) mc.classList.add('locked');
   });
 
-  promoBannerClose.addEventListener('click', () => {
-    if (redirectInterval) {
-      clearInterval(redirectInterval);
-    }
-    redirectDone = true;
-    promoBannerShell.classList.remove('active');
+  ['fname','femail','fphone','fid','terms'].forEach(function(f){
+    const el = document.getElementById(f+'-'+rid);
+    if(el) el.disabled = true;
   });
 
-  startBtn.addEventListener('click', async () => {
-    const initials = sanitizeInitials(initialsInput.value);
-    const email = sanitizeEmail(emailInput.value);
+  const deadlineBar = document.querySelector('#panel-'+rid+' .deadline-bar');
+  if(deadlineBar) deadlineBar.style.display = 'none';
 
-    if (!isValidInitials(initials)) {
-      setStatus(registerStatus, 'Unesi 2 ili 3 slova za inicijale.', 'error');
-      return;
-    }
+  const btn = document.getElementById('submit-'+rid);
+  btn.disabled = true;
+  btn.classList.remove('ready');
+  btn.classList.add('done');
+  const r = rounds.find(x=>x.id===rid);
+  btn.textContent = '✓ '+r.label+' — ZAVRŠENO';
+}
 
-    if (!isValidEmail(email)) {
-      setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-      return;
-    }
+buildTabs();
 
-    if (!privacyInput.checked) {
-      setStatus(registerStatus, 'Potvrdi saglasnost.', 'error');
-      return;
-    }
+lockRoundWithOfficialResults('r16', OFFICIAL_R16);
+showStatus('r16','Round of 16 je zatvorena. Rezultati: Maroko, Francuska, Norveška, Engleska, Španija, Belgija, Argentina, Švajcarska (na penale).','ok');
 
-    startBtn.disabled = true;
-    setStatus(registerStatus, '');
-    participantToken = createParticipantToken(initials, email);
+lockRoundWithOfficialResults('qf', OFFICIAL_QF);
+showStatus('qf','Četvrtfinale je zatvoreno. Rezultati: Francuska, Španija, Engleska, Argentina.','ok');
 
-    try {
-      const data = await reserveEmail(initials, email);
+lockRoundWithOfficialResults('sf', OFFICIAL_SF);
+showStatus('sf','Polufinale je zatvoreno. Finale: Španija–Argentina. Meč za 3. mjesto: Francuska–Engleska.','ok');
 
-      if (!data.success) {
-        if (data.message === 'Ovaj email je već korišćen za učešće u kvizu.') {
-          setStatus(registerStatus, 'Ovaj email je već iskorišćen za učešće.', 'error');
-        } else if (data.message === 'Invalid email.') {
-          setStatus(registerStatus, 'Provjeri unos email adrese.', 'error');
-        } else if (data.message === 'Invalid initials.') {
-          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-        } else if (data.message === 'Invalid name.') {
-          setStatus(registerStatus, 'Unesi ispravne inicijale.', 'error');
-        } else if (data.message === 'Missing participant token.') {
-          setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-        } else {
-          setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
-        }
-
-        startBtn.disabled = false;
-        return;
-      }
-
-      startTimeMs = Date.now();
-      updateTimerUI();
-      timerInterval = setInterval(updateTimerUI, 1000);
-      currentQuestion = 0;
-      activeQuestions = buildShuffledQuestions();
-      selectedAnswers = new Array(activeQuestions.length).fill(null);
-      renderQuestion();
-      showQuiz();
-    } catch (error) {
-      setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
-      startBtn.disabled = false;
-    }
-  });
-
-  nextBtn.addEventListener('click', async () => {
-    if (selectedAnswers[currentQuestion] === null) {
-      setStatus(quizStatus, 'Izaberi odgovor.', 'error');
-      return;
-    }
-
-    if (currentQuestion < activeQuestions.length - 1) {
-      currentQuestion++;
-      renderQuestion();
-      return;
-    }
-
-    nextBtn.disabled = true;
-    setStatus(quizStatus, '');
-
-    const initials = sanitizeInitials(initialsInput.value);
-    const email = sanitizeEmail(emailInput.value);
-    const correctAnswers = calculateScore();
-    const timeSeconds = elapsedSeconds();
-
-    try {
-      const data = await submitQuiz(initials, email, correctAnswers, timeSeconds);
-
-      clearInterval(timerInterval);
-      finalCorrect.textContent = `${correctAnswers}/${activeQuestions.length}`;
-      finalTime.textContent = formatTime(timeSeconds);
-      finalStatus.textContent = data.success ? 'Poslato' : 'Provjera';
-      showResult();
-    } catch (error) {
-      nextBtn.disabled = false;
-      setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
-    }
-  });
+switchTab('tp');
+renderAll();
 </script>
 </body>
 </html>
