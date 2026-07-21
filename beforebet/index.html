@@ -616,6 +616,7 @@
         <button data-view="bookmakers">Bookmakers</button>
         <button data-view="bonuses">Bonuses</button>
         <button data-view="guides">Guides &amp; News</button>
+        <button data-view="education">Education</button>
         <button data-view="community">Community</button>
         <button data-view="partners">Partners</button>
         <button data-view="admin">Admin</button>
@@ -652,6 +653,7 @@
       <p class="drawer-market-note">Auto-detected from your location by default. Only switch manually if you're browsing from elsewhere — content and operators shown are matched to the selected market.</p>
       <nav class="mobile-nav" id="mobileNav">
         <button data-view="home" class="active">Home</button>
+        <button data-view="education">Education</button>
         <button data-view="partners">Partners</button>
         <button data-view="admin">Admin</button>
       </nav>
@@ -741,6 +743,7 @@
         <button data-ctab="games">Games</button>
         <button data-ctab="providers">Providers</button>
         <button data-ctab="tournaments">Tournaments</button>
+        <button data-ctab="headtohead">Head-to-Head</button>
       </div>
       <div id="ctab-casinos">
         <div class="chip-row" id="paymentChipRow"></div>
@@ -778,6 +781,14 @@
           </select>
         </div>
         <div id="tournamentList"></div>
+      </div>
+      <div id="ctab-headtohead" style="display:none;">
+        <div class="compare-picker">
+          <select id="cmpCasinoA" onchange="renderCasinoCompare()"></select>
+          <span style="color:var(--faint);">vs</span>
+          <select id="cmpCasinoB" onchange="renderCasinoCompare()"></select>
+        </div>
+        <div class="table-wrap"><table class="compare-table"><tbody id="casinoCompareTbody"></tbody></table></div>
       </div>
     </section>
 
@@ -842,6 +853,36 @@
 
       <div class="head"><div><h2 style="font-size:19px;">Getting started</h2></div></div>
       <div id="guideList"></div>
+
+      <div class="newsletter-box" style="margin-top:26px;">
+        <div>
+          <h3 id="eduTeaserTitle">Want to play smarter, not just place bets?</h3>
+          <p id="eduTeaserDesc">Odds, house edge, hand rankings and value betting explained in plain language — no fluff.</p>
+        </div>
+        <button class="btn btn-gold" onclick="go('education')" id="eduTeaserBtn">Visit Education →</button>
+      </div>
+    </section>
+
+    <!-- ============ EDUCATION ============ -->
+    <section class="view" id="view-education">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Learn</p><h2 id="eduHeading">Education</h2></div></div>
+      <p style="color:var(--faint);font-size:12.5px;max-width:580px;margin:-6px 0 20px;" id="eduIntro">Straightforward explainers — game mechanics, odds math and terminology, so you understand what you're looking at before you play.</p>
+      <div class="subtabs" id="eduSubtabs">
+        <button data-etab="casino" class="active" id="eduTabCasinoLabel">Casino Strategy</button>
+        <button data-etab="sport" id="eduTabSportLabel">Sports Betting Basics</button>
+      </div>
+      <div id="etab-casino">
+        <div class="news-grid" id="eduCasinoGrid"></div>
+      </div>
+      <div id="etab-sport" style="display:none;">
+        <div class="news-grid" id="eduSportGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============ EDUCATION ARTICLE DETAIL ============ -->
+    <section class="view" id="view-edu-article">
+      <button class="back-link" id="eduBackLink" onclick="go('education')">← Back to Education</button>
+      <div id="eduArticleContent"></div>
     </section>
 
     <!-- ============ COMMUNITY ============ -->
@@ -1557,13 +1598,19 @@ function submitApply(){
 /* ============================================================
    OPERATOR (bookmaker + casino share the same list/modal renderer)
    ============================================================ */
-function opRowHtml(o, kind){
+const SITE_YEAR = 2026;
+function getTopCasinoId(mkt){
+  const list = casinos.filter(c=>c.market===mkt);
+  return list.length ? [...list].sort((a,b)=>b.rating-a.rating)[0].id : null;
+}
+function opRowHtml(o, kind, isTopOfYear){
   const featuredTag = o.featured ? `<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>` : '';
+  const yearTag = isTopOfYear ? `<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="Highest-rated casino in this market, based on our review scores.">🏆 Best ${SITE_YEAR}</span>` : '';
   return `
   <div class="op-row">
     <div class="op-mark">${o.mark}</div>
     <div class="op-name-wrap">
-      <div class="op-name-row"><span class="op-name">${o.name}</span>${featuredTag}</div>
+      <div class="op-name-row"><span class="op-name">${o.name}</span>${featuredTag}${yearTag}</div>
       <div class="op-license">${o.license}</div>
     </div>
     <div class="op-rating">★ ${o.rating} <span class="max">/5</span></div>
@@ -1742,7 +1789,8 @@ function renderBookmakers(){
 let activePaymentFilter='All', activeGameFilter='All', activeBonusFilter='All';
 function renderCasinos(){
   const list0 = casinos.filter(c=>c.market===market);
-  document.getElementById('homeCasinoList').innerHTML = list0.slice(0,3).map(c=>opRowHtml(c,'casino')).join('');
+  const topId = getTopCasinoId(market);
+  document.getElementById('homeCasinoList').innerHTML = list0.slice(0,3).map(c=>opRowHtml(c,'casino', c.id===topId)).join('');
 
   const allPay = ['All', ...new Set(list0.flatMap(c=>c.payments))];
   document.getElementById('paymentChipRow').innerHTML = allPay.map(p=>`<button class="chip ${p===activePaymentFilter?'active':''}" onclick="setPaymentFilter('${p}')">${p}</button>`).join('');
@@ -1756,7 +1804,7 @@ function renderCasinos(){
     return b.rating - a.rating;
   });
   document.getElementById('casinoCount').textContent = `${filtered.length} casino${filtered.length===1?'':'s'} found`;
-  document.getElementById('casinoList').innerHTML = filtered.length ? filtered.map(c=>opRowHtml(c,'casino')).join('') : `<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos match this filter.</p>`;
+  document.getElementById('casinoList').innerHTML = filtered.length ? filtered.map(c=>opRowHtml(c,'casino', c.id===topId)).join('') : `<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos match this filter.</p>`;
 }
 function setPaymentFilter(p){ activePaymentFilter=p; renderCasinos(); }
 
@@ -1902,6 +1950,35 @@ function renderCompare(){
   }).join('');
 }
 
+function initCasinoCompare(){
+  const list = casinos.filter(c=>c.market===market);
+  const opts = list.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('cmpCasinoA').innerHTML = opts;
+  document.getElementById('cmpCasinoB').innerHTML = opts;
+  if(list[1]) document.getElementById('cmpCasinoB').value = list[1].id;
+  renderCasinoCompare();
+}
+function renderCasinoCompare(){
+  const a = casinos.find(x=>x.id===document.getElementById('cmpCasinoA').value);
+  const b = casinos.find(x=>x.id===document.getElementById('cmpCasinoB').value);
+  if(!a||!b) return;
+  const rows = [
+    ['Rating', a.rating, b.rating, true],
+    ['Welcome offer', a.bonus, b.bonus, false],
+    ['Min deposit', a.minDeposit, b.minDeposit, false],
+    ['Withdrawal time', a.withdrawalTime, b.withdrawalTime, false],
+    ['Games', a.games, b.games, true],
+    ['Payment methods', a.payments.join(', '), b.payments.join(', '), false],
+    ['Safety Index', (operatorExtras[a.id]||{}).safety||'—', (operatorExtras[b.id]||{}).safety||'—', true],
+  ];
+  document.getElementById('casinoCompareTbody').innerHTML = rows.map(r=>{
+    const numeric = r[3];
+    const aWin = numeric && parseFloat(r[1]) > parseFloat(r[2]);
+    const bWin = numeric && parseFloat(r[2]) > parseFloat(r[1]);
+    return `<tr><td style="color:var(--faint);width:150px;">${r[0]}</td><td class="${aWin?'compare-winner':''}">${r[1]}</td><td class="${bWin?'compare-winner':''}">${r[2]}</td></tr>`;
+  }).join('');
+}
+
 /* ---------- Complaints Center ---------- */
 let activeComplaintFilter='All';
 function renderComplaints(){
@@ -1926,6 +2003,8 @@ document.querySelectorAll('#casinoSubtabs button').forEach(b=>b.addEventListener
   document.getElementById('ctab-games').style.display=t==='games'?'block':'none';
   document.getElementById('ctab-providers').style.display=t==='providers'?'block':'none';
   document.getElementById('ctab-tournaments').style.display=t==='tournaments'?'block':'none';
+  document.getElementById('ctab-headtohead').style.display=t==='headtohead'?'block':'none';
+  if(t==='headtohead') initCasinoCompare();
   if(t==='games') renderGames();
   if(t==='providers') renderProviders();
   if(t==='tournaments') renderTournaments();
@@ -2025,7 +2104,242 @@ function renderGuides(){
     </div>`).join('');
   document.getElementById('guideList').innerHTML = guides[market].map((g,i)=>`
     <div class="guide-row"><div class="guide-num">${String(i+1).padStart(2,'0')}</div><div><div class="guide-title">${g.title}</div><div class="guide-desc">${g.desc}</div></div></div>`).join('');
+
+  document.getElementById('eduTeaserTitle').textContent = market==='UK' ? 'Want to play smarter, not just place bets?' : 'Vuoi giocare in modo più consapevole, non solo scommettere?';
+  document.getElementById('eduTeaserDesc').textContent = market==='UK' ? 'Odds, house edge, hand rankings and value betting explained in plain language — no fluff.' : 'Quote, vantaggio del banco, combinazioni di poker e value betting spiegati in modo semplice — senza fronzoli.';
+  document.getElementById('eduTeaserBtn').textContent = market==='UK' ? 'Visit Education →' : 'Vai a Formazione →';
 }
+
+/* ============================================================
+   EDUCATION — casino strategy + sports betting basics
+   ============================================================ */
+const eduArticles = {
+  UK:{
+    casino:[
+      {id:'roulette-odds', title:`Roulette bets explained: odds, payouts and house edge`, summary:`Every bet type on the wheel, side by side — so you know exactly what you're trading off.`,
+        body:[
+          `Every bet on a roulette table pays out at odds based on how many numbers it covers — the fewer numbers, the bigger the payout, but the lower your chance of hitting it. Because of the zero (and the double zero on American wheels), the maths never quite balances in the player's favour, no matter which bet you choose.`,
+          `On a European wheel (single zero, 37 pockets), the house edge is a constant 2.70% across every bet type — straight-up numbers pay more but hit less often, even-money bets pay less but hit closer to half the time. It genuinely doesn't matter which one you pick for your long-run expected loss; it only changes how bumpy the ride is.`,
+          `American wheels add a second zero (38 pockets), which roughly doubles the house edge to 5.26% on every bet except the five-number "top line" bet, which sits at 7.89% — the single worst bet on the table. If you have a choice between European and American roulette, European is mathematically better for you every time.`,
+          `House edge is a long-run average, not a guarantee for any single spin — short sessions can and do swing either way. Set a budget before you sit down and treat what you spend as the cost of entertainment, not an investment.`
+        ],
+        table:{headers:['Bet type','Covers','Payout','European odds','House edge'], rows:[
+          ['Straight up','1 number','35:1','2.7%','2.70%'],
+          ['Split','2 numbers','17:1','5.4%','2.70%'],
+          ['Street','3 numbers','11:1','8.1%','2.70%'],
+          ['Corner','4 numbers','8:1','10.8%','2.70%'],
+          ['Six line','6 numbers','5:1','16.2%','2.70%'],
+          ['Dozen / Column','12 numbers','2:1','32.4%','2.70%'],
+          ['Even money (Red/Black, Odd/Even, High/Low)','18 numbers','1:1','48.6%','2.70%'],
+        ]}},
+      {id:'poker-hand-rankings', title:`Poker hand rankings — and why they matter more than "feel"`, summary:`The order of every hand from Royal Flush to High Card, plus how that maps to real decisions at the table.`,
+        body:[
+          `Every poker variant that uses hand rankings (Texas Hold'em, Omaha, five-card draw) uses the same order of strength, rarest to most common. Knowing the order cold — without pausing to think — is the baseline skill everything else in the game builds on.`,
+          `The gap between hands matters as much as the order. A Full House beats a Flush, but both are rare enough that when either shows up, it's usually the best hand at a small table. The most common mistake beginners make is overvaluing One Pair or Two Pair against multiple opponents — the more players see the flop, the more likely someone has connected with something stronger.`,
+          `Starting hand selection follows from this: hands like a pair of Aces or Kings are strong precisely because they're already partway to a made hand before the flop even comes down. Folding weak starting hands isn't overly cautious, it's just following the maths of how rarely they turn into a winning hand by the river.`
+        ],
+        table:{headers:['Rank','Hand','Example'], rows:[
+          ['1 (highest)','Royal Flush','10-J-Q-K-A, same suit'],
+          ['2','Straight Flush','5 consecutive cards, same suit'],
+          ['3','Four of a Kind','Four cards of the same rank'],
+          ['4','Full House','Three of a kind + a pair'],
+          ['5','Flush','Five cards, same suit, any order'],
+          ['6','Straight','Five consecutive cards, mixed suits'],
+          ['7','Three of a Kind','Three cards of the same rank'],
+          ['8','Two Pair','Two separate pairs'],
+          ['9','One Pair','Two cards of the same rank'],
+          ['10 (lowest)','High Card','No combination — highest single card plays'],
+        ]}},
+      {id:'slot-volatility', title:`Slot volatility: how to pick a game that matches how you play`, summary:`RTP tells you the long-run average. Volatility tells you what the session actually feels like.`,
+        body:[
+          `Return to Player (RTP) and volatility answer two different questions. RTP is the percentage of wagered money a slot returns over a very long run — it says nothing about how that money comes back to you. Volatility (sometimes called variance) is what actually shapes your session: how often you win, and how big those wins are relative to your bet.`,
+          `Low volatility slots pay small wins often — your balance moves in small steps, sessions last longer on the same budget, and big multipliers are rare. They suit players who want a longer, steadier session rather than a shot at a big number.`,
+          `High volatility slots pay rarely, but the wins that do land can be large multiples of your stake — long dry stretches are normal, not a sign anything is wrong. These suit players with a bigger bankroll relative to their bet size and a higher tolerance for losing streaks between hits.`,
+          `There's no "better" choice — only a better match for your bankroll and how long you want to play. A useful rule of thumb: if you're not sure, start with medium volatility and a stake size that lets you play at least 100–200 spins before you'd be out of budget.`
+        ],
+        table:{headers:['Volatility','Win frequency','Typical win size','Best suited to'], rows:[
+          ['Low','Frequent','Small','Longer sessions, smaller bankroll'],
+          ['Medium','Moderate','Moderate','Balanced play'],
+          ['High','Rare','Large','Bigger bankroll, higher risk tolerance'],
+        ]}},
+    ],
+    sport:[
+      {id:'bet-types', title:`Types of sports bets, explained`, summary:`From a simple match winner to accumulators — what each bet type actually means.`,
+        body:[
+          `Most sportsbooks build their entire market list from a handful of core bet types, then layer variations of these on top for every sport and league. Understanding the core set makes any new market on any sport easy to read at a glance.`,
+          `Accumulators deserve a specific mention: adding a fourth leg at 1.80 odds to three legs that were already a reasonable bet doesn't make the combination four times as attractive — it multiplies your risk of losing the entire stake if any single leg fails. Treat each leg as if you'd bet on it alone, because that's the standard it needs to meet.`
+        ],
+        table:{headers:['Bet type','What it means'], rows:[
+          ['1X2 / Match Winner','Pick the winner — home team, draw, or away team (draw only applies where a match can end level).'],
+          ['Double Chance','Covers two of the three 1X2 outcomes in one bet (e.g. home win or draw), lower payout for lower risk.'],
+          ['Over/Under (Totals)','Bet on whether total goals/points in the match will be above or below a set line.'],
+          ['Handicap (Asian/European)','A virtual head start or deficit applied to one team before the result counts, used to level uneven matchups.'],
+          ['Both Teams to Score (BTTS)','Bet on whether both sides will score at least once, independent of the final result.'],
+          ['Correct Score','Predict the exact final score — high payout, low probability.'],
+          ['Accumulator / Parlay','Multiple selections combined into a single bet — all legs must win, odds multiply together, so payout and risk both increase with each added leg.'],
+          ['Live / In-Play','Betting placed after kickoff, with odds updating continuously as the match develops.'],
+        ]}},
+      {id:'bookmaker-margin', title:`Bookmaker margins: how the "overround" works`, summary:`The built-in edge behind every set of odds — and how to calculate it yourself in under a minute.`,
+        body:[
+          `Decimal odds convert directly into an implied probability: divide 1 by the odds. Odds of 2.00 imply a 50% chance; odds of 4.00 imply 25%. If a bookmaker's odds across all outcomes of a market reflected only the true probability of each result, those implied probabilities would add up to exactly 100%.`,
+          `They never do. Bookmakers build in a margin — sometimes called the "overround" or "vig" — by pricing every outcome very slightly higher than its true probability, so the implied probabilities sum to something above 100%. That gap is the bookmaker's structural edge, collected regardless of which outcome actually happens.`,
+          `Margins vary by sport, league and bookmaker — mainstream markets on major leagues tend to run tighter (lower margin, better value) than obscure markets or lower-tier competitions. Comparing the same match's odds across several bookmakers, which is what our Compare Odds page does, is the most direct way to find whichever one is currently pricing closest to true probability.`
+        ],
+        table:{headers:['Outcome','Odds','Implied probability'], rows:[
+          ['Home win','2.10','47.6%'],
+          ['Draw','3.40','29.4%'],
+          ['Away win','3.20','31.3%'],
+          ['Total','—','108.3% (8.3% margin)'],
+        ]}},
+      {id:'value-betting', title:`Value betting: the basic idea`, summary:`Why "the favourite" and "the value bet" are often two completely different things.`,
+        body:[
+          `A value bet exists when your own estimate of an outcome's true probability is higher than the probability implied by the odds on offer. It has nothing to do with how likely an outcome is in absolute terms — a big underdog can be a value bet, and a strong favourite can be a bad one, depending on the price.`,
+          `Worked example: odds of 2.50 imply a 40% probability (1 ÷ 2.50). If your own analysis — team form, injuries, head-to-head record — puts the true chance of that outcome at 48%, the bet has positive expected value at that price, even though it's still more likely to lose than win on any single occasion.`,
+          `The catch is that value betting only works if your probability estimate is actually better than the market's. Bookmaker odds are set by people doing this professionally, using more data than most bettors have access to — beating the market consistently is genuinely difficult, which is exactly why "value" is a long-run concept, not a promise on any individual bet.`,
+          `This is analysis, not a guarantee: no method predicts individual results with certainty, and the maths of expected value only plays out over a large number of bets, not one. Never stake more than you're comfortable losing on any single bet, regardless of how confident the analysis feels in the moment.`
+        ]},
+    ],
+  },
+  IT:{
+    casino:[
+      {id:'roulette-odds', title:`Puntate alla roulette spiegate: quote, vincite e vantaggio del banco`, summary:`Ogni tipo di puntata al tavolo, a confronto — così sai esattamente cosa stai scegliendo.`,
+        body:[
+          `Ogni puntata alla roulette paga in base a quanti numeri copre — meno numeri copri, più alta la vincita, ma più bassa la probabilità di centrarla. A causa dello zero (e del doppio zero nella roulette americana), il conto non torna mai del tutto a favore del giocatore, qualunque puntata tu scelga.`,
+          `Sulla ruota europea (zero singolo, 37 caselle), il vantaggio del banco è costante al 2,70% su ogni tipo di puntata — i numeri pieni pagano di più ma escono più raramente, le puntate alla pari pagano meno ma escono quasi la metà delle volte. Non cambia nulla per la perdita attesa nel lungo periodo; cambia solo quanto sono ampie le oscillazioni.`,
+          `La roulette americana aggiunge un secondo zero (38 caselle), che raddoppia circa il vantaggio del banco al 5,26% su ogni puntata tranne la "top line" a cinque numeri, che arriva al 7,89% — la peggiore puntata del tavolo. Se puoi scegliere, la roulette europea è matematicamente sempre la scelta migliore.`,
+          `Il vantaggio del banco è una media nel lungo periodo, non una garanzia sulla singola giocata — una sessione breve può andare in entrambe le direzioni. Stabilisci un budget prima di sederti al tavolo e considera quanto spendi come il costo dell'intrattenimento, non un investimento.`
+        ],
+        table:{headers:['Tipo di puntata','Copre','Vincita','Probabilità (Europea)','Vantaggio banco'], rows:[
+          ['Pieno','1 numero','35:1','2,7%','2,70%'],
+          ['Cavallo','2 numeri','17:1','5,4%','2,70%'],
+          ['Trasversale','3 numeri','11:1','8,1%','2,70%'],
+          ['Quartina','4 numeri','8:1','10,8%','2,70%'],
+          ['Sestina','6 numeri','5:1','16,2%','2,70%'],
+          ['Dozzina / Colonna','12 numeri','2:1','32,4%','2,70%'],
+          ['Puntate alla pari (Rosso/Nero, Pari/Dispari, Manche)','18 numeri','1:1','48,6%','2,70%'],
+        ]}},
+      {id:'poker-hand-rankings', title:`Le combinazioni del poker — e perché contano più dell'istinto`, summary:`L'ordine di ogni combinazione dalla Scala Reale alla Carta Alta, e come si traduce in decisioni concrete al tavolo.`,
+        body:[
+          `Ogni variante del poker che usa le combinazioni classiche (Texas Hold'em, Omaha, five-card draw) segue lo stesso ordine di forza, dalla più rara alla più comune. Conoscere quest'ordine a memoria — senza doverci pensare — è la base su cui si costruisce tutto il resto del gioco.`,
+          `Il divario tra le combinazioni conta quanto l'ordine stesso. Un Full arriva prima di un Colore, ma entrambi sono abbastanza rari che quando escono, di solito sono la mano migliore a un tavolo ristretto. L'errore più comune tra i principianti è sopravvalutare una Coppia o una Doppia Coppia contro più avversari — più giocatori vedono il flop, più è probabile che qualcuno abbia costruito qualcosa di più forte.`,
+          `La scelta delle mani di partenza segue questa logica: mani come una coppia di Assi o di Re sono forti proprio perché sono già a metà strada verso una combinazione fatta ancora prima del flop. Foldare mani di partenza deboli non è eccessiva prudenza, è semplicemente seguire la matematica di quanto raramente diventano una mano vincente al river.`
+        ],
+        table:{headers:['Posizione','Combinazione','Esempio'], rows:[
+          ['1 (più alta)','Scala Reale','10-J-Q-K-A, stesso seme'],
+          ['2','Scala Colore','5 carte consecutive, stesso seme'],
+          ['3','Poker','Quattro carte dello stesso valore'],
+          ['4','Full','Tris + coppia'],
+          ['5','Colore','Cinque carte dello stesso seme, ordine qualsiasi'],
+          ['6','Scala','Cinque carte consecutive, semi misti'],
+          ['7','Tris','Tre carte dello stesso valore'],
+          ['8','Doppia Coppia','Due coppie distinte'],
+          ['9','Coppia','Due carte dello stesso valore'],
+          ['10 (più bassa)','Carta Alta','Nessuna combinazione — vince la carta singola più alta'],
+        ]}},
+      {id:'slot-volatility', title:`Volatilità delle slot: come scegliere il gioco giusto per il tuo stile`, summary:`L'RTP indica la media nel lungo periodo. La volatilità indica come si sente davvero la sessione di gioco.`,
+        body:[
+          `Return to Player (RTP) e volatilità rispondono a due domande diverse. L'RTP è la percentuale di quanto scommesso che una slot restituisce nel lunghissimo periodo — non dice nulla su come quei soldi tornano indietro. La volatilità (a volte chiamata varianza) è ciò che modella davvero la sessione: quanto spesso vinci e quanto sono grandi quelle vincite rispetto alla puntata.`,
+          `Le slot a bassa volatilità pagano vincite piccole ma frequenti — il saldo si muove a piccoli passi, le sessioni durano più a lungo con lo stesso budget, e i grandi moltiplicatori sono rari. Sono adatte a chi vuole una sessione più lunga e costante piuttosto che puntare a un numero importante.`,
+          `Le slot ad alta volatilità pagano raramente, ma le vincite che arrivano possono essere multipli grandi della puntata — lunghi periodi senza vincite sono normali, non un segnale di malfunzionamento. Sono adatte a chi ha un bankroll più ampio rispetto alla puntata e una maggiore tolleranza alle serie negative tra una vincita e l'altra.`,
+          `Non esiste una scelta "migliore" in assoluto — solo una scelta più adatta al tuo bankroll e a quanto vuoi giocare. Una regola pratica utile: se sei indeciso, parti da una volatilità media con una puntata che ti permetta almeno 100-200 giri prima di esaurire il budget.`
+        ],
+        table:{headers:['Volatilità','Frequenza vincite','Entità vincita tipica','Adatta a'], rows:[
+          ['Bassa','Frequente','Piccola','Sessioni lunghe, bankroll ridotto'],
+          ['Media','Moderata','Moderata','Gioco bilanciato'],
+          ['Alta','Rara','Grande','Bankroll ampio, maggiore tolleranza al rischio'],
+        ]}},
+    ],
+    sport:[
+      {id:'bet-types', title:`Tipi di scommesse sportive, spiegati`, summary:`Dal semplice 1X2 alle multiple — cosa significa davvero ogni tipo di puntata.`,
+        body:[
+          `La maggior parte dei bookmaker costruisce l'intero listino a partire da un numero ristretto di tipi di puntata di base, per poi aggiungere varianti per ogni sport e campionato. Capire questo nucleo di base rende facile da leggere qualsiasi nuovo mercato, in qualunque sport.`,
+          `Le multiple meritano una nota a parte: aggiungere una quarta selezione a quota 1,80 a tre selezioni già ragionevoli non rende la combinazione quattro volte più interessante — moltiplica il rischio di perdere l'intera puntata se anche una sola selezione non passa. Tratta ogni selezione come se scommettessi su di essa da sola, perché è lo standard che deve superare.`
+        ],
+        table:{headers:['Tipo di puntata','Cosa significa'], rows:[
+          ['1X2','Scegli il vincitore — squadra di casa, pareggio o squadra ospite.'],
+          ['Doppia Chance','Copre due dei tre esiti 1X2 in un\'unica puntata (es. vittoria casa o pareggio), vincita più bassa per rischio più basso.'],
+          ['Over/Under (Totale gol/punti)','Scommetti se il totale di gol/punti sarà sopra o sotto una soglia stabilita.'],
+          ['Handicap (Asiatico/Europeo)','Un vantaggio o svantaggio virtuale assegnato a una squadra prima che il risultato conti, usato per pareggiare incontri squilibrati.'],
+          ['Entrambe le squadre segnano (GG/NG)','Scommetti se entrambe le squadre segneranno almeno un gol, indipendentemente dal risultato finale.'],
+          ['Risultato Esatto','Prevedi il punteggio finale esatto — vincita alta, probabilità bassa.'],
+          ['Multipla','Più selezioni combinate in un\'unica giocata — devono vincere tutte, le quote si moltiplicano, quindi vincita e rischio aumentano a ogni selezione aggiunta.'],
+          ['Scommesse Live','Puntate piazzate dopo il calcio d\'inizio, con quote aggiornate continuamente durante la partita.'],
+        ]}},
+      {id:'bookmaker-margin', title:`Margini dei bookmaker: come funziona l'aggio (overround)`, summary:`Il vantaggio incorporato in ogni listino quote — e come calcolarlo da solo in meno di un minuto.`,
+        body:[
+          `Le quote decimali si convertono direttamente in una probabilità implicita: dividi 1 per la quota. Una quota di 2,00 implica una probabilità del 50%; una quota di 4,00 implica il 25%. Se le quote di un bookmaker su tutti gli esiti di un mercato riflettessero solo la probabilità reale di ciascun risultato, quelle probabilità implicite si sommerebbero esattamente a 100%.`,
+          `Non succede mai. I bookmaker inseriscono un margine — a volte chiamato "aggio" o "overround" — quotando ogni esito leggermente più alto della sua probabilità reale, così che le probabilità implicite superino il 100%. Quel margine è il vantaggio strutturale del bookmaker, incassato indipendentemente dall'esito reale.`,
+          `Esempio pratico: un mercato 1X2 quotato 2,10 / 3,40 / 3,20. Probabilità implicite: 1÷2,10 = 47,6%, 1÷3,40 = 29,4%, 1÷3,20 = 31,3%. Sommando: 108,3%. L'8,3% oltre il 100% è il margine del bookmaker su questo specifico mercato.`,
+          `I margini variano per sport, campionato e bookmaker — i mercati principali sui campionati importanti tendono ad avere margini più contenuti (valore migliore) rispetto a mercati di nicchia o competizioni minori. Confrontare le quote dello stesso incontro tra più bookmaker, esattamente quello che fa la nostra pagina Confronta Quote, è il modo più diretto per trovare chi in quel momento si avvicina di più alla probabilità reale.`
+        ],
+        table:{headers:['Esito','Quota','Probabilità implicita'], rows:[
+          ['Vittoria casa','2,10','47,6%'],
+          ['Pareggio','3,40','29,4%'],
+          ['Vittoria ospite','3,20','31,3%'],
+          ['Totale','—','108,3% (8,3% di margine)'],
+        ]}},
+      {id:'value-betting', title:`Value betting: il concetto di base`, summary:`Perché "il favorito" e "la scommessa di valore" sono spesso due cose completamente diverse.`,
+        body:[
+          `Una scommessa di valore (value bet) esiste quando la tua stima della probabilità reale di un esito è più alta della probabilità implicita nella quota offerta. Non ha nulla a che vedere con quanto un esito sia probabile in termini assoluti — una grande outsider può essere una value bet, e un forte favorito può essere una cattiva scommessa, a seconda del prezzo.`,
+          `Esempio pratico: una quota di 2,50 implica una probabilità del 40% (1 ÷ 2,50). Se la tua analisi — forma delle squadre, infortuni, precedenti scontri diretti — stima la probabilità reale di quell'esito al 48%, la scommessa ha valore atteso positivo a quel prezzo, anche se resta comunque più probabile che perda piuttosto che vinca sulla singola giocata.`,
+          `Il problema è che il value betting funziona solo se la tua stima di probabilità è davvero migliore di quella del mercato. Le quote dei bookmaker sono fissate da professionisti che usano più dati di quanti ne abbia la maggior parte degli scommettitori — battere il mercato in modo costante è genuinamente difficile, ed è esattamente per questo che il "valore" è un concetto di lungo periodo, non una promessa sulla singola giocata.`,
+          `Questa è analisi, non una garanzia: nessun metodo prevede risultati singoli con certezza, e la matematica del valore atteso si manifesta solo su un numero elevato di scommesse, non su una sola. Non puntare mai più di quanto sei disposto a perdere su una singola scommessa, indipendentemente da quanto ti sembri solida l'analisi in quel momento.`
+        ]},
+    ],
+  },
+};
+
+function renderEducation(){
+  document.getElementById('eduHeading').textContent = market==='UK' ? 'Education' : 'Formazione';
+  document.getElementById('eduIntro').textContent = market==='UK'
+    ? `Straightforward explainers — game mechanics, odds math and terminology, so you understand what you're looking at before you play.`
+    : `Spiegazioni semplici e dirette — meccaniche di gioco, matematica delle quote e terminologia, per capire cosa hai davanti prima di giocare.`;
+  document.getElementById('eduTabCasinoLabel').textContent = market==='UK' ? 'Casino Strategy' : 'Strategia Casinò';
+  document.getElementById('eduTabSportLabel').textContent = market==='UK' ? 'Sports Betting Basics' : 'Basi delle Scommesse';
+  document.getElementById('eduCasinoGrid').innerHTML = eduArticles[market].casino.map(a=>eduCardHtml(a)).join('');
+  document.getElementById('eduSportGrid').innerHTML = eduArticles[market].sport.map(a=>eduCardHtml(a)).join('');
+}
+function eduCardHtml(a){
+  return `<div class="news-card" style="cursor:pointer;" onclick="openEduArticle('${a.id}')">
+    <span class="news-cat">${market==='UK'?'Guide':'Guida'}</span>
+    <div class="news-title">${a.title}</div>
+    <div class="news-desc">${a.summary}</div>
+  </div>`;
+}
+function openEduArticle(id){
+  const isCasino = eduArticles[market].casino.some(x=>x.id===id);
+  const group = isCasino ? eduArticles[market].casino : eduArticles[market].sport;
+  const a = group.find(x=>x.id===id);
+  if(!a) return;
+  const siblings = group.filter(x=>x.id!==id);
+  const tableHtml = a.table ? `
+    <div class="table-wrap" style="margin:18px 0;">
+      <table><thead><tr>${a.table.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${a.table.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>
+    </div>` : '';
+  document.getElementById('eduArticleContent').innerHTML = `
+    <div class="op-page-head" style="border-bottom:none;padding-bottom:0;margin-bottom:16px;">
+      <div>
+        <div class="op-page-title"><h1 style="font-size:26px;">${a.title}</h1></div>
+        <div class="op-page-sub">${market==='UK'?'Education':'Formazione'} · ${isCasino ? (market==='UK'?'Casino Strategy':'Strategia Casinò') : (market==='UK'?'Sports Betting Basics':'Basi delle Scommesse')}</div>
+      </div>
+    </div>
+    <div class="review-text">${a.body.map(p=>`<p>${p}</p>`).join('')}</div>
+    ${tableHtml}
+    <div class="sidebar-box" style="margin-top:10px;max-width:520px;">
+      <h4>${market==='UK'?'More in this topic':'Altro in questa sezione'}</h4>
+      ${siblings.map(s=>`<div class="similar-item" onclick="openEduArticle('${s.id}')"><span class="similar-name">${s.title}</span></div>`).join('')}
+    </div>
+  `;
+  go('edu-article');
+}
+document.querySelectorAll('#eduSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#eduSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.etab;
+  document.getElementById('etab-casino').style.display=t==='casino'?'block':'none';
+  document.getElementById('etab-sport').style.display=t==='sport'?'block':'none';
+}));
+
 
 /* ---------- Partners ---------- */
 function partnerTier(clicks){
@@ -2159,6 +2473,7 @@ function renderAll(){
   renderCasinos();
   renderBonuses();
   renderGuides();
+  renderEducation();
   closeChatRoom();
   renderChatTopics();
 }
