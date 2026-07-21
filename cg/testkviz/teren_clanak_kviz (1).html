@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teren.me — Fudbalska groznica na vrhuncu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch-900:#122A20;
+    --pitch-700:#1C4531;
+    --pitch-500:#2E6B48;
+    --paper:#EEF0E5;
+    --paper-warm:#E7E4D6;
+    --ink:#17201A;
+    --ink-soft:#3F493F;
+    --gold:#E3A83B;
+    --gold-deep:#C4881F;
+    --scarlet:#C1443C;
+    --ad-bg:#D9D6C8;
+    --ad-border:#B7B3A0;
+    --line:#CBC7B7;
+    --white:#FBFAF6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Lora',serif;}
+  h1,h2,h3,.display{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:0.01em;color:var(--pitch-900);}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  img,svg{max-width:100%;display:block;}
+
+  /* ===== HEADER ===== */
+  header.site{
+    background:var(--pitch-900);
+    color:var(--paper);
+    position:sticky; top:0; z-index:50;
+    border-bottom:3px solid var(--gold);
+  }
+  .header-inner{
+    max-width:1240px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .logo{
+    font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;
+    letter-spacing:0.03em;color:var(--white);display:flex;align-items:baseline;gap:2px;
+  }
+  .logo span{color:var(--gold);}
+  nav.main-nav{display:flex;gap:26px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.06em;}
+  nav.main-nav a{text-decoration:none;color:var(--paper);opacity:0.85;padding-bottom:4px;border-bottom:2px solid transparent;transition:all .2s;}
+  nav.main-nav a:hover{opacity:1;border-bottom-color:var(--gold);}
+  nav.main-nav a.active{opacity:1;border-bottom-color:var(--gold);color:var(--gold);}
+
+  /* ===== TICKER ===== */
+  .ticker-wrap{
+    background:var(--pitch-700);border-bottom:1px solid rgba(255,255,255,0.08);
+    overflow:hidden;white-space:nowrap;position:relative;
+  }
+  .ticker-tag{
+    position:absolute;left:0;top:0;bottom:0;background:var(--scarlet);
+    color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;
+    font-size:12px;letter-spacing:0.08em;display:flex;align-items:center;
+    padding:0 14px;z-index:2;
+  }
+  .ticker-tag::before{
+    content:"";width:7px;height:7px;border-radius:50%;background:#fff;
+    display:inline-block;margin-right:6px;animation:pulse-dot 1.4s infinite;
+  }
+  @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.25;}}
+  .ticker-track{
+    display:inline-flex;gap:48px;padding:9px 0 9px 130px;
+    animation:scroll-ticker 32s linear infinite;
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--paper);
+  }
+  .ticker-track span b{color:var(--gold);}
+  @keyframes scroll-ticker{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  /* ===== LAYOUT ===== */
+  .page{
+    max-width:1240px;margin:0 auto;padding:28px 20px 60px;
+    display:grid;grid-template-columns:160px minmax(0,1fr) 160px;gap:28px;
+    align-items:start;
+  }
+  aside.rail{position:sticky;top:80px;display:flex;flex-direction:column;gap:20px;}
+
+  /* ===== AD UNITS ===== */
+  .ad{
+    background:var(--ad-bg);
+    border:1.5px dashed var(--ad-border);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  .ad-label{
+    position:absolute;top:6px;left:8px;font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:0.12em;color:var(--ink-soft);opacity:0.6;
+  }
+  .ad.skyscraper{width:160px;height:600px;}
+  .ad.leaderboard{width:100%;max-width:728px;height:90px;margin:0 auto;}
+  .ad-inner{
+    background:linear-gradient(160deg,var(--pitch-900),var(--pitch-500));
+    width:100%;height:100%;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;gap:8px;
+    padding:16px;color:var(--paper);
+  }
+  .ad-brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;letter-spacing:0.02em;color:var(--gold);}
+  .ad.skyscraper .ad-brand{font-size:24px;line-height:1.05;}
+  .ad-sub{font-family:'Lora',serif;font-size:12px;color:var(--paper);opacity:0.85;max-width:120px;}
+  .ad-cta{
+    margin-top:4px;background:var(--gold);color:var(--pitch-900);
+    font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:12px;
+    letter-spacing:0.05em;padding:7px 14px;border-radius:2px;
+    box-shadow:0 3px 0 var(--gold-deep);
+  }
+  .ad.leaderboard .ad-inner{flex-direction:row;justify-content:space-between;padding:0 22px;}
+  .ad.leaderboard .ad-brand{font-size:22px;}
+  .ad.leaderboard .ad-sub{max-width:none;text-align:left;}
+
+  /* ===== ARTICLE ===== */
+  article{min-width:0;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--pitch-900);color:var(--gold);
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:0.1em;padding:5px 12px;margin-bottom:16px;
+  }
+  h1.headline{
+    font-size:44px;line-height:1.03;font-weight:900;margin:0 0 14px;color:var(--pitch-900);
+  }
+  .byline{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);
+    display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:22px;
+  }
+  .hero-figure{margin:0 0 26px;}
+  .hero-caption{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:8px;opacity:0.75;}
+  .lead{font-size:20px;line-height:1.55;color:var(--ink);font-weight:500;font-style:italic;margin-bottom:22px;}
+  .body-copy{font-size:17px;line-height:1.75;color:var(--ink);margin-bottom:22px;}
+  .body-copy p{margin:0 0 18px;}
+  .pullquote{
+    border-left:4px solid var(--gold);padding:4px 0 4px 20px;margin:30px 0;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;
+    color:var(--pitch-900);line-height:1.2;
+  }
+
+  /* ===== QUIZ (SIGNATURE ELEMENT) ===== */
+  .quiz-block{
+    margin:36px 0;background:var(--pitch-900);border-radius:4px;
+    box-shadow:0 14px 34px rgba(18,42,32,0.28);overflow:hidden;
+    position:relative;
+  }
+  .quiz-block::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0.06;
+    background-image:repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 44px);
+  }
+  .quiz-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:2px solid var(--gold);position:relative;z-index:1;
+  }
+  .quiz-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;color:var(--white);letter-spacing:0.03em;}
+  .quiz-title span{color:var(--gold);}
+  .quiz-clock{
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;
+    color:var(--paper);background:rgba(255,255,255,0.08);padding:4px 10px;border-radius:3px;
+  }
+  .quiz-progress-track{height:5px;background:rgba(255,255,255,0.12);position:relative;z-index:1;}
+  .quiz-progress-bar{height:100%;background:var(--gold);width:20%;transition:width .5s ease;}
+  .quiz-body{padding:26px 24px 24px;position:relative;z-index:1;min-height:230px;}
+  .quiz-counter{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:0.08em;margin-bottom:10px;}
+  .quiz-question{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:24px;
+    color:var(--white);line-height:1.2;margin-bottom:20px;min-height:60px;
+  }
+  .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .quiz-opt{
+    background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.18);
+    color:var(--paper);font-family:'Lora',serif;font-size:15px;text-align:left;
+    padding:13px 16px;border-radius:3px;cursor:pointer;transition:all .18s;
+  }
+  .quiz-opt:hover{background:rgba(255,255,255,0.13);border-color:var(--gold);}
+  .quiz-opt.correct{background:var(--pitch-500);border-color:var(--gold);color:#fff;}
+  .quiz-opt.wrong{background:rgba(193,68,60,0.35);border-color:var(--scarlet);}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-footer{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px 22px;position:relative;z-index:1;
+  }
+  .quiz-score-label{font-family:'JetBrains Mono',monospace;color:var(--paper);font-size:13px;opacity:0.75;}
+  .quiz-score-val{font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--gold);font-size:20px;}
+  .quiz-result{text-align:center;padding:10px 0 4px;}
+  .quiz-result .board{
+    display:inline-block;background:var(--paper);color:var(--pitch-900);
+    padding:18px 34px;border-radius:3px;margin:6px 0 18px;
+  }
+  .quiz-result .board .num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:42px;line-height:1;}
+  .quiz-result .board .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;margin-top:4px;}
+  .quiz-result p.verdict{color:var(--paper);font-family:'Lora',serif;font-style:italic;font-size:15px;margin-bottom:18px;}
+  .quiz-share{
+    background:var(--gold);color:var(--pitch-900);border:none;font-family:'Barlow Condensed',sans-serif;
+    font-weight:900;font-size:15px;letter-spacing:0.05em;padding:11px 26px;border-radius:2px;
+    cursor:pointer;box-shadow:0 4px 0 var(--gold-deep);
+  }
+  .quiz-share:active{transform:translateY(2px);box-shadow:0 2px 0 var(--gold-deep);}
+
+  /* ===== RELATED ===== */
+  .related{margin-top:44px;}
+  .related h2{font-size:26px;border-bottom:3px solid var(--pitch-900);padding-bottom:8px;margin-bottom:18px;}
+  .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .rel-card{background:var(--white);border:1px solid var(--line);border-radius:3px;overflow:hidden;}
+  .rel-thumb{height:110px;background:linear-gradient(135deg,var(--pitch-700),var(--pitch-900));position:relative;}
+  .rel-thumb::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.05) 0 8px,transparent 8px 16px);}
+  .rel-body{padding:12px 14px 16px;}
+  .rel-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--scarlet);letter-spacing:0.08em;}
+  .rel-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;line-height:1.2;color:var(--pitch-900);margin:6px 0 0;}
+
+  footer.site{
+    background:var(--pitch-900);color:var(--paper);margin-top:50px;
+    padding:30px 20px;text-align:center;font-family:'JetBrains Mono',monospace;
+    font-size:12px;opacity:0.65;
+  }
+
+  @media (max-width:980px){
+    .page{grid-template-columns:1fr;}
+    aside.rail{display:none;}
+    h1.headline{font-size:32px;}
+    .quiz-options{grid-template-columns:1fr;}
+    .related-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="logo">TEREN<span>.ME</span></div>
+    <nav class="main-nav">
+      <a href="#" class="active">POČETNA</a>
+      <a href="#">FUDBAL</a>
+      <a href="#">KOŠARKA</a>
+      <a href="#">TENIS</a>
+      <a href="#">KVOTE&nbsp;&amp;&nbsp;NAJAVE</a>
+    </nav>
+  </div>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker-tag">UŽIVO</div>
+  <div class="ticker-track">
+    <span>ARGENTINA <b>2:1</b> FRANCUSKA — 78'</span>
+    <span>ŠPANIJA <b>0:0</b> BRAZIL — 34'</span>
+    <span>ENGLESKA <b>3:0</b> JAPAN — ZAVRŠENO</span>
+    <span>NJEMAČKA <b>1:1</b> PORTUGAL — 61'</span>
+    <span>MAROKO <b>2:2</b> HOLANDIJA — 90+3'</span>
+    <span>ARGENTINA <b>2:1</b> FRANCUSKA — 78'</span>
+    <span>ŠPANIJA <b>0:0</b> BRAZIL — 34'</span>
+    <span>ENGLESKA <b>3:0</b> JAPAN — ZAVRŠENO</span>
+    <span>NJEMAČKA <b>1:1</b> PORTUGAL — 61'</span>
+    <span>MAROKO <b>2:2</b> HOLANDIJA — 90+3'</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="rail">
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">ADMIRAL<br>BET</div>
+        <div class="ad-sub">Prati Mundijal uživo i osvoji dobrodošli bonus</div>
+        <div class="ad-cta">REGISTRUJ SE</div>
+      </div>
+    </div>
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">100%<br>BONUS</div>
+        <div class="ad-sub">Na prvi depozit do 50€ — samo za nove korisnike</div>
+        <div class="ad-cta">SAZNAJ VIŠE</div>
+      </div>
+    </div>
+  </aside>
+
+  <article>
+    <span class="eyebrow">⚽ SVJETSKO PRVENSTVO 2026</span>
+    <h1 class="headline">Fudbalska groznica na vrhuncu: zašto je ovo Mundijal koji ćemo pamtiti generacijama</h1>
+    <div class="byline">
+      <span>PIŠE: REDAKCIJA TEREN.ME</span>
+      <span>AŽURIRANO PRIJE 2H</span>
+      <span>6 MIN ČITANJA</span>
+    </div>
+
+    <figure class="hero-figure">
+      <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustracija stadiona pod reflektorima">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0C1F17"/>
+            <stop offset="100%" stop-color="#1C4531"/>
+          </linearGradient>
+          <radialGradient id="beam" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="#E3A83B" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#E3A83B" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="800" height="360" fill="url(#sky)"/>
+        <polygon points="120,30 170,30 260,230 30,230" fill="url(#beam)"/>
+        <polygon points="680,30 630,30 540,230 770,230" fill="url(#beam)"/>
+        <rect x="120" y="20" width="8" height="30" fill="#EEF0E5"/>
+        <rect x="170" y="20" width="8" height="30" fill="#EEF0E5"/>
+        <rect x="630" y="20" width="8" height="30" fill="#EEF0E5"/>
+        <rect x="680" y="20" width="8" height="30" fill="#EEF0E5"/>
+        <path d="M0,300 Q400,240 800,300 L800,360 L0,360 Z" fill="#2E6B48"/>
+        <path d="M0,300 Q400,240 800,300" fill="none" stroke="#EEF0E5" stroke-opacity="0.5" stroke-width="2"/>
+        <ellipse cx="400" cy="322" rx="90" ry="18" fill="none" stroke="#EEF0E5" stroke-opacity="0.5" stroke-width="2"/>
+        <circle cx="400" cy="270" r="9" fill="#EEF0E5"/>
+        <g fill="#EEF0E5" fill-opacity="0.9">
+          <path d="M400,262 l3,6 6,1 -4,4 1,6 -6,-3 -6,3 1,-6 -4,-4 6,-1 z"/>
+        </g>
+      </svg>
+      <div class="hero-caption">ILUSTRACIJA — ATMOSFERA UOČI POLUFINALNIH DUELA</div>
+    </figure>
+
+    <p class="lead">Tribine pjevaju do posljednjeg minuta, ulice velikih gradova bruje danonoćno, a svaka kafana i dnevni boravak pretvorili su se u malu arenu. Ovo izdanje Mundijala potvrđuje ono što smo naslućivali još od žrijeba — pratimo turnir bez favorita, pun preokreta i priča koje pamtimo decenijama.</p>
+
+    <div class="body-copy">
+      <p>Od otvaranja turnira, jedno je jasno: razlike u kvalitetu među reprezentacijama nikad nisu bile manje. Timovi koji su prije nekoliko ciklusa važili za autsajdere danas igraju rame uz rame sa tradicionalnim silama, a taktička disciplina je na najvišem nivou u istoriji takmičenja.</p>
+      <p>Analitičari se slažu da presudnu ulogu igra tranzicija — brzina kojom ekipe prelaze iz odbrane u napad. Upravo je taj segment igre odlučio većinu dosadašnjih susreta, a sve oči uprte su u to koji će trener pronaći odgovor u nastavku takmičenja.</p>
+    </div>
+
+    <blockquote class="pullquote">"Ovo nije turnir favorita. Ovo je turnir hrabrih."</blockquote>
+
+    <!-- ===== QUIZ WIDGET ===== -->
+    <div class="quiz-block">
+      <div class="quiz-head">
+        <div class="quiz-title">PROVJERI ZNANJE: <span>MUNDIJAL KVIZ</span></div>
+        <div class="quiz-clock mono" id="quizClock">00:12</div>
+      </div>
+      <div class="quiz-progress-track"><div class="quiz-progress-bar" id="quizProgress"></div></div>
+
+      <div class="quiz-body" id="quizBody">
+        <div class="quiz-counter" id="quizCounter">PITANJE 1 / 5</div>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+      </div>
+
+      <div class="quiz-footer" id="quizFooter">
+        <span class="quiz-score-label">TRENUTNI REZULTAT</span>
+        <span class="quiz-score-val"><span id="quizScoreLive">0</span> / 5</span>
+      </div>
+    </div>
+    <!-- ===== END QUIZ ===== -->
+
+    <div class="body-copy">
+      <p>Osim same igre, pažnju privlači i atmosfera van terena — navijačke kolone, muzika i tradicionalni ritual bojenja lica u bojama zastave postali su jednako prepoznatljiv dio turnira koliko i sam fudbal. Organizatori procjenjuju da je ovo najgledanije izdanje Mundijala do sada.</p>
+    </div>
+
+    <div class="ad leaderboard"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">ADMIRALBET</div>
+        <div class="ad-sub">Uporedi kvote za sve utakmice Mundijala na jednom mjestu</div>
+        <div class="ad-cta">POGLEDAJ KVOTE</div>
+      </div>
+    </div>
+
+    <div class="body-copy" style="margin-top:22px;">
+      <p>Ono što ovaj turnir izdvaja jeste i broj golova postignutih u posljednjih deset minuta susreta — statistika koja govori da nijedan rezultat nije siguran do posljednjeg zvižduka. Očekujemo da će ta neizvjesnost obilježiti i predstojeću fazu takmičenja.</p>
+    </div>
+
+    <section class="related">
+      <h2>Još sa Mundijala</h2>
+      <div class="related-grid">
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">ANALIZA</div>
+            <div class="rel-title">Ko su iznenađenja grupne faze?</div>
+          </div>
+        </div>
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">STATISTIKA</div>
+            <div class="rel-title">Najbolji strijelci turnira do sada</div>
+          </div>
+        </div>
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">NAJAVA</div>
+            <div class="rel-title">Raspored polufinalnih duela</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <aside class="rail">
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">KLADI SE<br>UŽIVO</div>
+        <div class="ad-sub">Prati svaku akciju i mijenjaj kvote u realnom vremenu</div>
+        <div class="ad-cta">OTVORI APLIKACIJU</div>
+      </div>
+    </div>
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">KVIZ<br>NAGRADE</div>
+        <div class="ad-sub">Osvoji besplatne tikete rješavanjem dnevnog kviza</div>
+        <div class="ad-cta">UČESTVUJ</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<footer class="site">
+  TEREN.ME — MOCKUP STRANICE ZA INTERNU UPOTREBU · SVI PODACI I REZULTATI SU ILUSTRATIVNI
+</footer>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "U koliko zemalja se prvi put u istoriji igra finalni turnir Svjetskog prvenstva 2026?",
+    options: ["Jednoj", "Dvije", "Tri", "Četiri"],
+    correct: 2
+  },
+  {
+    q: "Koji format grupne faze se koristi na ovom Mundijalu?",
+    options: ["16 grupa po 3 tima", "12 grupa po 4 tima", "8 grupa po 6 timova", "4 grupe po 12 timova"],
+    correct: 1
+  },
+  {
+    q: "Koja reprezentacija je osvojila najviše titula svjetskog prvaka do sada?",
+    options: ["Njemačka", "Argentina", "Brazil", "Italija"],
+    correct: 2
+  },
+  {
+    q: "Šta VAR skraćenica označava u fudbalu?",
+    options: ["Video Asistent Sudija", "Vizuelna Analiza Rezultata", "Verifikacija Aut Rezultata", "Vanredna Arbitraža Reprize"],
+    correct: 0
+  },
+  {
+    q: "Koliko igrača jedan tim ima na terenu tokom regularne igre (bez isključenja)?",
+    options: ["9", "10", "11", "12"],
+    correct: 2
+  }
+];
+
+let current = 0;
+let score = 0;
+let timer = null;
+let timeLeft = 12;
+
+const qEl = document.getElementById('quizQuestion');
+const optEl = document.getElementById('quizOptions');
+const counterEl = document.getElementById('quizCounter');
+const progressEl = document.getElementById('quizProgress');
+const clockEl = document.getElementById('quizClock');
+const scoreLiveEl = document.getElementById('quizScoreLive');
+const bodyEl = document.getElementById('quizBody');
+const footerEl = document.getElementById('quizFooter');
+
+function renderQuestion(){
+  clearInterval(timer);
+  timeLeft = 12;
+  clockEl.textContent = '00:' + String(timeLeft).padStart(2,'0');
+
+  const item = QUESTIONS[current];
+  counterEl.textContent = `PITANJE ${current+1} / ${QUESTIONS.length}`;
+  progressEl.style.width = `${((current)/QUESTIONS.length)*100}%`;
+  qEl.textContent = item.q;
+  optEl.innerHTML = '';
+
+  item.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(idx);
+    optEl.appendChild(btn);
+  });
+
+  timer = setInterval(() => {
+    timeLeft--;
+    clockEl.textContent = '00:' + String(Math.max(timeLeft,0)).padStart(2,'0');
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      selectAnswer(-1);
+    }
+  }, 1000);
+}
+
+function selectAnswer(idx){
+  clearInterval(timer);
+  const item = QUESTIONS[current];
+  const buttons = optEl.querySelectorAll('.quiz-opt');
+  buttons.forEach((b,i) => {
+    b.disabled = true;
+    if(i === item.correct) b.classList.add('correct');
+    else if(i === idx) b.classList.add('wrong');
+  });
+  if(idx === item.correct){
+    score++;
+    scoreLiveEl.textContent = score;
+  }
+  setTimeout(() => {
+    current++;
+    if(current < QUESTIONS.length){
+      renderQuestion();
+    }else{
+      showResult();
+    }
+  }, 900);
+}
+
+function showResult(){
+  progressEl.style.width = '100%';
+  counterEl.textContent = 'ZAVRŠENO';
+  let verdict;
+  if(score === 5) verdict = "Pravi stručnjak — ne promiče ti ništa sa terena.";
+  else if(score >= 3) verdict = "Solidno poznavanje igre — pratiš Mundijal iz prvog reda.";
+  else verdict = "Ima prostora za napredak — vrijeme je da nadoknadiš propušteno.";
+
+  bodyEl.innerHTML = `
+    <div class="quiz-result">
+      <div class="board">
+        <div class="num mono">${score}/${QUESTIONS.length}</div>
+        <div class="lbl">TVOJ REZULTAT</div>
+      </div>
+      <p class="verdict">${verdict}</p>
+      <button class="quiz-share" onclick="restartQuiz()">RESTARTUJ KVIZ</button>
+    </div>
+  `;
+  footerEl.style.display = 'none';
+}
+
+function restartQuiz(){
+  current = 0;
+  score = 0;
+  scoreLiveEl.textContent = 0;
+  footerEl.style.display = 'flex';
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+
+</body>
+</html>

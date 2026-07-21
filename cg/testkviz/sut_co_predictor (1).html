@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Šut.co — Plej-of ulazi u najvrelu fazu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;700;900&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-page:#E7EAF0;
+    --navy-900:#131C33;
+    --navy-700:#1F2C4D;
+    --navy-500:#324573;
+    --orange:#E8720C;
+    --orange-deep:#B85A08;
+    --ink:#151A24;
+    --ink-soft:#4A5266;
+    --line:#C7CCDA;
+    --white:#FBFBF9;
+    --ad-bg:#D7DAE2;
+    --ad-border:#AEB4C4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg-page);color:var(--ink);font-family:'Work Sans',sans-serif;}
+  h1,h2,h3,.display{font-family:'Roboto Slab',serif;color:var(--navy-900);}
+  .mono{font-family:'Space Mono',monospace;}
+  a{color:inherit;}
+  img,svg{max-width:100%;display:block;}
+
+  /* HEADER */
+  header.site{background:var(--navy-900);color:var(--white);position:sticky;top:0;z-index:50;border-bottom:3px solid var(--orange);}
+  .header-inner{max-width:1240px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .logo{font-family:'Roboto Slab',serif;font-weight:900;font-size:26px;color:var(--white);display:flex;align-items:baseline;gap:2px;}
+  .logo span{color:var(--orange);}
+  nav.main-nav{display:flex;gap:22px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;letter-spacing:0.02em;}
+  nav.main-nav a{text-decoration:none;color:var(--white);opacity:0.8;padding-bottom:4px;border-bottom:2px solid transparent;transition:all .2s;}
+  nav.main-nav a:hover{opacity:1;border-bottom-color:var(--orange);}
+  nav.main-nav a.active{opacity:1;border-bottom-color:var(--orange);color:var(--orange);}
+
+  /* LED SCORE STRIP */
+  .led-wrap{background:var(--navy-700);border-bottom:1px solid rgba(255,255,255,0.08);overflow:hidden;white-space:nowrap;position:relative;}
+  .led-tag{position:absolute;left:0;top:0;bottom:0;background:var(--orange);color:var(--navy-900);font-family:'Roboto Slab',serif;font-weight:900;font-size:12px;letter-spacing:0.05em;display:flex;align-items:center;padding:0 14px;z-index:2;}
+  .led-track{display:inline-flex;gap:44px;padding:9px 0 9px 118px;animation:scroll-led 30s linear infinite;font-family:'Space Mono',monospace;font-size:13px;color:var(--white);}
+  .led-track span b{color:var(--orange);}
+  @keyframes scroll-led{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+  /* LAYOUT */
+  .page{max-width:1240px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:150px minmax(0,1fr) 150px;gap:26px;align-items:start;}
+  aside.rail{position:sticky;top:76px;display:flex;flex-direction:column;gap:20px;}
+
+  /* AD UNITS - "courtside LED board" style */
+  .ad{background:var(--ad-bg);border:1.5px dashed var(--ad-border);position:relative;overflow:hidden;}
+  .ad-label{position:absolute;top:6px;left:8px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--ink-soft);opacity:0.6;z-index:2;}
+  .ad.skyscraper{width:150px;height:560px;}
+  .ad.board{width:100%;max-width:728px;height:86px;margin:0 auto;}
+  .ad-inner{position:relative;background:var(--navy-900);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:14px;color:var(--white);overflow:hidden;}
+  .ad-inner::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(232,114,12,0.06) 0 2px,transparent 2px 5px);pointer-events:none;}
+  .ad-brand{font-family:'Roboto Slab',serif;font-weight:900;font-size:19px;color:var(--orange);position:relative;z-index:1;}
+  .ad.skyscraper .ad-brand{font-size:22px;line-height:1.1;}
+  .ad-sub{font-family:'Work Sans',sans-serif;font-size:12px;color:var(--white);opacity:0.85;max-width:118px;position:relative;z-index:1;}
+  .ad-cta{margin-top:4px;background:var(--orange);color:var(--navy-900);font-family:'Roboto Slab',serif;font-weight:700;font-size:12px;padding:7px 14px;border-radius:2px;box-shadow:0 3px 0 var(--orange-deep);position:relative;z-index:1;}
+  .ad.board .ad-inner{flex-direction:row;justify-content:space-between;padding:0 22px;}
+  .ad.board .ad-brand{font-size:21px;}
+  .ad.board .ad-sub{max-width:none;text-align:left;}
+
+  /* rotating LED board messages */
+  .ad-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;animation:ledSlide 8s infinite;}
+  .ad.skyscraper .ad-slide{padding:14px;text-align:center;}
+  .ad-slide:nth-child(1){animation-delay:0s;}
+  .ad-slide:nth-child(2){animation-delay:4s;}
+  @keyframes ledSlide{0%{opacity:0;}5%{opacity:1;}45%{opacity:1;}50%{opacity:0;}100%{opacity:0;}}
+
+  /* ARTICLE */
+  article{min-width:0;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--navy-900);color:var(--orange);font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:0.08em;padding:5px 12px;margin-bottom:16px;}
+  h1.headline{font-size:42px;line-height:1.08;font-weight:900;margin:0 0 14px;color:var(--navy-900);}
+  .byline{font-family:'Space Mono',monospace;font-size:12px;color:var(--ink-soft);display:flex;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:22px;}
+  .hero-figure{margin:0 0 26px;}
+  .hero-caption{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:8px;opacity:0.75;}
+  .lead{font-size:19px;line-height:1.6;color:var(--ink);font-weight:500;margin-bottom:22px;}
+  .body-copy{font-size:16.5px;line-height:1.75;color:var(--ink);margin-bottom:22px;}
+  .body-copy p{margin:0 0 18px;}
+  .pullquote{border-left:4px solid var(--orange);padding:4px 0 4px 20px;margin:30px 0;font-family:'Roboto Slab',serif;font-weight:700;font-size:24px;color:var(--navy-900);line-height:1.25;}
+
+  /* PREDICTOR + QUIZ BLOCK (SIGNATURE) */
+  .pred-block{margin:36px 0;background:var(--navy-900);border-radius:6px;box-shadow:0 14px 34px rgba(19,28,51,0.3);overflow:hidden;}
+  .pred-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:2px solid var(--orange);}
+  .pred-title{font-family:'Roboto Slab',serif;font-weight:900;font-size:19px;color:var(--white);}
+  .pred-title span{color:var(--orange);}
+  .shotclock{display:flex;align-items:center;gap:8px;}
+  .shotclock-num{font-family:'Space Mono',monospace;font-weight:700;font-size:18px;color:var(--orange);}
+  .pred-body{padding:24px 22px 10px;}
+  .pred-sub{font-family:'Work Sans',sans-serif;font-size:13px;color:var(--white);opacity:0.7;margin-bottom:16px;}
+  .team-picks{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;}
+  .team-card{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.16);border-radius:5px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .18s;}
+  .team-card:hover{background:rgba(255,255,255,0.12);border-color:var(--orange);}
+  .team-card.picked{background:var(--orange);border-color:var(--orange);}
+  .team-card.picked .team-name{color:var(--navy-900);}
+  .team-crest{width:44px;height:44px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Roboto Slab',serif;font-weight:900;font-size:18px;}
+  .crest-a{background:var(--orange);color:var(--navy-900);}
+  .crest-b{background:var(--navy-500);color:var(--white);}
+  .team-name{font-family:'Roboto Slab',serif;font-weight:700;font-size:15px;color:var(--white);}
+  .vs-label{font-family:'Space Mono',monospace;color:var(--white);opacity:0.5;font-size:13px;}
+  .pred-result{margin-top:20px;}
+  .split-bar{display:flex;height:34px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,0.08);}
+  .split-fill{display:flex;align-items:center;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;color:var(--white);transition:width 1s cubic-bezier(.2,.9,.3,1);white-space:nowrap;}
+  .split-fill.a{background:var(--orange);justify-content:flex-start;padding-left:10px;color:var(--navy-900);width:0;}
+  .split-fill.b{background:var(--navy-500);justify-content:flex-end;padding-right:10px;width:0;}
+  .pred-note{font-family:'Work Sans',sans-serif;font-size:12px;color:var(--white);opacity:0.6;margin-top:10px;}
+
+  .quiz-strip{border-top:1px solid rgba(255,255,255,0.12);padding:22px 22px 24px;}
+  .quiz-strip h3{color:var(--white);font-size:16px;margin:0 0 14px;font-family:'Space Mono',monospace;letter-spacing:0.04em;}
+  .quiz-strip h3 span{color:var(--orange);}
+  .qs-item{margin-bottom:16px;}
+  .qs-q{font-family:'Work Sans',sans-serif;font-weight:600;color:var(--white);font-size:14.5px;margin-bottom:8px;}
+  .qs-opts{display:flex;gap:8px;flex-wrap:wrap;}
+  .qs-opt{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.16);color:var(--white);font-family:'Work Sans',sans-serif;font-size:13px;padding:8px 13px;border-radius:20px;cursor:pointer;transition:all .15s;}
+  .qs-opt:hover{border-color:var(--orange);}
+  .qs-opt.sel{background:var(--orange);border-color:var(--orange);color:var(--navy-900);font-weight:600;}
+  .qs-opt.correct-reveal{background:var(--navy-500);border-color:#7A93D6;color:var(--white);}
+  .qs-opt.wrong-reveal{background:rgba(232,114,12,0.15);border-color:var(--orange);}
+  .qs-submit{margin-top:6px;background:var(--orange);color:var(--navy-900);border:none;font-family:'Roboto Slab',serif;font-weight:700;font-size:14px;padding:10px 22px;border-radius:3px;cursor:pointer;box-shadow:0 4px 0 var(--orange-deep);}
+  .qs-submit:active{transform:translateY(2px);box-shadow:0 2px 0 var(--orange-deep);}
+  .qs-result{font-family:'Space Mono',monospace;color:var(--orange);font-size:14px;margin-top:12px;display:none;}
+
+  /* RELATED */
+  .related{margin-top:44px;}
+  .related h2{font-size:24px;border-bottom:3px solid var(--navy-900);padding-bottom:8px;margin-bottom:18px;}
+  .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .rel-card{background:var(--white);border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+  .rel-thumb{height:108px;background:linear-gradient(135deg,var(--navy-700),var(--navy-900));position:relative;}
+  .rel-thumb::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(232,114,12,0.08) 0 8px,transparent 8px 16px);}
+  .rel-body{padding:12px 14px 16px;}
+  .rel-tag{font-family:'Space Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:0.06em;}
+  .rel-title{font-family:'Roboto Slab',serif;font-weight:700;font-size:16px;line-height:1.25;color:var(--navy-900);margin:6px 0 0;}
+
+  footer.site{background:var(--navy-900);color:var(--white);margin-top:50px;padding:30px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:12px;opacity:0.65;}
+
+  @media (max-width:980px){
+    .page{grid-template-columns:1fr;}
+    aside.rail{display:none;}
+    h1.headline{font-size:30px;}
+    .related-grid{grid-template-columns:1fr;}
+    .team-picks{grid-template-columns:1fr;}
+    .vs-label{text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="logo">ŠUT<span>.CO</span></div>
+    <nav class="main-nav">
+      <a href="#">POČETNA</a>
+      <a href="#" class="active">KOŠARKA</a>
+      <a href="#">FUDBAL</a>
+      <a href="#">TENIS</a>
+      <a href="#">KVOTE&nbsp;&amp;&nbsp;NAJAVE</a>
+    </nav>
+  </div>
+</header>
+
+<div class="led-wrap">
+  <div class="led-tag">UŽIVO</div>
+  <div class="led-track">
+    <span>RIVERSIDE <b>98:94</b> METRO — Q4 2:14</span>
+    <span>GRANIT <b>76:81</b> PLAMEN — Q3 5:02</span>
+    <span>SJEVER <b>110:102</b> ZALIV — ZAVRŠENO</span>
+    <span>ATLAS <b>89:89</b> KOMETA — PRODUŽETAK</span>
+    <span>RIVERSIDE <b>98:94</b> METRO — Q4 2:14</span>
+    <span>GRANIT <b>76:81</b> PLAMEN — Q3 5:02</span>
+    <span>SJEVER <b>110:102</b> ZALIV — ZAVRŠENO</span>
+    <span>ATLAS <b>89:89</b> KOMETA — PRODUŽETAK</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="rail">
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-slide">
+          <div class="ad-brand">ADMIRAL<br>BET</div>
+          <div class="ad-sub">Live kvote za sve plej-of duele</div>
+          <div class="ad-cta">POGLEDAJ</div>
+        </div>
+        <div class="ad-slide">
+          <div class="ad-brand">BONUS<br>100%</div>
+          <div class="ad-sub">Na prvu uplatu za nove korisnike</div>
+          <div class="ad-cta">PRIJAVI SE</div>
+        </div>
+      </div>
+    </div>
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">KEŠ<br>KVOTA</div>
+        <div class="ad-sub">Podigni dobitak prije kraja meča</div>
+        <div class="ad-cta">SAZNAJ VIŠE</div>
+      </div>
+    </div>
+  </aside>
+
+  <article>
+    <span class="eyebrow">🏀 PLEJ-OF 2026</span>
+    <h1 class="headline">Plej-of ulazi u najvrelu fazu: serije koje se lome u posljednjoj minuti</h1>
+    <div class="byline">
+      <span>PIŠE: REDAKCIJA ŠUT.CO</span>
+      <span>AŽURIRANO PRIJE 40 MIN</span>
+      <span>5 MIN ČITANJA</span>
+    </div>
+
+    <figure class="hero-figure">
+      <svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustracija košarkaškog terena pod svjetlima">
+        <defs>
+          <linearGradient id="arena" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#131C33"/>
+            <stop offset="100%" stop-color="#1F2C4D"/>
+          </linearGradient>
+          <radialGradient id="spot" cx="50%" cy="10%" r="70%">
+            <stop offset="0%" stop-color="#E8720C" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#E8720C" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="800" height="340" fill="url(#arena)"/>
+        <rect width="800" height="340" fill="url(#spot)"/>
+        <rect x="60" y="260" width="680" height="60" rx="4" fill="#324573" opacity="0.6"/>
+        <circle cx="400" cy="220" r="46" fill="none" stroke="#E8720C" stroke-width="3" opacity="0.7"/>
+        <line x1="400" y1="60" x2="400" y2="290" stroke="#E8720C" stroke-width="2" opacity="0.4"/>
+        <rect x="60" y="60" width="680" height="230" fill="none" stroke="#FBFBF9" stroke-opacity="0.25" stroke-width="2"/>
+        <rect x="60" y="130" width="70" height="90" fill="none" stroke="#FBFBF9" stroke-opacity="0.3" stroke-width="2"/>
+        <rect x="670" y="130" width="70" height="90" fill="none" stroke="#FBFBF9" stroke-opacity="0.3" stroke-width="2"/>
+        <g fill="#E8720C" opacity="0.9">
+          <circle cx="400" cy="150" r="12"/>
+          <path d="M400,138 Q412,150 400,162 Q388,150 400,138" fill="none" stroke="#131C33" stroke-width="1.5"/>
+        </g>
+      </svg>
+      <div class="hero-caption">ILUSTRACIJA — TRENUTAK PRIJE POČETKA ČETVRTE ČETVRTINE</div>
+    </figure>
+
+    <p class="lead">Razlika između pobjede i eliminacije u ovoj fazi sezone mjeri se sekundama na časovniku. U posljednja dva kola gledali smo tri serije koje su odlučene u produžetku, a trend ukazuje da će i ostatak plej-ofa teći identičnim scenarijom — do zadnjeg poseda.</p>
+
+    <div class="body-copy">
+      <p>Trenerski štabovi sve više oslanjaju se na rotacije od osam do devet igrača, birajući intenzitet u odbrani umjesto dubine klupe. Ta strategija se u posljednje vrijeme pokazala kao presudna u završnicama izjednačenih mečeva.</p>
+      <p>Analitičari ističu i porast broja trojki pokušanih u posljednje dvije minute susreta — ekipe se sve rjeđe odlučuju za "siguran" ulazak pod koš, vjerujući da brzina odluke nosi veću prednost od geometrije šuta.</p>
+    </div>
+
+    <blockquote class="pullquote">"Serije se ne dobijaju u prvoj četvrtini. Dobijaju se u glavi, u posljednjem minutu."</blockquote>
+
+    <!-- ===== PREDICTOR + QUIZ WIDGET ===== -->
+    <div class="pred-block">
+      <div class="pred-head">
+        <div class="pred-title">PREDVIDI: <span>KO IDE DALJE?</span></div>
+        <div class="shotclock">
+          <svg width="28" height="28" viewBox="0 0 28 28">
+            <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+            <circle id="clockRing" cx="14" cy="14" r="11" fill="none" stroke="#E8720C" stroke-width="3" stroke-dasharray="69.1" stroke-dashoffset="0" transform="rotate(-90 14 14)"/>
+          </svg>
+          <span class="shotclock-num" id="shotclockNum">24</span>
+        </div>
+      </div>
+      <div class="pred-body">
+        <div class="pred-sub">Glasaj prije nego što istekne vrijeme na časovniku i vidi kako navijači procjenjuju seriju.</div>
+        <div class="team-picks">
+          <div class="team-card" id="teamA" onclick="vote('a')">
+            <div class="team-crest crest-a">RH</div>
+            <div class="team-name">Riverside Hawks</div>
+          </div>
+          <span class="vs-label">VS</span>
+          <div class="team-card" id="teamB" onclick="vote('b')">
+            <div class="team-crest crest-b">MB</div>
+            <div class="team-name">Metro Bulls</div>
+          </div>
+        </div>
+        <div class="pred-result" id="predResult" style="display:none;">
+          <div class="split-bar">
+            <div class="split-fill a" id="fillA">0%</div>
+            <div class="split-fill b" id="fillB">0%</div>
+          </div>
+          <div class="pred-note">Rezultat ankete se ažurira u realnom vremenu na osnovu glasova čitalaca.</div>
+        </div>
+      </div>
+
+      <div class="quiz-strip">
+        <h3>BONUS: <span>BRZI KVIZ</span> — koliko poznaješ pravila?</h3>
+        <div class="qs-item" data-correct="1">
+          <div class="qs-q">1. Koliko sekundi tim ima na raspolaganju za napad (standardna pravila)?</div>
+          <div class="qs-opts">
+            <button class="qs-opt" data-idx="0">18</button>
+            <button class="qs-opt" data-idx="1">24</button>
+            <button class="qs-opt" data-idx="2">30</button>
+          </div>
+        </div>
+        <div class="qs-item" data-correct="2">
+          <div class="qs-q">2. Koliko poena vrijedi pogodak iza linije od 6,75m?</div>
+          <div class="qs-opts">
+            <button class="qs-opt" data-idx="0">1</button>
+            <button class="qs-opt" data-idx="1">2</button>
+            <button class="qs-opt" data-idx="2">3</button>
+          </div>
+        </div>
+        <div class="qs-item" data-correct="0">
+          <div class="qs-q">3. Nakon koliko ličnih grešaka igrač napušta utakmicu (FIBA pravila)?</div>
+          <div class="qs-opts">
+            <button class="qs-opt" data-idx="0">5</button>
+            <button class="qs-opt" data-idx="1">6</button>
+            <button class="qs-opt" data-idx="2">4</button>
+          </div>
+        </div>
+        <button class="qs-submit" id="qsSubmit" onclick="submitQuiz()">PROVJERI ODGOVORE</button>
+        <div class="qs-result" id="qsResult"></div>
+      </div>
+    </div>
+    <!-- ===== END WIDGET ===== -->
+
+    <div class="body-copy">
+      <p>Osim taktike, presudan faktor postaje i menadžment minutaže ključnih igrača — timovi koji ulaze u posljednju četvrtinu sa svježijim nogama redovno preuzimaju inicijativu u posljednjih pet minuta. Očekuje se da će ovaj obrazac ostati dominantan do samog finala.</p>
+    </div>
+
+    <div class="ad board"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-slide">
+          <div class="ad-brand">ADMIRALBET</div>
+          <div class="ad-sub">Sve plej-of kvote na jednom mjestu — provjeri ponudu</div>
+          <div class="ad-cta">POGLEDAJ KVOTE</div>
+        </div>
+        <div class="ad-slide">
+          <div class="ad-brand">LIVE STREAM</div>
+          <div class="ad-sub">Prati mečeve uživo direktno iz aplikacije</div>
+          <div class="ad-cta">OTVORI APLIKACIJU</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body-copy" style="margin-top:22px;">
+      <p>Bez obzira na ishod aktuelnih serija, jedno je izvjesno — gledaoci ove sezone dobijaju plej-of vrijedan pamćenja, pun preokreta koji se odlučuju tek nakon zadnje sirene.</p>
+    </div>
+
+    <section class="related">
+      <h2>Još iz plej-ofa</h2>
+      <div class="related-grid">
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">ANALIZA</div>
+            <div class="rel-title">Ko je iznenađenje ove plej-of runde?</div>
+          </div>
+        </div>
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">STATISTIKA</div>
+            <div class="rel-title">Najefikasniji strijelci u produžecima</div>
+          </div>
+        </div>
+        <div class="rel-card">
+          <div class="rel-thumb"></div>
+          <div class="rel-body">
+            <div class="rel-tag">NAJAVA</div>
+            <div class="rel-title">Raspored preostalih serija</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <aside class="rail">
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-slide">
+          <div class="ad-brand">KLADI SE<br>UŽIVO</div>
+          <div class="ad-sub">Mijenjaj kvote dok traje meč</div>
+          <div class="ad-cta">OTVORI APLIKACIJU</div>
+        </div>
+        <div class="ad-slide">
+          <div class="ad-brand">PLEJ-OF<br>BONUS</div>
+          <div class="ad-sub">Specijalna ponuda za plej-of rundu</div>
+          <div class="ad-cta">ISKORISTI</div>
+        </div>
+      </div>
+    </div>
+    <div class="ad skyscraper"><span class="ad-label">OGLAS</span>
+      <div class="ad-inner">
+        <div class="ad-brand">KVIZ<br>NAGRADE</div>
+        <div class="ad-sub">Osvoji besplatne tikete dnevnim kvizom</div>
+        <div class="ad-cta">UČESTVUJ</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<footer class="site">
+  ŠUT.CO — MOCKUP STRANICE ZA INTERNU UPOTREBU · SVI TIMOVI, PODACI I REZULTATI SU ILUSTRATIVNI
+</footer>
+
+<script>
+/* Shot clock countdown */
+const CIRC = 69.1;
+let timeLeft = 24;
+const clockNumEl = document.getElementById('shotclockNum');
+const clockRing = document.getElementById('clockRing');
+let voted = false;
+
+const clockTimer = setInterval(() => {
+  if(voted) return;
+  timeLeft--;
+  if(timeLeft <= 0){
+    timeLeft = 0;
+    clearInterval(clockTimer);
+  }
+  clockNumEl.textContent = timeLeft;
+  clockRing.style.strokeDashoffset = CIRC * (1 - timeLeft/24);
+}, 1000);
+
+function vote(choice){
+  if(voted) return;
+  voted = true;
+  document.getElementById('teamA').classList.toggle('picked', choice === 'a');
+  document.getElementById('teamB').classList.toggle('picked', choice === 'b');
+
+  const base = choice === 'a' ? 63 : 41;
+  const pctA = choice === 'a' ? base : 100 - base;
+  const pctB = 100 - pctA;
+
+  const resultBox = document.getElementById('predResult');
+  resultBox.style.display = 'block';
+  const fillA = document.getElementById('fillA');
+  const fillB = document.getElementById('fillB');
+  requestAnimationFrame(() => {
+    fillA.style.width = pctA + '%';
+    fillB.style.width = pctB + '%';
+    fillA.textContent = pctA + '%';
+    fillB.textContent = pctB + '%';
+  });
+}
+
+/* Bonus quiz */
+document.querySelectorAll('.qs-item').forEach(item => {
+  item.querySelectorAll('.qs-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      item.querySelectorAll('.qs-opt').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    });
+  });
+});
+
+function submitQuiz(){
+  let score = 0;
+  document.querySelectorAll('.qs-item').forEach(item => {
+    const correctIdx = item.dataset.correct;
+    const opts = item.querySelectorAll('.qs-opt');
+    const selected = item.querySelector('.qs-opt.sel');
+    opts.forEach(o => {
+      o.disabled = true;
+      if(o.dataset.idx === correctIdx) o.classList.add('correct-reveal');
+      else if(o.classList.contains('sel')) o.classList.add('wrong-reveal');
+    });
+    if(selected && selected.dataset.idx === correctIdx) score++;
+  });
+  const resEl = document.getElementById('qsResult');
+  resEl.style.display = 'block';
+  resEl.textContent = `REZULTAT: ${score} / 3 TAČNA ODGOVORA`;
+  document.getElementById('qsSubmit').disabled = true;
+}
+</script>
+
+</body>
+</html>
