@@ -554,11 +554,11 @@
       padding:5px 2px calc(4px + env(safe-area-inset-bottom));
     }
     .bottom-nav button{
-      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-      background:none;border:none;color:var(--faint);font-size:9.5px;font-weight:600;
-      padding:6px 2px;min-height:52px;letter-spacing:.01em;
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+      background:none;border:none;color:var(--faint);font-size:8.8px;font-weight:600;
+      padding:6px 1px;min-height:52px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
-    .bottom-nav button .bn-icon{font-size:18px;line-height:1;}
+    .bottom-nav button .bn-icon{font-size:17px;line-height:1;}
     .bottom-nav button.active{color:var(--gold);}
   }
 
@@ -693,7 +693,6 @@
       <nav class="mobile-nav" id="mobileNav">
         <button data-view="home" class="active">Home</button>
         <button data-view="education">Education</button>
-        <button data-view="community">Community</button>
         <button data-view="partners">Partners</button>
         <button data-view="admin">Admin</button>
       </nav>
@@ -708,6 +707,7 @@
     <button data-view="bookmakers"><span class="bn-icon">🎲</span>Kladionice</button>
     <button data-view="bonuses"><span class="bn-icon">🎁</span>Bonusi</button>
     <button data-view="guides"><span class="bn-icon">📰</span>Vodiči</button>
+    <button data-view="community"><span class="bn-icon">💬</span>Zajednica</button>
   </nav>
 
   <main>
