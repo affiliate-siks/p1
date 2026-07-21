@@ -44,6 +44,8 @@
   .icon-btn{background:none;border:1px solid var(--line);border-radius:7px;width:32px;height:32px;font-size:13px;color:var(--dim);}
   .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
   .toggle{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:2px;}
+  .market-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;}
+  .market-btn:hover{border-color:var(--gold);}
   .toggle button{background:none;border:none;color:var(--dim);font-size:12px;font-weight:600;padding:5px 12px;border-radius:14px;}
   .toggle button.active{background:var(--gold);color:#1a1400;}
 
@@ -60,7 +62,7 @@
   .foot-links button:hover{color:var(--gold);}
 
   /* ---------- Compliance line ---------- */
-  .compliance{display:flex;align-items:center;gap:8px;color:var(--faint);font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:8px 12px;margin-bottom:28px;}
+  .compliance{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--faint);font-size:11.5px;border:1px solid var(--line);border-radius:7px;padding:8px 12px;margin-bottom:28px;}
   .compliance strong{color:var(--gold);font-weight:600;}
 
   /* ---------- Section header pattern ---------- */
@@ -71,7 +73,8 @@
   .head .sub{color:var(--faint);font-size:12px;}
 
   /* ---------- Buttons ---------- */
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:7px;font-weight:600;font-size:13.5px;border:1px solid transparent;}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:7px;font-weight:600;font-size:13.5px;border:1px solid transparent;transition:transform .08s ease;}
+  .btn:active, .icon-btn:active, .chip:active, .fav-btn:active, .explore-card:active, .game-card:active, .news-card:active, .chat-topic-card:active, .op-row:active{transform:scale(.97);}
   .btn-gold{background:var(--gold);color:#1a1400;}
   .btn-gold:hover{background:#dbb52f;}
   .btn-line{background:none;border-color:var(--line);color:var(--text);}
@@ -85,8 +88,8 @@
   .hero-actions{display:flex;gap:10px;margin-bottom:26px;}
 
   /* ---------- Subtabs ---------- */
-  .subtabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content;margin-bottom:24px;}
-  .subtabs button{background:none;border:none;color:var(--dim);font-size:12.5px;font-weight:500;padding:7px 15px;border-radius:6px;}
+  .subtabs{display:flex;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content;margin-bottom:24px;position:sticky;top:var(--header-h, 60px);z-index:30;}
+  .subtabs button{background:var(--panel);border:none;color:var(--dim);font-size:12.5px;font-weight:500;padding:7px 15px;border-radius:6px;}
   .subtabs button.active{background:var(--gold);color:#1a1400;font-weight:600;}
 
   /* ---------- Review / listing card (operators: bookmakers + casinos) ---------- */
@@ -111,7 +114,7 @@
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:150;display:none;align-items:center;justify-content:center;padding:20px;}
   .modal-overlay.show{display:flex;}
   .modal-box{background:var(--card);border:1px solid var(--line);border-radius:12px;max-width:520px;width:100%;padding:26px;max-height:84vh;overflow-y:auto;}
-  .modal-close{float:right;background:none;border:none;color:var(--faint);font-size:20px;}
+  .modal-close{float:right;background:none;border:none;color:var(--faint);font-size:20px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;margin:-10px -10px 0 0;}
   .modal-box h3{font-family:var(--serif);font-size:21px;margin:4px 0 3px;}
   .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;}
   .detail-cell{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:9px 11px;}
@@ -139,15 +142,25 @@
   .bonus-terms{font-size:11px;color:var(--faint);margin-bottom:12px;line-height:1.5;}
   @media (max-width:860px){.bonus-grid{grid-template-columns:1fr;}}
 
+  /* ---------- Fake cover thumbnails — CSS gradient + icon, no real images needed ---------- */
+  .thumb-banner{position:relative;height:82px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .thumb-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.38) 100%);}
+  .thumb-banner .thumb-icon{position:relative;z-index:1;font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));}
+
   /* ---------- Games ---------- */
   .game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  .game-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px;}
+  .game-card{background:var(--card);border:1px solid var(--line);border-radius:9px;overflow:hidden;transition:border-color .15s;}
+  .game-card:hover{border-color:var(--gold);}
+  .game-card .card-body{padding:11px 13px 13px;}
   .game-name{font-weight:600;font-size:13px;margin-bottom:6px;}
   .game-meta{font-size:10.5px;color:var(--faint);display:flex;justify-content:space-between;}
   @media (max-width:860px){.game-grid{grid-template-columns:1fr 1fr;}}
 
   /* ---------- Tournaments ---------- */
-  .tourn-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .tourn-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .tourn-left{display:flex;align-items:center;gap:14px;min-width:0;}
+  .tourn-thumb{width:46px;height:46px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;position:relative;overflow:hidden;}
+  .tourn-thumb::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.2), rgba(0,0,0,0) 60%);}
   .tourn-name{font-family:var(--serif);font-weight:600;font-size:15.5px;}
   .tourn-sub{font-size:11.5px;color:var(--faint);}
   .tourn-stats{display:flex;gap:20px;align-items:center;}
@@ -157,7 +170,9 @@
 
   /* ---------- Guides / news ---------- */
   .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-  .news-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;}
+  .news-card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .15s;}
+  .news-card:hover{border-color:var(--gold);}
+  .news-card .card-body{padding:14px 16px 16px;}
   .news-cat{font-size:10px;text-transform:uppercase;color:var(--gold);font-weight:700;letter-spacing:.05em;}
   .news-title{font-family:var(--serif);font-size:15.5px;margin:6px 0;font-weight:600;line-height:1.3;}
   .news-desc{font-size:11.5px;color:var(--dim);line-height:1.5;}
@@ -321,7 +336,7 @@
     .admin-side{display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:10px 8px;gap:2px;}
     .admin-side button{width:auto;white-space:nowrap;flex-shrink:0;}
     .cookie-banner{bottom:var(--bottomnav-h);}
-    .header-right .toggle{display:none;}
+    .header-right .market-btn{display:none;}
   }
 
   /* Phones (≤640px): stack cards, full-width buttons, larger tap targets */
@@ -337,18 +352,26 @@
     .btn{padding:11px 16px;min-height:42px;}
 
     /* Operator rows become stacked cards */
-    .op-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:16px;}
-    .op-mark{order:1;}
+    .op-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:14px 16px;}
+    .op-mark{order:1;width:52px;height:52px;font-size:17px;}
     .op-name-wrap{order:2;flex:1;min-width:0;}
     .op-rating{order:3;}
-    .op-bonus{order:4;flex-basis:100%;}
+    .op-bonus{order:4;flex-basis:100%;padding-top:6px;margin-top:2px;border-top:1px solid var(--line);}
     .op-actions{order:5;flex-basis:100%;display:flex;gap:8px;}
     .op-actions .btn{flex:1;justify-content:center;}
 
     /* Bonus / game / news / banner grids: single column */
     .bonus-grid{grid-template-columns:1fr;}
-    .game-grid{grid-template-columns:1fr 1fr;}
-    .news-grid{grid-template-columns:1fr;}
+    /* Game / news / education cards: horizontal scroll carousel instead of a tall stack */
+    .game-grid, .news-grid{
+      display:flex;flex-wrap:nowrap;overflow-x:auto;gap:12px;padding-bottom:6px;
+      -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(to right, black 92%, transparent 100%);
+      mask-image:linear-gradient(to right, black 92%, transparent 100%);
+    }
+    .game-grid::-webkit-scrollbar, .news-grid::-webkit-scrollbar{display:none;}
+    .game-grid .game-card{flex:0 0 128px;scroll-snap-align:start;}
+    .news-grid .news-card{flex:0 0 228px;scroll-snap-align:start;}
     .banner-grid{grid-template-columns:1fr;}
     .dash-grid{grid-template-columns:1fr 1fr;}
     .kpi-box .num{font-size:19px;}
@@ -548,7 +571,7 @@
     padding:10px 14px;color:var(--text);font-size:15px;
   }
   .topbar-search input:focus{outline:none;border-color:var(--gold);}
-  .topbar-search .search-close{background:none;border:none;color:var(--dim);font-size:20px;padding:4px 6px;flex-shrink:0;}
+  .topbar-search .search-close{background:none;border:none;color:var(--dim);font-size:20px;min-width:44px;min-height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .search-dropdown{display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border-bottom:1px solid var(--line);max-height:60vh;overflow-y:auto;z-index:55;}
   header.search-mode .search-dropdown{display:block;}
   .search-chip-row{display:flex;gap:8px;flex-wrap:wrap;padding:4px 24px 14px;}
@@ -572,6 +595,26 @@
   .account-form input{padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13.5px;}
   .account-form input:focus{outline:none;border-color:var(--gold);}
 
+  /* ---------- Toast / snackbar — replaces alert() with a calmer in-page confirmation ---------- */
+  .toast{position:fixed;left:50%;bottom:calc(var(--bottomnav-h) + 18px);transform:translate(-50%, 8px);background:var(--card);border:1px solid var(--gold);border-radius:9px;padding:12px 20px;color:var(--text);font-size:13px;z-index:190;opacity:0;pointer-events:none;transition:opacity .22s ease, transform .22s ease;max-width:88vw;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.35);}
+  .toast.show{opacity:1;transform:translate(-50%, 0);}
+
+  /* ---------- Star rating (visual, partial-fill) ---------- */
+  .star-rating{position:relative;display:inline-block;font-size:13px;line-height:1;white-space:nowrap;}
+  .star-rating .bg{color:var(--line);letter-spacing:1px;}
+  .star-rating .fg{position:absolute;top:0;left:0;overflow:hidden;white-space:nowrap;color:var(--gold);letter-spacing:1px;}
+
+  /* ---------- Favourite toggle ---------- */
+  .fav-btn{background:none;border:1px solid var(--line);border-radius:7px;width:36px;height:36px;font-size:15px;color:var(--faint);flex-shrink:0;}
+  .fav-btn:hover{border-color:var(--red);}
+  .fav-btn.active{color:var(--red);border-color:var(--red);}
+
+  /* ---------- Breadcrumbs ---------- */
+  .breadcrumb{font-size:11.5px;color:var(--faint);margin-bottom:12px;}
+  .breadcrumb button{background:none;border:none;color:var(--faint);font-size:inherit;padding:0;cursor:pointer;}
+  .breadcrumb button:hover{color:var(--gold);text-decoration:underline;}
+  .breadcrumb .sep{margin:0 6px;color:var(--line);}
+
   /* Comfortable tap targets on touch devices */
   @media (max-width:640px){
     .icon-btn{width:38px;height:38px;font-size:15px;}
@@ -587,7 +630,7 @@
   <h2>Confirm your age</h2>
   <p id="agegate-copy">This site contains information about licensed betting and gaming operators.</p>
   <div class="agegate-btns">
-    <button class="btn btn-gold" onclick="document.getElementById('agegate').classList.remove('show')">I am 18 or older</button>
+    <button class="btn btn-gold" onclick="ageGateConfirmed=true;document.getElementById('agegate').classList.remove('show')">I am 18 or older</button>
     <button class="btn btn-line" onclick="window.location.href='about:blank'">Exit</button>
   </div>
 </div>
@@ -597,7 +640,9 @@
 <div class="modal-overlay" id="glossaryModal"><div class="modal-box"><div id="glossaryModalContent"></div></div></div>
 <div class="modal-overlay" id="reviewModal"><div class="modal-box"><div id="reviewModalContent"></div></div></div>
 <div class="modal-overlay" id="accountModal"><div class="modal-box"><div id="accountModalContent"></div></div></div>
+<div class="modal-overlay" id="countryModal"><div class="modal-box"><div id="countryModalContent"></div></div></div>
 
+<div class="toast" id="toast"></div>
 <div class="cookie-banner" id="cookieBanner">
   <p>We use cookies for analytics and affiliate attribution. See our <button onclick="openLegal('cookies')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;">Cookie Policy</button>.</p>
   <div style="display:flex;gap:8px;">
@@ -624,10 +669,7 @@
       <div class="header-right">
         <button class="icon-btn" onclick="openSearch()" aria-label="Search">⌕</button>
         <button class="icon-btn header-account-btn" onclick="openAccount()" aria-label="Account">☺</button>
-        <div class="toggle" id="marketToggle">
-          <button data-market="UK" class="active">UK</button>
-          <button data-market="IT">IT</button>
-        </div>
+        <button class="market-btn" id="marketBtnLabel" onclick="openCountryPicker()" aria-label="Choose country">🇬🇧 UK</button>
         <button class="icon-btn hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
       </div>
     </div>
@@ -645,15 +687,13 @@
     <div class="mobile-drawer" id="mobileDrawer">
       <div class="drawer-market-row">
         <span class="drawer-market-label">Market</span>
-        <div class="toggle" id="marketToggleMobile">
-          <button data-market="UK" class="active">UK</button>
-          <button data-market="IT">IT</button>
-        </div>
+        <button class="market-btn" id="marketBtnLabelMobile" onclick="openCountryPicker()">🇬🇧 United Kingdom</button>
       </div>
-      <p class="drawer-market-note">Auto-detected from your location by default. Only switch manually if you're browsing from elsewhere — content and operators shown are matched to the selected market.</p>
+      <p class="drawer-market-note">Auto-detected from your location by default. Search for any country — fully localized content exists for the UK and Italy today, everywhere else previews a demo experience.</p>
       <nav class="mobile-nav" id="mobileNav">
         <button data-view="home" class="active">Home</button>
         <button data-view="education">Education</button>
+        <button data-view="community">Community</button>
         <button data-view="partners">Partners</button>
         <button data-view="admin">Admin</button>
       </nav>
@@ -663,11 +703,11 @@
 
   <!-- Fixed bottom nav — mobile only, thumb-zone primary navigation -->
   <nav class="bottom-nav" id="bottomNav">
+    <button data-view="home"><span class="bn-icon">🏠</span>Home</button>
     <button data-view="casino"><span class="bn-icon">🎰</span>Casino</button>
     <button data-view="bookmakers"><span class="bn-icon">🎲</span>Kladionice</button>
     <button data-view="bonuses"><span class="bn-icon">🎁</span>Bonusi</button>
     <button data-view="guides"><span class="bn-icon">📰</span>Vodiči</button>
-    <button data-view="community"><span class="bn-icon">💬</span>Zajednica</button>
   </nav>
 
   <main>
@@ -710,6 +750,8 @@
       </div>
 
       <div class="stats-bar" id="statsBar"></div>
+
+      <div id="recentlyViewedBox" style="display:none;"></div>
 
       <div class="head">
         <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Top rated</p><h2>Casinos this week</h2></div>
@@ -917,82 +959,95 @@
         <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Publisher network</p><h2>Partners</h2></div>
         <button class="btn btn-gold" onclick="openApply()">Apply as partner</button>
       </div>
-      <div class="subtabs" id="partnerSubtabs">
-        <button data-ptab="program" class="active">Affiliate Program</button>
-        <button data-ptab="leaderboard">Leaderboard</button>
-        <button data-ptab="dashboard">My Dashboard</button>
+
+      <div class="hero" style="border-bottom:none;padding-top:0;margin-bottom:12px;">
+        <h1 style="font-size:26px;">Promote Before Bet. Earn on every referral.</h1>
+        <p>Add your own tracking link to your site, newsletter or channel. When your visitors click through and register with an operator via Before Bet, you earn a share of what we earn — paid monthly, no minimum traffic required to start.</p>
       </div>
 
-      <div id="ptab-program">
-        <div class="hero" style="border-bottom:none;padding-top:0;margin-bottom:12px;">
-          <h1 style="font-size:26px;">Promote Before Bet. Earn on every referral.</h1>
-          <p>Add your own tracking link to your site, newsletter or channel. When your visitors click through and register with an operator via Before Bet, you earn a share of what we earn — paid monthly, no minimum traffic required to start.</p>
-        </div>
-
-        <div class="bonus-grid" style="margin-bottom:30px;">
-          <div class="bonus-card"><span class="bonus-cat">Step 1</span><div class="bonus-title" style="font-size:15px;">Apply</div><div class="bonus-terms">Tell us where you'll place the link. Most applications are reviewed within 48h.</div></div>
-          <div class="bonus-card"><span class="bonus-cat">Step 2</span><div class="bonus-title" style="font-size:15px;">Get your link &amp; creatives</div><div class="bonus-terms">A unique tracking link plus ready-made banners in standard ad sizes.</div></div>
-          <div class="bonus-card"><span class="bonus-cat">Step 3</span><div class="bonus-title" style="font-size:15px;">Get paid monthly</div><div class="bonus-terms">Track clicks and earnings live in your dashboard; payouts run on the 1st of each month.</div></div>
-          <div class="bonus-card"><span class="bonus-cat">No cost</span><div class="bonus-title" style="font-size:15px;">Free to join</div><div class="bonus-terms">No setup fee, no minimum traffic commitment. Cancel anytime.</div></div>
-        </div>
-
-        <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">Commission tiers</h2></div><span class="sub">Based on monthly referred clicks — you move up automatically</span></div>
-        <div class="table-wrap" style="margin-bottom:30px;">
-          <table>
-            <thead><tr><th>Tier</th><th>Monthly clicks</th><th>Your share</th></tr></thead>
-            <tbody>
-              <tr><td>Starter</td><td>Any</td><td style="color:var(--gold);font-weight:700;">15%</td></tr>
-              <tr><td>Silver</td><td>2,500+</td><td style="color:var(--gold);font-weight:700;">20%</td></tr>
-              <tr><td>Gold</td><td>10,000+</td><td style="color:var(--gold);font-weight:700;">25%</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">FAQ</h2></div></div>
-        <div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How and when do I get paid?</span><span class="arrow">+</span></div><div class="faq-a">Monthly, on the 1st, via bank transfer or PayPal. No minimum payout threshold.</div></div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How long does the tracking cookie last?</span><span class="arrow">+</span></div><div class="faq-a">30 days from click — if your visitor registers within that window, you're credited even if they didn't convert on the first visit.</div></div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Can I promote specific operators only?</span><span class="arrow">+</span></div><div class="faq-a">Yes — your dashboard lets you generate links to any individual operator we list, or a general Before Bet link.</div></div>
-        </div>
-
-        <button class="btn btn-gold" style="margin-top:24px;" onclick="openApply()">Apply now</button>
+      <div class="bonus-grid" style="margin-bottom:30px;">
+        <div class="bonus-card"><span class="bonus-cat">Step 1</span><div class="bonus-title" style="font-size:15px;">Apply</div><div class="bonus-terms">Tell us where you'll place the link. Most applications are reviewed within 48h.</div></div>
+        <div class="bonus-card"><span class="bonus-cat">Step 2</span><div class="bonus-title" style="font-size:15px;">Get your link &amp; creatives</div><div class="bonus-terms">A unique tracking link plus ready-made banners in standard ad sizes.</div></div>
+        <div class="bonus-card"><span class="bonus-cat">Step 3</span><div class="bonus-title" style="font-size:15px;">Get paid monthly</div><div class="bonus-terms">Track clicks and earnings live in your dashboard; payouts run on the 1st of each month.</div></div>
+        <div class="bonus-card"><span class="bonus-cat">No cost</span><div class="bonus-title" style="font-size:15px;">Free to join</div><div class="bonus-terms">No setup fee, no minimum traffic commitment. Cancel anytime.</div></div>
       </div>
 
-      <div id="ptab-leaderboard" style="display:none;">
-        <div class="lead-table">
-          <div class="lead-row head"><span>#</span><span>Partner</span><span>Clicks</span><span>FTDs</span><span>EPC</span><span>Revenue</span></div>
-          <div id="partnerLeaderboard"></div>
-        </div>
-        <div class="head"><div><h2 style="font-size:18px;">Creative library</h2></div></div>
-        <div class="banner-grid" id="bannerGrid"></div>
+      <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">Commission tiers</h2></div><span class="sub">Based on monthly referred clicks — you move up automatically</span></div>
+      <div class="table-wrap" style="margin-bottom:30px;">
+        <table>
+          <thead><tr><th>Tier</th><th>Monthly clicks</th><th>Your share</th></tr></thead>
+          <tbody>
+            <tr><td>Starter</td><td>Any</td><td style="color:var(--gold);font-weight:700;">15%</td></tr>
+            <tr><td>Silver</td><td>2,500+</td><td style="color:var(--gold);font-weight:700;">20%</td></tr>
+            <tr><td>Gold</td><td>10,000+</td><td style="color:var(--gold);font-weight:700;">25%</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div id="ptab-dashboard" style="display:none;">
-        <div class="dash-grid" id="dashKpiGrid"></div>
-        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">My links</h2></div></div>
-        <div class="table-wrap" style="margin-bottom:26px;">
-          <table><thead><tr><th>Operator</th><th>Link</th><th>Clicks</th><th>FTDs</th></tr></thead><tbody id="myLinksTbody"></tbody></table>
+
+      <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">FAQ</h2></div></div>
+      <div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How and when do I get paid?</span><span class="arrow">+</span></div><div class="faq-a">Monthly, on the 1st, via bank transfer or PayPal. No minimum payout threshold.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How long does the tracking cookie last?</span><span class="arrow">+</span></div><div class="faq-a">30 days from click — if your visitor registers within that window, you're credited even if they didn't convert on the first visit.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Can I promote specific operators only?</span><span class="arrow">+</span></div><div class="faq-a">Yes — your dashboard lets you generate links to any individual operator we list, or a general Before Bet link, once your application is approved.</div></div>
+      </div>
+
+      <p style="font-size:11px;color:var(--faint);margin:16px 0 4px;max-width:520px;">Individual partner performance, revenue and payout data are internal — not published on this page. Approved partners receive dashboard access separately.</p>
+      <button class="btn btn-gold" style="margin-top:8px;" onclick="openApply()">Apply now</button>
+    </section>
+
+    <!-- ============ ADMIN LOGIN GATE ============ -->
+    <section class="view" id="view-admin-login">
+      <div style="max-width:360px;margin:60px auto 0;text-align:center;">
+        <div style="font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:4px;">Admin sign in</div>
+        <p style="color:var(--faint);font-size:12.5px;margin-bottom:24px;">Internal tool — staff access only.</p>
+        <div style="text-align:left;display:flex;flex-direction:column;gap:10px;">
+          <input type="text" id="adminUser" placeholder="Username" class="search-input" autocomplete="username">
+          <input type="password" id="adminPass" placeholder="Password" class="search-input" autocomplete="current-password" onkeydown="if(event.key==='Enter')attemptAdminLogin()">
+          <div id="adminLoginError" style="display:none;color:var(--red);font-size:12px;"></div>
+          <button class="btn btn-gold" style="justify-content:center;margin-top:4px;" onclick="attemptAdminLogin()">Sign in</button>
         </div>
-        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">Payouts</h2></div></div>
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 18px;margin-bottom:26px;" id="invoiceList"></div>
-        <div class="head" style="margin-top:0;"><div><h2 style="font-size:17px;">API access</h2></div></div>
-        <div class="api-box">GET https://api.beforebet.com/v1/partners/me/stats
-Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
       </div>
     </section>
 
     <!-- ============ ADMIN ============ -->
     <section class="view" id="view-admin">
-      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Internal tool</p><h2>Admin</h2></div></div>
+      <div class="head">
+        <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Internal tool</p><h2>Admin</h2></div>
+        <button class="btn btn-line" style="padding:7px 13px;font-size:12px;" onclick="adminLogout()">Log out</button>
+      </div>
       <div class="admintabs" id="adminTopTabs">
-        <button data-atab="cms" class="active">Content (CMS)</button>
+        <button data-atab="dashboard" class="active">Dashboard</button>
+        <button data-atab="cms">Content (CMS)</button>
         <button data-atab="analytics">Analytics</button>
       </div>
 
-      <div id="atab-cms">
+      <div id="atab-dashboard">
+        <div id="adminWelcome" style="font-size:14.5px;margin-bottom:16px;color:var(--dim);"></div>
+        <div class="admin-overview" id="adminDashOverview"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div>
+            <h3 style="font-family:var(--serif);font-size:15px;margin:0 0 10px;">Quick actions</h3>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <button class="btn btn-line" style="justify-content:flex-start;" onclick="jumpToCmsPanel('partnerperf')">Check partner leaderboard</button>
+              <button class="btn btn-line" style="justify-content:flex-start;" onclick="jumpToCmsPanel('bonuses')">+ Add a bonus</button>
+              <button class="btn btn-line" style="justify-content:flex-start;" onclick="jumpToCmsPanel('placements')">Manage featured placements</button>
+              <button class="btn btn-line" style="justify-content:flex-start;" onclick="jumpToCmsPanel('fraud')">Review fraud flags</button>
+              <button class="btn btn-line" style="justify-content:flex-start;" onclick="go('complaints')">Open Complaints Center</button>
+            </div>
+          </div>
+          <div>
+            <h3 style="font-family:var(--serif);font-size:15px;margin:0 0 10px;">Recent activity</h3>
+            <div id="adminRecentActivity" style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px 18px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="atab-cms" style="display:none;">
         <div class="admin-overview" id="adminOverview"></div>
         <div class="admin-shell">
           <div class="admin-side" id="cmsSide">
             <button data-panel="operators" class="active">Operator profiles</button>
+            <button data-panel="partnerperf">Partner performance</button>
             <button data-panel="bonuses">Bonuses</button>
             <button data-panel="links">Links &amp; redirects</button>
             <button data-panel="postbacks">Postbacks (S2S)</button>
@@ -1026,6 +1081,19 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
         <div class="complaint-row head"><span>ID</span><span>Subject</span><span>Operator</span><span>Date</span><span>Status</span></div>
         <div id="complaintList"></div>
       </div>
+    </section>
+
+    <!-- ============ RESPONSIBLE GAMBLING ============ -->
+    <section class="view" id="view-responsible">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Player wellbeing</p><h2 id="rgHeading">Responsible Gambling</h2></div></div>
+      <div id="rgContent"></div>
+    </section>
+
+    <!-- ============ TEAM ============ -->
+    <section class="view" id="view-team">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Our people</p><h2 id="teamHeading">Meet the editorial team</h2></div></div>
+      <p style="color:var(--faint);font-size:12.5px;max-width:580px;margin:-6px 0 20px;" id="teamIntro"></p>
+      <div id="teamGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;"></div>
     </section>
 
     <!-- ============ OPERATOR DETAIL PAGE ============ -->
@@ -1062,6 +1130,9 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
           <button onclick="openLegal('methodology')">How We Rate</button>
           <button onclick="openGlossary()">Glossary</button>
           <button onclick="go('complaints')">Complaints Center</button>
+          <button onclick="go('team')">Our Team</button>
+          <button onclick="go('responsible')">Responsible Gambling</button>
+          <button onclick="go('partners')">Partners</button>
         </div>
       </div>
       <p>Prototype build. Operator names, odds and figures are illustrative placeholders.</p>
@@ -1074,6 +1145,120 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
    DATA
    ============================================================ */
 let market = 'UK';
+
+/* ============================================================
+   GLOBAL COUNTRY TARGETING — search any country, geo-detected
+   `market` stays 'UK'/'IT' internally (drives all existing localized
+   content). `selectedCountry` is the actual chosen/detected country —
+   for anything outside FULL_MARKETS we preview on the UK template
+   with a clear "demo content" banner rather than pretending full
+   localization we don't actually have.
+   ============================================================ */
+const FULL_MARKETS = ['UK','IT'];
+const COUNTRIES = [
+  {code:'UK',name:'United Kingdom'},{code:'IT',name:'Italy'},
+  {code:'DE',name:'Germany'},{code:'ES',name:'Spain'},{code:'SE',name:'Sweden'},{code:'DK',name:'Denmark'},
+  {code:'NL',name:'Netherlands'},{code:'IE',name:'Ireland'},{code:'CA',name:'Canada'},{code:'BR',name:'Brazil'},
+  {code:'PT',name:'Portugal'},{code:'RO',name:'Romania'},{code:'GR',name:'Greece'},{code:'CZ',name:'Czech Republic'},
+  {code:'FR',name:'France'},{code:'AT',name:'Austria'},{code:'CH',name:'Switzerland'},{code:'BE',name:'Belgium'},
+  {code:'PL',name:'Poland'},{code:'HU',name:'Hungary'},{code:'FI',name:'Finland'},{code:'NO',name:'Norway'},
+  {code:'US',name:'United States'},{code:'AU',name:'Australia'},{code:'NZ',name:'New Zealand'},
+  {code:'MX',name:'Mexico'},{code:'AR',name:'Argentina'},{code:'CL',name:'Chile'},{code:'CO',name:'Colombia'},
+  {code:'PE',name:'Peru'},{code:'ZA',name:'South Africa'},{code:'NG',name:'Nigeria'},{code:'KE',name:'Kenya'},
+  {code:'IN',name:'India'},{code:'JP',name:'Japan'},{code:'KR',name:'South Korea'},{code:'CN',name:'China'},
+  {code:'SG',name:'Singapore'},{code:'MY',name:'Malaysia'},{code:'PH',name:'Philippines'},{code:'ID',name:'Indonesia'},
+  {code:'TH',name:'Thailand'},{code:'VN',name:'Vietnam'},{code:'TR',name:'Turkey'},{code:'RU',name:'Russia'},
+  {code:'UA',name:'Ukraine'},{code:'RS',name:'Serbia'},{code:'HR',name:'Croatia'},{code:'SI',name:'Slovenia'},
+  {code:'BA',name:'Bosnia and Herzegovina'},{code:'MK',name:'North Macedonia'},{code:'ME',name:'Montenegro'},
+  {code:'AL',name:'Albania'},{code:'BG',name:'Bulgaria'},{code:'SK',name:'Slovakia'},{code:'LT',name:'Lithuania'},
+  {code:'LV',name:'Latvia'},{code:'EE',name:'Estonia'},{code:'IS',name:'Iceland'},{code:'LU',name:'Luxembourg'},
+  {code:'MT',name:'Malta'},{code:'CY',name:'Cyprus'},{code:'EG',name:'Egypt'},{code:'MA',name:'Morocco'},
+  {code:'DZ',name:'Algeria'},{code:'TN',name:'Tunisia'},{code:'SA',name:'Saudi Arabia'},{code:'AE',name:'United Arab Emirates'},
+  {code:'QA',name:'Qatar'},{code:'IL',name:'Israel'},{code:'PK',name:'Pakistan'},{code:'BD',name:'Bangladesh'},
+  {code:'LK',name:'Sri Lanka'},{code:'GH',name:'Ghana'},{code:'TZ',name:'Tanzania'},{code:'UG',name:'Uganda'},
+  {code:'EC',name:'Ecuador'},{code:'VE',name:'Venezuela'},{code:'UY',name:'Uruguay'},{code:'PY',name:'Paraguay'},
+  {code:'BO',name:'Bolivia'},{code:'CR',name:'Costa Rica'},{code:'PA',name:'Panama'},{code:'DO',name:'Dominican Republic'},
+  {code:'GT',name:'Guatemala'},{code:'HN',name:'Honduras'},{code:'SV',name:'El Salvador'},{code:'NI',name:'Nicaragua'},
+  {code:'JM',name:'Jamaica'},{code:'TT',name:'Trinidad and Tobago'},
+];
+function flagEmoji(code){
+  const cc = code==='UK' ? 'GB' : code;
+  return cc.toUpperCase().replace(/./g, ch=>String.fromCodePoint(127397+ch.charCodeAt(0)));
+}
+function countryName(code){ const c=COUNTRIES.find(x=>x.code===code); return c ? c.name : code; }
+let selectedCountry = 'UK';
+let isAdminAuthed = false;
+
+
+/* ---------- Fake thumbnail helpers: deterministic gradient + icon, no real images needed ---------- */
+const THUMB_PALETTE = [
+  ['#7A2E2E','#C9A227'], ['#2E4E7A','#5E3A8C'], ['#2E6E4E','#C9A227'],
+  ['#6E2E5E','#2E4E7A'], ['#8C5E1E','#7A2E2E'], ['#2E4E7A','#2E6E4E'],
+  ['#5E3A8C','#C9A227'], ['#2E6E4E','#2E4E7A'],
+];
+function hashStr(s){ let h=0; for(let i=0;i<String(s).length;i++){ h=(h*31+String(s).charCodeAt(i))|0; } return Math.abs(h); }
+function thumbGradient(seed){ const p=THUMB_PALETTE[hashStr(seed)%THUMB_PALETTE.length]; return `linear-gradient(135deg, ${p[0]}, ${p[1]})`; }
+function gameIcon(cat){ return {Slots:'🎰',Roulette:'🎡',Blackjack:'🃏',"Live Casino":'🎥',"Video Poker":'🂡',"Scratch Cards":'🎫'}[cat] || '🎮'; }
+function eduIcon(id){ return {'roulette-odds':'🎡','poker-hand-rankings':'🃏','slot-volatility':'🎰','bet-types':'⚽','bookmaker-margin':'📊','value-betting':'📈'}[id] || '📘'; }
+function bonusIcon(cat){ if(cat==='Welcome'||cat==='Benvenuto') return '🎉'; if(cat==='Deposit Match') return '💰'; if(cat==='No Deposit') return '🎁'; if(cat==='Cashback') return '💸'; return '🎰'; }
+const NEWS_ICONS = ['📰','📊','⚡'];
+function newsIcon(i){ return NEWS_ICONS[i % NEWS_ICONS.length]; }
+let toastTimer = null;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+function starRow(rating){
+  const pct = Math.max(0, Math.min(100, (rating/5)*100));
+  return `<span class="star-rating"><span class="bg">★★★★★</span><span class="fg" style="width:${pct}%;">★★★★★</span></span>`;
+}
+/* ---------- Favourites — session-only (resets on reload); ties to the "save your favourites"
+   promise made in the account modal. Would move to real user storage once accounts are live. ---------- */
+let favoriteIds = new Set();
+function toggleFavorite(id, evt){
+  if(evt) evt.stopPropagation();
+  if(favoriteIds.has(id)){ favoriteIds.delete(id); showToast(market==='IT'?'Rimosso dai preferiti':'Removed from favourites'); }
+  else { favoriteIds.add(id); showToast(market==='IT'?'Aggiunto ai preferiti':'Added to favourites'); }
+  renderCasinos(); renderBookmakers();
+}
+/* ---------- Recently viewed — session-only, no account needed. Brings a visitor back to
+   something they already looked at without forcing a login. ---------- */
+let recentlyViewed = [];
+function trackRecentlyViewed(kind, id){
+  recentlyViewed = recentlyViewed.filter(r=>!(r.kind===kind && r.id===id));
+  recentlyViewed.unshift({kind,id});
+  recentlyViewed = recentlyViewed.slice(0,4);
+  renderRecentlyViewed();
+}
+function renderRecentlyViewed(){
+  const box = document.getElementById('recentlyViewedBox');
+  if(!box) return;
+  const relevant = recentlyViewed.filter(r=>{
+    const list = r.kind==='casino' ? casinos : bookmakers;
+    return list.some(x=>x.id===r.id && x.market===market);
+  });
+  if(!relevant.length){ box.style.display='none'; return; }
+  box.style.display='block';
+  const rows = relevant.map(r=>{
+    const list = r.kind==='casino' ? casinos : bookmakers;
+    const o = list.find(x=>x.id===r.id);
+    return o ? opRowHtml(o, r.kind) : '';
+  }).join('');
+  box.innerHTML = `
+    <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">${market==='UK'?'Pick up where you left off':'Riprendi da dove eri rimasto'}</p><h2>${market==='UK'?'Recently viewed':'Visti di recente'}</h2></div></div>
+    <div class="op-list">${rows}</div>`;
+}
+function breadcrumbHtml(parts){
+  return `<div class="breadcrumb">${parts.map((p,i)=>{
+    const isLast = i===parts.length-1;
+    const sep = i>0 ? '<span class="sep">/</span>' : '';
+    return sep + (isLast ? `<span>${p.label}</span>` : `<button onclick="${p.action}">${p.label}</button>`);
+  }).join('')}</div>`;
+}
+
 
 const bookmakers = [
   {id:'northline', name:'Northline', mark:'NL', rating:4.6, market:'UK', license:'UKGC 39482-A', bonus:'Bet £10, Get £30 in Free Bets', pros:['Fast withdrawals','Strong live odds'], cons:['Limited casino range'], cpa:'£120 CPA', payments:['Visa','Mastercard','PayPal','Apple Pay'], minDeposit:'£10', withdrawalTime:'Under 24h', currencies:['GBP'], languages:['English'], supportHours:'Live chat + phone, 8am–midnight', featured:true,
@@ -1426,8 +1611,9 @@ const glossary = [
    NAV
    ============================================================ */
 function go(v){
+  const target = (v==='admin' && !isAdminAuthed) ? 'admin-login' : v;
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('view-'+target).classList.add('active');
   document.querySelectorAll('#mainnav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
@@ -1436,43 +1622,83 @@ function go(v){
 }
 document.querySelectorAll('#mainnav button, #mobileNav button, #bottomNav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
 
-function toggleMobileNav(){ document.getElementById('mobileDrawer').classList.toggle('open'); }
-function closeMobileNav(){ document.getElementById('mobileDrawer').classList.remove('open'); }
+function toggleMobileNav(){ document.getElementById('mobileDrawer').classList.toggle('open'); requestAnimationFrame(syncHeaderHeight); }
+function closeMobileNav(){ document.getElementById('mobileDrawer').classList.remove('open'); requestAnimationFrame(syncHeaderHeight); }
 
-/* Market toggle now exists twice (desktop header row + mobile drawer) — keep both in sync */
-function setMarket(newMarket){
-  market = newMarket;
+/* ---------- Country targeting: search-any-country picker, geo-detected on load ---------- */
+let ageGateConfirmed = false;
+function setCountry(code, silent){
+  selectedCountry = code;
+  market = FULL_MARKETS.includes(code) ? code : 'UK';
   activePaymentFilter='All'; activeGameFilter='All'; activeBonusFilter='All';
-  document.querySelectorAll('#marketToggle button, #marketToggleMobile button').forEach(x=>x.classList.toggle('active', x.dataset.market===market));
   renderAll();
-  if(market==='IT'){
+  renderMarketButton();
+  if(market==='IT' && !ageGateConfirmed){
     document.getElementById('agegate-copy').textContent='Questo sito contiene informazioni su operatori di gioco autorizzati ADM. Accesso consentito solo ai maggiorenni.';
     document.getElementById('agegate').classList.add('show');
   }
+  if(!silent) showToast(`${flagEmoji(selectedCountry)} ${countryName(selectedCountry)} selected`);
 }
-document.querySelectorAll('#marketToggle button, #marketToggleMobile button').forEach(b=>{
-  b.addEventListener('click',()=>setMarket(b.dataset.market));
-});
+function renderMarketButton(){
+  const shortLabel = `${flagEmoji(selectedCountry)} ${selectedCountry}`;
+  const longLabel = `${flagEmoji(selectedCountry)} ${countryName(selectedCountry)}`;
+  const el1 = document.getElementById('marketBtnLabel');
+  const el2 = document.getElementById('marketBtnLabelMobile');
+  if(el1) el1.textContent = shortLabel;
+  if(el2) el2.textContent = longLabel;
+}
+function openCountryPicker(){
+  document.getElementById('countryModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeCountryPicker()">&times;</button>
+    <h3>${market==='IT'?'Scegli il tuo Paese':'Choose your country'}</h3>
+    <p style="color:var(--faint);font-size:11.5px;margin:2px 0 14px;">${market==='IT' ? 'Contenuto completamente localizzato oggi disponibile per Regno Unito e Italia — indicato con ● full. Gli altri Paesi sono mostrati in modalità anteprima, con contenuto dimostrativo.' : 'Fully localized content exists for the UK and Italy today — marked ● full. Every other country previews demo content so you can see how it will feel.'}</p>
+    <input type="text" class="search-input" id="countryFilterInput" placeholder="${market==='IT'?'Cerca un paese…':'Search for a country…'}" oninput="renderCountryList()" style="margin-bottom:10px;">
+    <div id="countryListBox" style="max-height:320px;overflow-y:auto;"></div>
+  `;
+  document.getElementById('countryModal').classList.add('show');
+  renderCountryList();
+  setTimeout(()=>{ const el=document.getElementById('countryFilterInput'); if(el) el.focus(); },50);
+}
+function closeCountryPicker(){ document.getElementById('countryModal').classList.remove('show'); }
+function renderCountryList(){
+  const input = document.getElementById('countryFilterInput');
+  const q = (input ? input.value : '').trim().toLowerCase();
+  const list = COUNTRIES.filter(c=>c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q));
+  document.getElementById('countryListBox').innerHTML = list.length ? list.map(c=>`
+    <div class="sres-row" onclick="pickCountry('${c.code}')" style="cursor:pointer;">
+      <span>${flagEmoji(c.code)} ${c.name} ${FULL_MARKETS.includes(c.code) ? '<span style="color:var(--gold);font-size:9.5px;font-weight:700;">● full</span>' : ''}</span>
+      <span class="t">${c.code===selectedCountry ? '✓' : ''}</span>
+    </div>`).join('') : `<div class="sres-row">${market==='IT'?'Nessun risultato':'No matches'}</div>`;
+}
+function pickCountry(code){ closeCountryPicker(); setCountry(code); }
 
 /* ---------- search: transforms the header itself (mobile-pattern), not a separate overlay ---------- */
 const trendingQueries = {
   UK:['bet365 bonus','free bets no deposit','Premier League odds','fastest withdrawal'],
   IT:['bonus benvenuto','Serie A quote','giri gratis','ADM licenza'],
 };
+function syncHeaderHeight(){
+  const h = document.getElementById('siteHeader').offsetHeight;
+  document.documentElement.style.setProperty('--header-h', h+'px');
+}
 function openSearch(){
   document.getElementById('siteHeader').classList.add('search-mode');
   document.getElementById('searchInput').value='';
   document.getElementById('searchResults').innerHTML='';
   renderSearchChips();
   setTimeout(()=>document.getElementById('searchInput').focus(),50);
+  requestAnimationFrame(syncHeaderHeight);
 }
-function closeSearch(){ document.getElementById('siteHeader').classList.remove('search-mode'); }
+function closeSearch(){
+  document.getElementById('siteHeader').classList.remove('search-mode');
+  requestAnimationFrame(syncHeaderHeight);
+}
 function renderSearchChips(){
   document.getElementById('searchChipRow').innerHTML = trendingQueries[market].map(q=>
     `<button class="chip" onclick="document.getElementById('searchInput').value='${q.replace(/'/g,"\\'")}';runSearch();">${q}</button>`
   ).join('');
 }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); } });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); closeCountryPicker(); } });
 function runSearch(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const box = document.getElementById('searchResults');
@@ -1483,7 +1709,10 @@ function runSearch(){
   bookmakers.filter(b=>b.market===market).forEach(b=>{ if(b.name.toLowerCase().includes(q)) res.push({l:b.name,t:'Bookmaker',a:()=>openOperatorPage('bk',b.id)}); });
   casinos.filter(c=>c.market===market).forEach(c=>{ if(c.name.toLowerCase().includes(q)) res.push({l:c.name,t:'Casino',a:()=>openOperatorPage('casino',c.id)}); });
   newsPosts[market].forEach(p=>{ if(p.title.toLowerCase().includes(q)) res.push({l:p.title,t:'News',a:()=>go('guides')}); });
-  box.innerHTML = res.length ? res.slice(0,8).map((r,i)=>`<div class="sres-row" onclick="searchClick(${i})"><span>${r.l}</span><span class="t">${r.t}</span></div>`).join('') : `<div class="sres-row">No matches</div>`;
+  bonuses.filter(b=>b.market===market).forEach(b=>{ if(b.title.toLowerCase().includes(q) || b.op.toLowerCase().includes(q)) res.push({l:b.title,t:'Bonus',a:()=>go('bonuses')}); });
+  games.forEach(g=>{ if(g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)) res.push({l:g.name,t:'Game',a:()=>openGamePage(g.id)}); });
+  [...eduArticles[market].casino, ...eduArticles[market].sport].forEach(a=>{ if(a.title.toLowerCase().includes(q)) res.push({l:a.title,t:market==='UK'?'Guide':'Guida',a:()=>openEduArticle(a.id)}); });
+  box.innerHTML = res.length ? res.slice(0,8).map((r,i)=>`<div class="sres-row" onclick="searchClick(${i})"><span>${r.l}</span><span class="t">${r.t}</span></div>`).join('') : `<div class="sres-row">${market==='UK'?'No matches':'Nessun risultato'}</div>`;
   window._sres = res;
 }
 function searchClick(i){ closeSearch(); window._sres[i].a(); }
@@ -1606,16 +1835,21 @@ function getTopCasinoId(mkt){
 function opRowHtml(o, kind, isTopOfYear){
   const featuredTag = o.featured ? `<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>` : '';
   const yearTag = isTopOfYear ? `<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="Highest-rated casino in this market, based on our review scores.">🏆 Best ${SITE_YEAR}</span>` : '';
+  const bgIcon = kind==='casino' ? '🎰' : '⚽';
   return `
   <div class="op-row">
-    <div class="op-mark">${o.mark}</div>
+    <div class="op-mark" style="background:${thumbGradient(o.id)};border:none;">
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;opacity:.25;">${bgIcon}</span>
+      <span style="position:relative;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);">${o.mark}</span>
+    </div>
     <div class="op-name-wrap">
       <div class="op-name-row"><span class="op-name">${o.name}</span>${featuredTag}${yearTag}</div>
       <div class="op-license">${o.license}</div>
     </div>
-    <div class="op-rating">★ ${o.rating} <span class="max">/5</span></div>
+    <div class="op-rating">${starRow(o.rating)} <span style="margin-left:3px;">${o.rating}</span></div>
     <div class="op-bonus">${o.bonus}</div>
     <div class="op-actions">
+      <button class="fav-btn ${favoriteIds.has(o.id)?'active':''}" onclick="toggleFavorite('${o.id}', event)" aria-label="Favourite" title="Save to favourites">${favoriteIds.has(o.id) ? '♥' : '♡'}</button>
       <button class="btn btn-line" onclick="openOperatorPage('${kind}','${o.id}')">Review</button>
       <button class="btn btn-gold" onclick="simulateClick('${o.id}')">${market==='UK'?'Claim':'Vedi'}</button>
     </div>
@@ -1634,6 +1868,7 @@ function openOperatorPage(kind, id){
   const backView = kind==='casino' ? 'casino' : 'bookmakers';
   document.getElementById('opBackLink').setAttribute('onclick', `go('${backView}')`);
   document.getElementById('opBackLink').textContent = `← Back to ${kind==='casino'?'Casino':'Bookmakers'}`;
+  trackRecentlyViewed(kind, id);
 
   const extras = operatorExtras[o.id] || {safety:8.0, verified:false, updated:'—', reviews:[]};
   const author = authorFor(kind, o.id.length);
@@ -1670,6 +1905,7 @@ function openOperatorPage(kind, id){
   const extraDetail = kind==='casino' ? `<div class="detail-cell"><div class="k">Games</div><div class="v">${o.games}</div></div>` : `<div class="detail-cell"><div class="k">Support</div><div class="v">${o.supportHours||'Live chat'}</div></div>`;
 
   document.getElementById('opPageContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label: kind==='casino'?'Casino':'Bookmakers', action:`go('${backView}')`},{label:o.name}])}
     <div class="op-page-head">
       <div style="display:flex;gap:16px;">
         <div class="op-page-mark">${o.mark}</div>
@@ -1679,7 +1915,7 @@ function openOperatorPage(kind, id){
           <div class="op-author" style="margin-top:6px;">Reviewed by <b>${author.name}</b>, ${author.role} · <span class="op-updated">Last updated ${extras.updated}</span></div>
         </div>
       </div>
-      <div class="op-page-score"><div class="n">${o.rating}</div><div class="l">out of 5</div></div>
+      <div class="op-page-score"><div class="n">${o.rating}</div><div class="l">out of 5</div><div style="margin-top:4px;">${starRow(o.rating)}</div></div>
     </div>
 
     <div class="op-page-grid">
@@ -1734,7 +1970,10 @@ function openOperatorPage(kind, id){
           <h4>Similar operators</h4>
           ${similar || '<p style="font-size:12px;color:var(--faint);">No other entries for this market yet.</p>'}
         </div>
-        <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${o.id}')">${market==='UK'?'Claim Bonus':'Vedi Offerta'}</button>
+        <div style="display:flex;gap:8px;">
+          <button class="fav-btn" style="height:42px;" onclick="toggleFavorite('${o.id}', event); this.textContent = favoriteIds.has('${o.id}') ? '♥' : '♡'; this.classList.toggle('active', favoriteIds.has('${o.id}'));">${favoriteIds.has(o.id) ? '♥' : '♡'}</button>
+          <button class="btn btn-gold" style="flex:1;justify-content:center;" onclick="simulateClick('${o.id}')">${market==='UK'?'Claim Bonus':'Vedi Offerta'}</button>
+        </div>
       </div>
     </div>
   `;
@@ -1747,7 +1986,7 @@ function toggleFaq(id,i){
 function closeOpModal(){ /* legacy no-op: modal replaced by full operator page */ }
 function simulateClick(id){
   closeOpModal();
-  alert('Simulated affiliate redirect →\n/go/'+id+'?sub_id=demo&mkt='+market.toLowerCase()+'\n\nLogs the click, tags sub-ID, checks geo-eligibility, then redirects.');
+  showToast('Redirecting to /go/'+id+' — click logged, sub-ID tagged, geo-eligibility checked.');
 }
 
 function renderStatsBar(){
@@ -1808,6 +2047,15 @@ function renderCasinos(){
 }
 function setPaymentFilter(p){ activePaymentFilter=p; renderCasinos(); }
 
+function gameCardHtml(g){
+  return `<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;">
+    <div class="thumb-banner" style="background:${thumbGradient(g.id)};"><span class="thumb-icon">${gameIcon(g.cat)}</span></div>
+    <div class="card-body">
+      <div class="game-name">${g.name}</div>
+      <div class="game-meta"><span>${g.provider}</span><span>RTP ${g.rtp}%</span></div>
+    </div>
+  </div>`;
+}
 function renderGames(){
   const cats=['All',...gameCategories];
   document.getElementById('gameChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeGameFilter?'active':''}" onclick="setGameFilter('${c}')">${c}</button>`).join('');
@@ -1817,7 +2065,7 @@ function renderGames(){
   filtered = [...filtered].sort((a,b)=> sortVal==='rtp' ? b.rtp - a.rtp : a.name.localeCompare(b.name));
   const cEl = document.getElementById('gameCount');
   if(cEl) cEl.textContent = `${filtered.length} game${filtered.length===1?'':'s'}`;
-  document.getElementById('gameGrid').innerHTML = filtered.map(g=>`<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;"><div class="game-name">${g.name}</div><div class="game-meta"><span>${g.provider}</span><span>RTP ${g.rtp}%</span></div></div>`).join('');
+  document.getElementById('gameGrid').innerHTML = filtered.map(g=>gameCardHtml(g)).join('');
 }
 function setGameFilter(c){ activeGameFilter=c; renderGames(); }
 
@@ -1833,7 +2081,10 @@ function renderTournaments(){
   if(cEl) cEl.textContent = `${filtered.length} active tournament${filtered.length===1?'':'s'}`;
   document.getElementById('tournamentList').innerHTML = filtered.length ? filtered.map(t=>`
     <div class="tourn-row">
-      <div><div class="tourn-name">${t.name}</div><div class="tourn-sub">${t.casino} · min stake ${t.minStake} · ends in ${t.endsInHrs}h</div></div>
+      <div class="tourn-left">
+        <div class="tourn-thumb" style="background:${thumbGradient(t.name)};"><span style="position:relative;">🏆</span></div>
+        <div><div class="tourn-name">${t.name}</div><div class="tourn-sub">${t.casino} · min stake ${t.minStake} · ends in ${t.endsInHrs}h</div></div>
+      </div>
       <div class="tourn-stats">
         <div class="tourn-stat"><div class="v">${t.prize}</div><div class="l">Prize</div></div>
         <div class="tourn-stat"><div class="v">${t.entrants}</div><div class="l">Entrants</div></div>
@@ -1859,6 +2110,7 @@ function openProviderPage(provider){
   const nextP = allProviders[(idx+1)%allProviders.length];
 
   document.getElementById('providerPageContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Casino', action:"go('casino')"},{label:provider}])}
     <div class="op-page-head">
       <div>
         <div class="op-page-title"><h1>${provider}</h1></div>
@@ -1868,7 +2120,7 @@ function openProviderPage(provider){
     <div class="review-text" style="max-width:640px;"><p>${providerInfo[provider] || 'Software provider featured across our listed casinos.'}</p></div>
 
     <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">Games from ${provider}</h3>
-    <div class="game-grid">${list.map(g=>`<div class="game-card" onclick="openGamePage('${g.id}')" style="cursor:pointer;"><div class="game-name">${g.name}</div><div class="game-meta"><span>${g.cat}</span><span>RTP ${g.rtp}%</span></div></div>`).join('')}</div>
+    <div class="game-grid">${list.map(g=>gameCardHtml(g)).join('')}</div>
 
     <div class="compare-picker" style="margin-top:30px;justify-content:space-between;">
       <button class="btn btn-line" onclick="openProviderPage('${prevP.replace(/'/g,"\\'")}')">← ${prevP}</button>
@@ -1889,6 +2141,7 @@ function openGamePage(id){
   const casinosWithGame = casinos.filter(c=>c.market===market).slice(0,2);
 
   document.getElementById('gamePageContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Casino', action:"go('casino')"},{label:g.provider, action:`openProviderPage('${g.provider.replace(/'/g,"\\'")}')`},{label:g.name}])}
     <div class="op-page-head">
       <div>
         <div class="op-page-title"><h1>${g.name}</h1></div>
@@ -1900,7 +2153,7 @@ function openGamePage(id){
     <div class="op-page-grid">
       <div>
         <div class="review-text"><p>${g.desc}</p></div>
-        <button class="btn btn-gold" onclick="alert('Simulated demo launch — in production this opens a free-play version of ${g.name.replace(/'/g,"\\'")} in-browser, no deposit required.')">Play Demo</button>
+        <button class="btn btn-gold" onclick="showToast('Demo launching — in production this opens a free-play version of ${g.name.replace(/'/g,"\\'")}, no deposit required.')">Play Demo</button>
 
         <h3 style="font-family:var(--serif);font-size:16px;margin:28px 0 12px;">Play this game at</h3>
         <div class="op-list">${casinosWithGame.map(c=>opRowHtml(c,'casino')).join('') || '<p style="padding:16px;color:var(--faint);font-size:13px;">No casinos listed for this market yet.</p>'}</div>
@@ -2028,21 +2281,40 @@ function renderOdds(){
 }
 
 /* ---------- Bonuses ---------- */
+/* ---------- Bonus countdowns tick live instead of sitting static until the next re-render ---------- */
+function assignBonusDeadlines(){
+  const now = Date.now();
+  bonuses.forEach(b=>{ if(!b.deadline) b.deadline = now + b.expiresInHrs*3600*1000; });
+}
+function formatRemaining(deadline){
+  const ms = deadline - Date.now();
+  if(ms <= 0) return {text:'0m', hrs:0};
+  const totalMin = Math.floor(ms/60000);
+  const h = Math.floor(totalMin/60);
+  const m = totalMin % 60;
+  return {text: h>0 ? `${h}h ${m}m` : `${m}m`, hrs: ms/3600000};
+}
+function tickBonusCountdowns(){
+  document.querySelectorAll('.exp[data-deadline]').forEach(el=>{
+    el.textContent = formatRemaining(Number(el.dataset.deadline)).text;
+  });
+}
 function renderBonuses(){
+  assignBonusDeadlines();
   const cats=['All',...bonusCats];
   document.getElementById('bonusChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeBonusFilter?'active':''}" onclick="setBonusFilter('${c}')">${c}</button>`).join('');
   let list = bonuses.filter(b=>b.market===market && (activeBonusFilter==='All'||b.cat===activeBonusFilter));
   const sortEl = document.getElementById('bonusSort');
   const sortVal = sortEl ? sortEl.value : 'expiry';
-  list = [...list].sort((a,b)=> sortVal==='newest' ? (b.exclusive?1:0)-(a.exclusive?1:0) : a.expiresInHrs - b.expiresInHrs);
+  list = [...list].sort((a,b)=> sortVal==='newest' ? (b.exclusive?1:0)-(a.exclusive?1:0) : a.deadline - b.deadline);
   const cEl = document.getElementById('bonusCount');
   if(cEl) cEl.textContent = `${list.length} offer${list.length===1?'':'s'} live`;
   document.getElementById('bonusGrid').innerHTML = list.map(b=>`
     <div class="bonus-card">
       ${b.exclusive?`<span class="exclusive-tag">Before Bet Exclusive</span>`:''}
-      <span class="bonus-cat">${b.cat} · ${b.op}</span>
+      <span class="bonus-cat">${bonusIcon(b.cat)} ${b.cat} · ${b.op}</span>
       <div class="bonus-title">${b.title}</div>
-      <div class="bonus-meta"><span>Expires in <span class="exp">${b.expiresInHrs}h</span></span></div>
+      <div class="bonus-meta"><span>Expires in <span class="exp" data-deadline="${b.deadline}">${formatRemaining(b.deadline).text}</span></span></div>
       <div class="bonus-terms">${b.terms}</div>
       ${b.exclusive?`<div class="promo-code">Code: <strong>${b.code}</strong></div>`:''}
       <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${b.op.toLowerCase().replace(/[^a-z]/g,'')}')">${market==='UK'?'Claim':'Vedi'}</button>
@@ -2095,8 +2367,13 @@ function sendChatMessage(){
 
 function renderGuides(){
 
-  document.getElementById('newsGrid').innerHTML = newsPosts[market].map(p=>`
-    <div class="news-card"><span class="news-cat">${p.cat}</span><div class="news-title">${p.title}</div><div class="news-desc">${p.desc}</div><div class="news-date">${p.date}</div></div>`).join('');
+  document.getElementById('newsGrid').innerHTML = newsPosts[market].map((p,i)=>`
+    <div class="news-card">
+      <div class="thumb-banner" style="background:${thumbGradient(p.title)};"><span class="thumb-icon">${newsIcon(i)}</span></div>
+      <div class="card-body">
+        <span class="news-cat">${p.cat}</span><div class="news-title">${p.title}</div><div class="news-desc">${p.desc}</div><div class="news-date">${p.date}</div>
+      </div>
+    </div>`).join('');
   document.getElementById('tipsList').innerHTML = tips[market].map(t=>`
     <div class="tip-row">
       <div><div class="tip-sport">${t.sport}</div><div class="tip-match">${t.match}</div><div class="tip-pred">${t.pred}</div></div>
@@ -2301,11 +2578,22 @@ function renderEducation(){
 }
 function eduCardHtml(a){
   return `<div class="news-card" style="cursor:pointer;" onclick="openEduArticle('${a.id}')">
-    <span class="news-cat">${market==='UK'?'Guide':'Guida'}</span>
-    <div class="news-title">${a.title}</div>
-    <div class="news-desc">${a.summary}</div>
+    <div class="thumb-banner" style="background:${thumbGradient(a.id)};"><span class="thumb-icon">${eduIcon(a.id)}</span></div>
+    <div class="card-body">
+      <span class="news-cat">${market==='UK'?'Guide':'Guida'}</span>
+      <div class="news-title">${a.title}</div>
+      <div class="news-desc">${a.summary}</div>
+    </div>
   </div>`;
 }
+const EDU_CROSS_LINK = {
+  'roulette-odds': {UK:'See these odds in action on European Roulette Pro →', IT:'Guarda queste quote in azione su European Roulette Pro →', action:"openGamePage('european-roulette-pro')"},
+  'poker-hand-rankings': {UK:'Browse casino games →', IT:'Sfoglia i giochi da casinò →', action:"go('casino')"},
+  'slot-volatility': {UK:'Compare slots by category →', IT:'Confronta le slot per categoria →', action:"go('casino')"},
+  'bet-types': {UK:'Compare live odds on Bookmakers →', IT:'Confronta le quote in tempo reale sui Bookmaker →', action:"go('bookmakers')"},
+  'bookmaker-margin': {UK:'Try it yourself — Compare Odds →', IT:'Provalo tu stesso — Confronta Quote →', action:"go('bookmakers')"},
+  'value-betting': {UK:'Compare bookmaker odds →', IT:'Confronta le quote dei bookmaker →', action:"go('bookmakers')"},
+};
 function openEduArticle(id){
   const isCasino = eduArticles[market].casino.some(x=>x.id===id);
   const group = isCasino ? eduArticles[market].casino : eduArticles[market].sport;
@@ -2317,7 +2605,14 @@ function openEduArticle(id){
       <table><thead><tr>${a.table.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
       <tbody>${a.table.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>
     </div>` : '';
+  const cross = EDU_CROSS_LINK[id];
+  const crossHtml = cross ? `
+    <div class="verdict-box" style="cursor:pointer;max-width:520px;" onclick="${cross.action}">
+      <div class="k">${market==='UK'?'See it in action':'Vedilo in azione'}</div>
+      <div style="font-size:13px;color:var(--text);font-weight:600;">${market==='UK'?cross.UK:cross.IT}</div>
+    </div>` : '';
   document.getElementById('eduArticleContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label: market==='UK'?'Education':'Formazione', action:"go('education')"},{label:a.title}])}
     <div class="op-page-head" style="border-bottom:none;padding-bottom:0;margin-bottom:16px;">
       <div>
         <div class="op-page-title"><h1 style="font-size:26px;">${a.title}</h1></div>
@@ -2326,6 +2621,7 @@ function openEduArticle(id){
     </div>
     <div class="review-text">${a.body.map(p=>`<p>${p}</p>`).join('')}</div>
     ${tableHtml}
+    ${crossHtml}
     <div class="sidebar-box" style="margin-top:10px;max-width:520px;">
       <h4>${market==='UK'?'More in this topic':'Altro in questa sezione'}</h4>
       ${siblings.map(s=>`<div class="similar-item" onclick="openEduArticle('${s.id}')"><span class="similar-name">${s.title}</span></div>`).join('')}
@@ -2340,6 +2636,75 @@ document.querySelectorAll('#eduSubtabs button').forEach(b=>b.addEventListener('c
   document.getElementById('etab-sport').style.display=t==='sport'?'block':'none';
 }));
 
+/* ============================================================
+   RESPONSIBLE GAMBLING
+   ============================================================ */
+function renderResponsible(){
+  document.getElementById('rgHeading').textContent = market==='UK' ? 'Responsible Gambling' : 'Gioco Responsabile';
+  const isUK = market==='UK';
+  document.getElementById('rgContent').innerHTML = `
+    ${breadcrumbHtml([{label:isUK?'Home':'Home', action:"go('home')"},{label:isUK?'Responsible Gambling':'Gioco Responsabile'}])}
+    <div class="review-text" style="max-width:640px;">
+      <p>${isUK
+        ? 'Betting and casino games are meant to be entertainment, not a way to make money. Every operator we list is licensed and required to offer tools that help you stay in control — here\u2019s what they do and how to use them.'
+        : 'Scommesse e giochi da casinò devono restare intrattenimento, non un modo per guadagnare. Ogni operatore che elenchiamo è concessionario ADM ed è tenuto a offrire strumenti di controllo del gioco — ecco cosa fanno e come usarli.'}</p>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:16px;margin:22px 0 12px;">${isUK?'Tools every licensed operator offers':'Strumenti offerti da ogni operatore concessionario'}</h3>
+    <div class="sidebar-box" style="max-width:640px;">
+      <div class="account-value-grid" style="margin-bottom:0;">
+        <div class="account-value-item"><span class="mark">●</span><span>${isUK?'<b>Deposit limits</b> — set a daily, weekly or monthly cap before you start playing.':'<b>Limiti di deposito</b> — imposta un tetto giornaliero, settimanale o mensile prima di iniziare a giocare.'}</span></div>
+        <div class="account-value-item"><span class="mark">●</span><span>${isUK?'<b>Time-outs and reality checks</b> — take a short break, or get a pop-up reminder of how long you\u2019ve been playing.':'<b>Pause e promemoria di sessione</b> — fai una breve pausa o ricevi un avviso su quanto tempo hai giocato.'}</span></div>
+        <div class="account-value-item"><span class="mark">●</span><span>${isUK?'<b>Self-exclusion</b> — <a href="https://www.gamstop.co.uk" target="_blank" rel="noopener" style="color:var(--gold);">GAMSTOP</a> lets you block yourself from all UKGC-licensed operators at once, from 6 months to 5 years.':'<b>Auto-esclusione</b> — il Registro Unico degli Auto-esclusi (RUA) ti permette di escluderti da tutti gli operatori concessionari ADM contemporaneamente.'}</span></div>
+        <div class="account-value-item"><span class="mark">●</span><span>${isUK?'<b>Spending history</b> — every operator must show you a clear record of deposits and losses on request.':'<b>Cronologia di spesa</b> — ogni operatore deve mostrarti un resoconto chiaro di depositi e perdite su richiesta.'}</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:16px;margin:26px 0 12px;">${isUK?'Worth asking yourself':'Domande da porsi'}</h3>
+    <div class="review-text" style="max-width:640px;">
+      <p>${isUK
+        ? 'These aren\u2019t a diagnosis, just questions our editorial team suggests revisiting from time to time: Am I betting more than I planned to, more often than I meant to? Am I chasing losses with bigger bets? Have I hidden how much I\u2019m spending from people close to me? Is it affecting my sleep, work or relationships? If any of that sounds familiar, it may be worth using the tools above, or talking to someone.'
+        : 'Non sono una diagnosi, solo domande che il nostro team editoriale suggerisce di rivedersi di tanto in tanto: Sto scommettendo più di quanto avevo pianificato, più spesso del previsto? Sto rincorrendo le perdite con puntate più alte? Ho nascosto a chi mi sta vicino quanto sto spendendo? Sta influenzando il mio sonno, il lavoro o le relazioni? Se qualcosa di tutto ciò ti suona familiare, potrebbe valere la pena usare gli strumenti sopra, o parlarne con qualcuno.'}</p>
+    </div>
+
+    <div class="verdict-box" style="max-width:640px;">
+      <div class="k">${isUK?'Support, if you need it':'Supporto, se ne hai bisogno'}</div>
+      <div style="font-size:13px;color:var(--dim);">${isUK
+        ? 'BeGambleAware.org and the National Gambling Helpline offer free, confidential support around the clock — visit BeGambleAware.org for the current helpline number and live chat.'
+        : 'Il servizio ADM per il gioco responsabile e il tuo medico di base sono un buon punto di partenza per un supporto confidenziale — consulta il sito ADM ufficiale per i contatti aggiornati.'}</div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   TEAM
+   ============================================================ */
+const TEAM = [
+  {id:'jwhitfield', mark:'JW', name:'J. Whitfield', role:{UK:'Senior Editor, Sportsbooks', IT:'Senior Editor, Sportsbooks'}, bio:{UK:'Eight years covering UK sportsbook regulation and product. Tests every bookmaker personally before publishing a review.', IT:'Otto anni di esperienza nella regolamentazione dei bookmaker nel Regno Unito. Testa personalmente ogni bookmaker prima di pubblicare una recensione.'}, reviews:4},
+  {id:'radeyemi', mark:'RA', name:'R. Adeyemi', role:{UK:'Casino Reviews Lead', IT:'Casino Reviews Lead'}, bio:{UK:'Focuses on game fairness, RNG certification and payout speed across UK-facing casinos.', IT:'Si occupa di equità dei giochi, certificazione RNG e velocità di prelievo nei casinò rivolti al mercato UK.'}, reviews:3},
+  {id:'lbianchi', mark:'LB', name:'L. Bianchi', role:{UK:'Senior Editor, Betting (IT)', IT:'Redattore Senior, Scommesse'}, bio:{UK:'Specialises in ADM regulation and license verification for Italian operators.', IT:'Specializzato in normativa ADM e nella verifica delle licenze degli operatori italiani.'}, reviews:3},
+  {id:'fconti', mark:'FC', name:'F. Conti', role:{UK:'Casino Reviews Lead (IT)', IT:'Responsabile Recensioni Casinò'}, bio:{UK:'Personally tests every ADM-licensed casino before a review is published.', IT:'Testa personalmente ogni casinò concessionario ADM prima della pubblicazione della recensione.'}, reviews:2},
+  {id:'mosei', mark:'MO', name:'M. Osei', role:{UK:'Editor-in-Chief', IT:'Direttore Editoriale'}, bio:{UK:'Oversees editorial standards, the Safety Index methodology and reviewer independence across every market.', IT:'Supervisiona gli standard editoriali, la metodologia del Safety Index e l\u2019indipendenza dei recensori in ogni mercato.'}, reviews:0},
+];
+function renderTeam(){
+  document.getElementById('teamHeading').textContent = market==='UK' ? 'Meet the editorial team' : 'Conosci il team editoriale';
+  document.getElementById('teamIntro').textContent = market==='UK'
+    ? 'Every review on Before Bet is written and tested first-hand by one of the people below — see our methodology on the How We Rate page.'
+    : 'Ogni recensione su Before Bet è scritta e testata di persona da una delle persone qui sotto — vedi la nostra metodologia nella pagina Come Valutiamo.';
+  document.getElementById('teamGrid').innerHTML = TEAM.map(t=>`
+    <div class="sidebar-box" style="display:flex;gap:14px;align-items:flex-start;">
+      <div class="op-mark" style="width:52px;height:52px;font-size:17px;flex-shrink:0;background:${thumbGradient(t.id)};border:none;">
+        <span style="position:relative;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);">${t.mark}</span>
+      </div>
+      <div>
+        <div style="font-family:var(--serif);font-weight:600;font-size:14.5px;">${t.name}</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:6px;">${market==='UK'?t.role.UK:t.role.IT}</div>
+        <div style="font-size:12px;color:var(--dim);line-height:1.55;">${market==='UK'?t.bio.UK:t.bio.IT}</div>
+        ${t.reviews ? `<div style="font-size:10.5px;color:var(--faint);margin-top:6px;">${t.reviews} ${market==='UK'?'reviews published this month':'recensioni pubblicate questo mese'}</div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
 
 /* ---------- Partners ---------- */
 function partnerTier(clicks){
@@ -2347,45 +2712,61 @@ function partnerTier(clicks){
   if(clicks>=2500) return ['Silver','silver'];
   return ['Starter','bronze'];
 }
-function renderPartners(){
-  const sorted=[...partners].sort((a,b)=>b.revenue-a.revenue);
-  document.getElementById('partnerLeaderboard').innerHTML = sorted.map((p,i)=>{
-    const [tierName,tierClass] = partnerTier(p.clicks);
-    return `
-    <div class="lead-row">
-      <div class="rank ${i===0?'r1':''}">${i+1}</div>
-      <div class="partner-name-cell"><div class="partner-avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div>${p.name}<span class="tier-badge ${tierClass}">${tierName}</span><div><span class="kyc ${p.kyc?'ok':''}">${p.kyc?'KYC verified':'KYC pending'}</span></div></div></div>
-      <span>${p.clicks.toLocaleString()}</span><span>${p.ftds}</span><span style="color:var(--gold);font-weight:700;">€${p.epc}</span><span style="font-weight:700;">€${p.revenue.toLocaleString()}</span>
-    </div>`;
-  }).join('');
-}
-function renderBanners(){
-  document.getElementById('bannerGrid').innerHTML = banners.map(b=>`
-    <div><div class="banner-mock" style="height:120px;background:linear-gradient(135deg,${b.c1},${b.c2});"><span class="bt">${b.brand}</span><span class="bs">${b.copy}</span></div>
-    <div class="banner-foot"><span>${b.size}</span><button onclick="alert('Simulated download — sub-ID auto-embedded.')">Download</button></div></div>`).join('');
-}
-function renderDashboard(){
-  document.getElementById('dashKpiGrid').innerHTML = [['€4,224','Revenue (30d)'],['18,420','Clicks'],['612','FTDs'],['€6.90','EPC']].map(k=>`<div class="kpi-box"><div class="num">${k[0]}</div><div class="lbl">${k[1]}</div></div>`).join('');
-  document.getElementById('myLinksTbody').innerHTML = myLinks.map(l=>`<tr><td>${l.op}</td><td style="font-family:monospace;font-size:11px;color:var(--faint);">/go/${l.op.toLowerCase().replace(/[^a-z]/g,'')}?sub_id=marko</td><td>${l.clicks.toLocaleString()}</td><td>${l.ftds}</td></tr>`).join('');
-  document.getElementById('invoiceList').innerHTML = invoices.map(i=>`<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px;"><span>${i.id} · ${i.period}</span><span><strong>€${i.amount.toLocaleString()}</strong> <span class="pill ${i.status==='Paid'?'ok':'wait'}">${i.status}</span></span></div>`).join('');
-}
-document.querySelectorAll('#partnerSubtabs button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('#partnerSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
-  const t=b.dataset.ptab;
-  document.getElementById('ptab-program').style.display=t==='program'?'block':'none';
-  document.getElementById('ptab-leaderboard').style.display=t==='leaderboard'?'block':'none';
-  document.getElementById('ptab-dashboard').style.display=t==='dashboard'?'block':'none';
-  if(t==='dashboard') renderDashboard();
-}));
 
 /* ---------- Admin ---------- */
 document.querySelectorAll('#adminTopTabs button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#adminTopTabs button').forEach(x=>x.classList.toggle('active',x===b));
   const t=b.dataset.atab;
+  document.getElementById('atab-dashboard').style.display=t==='dashboard'?'block':'none';
   document.getElementById('atab-cms').style.display=t==='cms'?'block':'none';
   document.getElementById('atab-analytics').style.display=t==='analytics'?'block':'none';
   if(t==='analytics') renderAnalytics();
+  if(t==='dashboard') renderAdminDashboard();
 }));
+
+/* ---------- Admin auth gate — client-side demo gate only, NOT real security.
+   Credentials are visible in page source; wire this to a real backend/session
+   before this ever leaves a prototype. ---------- */
+function attemptAdminLogin(){
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value;
+  const errEl = document.getElementById('adminLoginError');
+  if(u==='admin' && p==='admin123@'){
+    isAdminAuthed = true;
+    errEl.style.display='none';
+    document.getElementById('adminUser').value=''; document.getElementById('adminPass').value='';
+    go('admin');
+    renderAdminDashboard();
+  } else {
+    errEl.textContent = 'Incorrect username or password.';
+    errEl.style.display='block';
+  }
+}
+function adminLogout(){
+  isAdminAuthed = false;
+  go('home');
+  showToast('Logged out of Admin');
+}
+function jumpToCmsPanel(panel){
+  document.querySelector('#adminTopTabs button[data-atab="cms"]').click();
+  const btn = document.querySelector(`#cmsSide button[data-panel="${panel}"]`);
+  if(btn) btn.click();
+}
+function renderAdminDashboard(){
+  document.getElementById('adminWelcome').innerHTML = `Welcome back, <strong style="color:var(--text);">admin</strong>. Here's what needs attention today.`;
+  const totalOps = bookmakers.length + casinos.length;
+  const liveBonuses = bonuses.length;
+  const openComplaints = complaints.filter(c=>c.status==='Open').length;
+  const pendingKyc = partners.filter(p=>!p.kyc).length;
+  const stats = [
+    [totalOps, 'Operators live'],
+    [liveBonuses, 'Bonuses live'],
+    [openComplaints, 'Open complaints'],
+    [pendingKyc, 'Partners pending KYC'],
+  ];
+  document.getElementById('adminDashOverview').innerHTML = stats.map(s=>`<div class="kpi-box"><div class="num">${s[0]}</div><div class="lbl">${s[1]}</div></div>`).join('');
+  document.getElementById('adminRecentActivity').innerHTML = AUDIT_LOG.map(l=>`<div class="admin-row"><div class="m">${l}</div></div>`).join('');
+}
 function renderAdminOverview(){
   const totalOps = bookmakers.length + casinos.length;
   const liveBonuses = bonuses.length;
@@ -2400,10 +2781,45 @@ function renderAdminOverview(){
   document.getElementById('adminOverview').innerHTML = stats.map(s=>`<div class="kpi-box"><div class="num">${s[0]}</div><div class="lbl">${s[1]}</div></div>`).join('');
 }
 
+const AUDIT_LOG = ['08 Jul 2026, 14:12 — Admin updated Northline bonus copy','07 Jul 2026, 19:03 — System auto-unpublished expired offer','06 Jul 2026, 09:55 — Admin changed affiliate link for Vantage Bet'];
 const cmsPanels = {
   operators: ()=>`<div class="admin-toolbar"><h3>Operator profiles</h3><button class="btn btn-gold">+ New</button></div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Commercial deal terms below are internal only — never shown on public pages.</p>
     ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">${o.name}</div><div class="m">${o.license} · ${o.market} · <span style="color:var(--gold);">${o.cpa||o.deal||'—'}</span> (internal)</div></div><span class="pill ok">Published</span></div>`).join('')}`,
+  partnerperf: ()=>{
+    const sorted=[...partners].sort((a,b)=>b.revenue-a.revenue);
+    const lbRows = sorted.map((p,i)=>{
+      const [tierName,tierClass] = partnerTier(p.clicks);
+      return `<div class="lead-row">
+        <div class="rank ${i===0?'r1':''}">${i+1}</div>
+        <div class="partner-name-cell"><div class="partner-avatar">${p.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div>${p.name}<span class="tier-badge ${tierClass}">${tierName}</span><div><span class="kyc ${p.kyc?'ok':''}">${p.kyc?'KYC verified':'KYC pending'}</span></div></div></div>
+        <span>${p.clicks.toLocaleString()}</span><span>${p.ftds}</span><span style="color:var(--gold);font-weight:700;">€${p.epc}</span><span style="font-weight:700;">€${p.revenue.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+    const bannerHtml = banners.map(b=>`
+      <div><div class="banner-mock" style="height:96px;background:linear-gradient(135deg,${b.c1},${b.c2});"><span class="bt">${b.brand}</span><span class="bs">${b.copy}</span></div>
+      <div class="banner-foot"><span>${b.size}</span><button onclick="showToast('Banner downloaded — sub-ID auto-embedded.')">Download</button></div></div>`).join('');
+    const kpiHtml = [['€4,224','Revenue (30d)'],['18,420','Clicks'],['612','FTDs'],['€6.90','EPC']].map(k=>`<div class="kpi-box"><div class="num">${k[0]}</div><div class="lbl">${k[1]}</div></div>`).join('');
+    const linksHtml = myLinks.map(l=>`<tr><td>${l.op}</td><td style="font-family:monospace;font-size:11px;color:var(--faint);">/go/${l.op.toLowerCase().replace(/[^a-z]/g,'')}?sub_id=marko</td><td>${l.clicks.toLocaleString()}</td><td>${l.ftds}</td></tr>`).join('');
+    const invoiceHtml = invoices.map(i=>`<div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px;"><span>${i.id} · ${i.period}</span><span><strong>€${i.amount.toLocaleString()}</strong> <span class="pill ${i.status==='Paid'?'ok':'wait'}">${i.status}</span></span></div>`).join('');
+    return `
+      <div class="admin-toolbar"><h3>Partner leaderboard</h3></div>
+      <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Individual revenue and click data — internal only, never shown on the public Partners page.</p>
+      <div class="lead-table" style="margin-bottom:24px;">
+        <div class="lead-row head"><span>#</span><span>Partner</span><span>Clicks</span><span>FTDs</span><span>EPC</span><span>Revenue</span></div>
+        ${lbRows}
+      </div>
+      <div class="admin-toolbar"><h3>Creative library</h3></div>
+      <div class="banner-grid" style="margin-bottom:26px;">${bannerHtml}</div>
+      <div class="admin-toolbar"><h3>Sample dashboard — Marko Petrović Media</h3></div>
+      <p style="font-size:11px;color:var(--faint);margin-bottom:12px;">What an approved partner sees after signing into their own account — kept here for support and QA, not public.</p>
+      <div class="dash-grid">${kpiHtml}</div>
+      <div class="table-wrap" style="margin-bottom:20px;"><table><thead><tr><th>Operator</th><th>Link</th><th>Clicks</th><th>FTDs</th></tr></thead><tbody>${linksHtml}</tbody></table></div>
+      <div style="background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 18px;margin-bottom:20px;">${invoiceHtml}</div>
+      <div class="api-box">GET https://api.beforebet.com/v1/partners/me/stats
+Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
+    `;
+  },
   bonuses: ()=>`<div class="admin-toolbar"><h3>Bonuses</h3><button class="btn btn-gold">+ New</button></div>
     ${bonuses.map((b,i)=>`<div class="admin-row"><div><div class="n">${b.title}</div><div class="m">${b.op} · auto-expires in ${b.expiresInHrs}h</div></div><span class="pill ${i%3===0?'wait':'ok'}">${i%3===0?'Scheduled':'Published'}</span></div>`).join('')}`,
   links: ()=>`<div class="admin-toolbar"><h3>Links &amp; redirects</h3></div>
@@ -2438,7 +2854,7 @@ const cmsPanels = {
   users: ()=>`<div class="admin-toolbar"><h3>Users &amp; roles</h3><button class="btn btn-gold">+ Invite</button></div>
     ${[['Admin User','Admin'],['Editor One','Editor'],['Affiliate Manager','Affiliate Manager'],['Editor Two','Editor'],['Analyst User','Analyst (view-only)']].map(u=>`<div class="admin-row"><div class="n">${u[0]}</div><span class="pill off">${u[1]}</span></div>`).join('')}`,
   audit: ()=>`<div class="admin-toolbar"><h3>Audit log</h3></div>
-    ${['08 Jul 2026, 14:12 — Admin updated Northline bonus copy','07 Jul 2026, 19:03 — System auto-unpublished expired offer','06 Jul 2026, 09:55 — Admin changed affiliate link for Vantage Bet'].map(l=>`<div class="admin-row"><div class="m">${l}</div></div>`).join('')}`
+    ${AUDIT_LOG.map(l=>`<div class="admin-row"><div class="m">${l}</div></div>`).join('')}`
 };
 document.querySelectorAll('#cmsSide button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#cmsSide button').forEach(x=>x.classList.toggle('active',x===b));
@@ -2456,11 +2872,17 @@ function renderAnalytics(){
 function renderCompliance(){
   const strip=document.getElementById('complianceStrip');
   const foot=document.getElementById('footCompliance');
+  let demoNote = '';
+  if(!FULL_MARKETS.includes(selectedCountry)){
+    demoNote = market==='UK'
+      ? `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — previewing with demo content. Full local licensing, operators and language are planned for Phase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Change country</button></div>`
+      : `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — anteprima con contenuto dimostrativo. Licenza locale, operatori e lingua completi sono previsti per la Fase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Cambia paese</button></div>`;
+  }
   if(market==='UK'){
-    strip.innerHTML = `<strong>18+</strong> Gamble responsibly — BeGambleAware.org. This page contains affiliate links.`;
+    strip.innerHTML = `<strong>18+</strong> Gamble responsibly — BeGambleAware.org. This page contains affiliate links.${demoNote}`;
     foot.innerHTML = `18+. BeGambleAware.org. Contains affiliate links to UKGC-licensed operators.`;
   } else {
-    strip.innerHTML = `<strong>Contenuto editoriale</strong> — operatori concessionari ADM. Vietato ai minori. Gioca con moderazione.`;
+    strip.innerHTML = `<strong>Contenuto editoriale</strong> — operatori concessionari ADM. Vietato ai minori. Gioca con moderazione.${demoNote}`;
     foot.innerHTML = `Vietato ai minori di 18 anni. Il gioco può causare dipendenza. Operatori concessionari ADM.`;
   }
 }
@@ -2469,22 +2891,47 @@ function renderCompliance(){
 function renderAll(){
   renderCompliance();
   renderStatsBar();
+  renderRecentlyViewed();
   renderBookmakers();
   renderCasinos();
   renderBonuses();
   renderGuides();
   renderEducation();
+  renderResponsible();
+  renderTeam();
   closeChatRoom();
   renderChatTopics();
 }
 renderAll();
+renderMarketButton();
+syncHeaderHeight();
+window.addEventListener('resize', syncHeaderHeight);
+setInterval(tickBonusCountdowns, 60000);
 renderOdds();
-renderPartners();
-renderBanners();
 renderComplaints();
 document.getElementById('cmsMain').innerHTML = cmsPanels.operators();
 renderAdminOverview();
 setTimeout(()=>document.getElementById('cookieBanner').classList.add('show'), 800);
+
+/* ---------- Best-effort client-side geo-detection — page renders instantly on UK default, then
+   quietly upgrades to the visitor's real country if detection succeeds. Never blocks, never breaks
+   the page if offline / blocked / CORS-restricted. Manual override is always available via the
+   country picker regardless of what this detects. ---------- */
+(async function geoDetect(){
+  try{
+    const controller = new AbortController();
+    const timeout = setTimeout(()=>controller.abort(), 4000);
+    const res = await fetch('https://ipapi.co/json/', {signal: controller.signal});
+    clearTimeout(timeout);
+    if(!res.ok) return;
+    const data = await res.json();
+    let code = (data.country_code || '').toUpperCase();
+    if(code === 'GB') code = 'UK';
+    if(code && code !== selectedCountry && COUNTRIES.some(c=>c.code===code)){
+      setCountry(code, true);
+    }
+  }catch(e){ /* offline, blocked, or CORS-restricted — silently keep the UK default */ }
+})();
 </script>
 </body>
 </html>
