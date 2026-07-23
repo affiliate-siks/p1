@@ -221,6 +221,7 @@
   .admin-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
   .admin-toolbar h3{font-family:var(--serif);font-size:18px;margin:0;}
   .admin-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .admin-main code, .admin-row code{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:11px;color:var(--green);}
   .admin-row .n{font-weight:500;}
   .admin-row .m{color:var(--faint);font-size:11px;}
   .pill{font-size:9.5px;padding:2px 8px;border-radius:9px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
@@ -641,6 +642,7 @@
 <div class="modal-overlay" id="reviewModal"><div class="modal-box"><div id="reviewModalContent"></div></div></div>
 <div class="modal-overlay" id="accountModal"><div class="modal-box"><div id="accountModalContent"></div></div></div>
 <div class="modal-overlay" id="countryModal"><div class="modal-box"><div id="countryModalContent"></div></div></div>
+<div class="modal-overlay" id="quizModal"><div class="modal-box"><div id="quizModalContent"></div></div></div>
 
 <div class="toast" id="toast"></div>
 <div class="cookie-banner" id="cookieBanner">
@@ -873,7 +875,10 @@
 
     <!-- ============ BONUSES ============ -->
     <section class="view" id="view-bonuses">
-      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Offers</p><h2>Bonuses</h2></div></div>
+      <div class="head">
+        <div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Offers</p><h2>Bonuses</h2></div>
+        <button class="btn btn-line" onclick="openQuiz()">🎯 Not sure? Take our 30s quiz</button>
+      </div>
       <div class="chip-row" id="bonusChipRow"></div>
       <div class="list-toolbar">
         <span class="list-count" id="bonusCount"></span>
@@ -973,7 +978,7 @@
       </div>
 
       <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">Commission tiers</h2></div><span class="sub">Based on monthly referred clicks — you move up automatically</span></div>
-      <div class="table-wrap" style="margin-bottom:30px;">
+      <div class="table-wrap" style="margin-bottom:12px;">
         <table>
           <thead><tr><th>Tier</th><th>Monthly clicks</th><th>Your share</th></tr></thead>
           <tbody>
@@ -983,6 +988,7 @@
           </tbody>
         </table>
       </div>
+      <div id="partnersComplianceNote" style="margin-bottom:22px;"></div>
 
       <div class="head" style="margin-top:0;"><div><h2 style="font-size:18px;">FAQ</h2></div></div>
       <div>
@@ -1134,6 +1140,13 @@
           <button onclick="go('responsible')">Responsible Gambling</button>
           <button onclick="go('partners')">Partners</button>
         </div>
+        <div class="foot-links" style="margin-top:10px;">
+          <button onclick="showToast('Opens X (Twitter) — @beforebet')">𝕏 Twitter</button>
+          <button onclick="showToast('Opens Instagram — @beforebet')">📷 Instagram</button>
+          <button onclick="showToast('Opens Discord community')">💬 Discord</button>
+          <button onclick="showToast('Opens YouTube channel')">▶ YouTube</button>
+          <button onclick="showToast('Opens Telegram channel')">✈ Telegram</button>
+        </div>
       </div>
       <p>Prototype build. Operator names, odds and figures are illustrative placeholders.</p>
     </div>
@@ -1158,7 +1171,7 @@ const FULL_MARKETS = ['UK','IT'];
 const COUNTRIES = [
   {code:'UK',name:'United Kingdom'},{code:'IT',name:'Italy'},
   {code:'DE',name:'Germany'},{code:'ES',name:'Spain'},{code:'SE',name:'Sweden'},{code:'DK',name:'Denmark'},
-  {code:'NL',name:'Netherlands'},{code:'IE',name:'Ireland'},{code:'CA',name:'Canada'},{code:'BR',name:'Brazil'},
+  {code:'NL',name:'Netherlands'},{code:'IE',name:'Ireland'},{code:'CA',name:'Canada (Ontario)'},{code:'BR',name:'Brazil'},
   {code:'PT',name:'Portugal'},{code:'RO',name:'Romania'},{code:'GR',name:'Greece'},{code:'CZ',name:'Czech Republic'},
   {code:'FR',name:'France'},{code:'AT',name:'Austria'},{code:'CH',name:'Switzerland'},{code:'BE',name:'Belgium'},
   {code:'PL',name:'Poland'},{code:'HU',name:'Hungary'},{code:'FI',name:'Finland'},{code:'NO',name:'Norway'},
@@ -1187,6 +1200,46 @@ function flagEmoji(code){
 }
 function countryName(code){ const c=COUNTRIES.find(x=>x.code===code); return c ? c.name : code; }
 let selectedCountry = 'UK';
+
+/* ---------- Regulatory compliance profiles — the 14 researched markets from the market-mapping
+   research (0 Mapa Trzista). Every other country in COUNTRIES has no research behind it yet and
+   falls back to the generic "demo content" treatment. bonusDisplay controls how (or whether) the
+   Bonuses page shows specific amounts; revShareAllowed/requiresLicense/blocked feed the compliance
+   banner and the Partners page note. ---------- */
+const RESEARCHED_MARKETS = ['UK','IT','DE','ES','SE','DK','NL','IE','CA','BR','RO','GR','PT','CZ'];
+const PHASE2_PRIORITY = ['CA','BR','SE'];
+const MARKET_COMPLIANCE = {
+  UK:{regulator:'UKGC', style:'open-premium', bonusDisplay:'full', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'RevShare dozvoljen. Operater snosi odgovornost za affiliate-a (SR code 1.1.2).'},
+  IT:{regulator:'ADM / AGCOM', style:'near-ban-informational', bonusDisplay:'none', revShareAllowed:'private-only', requiresLicense:false, blocked:false,
+    note:'Decreto Dignità (čl. 9): svaka javna promocija je zabranjena, uklj. indirektnu. Dozvoljen samo informativni sadržaj.'},
+  DE:{regulator:'GGL', style:'strict-regulated', bonusDisplay:'muted', revShareAllowed:false, requiresLicense:false, blocked:false,
+    note:'§5(6) GlüStV: varijabilna naknada (RevShare/CPA vezan za depozit) zabranjena za internet oglašavanje — samo fiksna naknada. Sadržaj ne smije izgledati redakcijski.'},
+  ES:{regulator:'DGOJ', style:'strict-regulated', bonusDisplay:'muted', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'RD 958/2020 djelimično poništen presudom Vrhovnog suda (04/2024) — regulatorna slika pravno nestabilna.'},
+  SE:{regulator:'Spelinspektionen', style:'open-premium', bonusDisplay:'moderate', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Pooštren standard „särskild måttfullhet" od 07/2022 — agresivni CTA i isticanje velikih iznosa bonusa nose rizik.'},
+  DK:{regulator:'Spillemyndigheden', style:'open-premium', bonusDisplay:'full', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Affiliate ne treba zasebnu licencu ako ne dira novac/podatke igrača direktno.'},
+  NL:{regulator:'KSA', style:'near-ban-informational', bonusDisplay:'none', revShareAllowed:'restricted', requiresLicense:false, blocked:false,
+    note:'Necil­jano oglašavanje zabranjeno od 2023. Izuzetak zahtijeva dokaziv 95% publike 24+ — u praksi nedostižno za nov affiliate sajt.'},
+  IE:{regulator:'GRAI', style:'open-premium', bonusDisplay:'full', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Watershed (05:30–21:00) i inducement pravila zakonski postoje, još nisu svi na snazi (status jun 2026) — pratiti kontinuirano.'},
+  CA:{regulator:'AGCO (Ontario)', style:'ontario-model', bonusDisplay:'generic-only', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Standard 2.05: zabranjeno javno prikazivanje konkretnih iznosa bonusa/inducements. Standard 2.03: zabranjeni sportisti u marketingu.'},
+  BR:{regulator:'SPA / MF', style:'brazil-hybrid', bonusDisplay:'moderate', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Operater solidarno odgovoran za affiliate-a; ugovori moraju biti na portugalskom.'},
+  RO:{regulator:'ONJN + CNA', style:'strict-regulated', bonusDisplay:'muted', revShareAllowed:true, requiresLicense:true, blocked:false,
+    note:'Class II licenca obavezna za affiliate rad (prijava + godišnji trošak). CNA zabranjuje celebrity endorsement.'},
+  GR:{regulator:'HGC', style:'blocked', bonusDisplay:'none', revShareAllowed:false, requiresLicense:true, blocked:true,
+    note:'Affiliate ne može raditi bez HGC Affiliate Suitability Licence i upisa u registar (€1.000) prije rada sa licenciranim operaterom.'},
+  PT:{regulator:'SRIJ', style:'strict-regulated', bonusDisplay:'moderate', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Standardna EU-tipa ograničenja, umjereno restriktivno.'},
+  CZ:{regulator:'Ministarstvo financí / Celní správa', style:'open-premium', bonusDisplay:'full', revShareAllowed:true, requiresLicense:false, blocked:false,
+    note:'Nadzor nad oglašavanjem prešao na Carinu od 1.7.2025 (Zakon 218/2025 Coll.).'},
+};
+function getCompliance(code){ return MARKET_COMPLIANCE[code] || null; }
+
 let isAdminAuthed = false;
 
 
@@ -1529,7 +1582,7 @@ const legalContent = {
   cookies:{title:'Cookie Policy', body:'Essential cookies keep the site functional. Analytics cookies measure traffic. Affiliate-attribution cookies record which partner referred a click, typically for 30 days.'},
   about:{title:'About Before Bet', body:'Before Bet helps players compare licensed operators, odds and offers before they play. We publish independent reviews across the UK and Italy.'},
   contact:{title:'Contact', body:'General: hello@beforebet.com\nPartnerships: partners@beforebet.com'},
-  methodology:{title:'How We Rate', body:'Every operator is scored on four dimensions — Games/Odds, Support, Payments and Mobile — tested first-hand by our editorial team, not supplied by the operator. The overall star rating is a weighted average of these four scores. The Safety Index is scored separately and measures trustworthiness specifically: license standing, clarity of terms, payout consistency and complaint history. A high star rating and a low Safety Index can coexist — for example a slick, feature-rich operator with a poor complaints record. We recommend reading both numbers together, not just the star rating.\n\nPaid placements (marked "Partner") can move an operator higher in a list. They never change either score. Our team re-tests every listed operator at least once per quarter.'},
+  methodology:{title:'How We Rate', body:'Every operator is scored on four dimensions — Games/Odds, Support, Payments and Mobile — tested first-hand by our editorial team, not supplied by the operator. The overall star rating is a weighted average of these four scores. The Safety Index is scored separately and measures trustworthiness specifically: license standing, clarity of terms, payout consistency and complaint history. A high star rating and a low Safety Index can coexist — for example a slick, feature-rich operator with a poor complaints record. We recommend reading both numbers together, not just the star rating.\n\nPaid placements (marked "Partner") can move an operator higher in a list. They never change either score. Our team re-tests every listed operator at least once per quarter.\n\nData sources: licensing status is checked directly against each regulator\u2019s public register (UKGC, ADM). Odds and fixtures are sourced from licensed sports-data providers (The Odds API, API-Football, Sportmonks); game catalogue and RTP figures come directly from studio-published data (Pragmatic Play, Evolution, NetEnt). We don\u2019t invent numbers we can\u2019t trace back to a source.'},
   guidelines:{title:'Community Guidelines', body:'Community chat rooms are for quick, casual conversation about betting and gaming topics — not for betting tipster spam, links to other sites, or abuse. Be respectful of other players. No sharing of personal contact details. No promotion of unlicensed operators. Messages are logged and moderated; repeated violations result in a chat ban. This is a live chat, not a support channel — for account issues, contact the operator directly or use our Complaints Center.'},
 };
 
@@ -1664,11 +1717,17 @@ function renderCountryList(){
   const input = document.getElementById('countryFilterInput');
   const q = (input ? input.value : '').trim().toLowerCase();
   const list = COUNTRIES.filter(c=>c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q));
-  document.getElementById('countryListBox').innerHTML = list.length ? list.map(c=>`
+  document.getElementById('countryListBox').innerHTML = list.length ? list.map(c=>{
+    let badge = '';
+    if(FULL_MARKETS.includes(c.code)) badge = '<span style="color:var(--gold);font-size:9.5px;font-weight:700;">● full</span>';
+    else if(PHASE2_PRIORITY.includes(c.code)) badge = '<span style="color:var(--gold);font-size:9.5px;font-weight:700;">★ Phase 2</span>';
+    else if(RESEARCHED_MARKETS.includes(c.code)) badge = '<span style="color:var(--green);font-size:9.5px;font-weight:700;">🔍 researched</span>';
+    return `
     <div class="sres-row" onclick="pickCountry('${c.code}')" style="cursor:pointer;">
-      <span>${flagEmoji(c.code)} ${c.name} ${FULL_MARKETS.includes(c.code) ? '<span style="color:var(--gold);font-size:9.5px;font-weight:700;">● full</span>' : ''}</span>
+      <span>${flagEmoji(c.code)} ${c.name} ${badge}</span>
       <span class="t">${c.code===selectedCountry ? '✓' : ''}</span>
-    </div>`).join('') : `<div class="sres-row">${market==='IT'?'Nessun risultato':'No matches'}</div>`;
+    </div>`;
+  }).join('') : `<div class="sres-row">${market==='IT'?'Nessun risultato':'No matches'}</div>`;
 }
 function pickCountry(code){ closeCountryPicker(); setCountry(code); }
 
@@ -1698,7 +1757,7 @@ function renderSearchChips(){
     `<button class="chip" onclick="document.getElementById('searchInput').value='${q.replace(/'/g,"\\'")}';runSearch();">${q}</button>`
   ).join('');
 }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); closeCountryPicker(); } });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); closeCountryPicker(); closeQuiz(); } });
 function runSearch(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const box = document.getElementById('searchResults');
@@ -1712,6 +1771,7 @@ function runSearch(){
   bonuses.filter(b=>b.market===market).forEach(b=>{ if(b.title.toLowerCase().includes(q) || b.op.toLowerCase().includes(q)) res.push({l:b.title,t:'Bonus',a:()=>go('bonuses')}); });
   games.forEach(g=>{ if(g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)) res.push({l:g.name,t:'Game',a:()=>openGamePage(g.id)}); });
   [...eduArticles[market].casino, ...eduArticles[market].sport].forEach(a=>{ if(a.title.toLowerCase().includes(q)) res.push({l:a.title,t:market==='UK'?'Guide':'Guida',a:()=>openEduArticle(a.id)}); });
+  tips[market].forEach(t=>{ if(t.match.toLowerCase().includes(q) || t.pred.toLowerCase().includes(q)) res.push({l:t.match,t:market==='UK'?'Tip':'Pronostico',a:()=>go('guides')}); });
   box.innerHTML = res.length ? res.slice(0,8).map((r,i)=>`<div class="sres-row" onclick="searchClick(${i})"><span>${r.l}</span><span class="t">${r.t}</span></div>`).join('') : `<div class="sres-row">${market==='UK'?'No matches':'Nessun risultato'}</div>`;
   window._sres = res;
 }
@@ -1824,6 +1884,56 @@ function submitApply(){
   document.getElementById('applyModalContent').innerHTML = `<button class="modal-close" onclick="closeApply()">&times;</button><h3>Application received</h3><p style="color:var(--dim);font-size:13px;">This would create a partner record with status "KYC pending" for the affiliate manager to review.</p>`;
 }
 
+/* ---------- Bonus-matching quiz (BonusFinder "MatchMaker" pattern) — a couple of quick
+   questions instead of scrolling the whole Bonuses grid yourself. ---------- */
+let quizType = null;
+function openQuiz(){
+  quizType = null;
+  document.getElementById('quizModal').classList.add('show');
+  renderQuizStep1();
+}
+function closeQuiz(){ document.getElementById('quizModal').classList.remove('show'); }
+function renderQuizStep1(){
+  const isUK = market==='UK';
+  document.getElementById('quizModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeQuiz()">&times;</button>
+    <h3>${isUK?'Find your match':'Trova il tuo abbinamento'}</h3>
+    <p style="color:var(--faint);font-size:12px;margin-bottom:16px;">${isUK?'Two quick questions, one recommendation.':'Due domande veloci, un consiglio.'}</p>
+    <p style="font-size:12.5px;font-weight:600;margin-bottom:10px;">${isUK?'1. What are you after?':'1. Cosa cerchi?'}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn btn-line" style="justify-content:flex-start;" onclick="quizType='casino';renderQuizStep2()">🎰 ${isUK?'Casino & slots':'Casinò e slot'}</button>
+      <button class="btn btn-line" style="justify-content:flex-start;" onclick="quizType='bk';renderQuizStep2()">⚽ ${isUK?'Sports betting':'Scommesse sportive'}</button>
+    </div>`;
+}
+function renderQuizStep2(){
+  const isUK = market==='UK';
+  const opts = quizType==='casino'
+    ? [['withdrawal','⚡',isUK?'Fast withdrawals':'Prelievi veloci'],['bonus','🎁',isUK?'Biggest welcome bonus':'Bonus di benvenuto più alto'],['live','🎥',isUK?'Live casino games':'Casinò dal vivo']]
+    : [['withdrawal','⚡',isUK?'Fast withdrawals':'Prelievi veloci'],['bonus','🎁',isUK?'Best welcome offer':'Migliore offerta di benvenuto'],['live',isUK?'📡':'📡',isUK?'Live/in-play betting':'Scommesse live']];
+  document.getElementById('quizModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeQuiz()">&times;</button>
+    <h3>${isUK?'Find your match':'Trova il tuo abbinamento'}</h3>
+    <p style="font-size:12.5px;font-weight:600;margin:4px 0 10px;">${isUK?'2. What matters most?':'2. Cosa conta di più?'}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      ${opts.map(o=>`<button class="btn btn-line" style="justify-content:flex-start;" onclick="quizShowResult('${o[0]}')">${o[1]} ${o[2]}</button>`).join('')}
+    </div>`;
+}
+function quizShowResult(priority){
+  const isUK = market==='UK';
+  const kind = quizType==='casino' ? 'casino' : 'bk';
+  const list = (quizType==='casino' ? casinos : bookmakers).filter(o=>o.market===market);
+  let pick;
+  if(priority==='withdrawal') pick = [...list].sort((a,b)=>withdrawalRank(a.withdrawalTime)-withdrawalRank(b.withdrawalTime))[0];
+  else if(priority==='bonus') pick = [...list].sort((a,b)=>b.rating-a.rating).find(o=>o.featured) || [...list].sort((a,b)=>b.rating-a.rating)[0];
+  else pick = list.find(o=>o.pros.some(p=>/live/i.test(p))) || list[0];
+  if(!pick){ closeQuiz(); return; }
+  document.getElementById('quizModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeQuiz()">&times;</button>
+    <h3>${isUK?'Your match':'Il tuo abbinamento'}</h3>
+    <div class="op-list" style="margin:14px 0;">${opRowHtml(pick, kind)}</div>
+    <button class="btn btn-line" style="width:100%;justify-content:center;" onclick="quizType=null;renderQuizStep1();">${isUK?'Try again':'Riprova'}</button>`;
+}
+
 /* ============================================================
    OPERATOR (bookmaker + casino share the same list/modal renderer)
    ============================================================ */
@@ -1833,7 +1943,8 @@ function getTopCasinoId(mkt){
   return list.length ? [...list].sort((a,b)=>b.rating-a.rating)[0].id : null;
 }
 function opRowHtml(o, kind, isTopOfYear){
-  const featuredTag = o.featured ? `<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>` : '';
+  const deStrict = selectedCountry==='DE';
+  const featuredTag = o.featured ? `<span class="op-featured" ${deStrict?'style="color:var(--gold);border-color:var(--gold);font-weight:700;"':''} title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">${deStrict?'⚠ Anzeige / Partner':'Partner'}</span>` : '';
   const yearTag = isTopOfYear ? `<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="Highest-rated casino in this market, based on our review scores.">🏆 Best ${SITE_YEAR}</span>` : '';
   const bgIcon = kind==='casino' ? '🎰' : '⚽';
   return `
@@ -1910,7 +2021,7 @@ function openOperatorPage(kind, id){
       <div style="display:flex;gap:16px;">
         <div class="op-page-mark">${o.mark}</div>
         <div>
-          <div class="op-page-title"><h1>${o.name}</h1>${o.featured?`<span class="op-featured" title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">Partner</span>`:''}${extras.verified?`<span class="verified-badge" title="License and terms independently verified by our editorial team">✓ Verified</span>`:''}</div>
+          <div class="op-page-title"><h1>${o.name}</h1>${o.featured?`<span class="op-featured" ${selectedCountry==='DE'?'style="color:var(--gold);border-color:var(--gold);font-weight:700;"':''} title="This operator supports Before Bet through a placement partnership. Ratings are independent of this.">${selectedCountry==='DE'?'⚠ Anzeige / Partner':'Partner'}</span>`:''}${extras.verified?`<span class="verified-badge" title="License and terms independently verified by our editorial team">✓ Verified</span>`:''}</div>
           <div class="op-page-sub">${o.license} · ${market==='UK'?'Reviewed for the UK market':'Recensito per il mercato italiano'}</div>
           <div class="op-author" style="margin-top:6px;">Reviewed by <b>${author.name}</b>, ${author.role} · <span class="op-updated">Last updated ${extras.updated}</span></div>
         </div>
@@ -2301,24 +2412,52 @@ function tickBonusCountdowns(){
 }
 function renderBonuses(){
   assignBonusDeadlines();
+  const comp = getCompliance(selectedCountry);
+  const bonusGridEl = document.getElementById('bonusGrid');
+  const chipRowEl = document.getElementById('bonusChipRow');
+  const countEl = document.getElementById('bonusCount');
+
+  if(comp && comp.bonusDisplay==='none'){
+    chipRowEl.innerHTML = '';
+    if(countEl) countEl.textContent = '';
+    bonusGridEl.innerHTML = `
+      <div class="verdict-box" style="max-width:640px;grid-column:1/-1;">
+        <div class="k">${market==='UK'?'Not shown for this market':'Non mostrato per questo mercato'}</div>
+        <div style="font-size:13px;color:var(--dim);">${market==='UK'
+          ? `${comp.regulator} rules mean specific bonus amounts can't be publicly promoted for ${countryName(selectedCountry)}. See the operator's own site for current offers — our Responsible Gambling page has more on what's allowed here.`
+          : `Le regole ${comp.regulator} non permettono la promozione pubblica di importi bonus specifici per ${countryName(selectedCountry)}. Consulta il sito dell'operatore per le offerte attuali.`}</div>
+      </div>`;
+    return;
+  }
+
   const cats=['All',...bonusCats];
-  document.getElementById('bonusChipRow').innerHTML = cats.map(c=>`<button class="chip ${c===activeBonusFilter?'active':''}" onclick="setBonusFilter('${c}')">${c}</button>`).join('');
+  chipRowEl.innerHTML = cats.map(c=>`<button class="chip ${c===activeBonusFilter?'active':''}" onclick="setBonusFilter('${c}')">${c}</button>`).join('');
   let list = bonuses.filter(b=>b.market===market && (activeBonusFilter==='All'||b.cat===activeBonusFilter));
   const sortEl = document.getElementById('bonusSort');
   const sortVal = sortEl ? sortEl.value : 'expiry';
   list = [...list].sort((a,b)=> sortVal==='newest' ? (b.exclusive?1:0)-(a.exclusive?1:0) : a.deadline - b.deadline);
-  const cEl = document.getElementById('bonusCount');
-  if(cEl) cEl.textContent = `${list.length} offer${list.length===1?'':'s'} live`;
-  document.getElementById('bonusGrid').innerHTML = list.map(b=>`
+  if(countEl) countEl.textContent = `${list.length} offer${list.length===1?'':'s'} live`;
+
+  const genericOnly = comp && comp.bonusDisplay==='generic-only';
+  const existingNote = document.getElementById('bonusComplianceNote');
+  if(existingNote) existingNote.remove();
+  if(genericOnly){
+    chipRowEl.insertAdjacentHTML('afterend', `<p id="bonusComplianceNote" style="font-size:11px;color:var(--faint);margin:-10px 0 14px;">${market==='UK'?`${comp.regulator} rules (Standard 2.05) don't allow public display of specific bonus amounts — offers below are shown generically.`:''}</p>`);
+  }
+  bonusGridEl.innerHTML = list.map(b=>{
+    const titleShown = genericOnly ? (market==='UK' ? `${b.cat} offer available` : `Offerta ${b.cat.toLowerCase()} disponibile`) : b.title;
+    const termsShown = genericOnly ? (market==='UK' ? 'See the operator\u2019s site for the exact amount and terms.' : 'Vedi il sito dell\u2019operatore per importo e condizioni esatte.') : b.terms;
+    return `
     <div class="bonus-card">
-      ${b.exclusive?`<span class="exclusive-tag">Before Bet Exclusive</span>`:''}
+      ${b.exclusive && !genericOnly ?`<span class="exclusive-tag">Before Bet Exclusive</span>`:''}
       <span class="bonus-cat">${bonusIcon(b.cat)} ${b.cat} · ${b.op}</span>
-      <div class="bonus-title">${b.title}</div>
+      <div class="bonus-title">${titleShown}</div>
       <div class="bonus-meta"><span>Expires in <span class="exp" data-deadline="${b.deadline}">${formatRemaining(b.deadline).text}</span></span></div>
-      <div class="bonus-terms">${b.terms}</div>
-      ${b.exclusive?`<div class="promo-code">Code: <strong>${b.code}</strong></div>`:''}
-      <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${b.op.toLowerCase().replace(/[^a-z]/g,'')}')">${market==='UK'?'Claim':'Vedi'}</button>
-    </div>`).join('');
+      <div class="bonus-terms">${termsShown}</div>
+      ${b.exclusive && !genericOnly ?`<div class="promo-code">Code: <strong>${b.code}</strong></div>`:''}
+      <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="simulateClick('${b.op.toLowerCase().replace(/[^a-z]/g,'')}')">${genericOnly ? (market==='UK'?'View operator':'Vedi operatore') : (market==='UK'?'Claim':'Vedi')}</button>
+    </div>`;
+  }).join('');
 }
 function setBonusFilter(c){ activeBonusFilter=c; renderBonuses(); }
 
@@ -2705,6 +2844,29 @@ function renderTeam(){
     </div>`).join('');
 }
 
+function renderPartnersCompliance(){
+  const el = document.getElementById('partnersComplianceNote');
+  if(!el) return;
+  const comp = getCompliance(selectedCountry);
+  if(!comp){ el.innerHTML=''; return; }
+  const bits = [];
+  if(comp.revShareAllowed===false){
+    bits.push(market==='UK'
+      ? `In <strong>${countryName(selectedCountry)}</strong>, ${comp.regulator} rules mean the percentage tiers above don't apply — only a fixed fee per lead is legally possible there. We'll agree a flat rate with you directly for that traffic.`
+      : `In <strong>${countryName(selectedCountry)}</strong>, le regole ${comp.regulator} non permettono le percentuali sopra — è possibile solo una tariffa fissa per lead.`);
+  } else if(comp.revShareAllowed==='private-only' || comp.revShareAllowed==='restricted'){
+    bits.push(market==='UK'
+      ? `In <strong>${countryName(selectedCountry)}</strong>, public promotion is tightly restricted (${comp.regulator}) — RevShare can exist under a private agreement, but the tiers above assume the open UK-style model.`
+      : `In <strong>${countryName(selectedCountry)}</strong>, la promozione pubblica è fortemente limitata (${comp.regulator}).`);
+  }
+  if(comp.requiresLicense){
+    bits.push(market==='UK'
+      ? `${countryName(selectedCountry)} requires affiliates to hold a separate licence (${comp.regulator}) before working with operators there — factor that into your timeline.`
+      : `${countryName(selectedCountry)} richiede una licenza separata per affiliati (${comp.regulator}) prima di lavorare con gli operatori locali.`);
+  }
+  el.innerHTML = bits.length ? `<p style="font-size:11px;color:var(--faint);line-height:1.6;">📍 ${bits.join(' ')} <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">${market==='UK'?'Change country':'Cambia paese'}</button></p>` : '';
+}
+
 
 /* ---------- Partners ---------- */
 function partnerTier(clicks){
@@ -2823,14 +2985,17 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
   bonuses: ()=>`<div class="admin-toolbar"><h3>Bonuses</h3><button class="btn btn-gold">+ New</button></div>
     ${bonuses.map((b,i)=>`<div class="admin-row"><div><div class="n">${b.title}</div><div class="m">${b.op} · auto-expires in ${b.expiresInHrs}h</div></div><span class="pill ${i%3===0?'wait':'ok'}">${i%3===0?'Scheduled':'Published'}</span></div>`).join('')}`,
   links: ()=>`<div class="admin-toolbar"><h3>Links &amp; redirects</h3></div>
-    ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">/go/${o.id}</div><div class="m">Geo: ${o.market} only · sub-ID passthrough</div></div><span class="pill ok">Active</span></div>`).join('')}`,
+    <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Each redirect dynamically mints a fresh <code>bb_click_id</code> per click and links it back to the visitor's original partner <code>ref</code> — never a fixed per-operator link.</p>
+    ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">/go/${o.id}</div><div class="m">Geo: ${o.market} only · appends <code>sub_id={bb_click_id}</code> to ${o.name}'s affiliate URL</div></div><span class="pill ok">Active</span></div>`).join('')}
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Attribution rule: <strong>last-touch wins</strong> — if a visitor arrives via two different partners before converting, credit goes to whichever <code>ref</code> sent the final click through to the operator. 30-day cookie window, as committed in the Affiliate Program FAQ.</p>`,
   postbacks: ()=>`<div class="admin-toolbar"><h3>Postbacks (server-to-server)</h3></div>
+    <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Operator sends <code>event</code> + <code>sub_id</code> (our <code>bb_click_id</code>) back to us — we look it up to find which partner's <code>ref</code> it traces to, then credit their tier.</p>
     ${[
-      ['Northline','FTD','sub_id=marko_petrovic','€25.00','2 min ago'],
-      ['Golden Reel Casino','Registration','sub_id=oddsdaily_blog','—','6 min ago'],
-      ['Cielo Bet','FTD','sub_id=calcio_analytics_it','€18.50','14 min ago'],
+      ['Northline','FTD','sub_id=bb_8f3a2b → ref=marko_petrovic','€25.00','2 min ago'],
+      ['Golden Reel Casino','Registration','sub_id=bb_2e91cd → ref=oddsdaily_blog','—','6 min ago'],
+      ['Cielo Bet','FTD','sub_id=bb_c4a017 → ref=calcio_analytics_it','€18.50','14 min ago'],
     ].map(r=>`<div class="admin-row"><div><div class="n">${r[0]} — ${r[1]}</div><div class="m">${r[2]} · received ${r[4]}</div></div><span class="pill ok">${r[3]==='—'?'Logged':r[3]}</span></div>`).join('')}
-    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Each postback is matched to the original click via sub-ID before revenue is credited to a partner.</p>`,
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Each postback is matched to the original click via <code>bb_click_id</code> before revenue is credited to a partner. Monthly reconciliation compares our conversion log against each operator's own report to catch late or missing postbacks — known limitation: a lost/blocked cookie means the conversion simply can't be attributed, which partner agreements list as an accepted risk, not a guarantee we make.</p>`,
   abtest: ()=>`<div class="admin-toolbar"><h3>A/B tests</h3><button class="btn btn-gold">+ New test</button></div>
     ${[
       {name:'Bookmaker card CTA copy', variants:[['"Claim"',4.8],['"Get Offer"',3.6],['"Play Now"',6.2]]},
@@ -2874,9 +3039,17 @@ function renderCompliance(){
   const foot=document.getElementById('footCompliance');
   let demoNote = '';
   if(!FULL_MARKETS.includes(selectedCountry)){
-    demoNote = market==='UK'
-      ? `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — previewing with demo content. Full local licensing, operators and language are planned for Phase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Change country</button></div>`
-      : `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — anteprima con contenuto dimostrativo. Licenza locale, operatori e lingua completi sono previsti per la Fase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Cambia paese</button></div>`;
+    const comp = getCompliance(selectedCountry);
+    if(comp){
+      const blockedLine = comp.blocked ? (market==='UK' ? ' This market is not yet open — see the note below.' : ' Questo mercato non è ancora aperto — vedi la nota qui sotto.') : '';
+      demoNote = market==='UK'
+        ? `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — regulator: <strong>${comp.regulator}</strong>. ${comp.note}${blockedLine} Previewing on our UK template pending full local build. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Change country</button></div>`
+        : `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — regolatore: <strong>${comp.regulator}</strong>. ${comp.note}${blockedLine} Anteprima su template UK in attesa dello sviluppo locale completo. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Cambia paese</button></div>`;
+    } else {
+      demoNote = market==='UK'
+        ? `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — previewing with demo content. Full local licensing, operators and language are planned for Phase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Change country</button></div>`
+        : `<div style="flex-basis:100%;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);">📍 ${flagEmoji(selectedCountry)} <strong>${countryName(selectedCountry)}</strong> — anteprima con contenuto dimostrativo. Licenza locale, operatori e lingua completi sono previsti per la Fase 2. <button onclick="openCountryPicker()" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">Cambia paese</button></div>`;
+    }
   }
   if(market==='UK'){
     strip.innerHTML = `<strong>18+</strong> Gamble responsibly — BeGambleAware.org. This page contains affiliate links.${demoNote}`;
@@ -2899,6 +3072,7 @@ function renderAll(){
   renderEducation();
   renderResponsible();
   renderTeam();
+  renderPartnersCompliance();
   closeChatRoom();
   renderChatTopics();
 }
