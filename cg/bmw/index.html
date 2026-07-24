@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminali daju više — Nagradna igra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0D;
+    --bg-2:#17171B;
+    --card:#1E1E23;
+    --red:#0057B8;
+    --red-2:#003D82;
+    --gold:#FFD200;
+    --white:#FFFFFF;
+    --gray:#9B9BA3;
+    --gray-line:#2C2C31;
+    --green:#22C55E;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  h1,h2,h3{
+    font-family:'Barlow Condensed',sans-serif;
+    margin:0;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-weight:800;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+  ::selection{background:var(--red); color:#fff;}
+
+  /* ---------- top strip ---------- */
+  .topstrip{
+    background:var(--red);
+    color:#fff;
+    font-family:'Inter'; font-weight:700; font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:10px 0;
+    text-align:center;
+  }
+  .topstrip b{color:#0B0B0D;}
+
+  /* ---------- header ---------- */
+  header{
+    position:relative;
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(0,87,184,0.35), transparent 60%),
+      radial-gradient(700px 400px at 10% 10%, rgba(255,210,0,0.10), transparent 60%),
+      var(--bg);
+    padding:20px 0 90px;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute; left:-10%; right:-10%; bottom:-2px; height:120px;
+    background:var(--bg-2);
+    clip-path:polygon(0 60%, 100% 0, 100% 100%, 0% 100%);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 0 44px; position:relative; z-index:2;
+  }
+  .brand{
+    font-family:'Barlow Condensed'; font-weight:800; font-size:24px; letter-spacing:0.01em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand .dot{width:10px; height:10px; background:var(--red); border-radius:50%; display:inline-block;}
+  .brand span{color:var(--red);}
+  .nav-links{display:flex; gap:30px; font-size:14px; font-weight:600;}
+  .nav-links a{text-decoration:none; color:var(--gray);}
+  .nav-links a:hover{color:#fff;}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:50px;
+    align-items:center;
+    position:relative; z-index:2;
+  }
+  @media (max-width:940px){ .hero{grid-template-columns:1fr;} }
+  .badge-live{
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(0,87,184,0.12); border:1px solid rgba(0,87,184,0.5);
+    color:var(--red); font-weight:700; font-size:12.5px; letter-spacing:0.04em;
+    text-transform:uppercase; padding:7px 14px; border-radius:100px; margin-bottom:22px;
+  }
+  .badge-live .pulse{
+    width:7px; height:7px; border-radius:50%; background:var(--red);
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(1.4);}}
+  .hero h1{
+    font-size:clamp(46px,7vw,78px);
+    line-height:0.98;
+    margin-bottom:22px;
+  }
+  .hero h1 .hl{
+    color:var(--gold);
+    -webkit-text-stroke:0px;
+  }
+  .hero p.lead{
+    font-size:18px; line-height:1.6; max-width:48ch; color:var(--gray); margin-bottom:32px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+  .btn{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:'Inter'; font-weight:700; font-size:15px;
+    padding:16px 28px; border-radius:10px; text-decoration:none;
+    border:none; cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{
+    background:var(--red); color:#fff;
+    box-shadow:0 10px 30px rgba(0,87,184,0.35);
+  }
+  .btn-primary:hover{box-shadow:0 14px 36px rgba(0,87,184,0.5);}
+  .btn-ghost{
+    background:rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.16);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.1);}
+
+  .trust-row{
+    display:flex; gap:26px; margin-top:34px; flex-wrap:wrap;
+  }
+  .trust-item{display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--gray); font-weight:600;}
+  .trust-item .ic{color:var(--gold); font-size:16px;}
+
+  /* ---------- points card (signature element) ---------- */
+  .pcard{
+    position:relative;
+    background:linear-gradient(160deg, var(--card) 0%, #131316 100%);
+    border:1px solid var(--gray-line);
+    border-radius:20px;
+    padding:30px 28px 26px;
+    box-shadow:0 30px 70px rgba(0,0,0,0.55);
+  }
+  .pcard-glow{
+    position:absolute; inset:-1px; border-radius:20px; padding:1px;
+    background:linear-gradient(135deg, rgba(255,210,0,0.5), transparent 40%, rgba(0,87,184,0.5));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    pointer-events:none;
+  }
+  .pcard-head{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;
+  }
+  .pcard-head .tag{
+    font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--gray);
+  }
+  .demo-flag{
+    font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--gold); border:1px solid rgba(255,210,0,0.4); padding:3px 9px; border-radius:100px;
+  }
+  .pcard h3{font-size:24px; margin-bottom:6px; letter-spacing:0;}
+  .pcard .sub{font-size:13.5px; color:var(--gray); margin-bottom:22px; line-height:1.55; font-weight:500; text-transform:none; font-family:'Inter';}
+  .id-form{display:flex; gap:10px; margin-bottom:10px;}
+  .id-form input{
+    flex:1; min-width:0;
+    font-family:'IBM Plex Mono'; font-size:15px; font-weight:500;
+    padding:14px 16px; border:1px solid var(--gray-line); border-radius:10px;
+    background:#0F0F12; color:#fff;
+  }
+  .id-form input::placeholder{color:#55555c;}
+  .id-form input:focus{border-color:var(--red);}
+  .id-form button{
+    font-family:'Inter'; font-weight:700; font-size:14px;
+    padding:0 22px; border-radius:10px; border:none;
+    background:var(--gold); color:#1a1400; cursor:pointer;
+    transition:background 120ms ease;
+  }
+  .id-form button:hover{background:#ffd875;}
+  .id-form button:disabled{opacity:0.6; cursor:default;}
+  .id-hint{font-size:12px; color:#6b6b72; margin-bottom:20px;}
+
+  .result{display:none;}
+  .result.show{display:block; animation:rise 280ms ease-out;}
+  @keyframes rise{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+  .result-hero{
+    text-align:center; background:rgba(255,210,0,0.06); border:1px solid rgba(255,210,0,0.25);
+    border-radius:14px; padding:22px 18px; margin-bottom:16px;
+  }
+  .result-hero .big{
+    font-family:'Barlow Condensed'; font-weight:800; font-size:56px; color:var(--gold); line-height:1;
+  }
+  .result-hero .lbl{font-size:12.5px; color:var(--gray); text-transform:uppercase; letter-spacing:0.06em; font-weight:700; margin-top:4px;}
+  .result-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
+  .result-stat{background:#0F0F12; border:1px solid var(--gray-line); border-radius:10px; padding:12px 14px;}
+  .result-stat .v{font-family:'IBM Plex Mono'; font-weight:600; font-size:18px;}
+  .result-stat .k{font-size:11.5px; color:var(--gray); margin-top:2px;}
+  .result-note{font-size:11.5px; color:#6b6b72; line-height:1.5;}
+  .result-error{
+    display:none; font-size:13.5px; color:var(--red); font-weight:600;
+    background:rgba(0,87,184,0.08); border:1px solid rgba(0,87,184,0.3);
+    border-radius:10px; padding:14px 16px; margin-top:4px;
+  }
+  .result-error.show{display:block;}
+
+  /* ---------- sections ---------- */
+  section{padding:70px 0;}
+  .section-tight{padding:50px 0 70px;}
+  .section-head{margin-bottom:38px; max-width:60ch;}
+  .eyebrow{
+    font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--red); margin-bottom:12px;
+  }
+  .section-head h2{font-size:clamp(28px,4.5vw,42px); margin-bottom:12px; color:#fff;}
+  .section-head p{font-size:15.5px; line-height:1.6; color:var(--gray);}
+  .bg-alt{background:var(--bg-2);}
+
+  /* mehanika cards */
+  .stub-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:820px){.stub-grid{grid-template-columns:1fr;}}
+  .stub{
+    background:var(--card); border:1px solid var(--gray-line); border-radius:16px;
+    padding:26px 24px; position:relative; overflow:hidden;
+    transition:border-color 150ms ease, transform 150ms ease;
+  }
+  .stub:hover{border-color:var(--red); transform:translateY(-3px);}
+  .stub .tag{
+    display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--gold); background:rgba(255,210,0,0.1); padding:5px 11px; border-radius:100px; margin-bottom:16px;
+  }
+  .stub h3{font-size:22px; margin-bottom:10px; letter-spacing:0;}
+  .stub .amt{font-family:'Barlow Condensed'; font-weight:800; font-size:38px; color:#fff; margin-bottom:10px;}
+  .stub .amt span{color:var(--gray); font-size:16px; font-weight:600; text-transform:none; font-family:'Inter';}
+  .stub p{font-size:14px; line-height:1.55; color:var(--gray); margin:0 0 14px; font-weight:500;}
+  .stub .scale{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:700; color:var(--green);
+    padding-top:14px; border-top:1px solid var(--gray-line);
+  }
+
+  /* kola board */
+  .board{
+    background:var(--card); border:1px solid var(--gray-line); border-radius:16px; overflow:hidden;
+  }
+  .board-row{
+    display:grid; grid-template-columns:64px 1fr 1fr;
+    border-bottom:1px solid var(--gray-line);
+    padding:17px 22px; align-items:center; gap:12px;
+  }
+  .board-row:last-child{border-bottom:none;}
+  .board-row.head{
+    background:#0F0F12; font-weight:700; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:0.06em; color:var(--gray); padding:12px 22px;
+  }
+  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; color:var(--red);}
+  .board-row .period{font-size:14.5px; font-weight:500;}
+  .board-row .draw{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray);}
+  .board-row.final{background:linear-gradient(90deg, rgba(255,210,0,0.12), transparent);}
+  .board-row.final .num{color:var(--gold);}
+  .board-row.final .draw{color:var(--gold); font-weight:600;}
+  @media (max-width:640px){
+    .board-row{grid-template-columns:40px 1fr; row-gap:4px;}
+    .board-row .draw{grid-column:2 / 3;}
+  }
+
+  /* nagrade grid */
+  .prize-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  }
+  @media (max-width:900px){.prize-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.prize-grid{grid-template-columns:1fr;}}
+  .prize{
+    background:var(--card); border:1px solid var(--gray-line); border-radius:14px;
+    padding:20px 18px; text-align:center;
+  }
+  .prize .ic{font-size:28px; margin-bottom:10px;}
+  .prize .name{font-weight:700; font-size:14.5px; margin-bottom:4px;}
+  .prize .note{font-size:12px; color:var(--gray);}
+
+  /* finale band */
+  .finale{
+    position:relative;
+    background:
+      radial-gradient(900px 500px at 50% -20%, rgba(255,210,0,0.15), transparent 60%),
+      radial-gradient(700px 400px at 90% 100%, rgba(0,87,184,0.2), transparent 60%),
+      var(--bg-2);
+    text-align:center;
+    overflow:hidden;
+  }
+  .finale .eyebrow{justify-content:center; display:flex; color:var(--gold);}
+  .finale h2{font-size:clamp(36px,7vw,66px); margin-bottom:16px; color:#fff;}
+  .finale h2 .gold{color:var(--gold);}
+  .finale p{max-width:54ch; margin:0 auto 34px; color:var(--gray); line-height:1.6; font-size:16px;}
+  .countdown{
+    display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:38px;
+  }
+  .cd-box{
+    background:var(--card); border:1px solid var(--gray-line);
+    border-radius:14px; padding:18px 22px; min-width:96px;
+  }
+  .cd-box .n{font-family:'Barlow Condensed'; font-size:38px; font-weight:800; color:var(--gold); line-height:1;}
+  .cd-box .l{font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray); font-weight:700; margin-top:6px;}
+
+  /* compliance footer */
+  footer{background:#0B0B0D; padding:44px 0 30px; border-top:1px solid var(--gray-line);}
+  .compliance-bar{
+    display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;
+    background:var(--card); border:1px solid var(--gray-line); border-radius:14px;
+    padding:20px 22px; margin-bottom:28px;
+  }
+  .age-badge{
+    font-family:'Barlow Condensed'; font-weight:800; font-size:22px; color:#fff;
+    background:var(--red); border-radius:10px; width:46px; height:46px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .compliance-bar p{font-size:12.5px; line-height:1.6; color:var(--gray); margin:0;}
+  .foot-links{display:flex; gap:24px; flex-wrap:wrap; font-size:13px; font-weight:600; margin-bottom:20px;}
+  .foot-links a{text-decoration:none; color:var(--gray);}
+  .foot-links a:hover{color:#fff;}
+  .fine{font-size:11.5px; color:#5c5c62; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="topstrip">🔥 Kampanja traje <b>15.08. – 08.10.2026.</b> · Učestvuju isključivo uplate na SSBT terminalima</div>
+
+<header>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand"><span class="dot"></span>TERMINALI <span>DAJU VIŠE</span></div>
+      <nav class="nav-links">
+        <a href="#provjeri">Provjeri bodove</a>
+        <a href="#mehanika">Kako učestvovati</a>
+        <a href="#kola">Kola i izvlačenja</a>
+        <a href="#finale">Finale — BMW</a>
+        <a href="#pravila">Pravila</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <div>
+        <div class="badge-live"><span class="pulse"></span>Kampanja je aktivna</div>
+        <h1>Odigraj na terminalu.<br>Osvoji <span class="hl">više</span>.</h1>
+        <p class="lead">Sport tiket, Alea tiket ili depozit na SSBT terminalu — svaka uplata ti donosi prijavu za sedmičnu nagradu i ulaznicu za veliko finale: BMW Serije 1.</p>
+        <div class="cta-row">
+          <a href="#provjeri" class="btn btn-primary">🎟️ Provjeri svoje bodove</a>
+          <a href="#mehanika" class="btn btn-ghost">Kako se kvalifikujem</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item"><span class="ic">✓</span>7 kola, nagrade svake sedmice</div>
+          <div class="trust-item"><span class="ic">✓</span>Izvlačenje uživo, svaki četvrtak</div>
+          <div class="trust-item"><span class="ic">✓</span>Sve prijave idu i u finale</div>
+        </div>
+      </div>
+
+      <div class="pcard" id="provjeri">
+        <div class="pcard-glow"></div>
+        <div class="pcard-head">
+          <span class="tag">MOJ STATUS</span>
+          <span class="demo-flag">Demo prikaz</span>
+        </div>
+        <h3>Provjeri svoje bodove</h3>
+        <p class="sub">Unesi ID naloga sa platforme i odmah vidi koliko prijava imaš u tekućem kolu i ukupno za finale.</p>
+        <div class="id-form">
+          <label for="idInput" style="position:absolute;left:-9999px;">ID naloga</label>
+          <input id="idInput" class="mono" type="text" inputmode="numeric" placeholder="Unesi ID naloga, npr. 12345678" maxlength="12">
+          <button id="checkBtn" type="button">Provjeri</button>
+        </div>
+        <div class="id-hint">Isti ID koji koristiš za prijavu na online nalog.</div>
+
+        <div class="result" id="resultBox">
+          <div class="result-hero">
+            <div class="big" id="rUkupno">—</div>
+            <div class="lbl">Ukupno prijava za finale</div>
+          </div>
+          <div class="result-grid">
+            <div class="result-stat"><div class="v mono" id="rKolo">—</div><div class="k">Tekuće kolo</div></div>
+            <div class="result-stat"><div class="v mono" id="rKoloBodovi">—</div><div class="k">Prijave u ovom kolu</div></div>
+          </div>
+          <p class="result-note">Podaci se ažuriraju nakon obrade slipova iz poslovnica, obično do utorka naredne sedmice.</p>
+        </div>
+
+        <div class="result-error" id="errorBox">
+          ID nije pronađen. Provjeri broj naloga ili se obrati osoblju u poslovnici.
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="mehanika" class="bg-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Kako učestvovati</div>
+      <h2>Tri načina da uđeš u igru</h2>
+      <p>Učestvuju isključivo uplate izvršene na SSBT terminalima u poslovnicama. Prijavu upisuješ na poleđinu slipa i ubacuješ u kutiju do isteka kola.</p>
+    </div>
+    <div class="stub-grid">
+      <div class="stub">
+        <span class="tag">Sport</span>
+        <h3>Sport tiket</h3>
+        <div class="amt">5 € <span>minimum</span></div>
+        <p>Najmanje tri para na tiketu, ukupna kvota min. 2,00.</p>
+        <div class="scale">↑ +1 prijava na svakih dodatnih 5 €</div>
+      </div>
+      <div class="stub">
+        <span class="tag">Alea</span>
+        <h3>Alea tiket</h3>
+        <div class="amt">3 € <span>minimum</span></div>
+        <p>Uplata na Alea igre preko terminala.</p>
+        <div class="scale">↑ +1 prijava na svakih dodatnih 3 €</div>
+      </div>
+      <div class="stub">
+        <span class="tag">Nalog</span>
+        <h3>Depozit na nalog</h3>
+        <div class="amt">5 € <span>minimum</span></div>
+        <p>Depozit na online nalog izvršen preko SSBT terminala.</p>
+        <div class="scale">↑ +1 prijava na svakih dodatnih 5 €</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kola">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Raspored</div>
+      <h2>7 kola. Izvlačenje svakog četvrtka.</h2>
+      <p>Prvo kolo je produženo, sedmo skraćeno. Sve prijave iz svih kola idu i u finalno izvlačenje.</p>
+    </div>
+    <div class="board">
+      <div class="board-row head"><span></span><span>Period kola</span><span>Izvlačenje</span></div>
+      <div class="board-row"><span class="num">01</span><span class="period">15.08. – 23.08.</span><span class="draw">čet 27.08.</span></div>
+      <div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="draw">čet 03.09.</span></div>
+      <div class="board-row"><span class="num">03</span><span class="period">31.08. – 06.09.</span><span class="draw">čet 10.09.</span></div>
+      <div class="board-row"><span class="num">04</span><span class="period">07.09. – 13.09.</span><span class="draw">čet 17.09.</span></div>
+      <div class="board-row"><span class="num">05</span><span class="period">14.09. – 20.09.</span><span class="draw">čet 24.09.</span></div>
+      <div class="board-row"><span class="num">06</span><span class="period">21.09. – 27.09.</span><span class="draw">čet 01.10.</span></div>
+      <div class="board-row final"><span class="num">07</span><span class="period">28.09. – 01.10.</span><span class="draw">čet 08.10. + FINALE</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="nagrade" class="bg-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Nagrade po kolu</div>
+      <h2>7 nagrada, svake sedmice</h2>
+      <p>Max. jedna nagrada po igraču po kolu.</p>
+    </div>
+    <div class="prize-grid">
+      <div class="prize"><div class="ic">✈️</div><div class="name">Putovanje</div><div class="note">glavna nagrada kola</div></div>
+      <div class="prize"><div class="ic">📱</div><div class="name">iPhone 17 Pro</div><div class="note">2. mjesto</div></div>
+      <div class="prize"><div class="ic">🚲</div><div class="name">E-bicikl</div><div class="note">3. mjesto</div></div>
+      <div class="prize"><div class="ic">⌚</div><div class="name">Pametni sat</div><div class="note">4. mjesto</div></div>
+      <div class="prize"><div class="ic">🎧</div><div class="name">AirPods</div><div class="note">5. mjesto</div></div>
+      <div class="prize"><div class="ic">👕</div><div class="name">Duks + bonus</div><div class="note">6. mjesto</div></div>
+      <div class="prize"><div class="ic">👕</div><div class="name">Majica + bonus</div><div class="note">7. mjesto</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="finale" class="finale">
+  <div class="wrap">
+    <div class="eyebrow">Veliko finale · 08.10.2026.</div>
+    <h2>Sve prijave. Jedan dobitnik.<br><span class="gold">BMW Serije 1.</span></h2>
+    <p>Ko igra od starta kampanje ima najviše prijava u finalnom izvlačenju — svaka prijava iz svakog kola se čuva i ulazi u bubanj 08.10.</p>
+    <div class="countdown" id="countdown">
+      <div class="cd-box"><div class="n" id="cdDays">–</div><div class="l">Dana</div></div>
+      <div class="cd-box"><div class="n" id="cdHours">–</div><div class="l">Sati</div></div>
+      <div class="cd-box"><div class="n" id="cdMins">–</div><div class="l">Minuta</div></div>
+    </div>
+    <a href="#provjeri" class="btn btn-primary">🎟️ Provjeri koliko prijava imaš</a>
+  </div>
+</section>
+
+<footer id="pravila">
+  <div class="wrap">
+    <div class="compliance-bar">
+      <div class="age-badge">18+</div>
+      <p>Igre na sreću su namijenjene isključivo punoljetnim licima. Igrajte odgovorno — postavite sebi granice uloga i vremena igre. [Formulacija poruke o odgovornoj igri i kontakt liniju za pomoć potvrđuje pravna služba prije objave.]</p>
+    </div>
+    <div class="foot-links">
+      <a href="#">Puna pravila nagradne igre (PDF)</a>
+      <a href="#">Uslovi učešća</a>
+      <a href="#">Kontakt za pitanja</a>
+      <a href="#">Odgovorno igranje</a>
+    </div>
+    <p class="fine">Učestvuju isključivo uplate izvršene na SSBT terminalima u poslovnicama. Organizator zadržava pravo izmjene pravila uz saglasnost nadležnog organa. [Naziv organizatora, broj i datum saglasnosti Uprave za igre na sreću — popuniti prije objave.]</p>
+  </div>
+</footer>
+
+<script>
+  // ---------------------------------------------------------------
+  // DEMO DATA — zamijeniti stvarnim API pozivom ka platformi.
+  // Primer poziva koji treba ovdje da stoji umjesto mock objekta:
+  //
+  //   const res = await fetch(`https://api.vasadomena.me/promo/bodovi/${id}`);
+  //   const data = await res.json();
+  //
+  // Očekivani oblik odgovora (predlog):
+  //   { id: "12345678", kolo: 3, prijaveKolo: 4, prijaveUkupno: 11, found: true }
+  // ---------------------------------------------------------------
+  const DEMO_DB = {
+    "12345678": { kolo: 3, prijaveKolo: 4, prijaveUkupno: 11 },
+    "87654321": { kolo: 3, prijaveKolo: 1, prijaveUkupno: 3 },
+    "11112222": { kolo: 3, prijaveKolo: 7, prijaveUkupno: 19 },
+  };
+
+  async function lookupBodovi(id) {
+    // Zamijeniti ovaj dio pravim API pozivom (v. napomenu iznad).
+    await new Promise(r => setTimeout(r, 350)); // simulacija mrežnog kašnjenja
+    if (DEMO_DB[id]) {
+      return { found: true, ...DEMO_DB[id] };
+    }
+    return { found: false };
+  }
+
+  const input = document.getElementById('idInput');
+  const btn = document.getElementById('checkBtn');
+  const resultBox = document.getElementById('resultBox');
+  const errorBox = document.getElementById('errorBox');
+
+  async function runCheck() {
+    const id = input.value.trim();
+    if (!id) return;
+    btn.disabled = true;
+    btn.textContent = '...';
+    const data = await lookupBodovi(id);
+    btn.disabled = false;
+    btn.textContent = 'Provjeri';
+
+    if (data.found) {
+      document.getElementById('rKolo').textContent = 'Kolo ' + data.kolo;
+      document.getElementById('rKoloBodovi').textContent = data.prijaveKolo;
+      document.getElementById('rUkupno').textContent = data.prijaveUkupno;
+      resultBox.classList.add('show');
+      errorBox.classList.remove('show');
+    } else {
+      resultBox.classList.remove('show');
+      errorBox.classList.add('show');
+    }
+  }
+
+  btn.addEventListener('click', runCheck);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCheck(); });
+
+  // countdown to finale 08.10.2026 20:00
+  const target = new Date('2026-10-08T20:00:00');
+  function tick() {
+    const now = new Date();
+    let diff = Math.max(0, target - now);
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('cdDays').textContent = d;
+    document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 30000);
+</script>
+
+</body>
+</html>
