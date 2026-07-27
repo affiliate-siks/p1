@@ -43,6 +43,9 @@
   a{color:inherit;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
   section > .wrap{position:relative; z-index:1;}
+  /* Flex column parents (.hero) disable auto-margin centering on their direct
+     children — force full width so max-width/centering behaves as expected. */
+  .hero > .wrap{width:100%;}
   :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
   ::selection{background:var(--blue); color:#fff;}
   img{max-width:100%; display:block;}
@@ -133,7 +136,7 @@
     font-weight:600; font-size:15px; border-top:1px solid rgba(255,255,255,0.08);
   }
   .mobile-menu a:first-child{border-top:none;}
-  @media (max-width:760px){
+  @media (max-width:900px){
     .nav-links{display:none;}
     .nav-toggle{display:flex;}
   }
@@ -196,15 +199,15 @@
   @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);}}
 
   .hero-float{
-    position:absolute; z-index:3; right:24px; bottom:96px;
+    position:absolute; z-index:3; right:24px; top:112px;
     background:rgba(20,20,24,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
     border:1px solid rgba(255,255,255,0.14); border-radius:16px;
-    padding:16px 20px; display:flex; align-items:center; gap:14px;
+    padding:14px 18px; display:flex; align-items:center; gap:12px;
     box-shadow:0 20px 45px rgba(0,0,0,0.4);
   }
-  .hero-float .n{font-family:'Barlow Condensed'; font-weight:800; font-size:28px; color:var(--gold); line-height:1;}
-  .hero-float .t{font-size:11.5px; color:rgba(255,255,255,0.7); font-weight:600; line-height:1.4;}
-  @media (max-width:900px){ .hero-float{display:none;} }
+  .hero-float .n{font-family:'Barlow Condensed'; font-weight:800; font-size:24px; color:var(--gold); line-height:1;}
+  .hero-float .t{font-size:11px; color:rgba(255,255,255,0.7); font-weight:600; line-height:1.35;}
+  @media (max-width:1100px){ .hero-float{display:none;} }
 
   /* ---------- sections ---------- */
   section{padding:88px 0; position:relative; overflow:hidden;}
@@ -277,7 +280,7 @@
     background:#0F0F12; font-weight:700; font-size:11.5px;
     text-transform:uppercase; letter-spacing:0.08em; color:var(--gray); padding:15px 28px;
   }
-  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; letter-spacing:0.02em; color:#4C9AFF;}
+  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; letter-spacing:0.02em; color:#4C9AFF; text-align:center;}
   .board-row .period{font-size:14.5px; font-weight:500; letter-spacing:0.005em;}
   .board-row .draw{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray);}
   .board-row.final{background:linear-gradient(90deg, rgba(255,210,0,0.12), transparent);}
@@ -330,6 +333,7 @@
     background:var(--card); border:1px solid var(--gray-line);
     border-radius:14px; padding:20px 28px; min-width:100px;
     box-shadow:0 0 0 1px rgba(255,210,0,0.08), 0 16px 34px rgba(0,0,0,0.35);
+    text-align:center;
   }
   .cd-box .n{font-family:'Barlow Condensed'; font-size:38px; font-weight:800; color:var(--gold); line-height:1;}
   .cd-box .l{font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); font-weight:700; margin-top:8px;}
