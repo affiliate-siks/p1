@@ -11,8 +11,8 @@
     --bg:#0B0B0D;
     --bg-2:#17171B;
     --card:#1E1E23;
-    --red:#0057B8;
-    --red-2:#003D82;
+    --blue:#0057B8;
+    --blue-2:#003D82;
     --gold:#FFD200;
     --white:#FFFFFF;
     --gray:#9B9BA3;
@@ -43,81 +43,92 @@
   a{color:inherit;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
   :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
-  ::selection{background:var(--red); color:#fff;}
+  ::selection{background:var(--blue); color:#fff;}
+  img{max-width:100%; display:block;}
 
   /* ---------- top strip ---------- */
   .topstrip{
-    background:var(--red);
+    background:var(--blue);
     color:#fff;
     font-family:'Inter'; font-weight:700; font-size:12.5px;
     letter-spacing:0.03em;
     padding:10px 0;
     text-align:center;
   }
-  .topstrip b{color:#0B0B0D;}
+  .topstrip b{color:var(--gold);}
 
-  /* ---------- header ---------- */
-  header{
+  /* ---------- full-bleed hero ---------- */
+  .hero{
     position:relative;
-    background:
-      radial-gradient(1100px 500px at 85% -10%, rgba(0,87,184,0.35), transparent 60%),
-      radial-gradient(700px 400px at 10% 10%, rgba(255,210,0,0.10), transparent 60%),
-      var(--bg);
-    padding:20px 0 90px;
+    width:100%;
+    height:100vh;
+    min-height:560px;
     overflow:hidden;
+    background:linear-gradient(120deg, #0d1b33 0%, #142a4d 45%, #0b0b0d 100%);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
   }
-  header::after{
-    content:"";
-    position:absolute; left:-10%; right:-10%; bottom:-2px; height:120px;
-    background:var(--bg-2);
-    clip-path:polygon(0 60%, 100% 0, 100% 100%, 0% 100%);
+  /* Slika ide ovdje — vidi <img class="hero-img"> u HTML-u ispod.
+     Samo promijeni src="..." na svoju sliku, ništa drugo ne treba dirati. */
+  .hero-img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center;
+    z-index:0;
   }
-  .nav{
+  .hero-overlay{
+    position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(11,11,13,0.15) 0%, rgba(11,11,13,0.55) 60%, rgba(11,11,13,0.96) 100%);
+  }
+  .hero-placeholder-tag{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1;
+    font-family:'IBM Plex Mono'; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;
+    color:rgba(255,255,255,0.28); border:1px dashed rgba(255,255,255,0.28);
+    padding:14px 22px; border-radius:8px; text-align:center; pointer-events:none;
+  }
+
+  .hero-nav{
+    position:relative; z-index:3;
     display:flex; align-items:center; justify-content:space-between;
-    padding:10px 0 44px; position:relative; z-index:2;
+    padding:26px 0 0;
   }
   .brand{
     font-family:'Barlow Condensed'; font-weight:800; font-size:24px; letter-spacing:0.01em;
     display:flex; align-items:center; gap:8px;
   }
-  .brand .dot{width:10px; height:10px; background:var(--red); border-radius:50%; display:inline-block;}
-  .brand span{color:var(--red);}
+  .brand .dot{width:10px; height:10px; background:var(--gold); border-radius:50%; display:inline-block;}
+  .brand span{color:var(--gold);}
   .nav-links{display:flex; gap:30px; font-size:14px; font-weight:600;}
-  .nav-links a{text-decoration:none; color:var(--gray);}
+  .nav-links a{text-decoration:none; color:rgba(255,255,255,0.75);}
   .nav-links a:hover{color:#fff;}
   @media (max-width:760px){ .nav-links{display:none;} }
 
-  /* ---------- hero ---------- */
-  .hero{
-    display:grid;
-    grid-template-columns:1.05fr 0.95fr;
-    gap:50px;
-    align-items:center;
-    position:relative; z-index:2;
+  .hero-content{
+    position:relative; z-index:3;
+    padding-bottom:70px;
   }
-  @media (max-width:940px){ .hero{grid-template-columns:1fr;} }
   .badge-live{
     display:inline-flex; align-items:center; gap:8px;
-    background:rgba(0,87,184,0.12); border:1px solid rgba(0,87,184,0.5);
-    color:var(--red); font-weight:700; font-size:12.5px; letter-spacing:0.04em;
+    background:rgba(0,87,184,0.25); border:1px solid rgba(0,87,184,0.7);
+    color:#fff; font-weight:700; font-size:12.5px; letter-spacing:0.04em;
     text-transform:uppercase; padding:7px 14px; border-radius:100px; margin-bottom:22px;
   }
   .badge-live .pulse{
-    width:7px; height:7px; border-radius:50%; background:var(--red);
+    width:7px; height:7px; border-radius:50%; background:var(--gold);
     animation:pulse 1.4s ease-in-out infinite;
   }
   @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(1.4);}}
   .hero h1{
-    font-size:clamp(46px,7vw,78px);
-    line-height:0.98;
+    font-size:clamp(46px,8vw,96px);
+    line-height:0.96;
     margin-bottom:22px;
+    max-width:16ch;
   }
-  .hero h1 .hl{
-    color:var(--gold);
-    -webkit-text-stroke:0px;
-  }
+  .hero h1 .hl{color:var(--gold);}
   .hero p.lead{
-    font-size:18px; line-height:1.6; max-width:48ch; color:var(--gray); margin-bottom:32px;
+    font-size:18px; line-height:1.6; max-width:50ch; color:rgba(255,255,255,0.82); margin-bottom:32px;
   }
   .cta-row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
   .btn{
@@ -128,99 +139,34 @@
   }
   .btn:hover{transform:translateY(-2px);}
   .btn-primary{
-    background:var(--red); color:#fff;
-    box-shadow:0 10px 30px rgba(0,87,184,0.35);
+    background:var(--blue); color:#fff;
+    box-shadow:0 10px 30px rgba(0,87,184,0.45);
   }
-  .btn-primary:hover{box-shadow:0 14px 36px rgba(0,87,184,0.5);}
+  .btn-primary:hover{box-shadow:0 14px 36px rgba(0,87,184,0.6);}
+  .btn-gold{
+    background:var(--gold); color:#1a1400;
+    box-shadow:0 10px 30px rgba(255,210,0,0.3);
+  }
   .btn-ghost{
-    background:rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.22);
   }
-  .btn-ghost:hover{background:rgba(255,255,255,0.1);}
+  .btn-ghost:hover{background:rgba(255,255,255,0.14);}
 
-  .trust-row{
-    display:flex; gap:26px; margin-top:34px; flex-wrap:wrap;
+  .scroll-cue{
+    position:relative; z-index:3;
+    display:flex; justify-content:center; padding-bottom:22px;
+    font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:rgba(255,255,255,0.55); gap:8px; align-items:center;
   }
-  .trust-item{display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--gray); font-weight:600;}
-  .trust-item .ic{color:var(--gold); font-size:16px;}
-
-  /* ---------- points card (signature element) ---------- */
-  .pcard{
-    position:relative;
-    background:linear-gradient(160deg, var(--card) 0%, #131316 100%);
-    border:1px solid var(--gray-line);
-    border-radius:20px;
-    padding:30px 28px 26px;
-    box-shadow:0 30px 70px rgba(0,0,0,0.55);
-  }
-  .pcard-glow{
-    position:absolute; inset:-1px; border-radius:20px; padding:1px;
-    background:linear-gradient(135deg, rgba(255,210,0,0.5), transparent 40%, rgba(0,87,184,0.5));
-    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    pointer-events:none;
-  }
-  .pcard-head{
-    display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;
-  }
-  .pcard-head .tag{
-    font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase;
-    color:var(--gray);
-  }
-  .demo-flag{
-    font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
-    color:var(--gold); border:1px solid rgba(255,210,0,0.4); padding:3px 9px; border-radius:100px;
-  }
-  .pcard h3{font-size:24px; margin-bottom:6px; letter-spacing:0;}
-  .pcard .sub{font-size:13.5px; color:var(--gray); margin-bottom:22px; line-height:1.55; font-weight:500; text-transform:none; font-family:'Inter';}
-  .id-form{display:flex; gap:10px; margin-bottom:10px;}
-  .id-form input{
-    flex:1; min-width:0;
-    font-family:'IBM Plex Mono'; font-size:15px; font-weight:500;
-    padding:14px 16px; border:1px solid var(--gray-line); border-radius:10px;
-    background:#0F0F12; color:#fff;
-  }
-  .id-form input::placeholder{color:#55555c;}
-  .id-form input:focus{border-color:var(--red);}
-  .id-form button{
-    font-family:'Inter'; font-weight:700; font-size:14px;
-    padding:0 22px; border-radius:10px; border:none;
-    background:var(--gold); color:#1a1400; cursor:pointer;
-    transition:background 120ms ease;
-  }
-  .id-form button:hover{background:#ffd875;}
-  .id-form button:disabled{opacity:0.6; cursor:default;}
-  .id-hint{font-size:12px; color:#6b6b72; margin-bottom:20px;}
-
-  .result{display:none;}
-  .result.show{display:block; animation:rise 280ms ease-out;}
-  @keyframes rise{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
-  .result-hero{
-    text-align:center; background:rgba(255,210,0,0.06); border:1px solid rgba(255,210,0,0.25);
-    border-radius:14px; padding:22px 18px; margin-bottom:16px;
-  }
-  .result-hero .big{
-    font-family:'Barlow Condensed'; font-weight:800; font-size:56px; color:var(--gold); line-height:1;
-  }
-  .result-hero .lbl{font-size:12.5px; color:var(--gray); text-transform:uppercase; letter-spacing:0.06em; font-weight:700; margin-top:4px;}
-  .result-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;}
-  .result-stat{background:#0F0F12; border:1px solid var(--gray-line); border-radius:10px; padding:12px 14px;}
-  .result-stat .v{font-family:'IBM Plex Mono'; font-weight:600; font-size:18px;}
-  .result-stat .k{font-size:11.5px; color:var(--gray); margin-top:2px;}
-  .result-note{font-size:11.5px; color:#6b6b72; line-height:1.5;}
-  .result-error{
-    display:none; font-size:13.5px; color:var(--red); font-weight:600;
-    background:rgba(0,87,184,0.08); border:1px solid rgba(0,87,184,0.3);
-    border-radius:10px; padding:14px 16px; margin-top:4px;
-  }
-  .result-error.show{display:block;}
+  .scroll-cue .arrow{animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);}}
 
   /* ---------- sections ---------- */
   section{padding:70px 0;}
-  .section-tight{padding:50px 0 70px;}
   .section-head{margin-bottom:38px; max-width:60ch;}
   .eyebrow{
     font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.08em;
-    text-transform:uppercase; color:var(--red); margin-bottom:12px;
+    text-transform:uppercase; color:var(--blue-light,#4C9AFF); margin-bottom:12px;
   }
   .section-head h2{font-size:clamp(28px,4.5vw,42px); margin-bottom:12px; color:#fff;}
   .section-head p{font-size:15.5px; line-height:1.6; color:var(--gray);}
@@ -234,7 +180,7 @@
     padding:26px 24px; position:relative; overflow:hidden;
     transition:border-color 150ms ease, transform 150ms ease;
   }
-  .stub:hover{border-color:var(--red); transform:translateY(-3px);}
+  .stub:hover{border-color:var(--blue); transform:translateY(-3px);}
   .stub .tag{
     display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
     color:var(--gold); background:rgba(255,210,0,0.1); padding:5px 11px; border-radius:100px; margin-bottom:16px;
@@ -263,7 +209,7 @@
     background:#0F0F12; font-weight:700; font-size:11.5px;
     text-transform:uppercase; letter-spacing:0.06em; color:var(--gray); padding:12px 22px;
   }
-  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; color:var(--red);}
+  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; color:var(--blue-light,#4C9AFF);}
   .board-row .period{font-size:14.5px; font-weight:500;}
   .board-row .draw{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray);}
   .board-row.final{background:linear-gradient(90deg, rgba(255,210,0,0.12), transparent);}
@@ -293,7 +239,7 @@
     position:relative;
     background:
       radial-gradient(900px 500px at 50% -20%, rgba(255,210,0,0.15), transparent 60%),
-      radial-gradient(700px 400px at 90% 100%, rgba(0,87,184,0.2), transparent 60%),
+      radial-gradient(700px 400px at 90% 100%, rgba(0,87,184,0.3), transparent 60%),
       var(--bg-2);
     text-align:center;
     overflow:hidden;
@@ -321,7 +267,7 @@
   }
   .age-badge{
     font-family:'Barlow Condensed'; font-weight:800; font-size:22px; color:#fff;
-    background:var(--red); border-radius:10px; width:46px; height:46px;
+    background:var(--blue); border-radius:10px; width:46px; height:46px;
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
   .compliance-bar p{font-size:12.5px; line-height:1.6; color:var(--gray); margin:0;}
@@ -333,71 +279,42 @@
 </head>
 <body>
 
-<div class="topstrip">🔥 Kampanja traje <b>15.08. – 08.10.2026.</b> · Učestvuju isključivo uplate na SSBT terminalima</div>
+<div class="topstrip">Kampanja traje <b>15.08. – 08.10.2026.</b> · Učestvuju isključivo uplate na SSBT terminalima</div>
 
-<header>
-  <div class="wrap">
-    <div class="nav">
-      <div class="brand"><span class="dot"></span>TERMINALI <span>DAJU VIŠE</span></div>
-      <nav class="nav-links">
-        <a href="#provjeri">Provjeri bodove</a>
-        <a href="#mehanika">Kako učestvovati</a>
-        <a href="#kola">Kola i izvlačenja</a>
-        <a href="#finale">Finale — BMW</a>
-        <a href="#pravila">Pravila</a>
-      </nav>
-    </div>
+<!-- ==========================================================
+     HERO — full-width/full-screen. Ovdje ide BMW vizual.
+     Zamijeni background-image u .hero klasi (CSS iznad) svojom slikom,
+     ili ubaci <img> unutar .hero sa position:absolute; inset:0; object-fit:cover; z-index:0;
+     ========================================================== -->
+<div class="hero" id="top">
+  <!-- ==========================================================
+       OVDJE ubaci link do BMW slike — samo promijeni src="" ispod.
+       Preporuka: širok format (16:9 ili šire), min. 2400px širine.
+       ========================================================== -->
+  <img class="hero-img" src="https://c4.wallpaperflare.com/wallpaper/255/287/619/black-bmw-blue-hd-wallpaper-preview.jpg" alt="BMW Serije 1 — glavna nagrada finala">
+  <div class="hero-overlay"></div>
+=  <div class="wrap hero-nav">
+    <div class="brand"><span class="dot"></span>TERMINALI <span>DAJU VIŠE</span></div>
+    <nav class="nav-links">
+      <a href="#mehanika">Kako učestvovati</a>
+      <a href="#kola">Kola i izvlačenja</a>
+      <a href="#finale">Finale — BMW</a>
+      <a href="#pravila">Pravila</a>
+    </nav>
+  </div>
 
-    <div class="hero">
-      <div>
-        <div class="badge-live"><span class="pulse"></span>Kampanja je aktivna</div>
-        <h1>Odigraj na terminalu.<br>Osvoji <span class="hl">više</span>.</h1>
-        <p class="lead">Sport tiket, Alea tiket ili depozit na SSBT terminalu — svaka uplata ti donosi prijavu za sedmičnu nagradu i ulaznicu za veliko finale: BMW Serije 1.</p>
-        <div class="cta-row">
-          <a href="#provjeri" class="btn btn-primary">🎟️ Provjeri svoje bodove</a>
-          <a href="#mehanika" class="btn btn-ghost">Kako se kvalifikujem</a>
-        </div>
-        <div class="trust-row">
-          <div class="trust-item"><span class="ic">✓</span>7 kola, nagrade svake sedmice</div>
-          <div class="trust-item"><span class="ic">✓</span>Izvlačenje uživo, svaki četvrtak</div>
-          <div class="trust-item"><span class="ic">✓</span>Sve prijave idu i u finale</div>
-        </div>
-      </div>
-
-      <div class="pcard" id="provjeri">
-        <div class="pcard-glow"></div>
-        <div class="pcard-head">
-          <span class="tag">MOJ STATUS</span>
-          <span class="demo-flag">Demo prikaz</span>
-        </div>
-        <h3>Provjeri svoje bodove</h3>
-        <p class="sub">Unesi ID naloga sa platforme i odmah vidi koliko prijava imaš u tekućem kolu i ukupno za finale.</p>
-        <div class="id-form">
-          <label for="idInput" style="position:absolute;left:-9999px;">ID naloga</label>
-          <input id="idInput" class="mono" type="text" inputmode="numeric" placeholder="Unesi ID naloga, npr. 12345678" maxlength="12">
-          <button id="checkBtn" type="button">Provjeri</button>
-        </div>
-        <div class="id-hint">Isti ID koji koristiš za prijavu na online nalog.</div>
-
-        <div class="result" id="resultBox">
-          <div class="result-hero">
-            <div class="big" id="rUkupno">—</div>
-            <div class="lbl">Ukupno prijava za finale</div>
-          </div>
-          <div class="result-grid">
-            <div class="result-stat"><div class="v mono" id="rKolo">—</div><div class="k">Tekuće kolo</div></div>
-            <div class="result-stat"><div class="v mono" id="rKoloBodovi">—</div><div class="k">Prijave u ovom kolu</div></div>
-          </div>
-          <p class="result-note">Podaci se ažuriraju nakon obrade slipova iz poslovnica, obično do utorka naredne sedmice.</p>
-        </div>
-
-        <div class="result-error" id="errorBox">
-          ID nije pronađen. Provjeri broj naloga ili se obrati osoblju u poslovnici.
-        </div>
-      </div>
+  <div class="wrap hero-content">
+    <div class="badge-live"><span class="pulse"></span>Kampanja je aktivna</div>
+    <h1>Odigraj na terminalu.<br>Osvoji <span class="hl">više</span>.</h1>
+    <p class="lead">Sport tiket, Alea tiket ili depozit na SSBT terminalu — svaka uplata ti donosi prijavu za sedmičnu nagradu i ulaznicu za veliko finale: BMW Serije 1.</p>
+    <div class="cta-row">
+      <a href="#mehanika" class="btn btn-gold">Kako se kvalifikujem</a>
+      <a href="#pravila" class="btn btn-ghost">Pravila igre</a>
     </div>
   </div>
-</header>
+
+  <div class="scroll-cue"><span class="arrow">↓</span> Saznaj više <span class="arrow">↓</span></div>
+</div>
 
 <section id="mehanika" class="bg-alt">
   <div class="wrap">
@@ -481,7 +398,7 @@
       <div class="cd-box"><div class="n" id="cdHours">–</div><div class="l">Sati</div></div>
       <div class="cd-box"><div class="n" id="cdMins">–</div><div class="l">Minuta</div></div>
     </div>
-    <a href="#provjeri" class="btn btn-primary">🎟️ Provjeri koliko prijava imaš</a>
+    <a href="#mehanika" class="btn btn-gold">Kako se kvalifikujem</a>
   </div>
 </section>
 
@@ -502,60 +419,6 @@
 </footer>
 
 <script>
-  // ---------------------------------------------------------------
-  // DEMO DATA — zamijeniti stvarnim API pozivom ka platformi.
-  // Primer poziva koji treba ovdje da stoji umjesto mock objekta:
-  //
-  //   const res = await fetch(`https://api.vasadomena.me/promo/bodovi/${id}`);
-  //   const data = await res.json();
-  //
-  // Očekivani oblik odgovora (predlog):
-  //   { id: "12345678", kolo: 3, prijaveKolo: 4, prijaveUkupno: 11, found: true }
-  // ---------------------------------------------------------------
-  const DEMO_DB = {
-    "12345678": { kolo: 3, prijaveKolo: 4, prijaveUkupno: 11 },
-    "87654321": { kolo: 3, prijaveKolo: 1, prijaveUkupno: 3 },
-    "11112222": { kolo: 3, prijaveKolo: 7, prijaveUkupno: 19 },
-  };
-
-  async function lookupBodovi(id) {
-    // Zamijeniti ovaj dio pravim API pozivom (v. napomenu iznad).
-    await new Promise(r => setTimeout(r, 350)); // simulacija mrežnog kašnjenja
-    if (DEMO_DB[id]) {
-      return { found: true, ...DEMO_DB[id] };
-    }
-    return { found: false };
-  }
-
-  const input = document.getElementById('idInput');
-  const btn = document.getElementById('checkBtn');
-  const resultBox = document.getElementById('resultBox');
-  const errorBox = document.getElementById('errorBox');
-
-  async function runCheck() {
-    const id = input.value.trim();
-    if (!id) return;
-    btn.disabled = true;
-    btn.textContent = '...';
-    const data = await lookupBodovi(id);
-    btn.disabled = false;
-    btn.textContent = 'Provjeri';
-
-    if (data.found) {
-      document.getElementById('rKolo').textContent = 'Kolo ' + data.kolo;
-      document.getElementById('rKoloBodovi').textContent = data.prijaveKolo;
-      document.getElementById('rUkupno').textContent = data.prijaveUkupno;
-      resultBox.classList.add('show');
-      errorBox.classList.remove('show');
-    } else {
-      resultBox.classList.remove('show');
-      errorBox.classList.add('show');
-    }
-  }
-
-  btn.addEventListener('click', runCheck);
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCheck(); });
-
   // countdown to finale 08.10.2026 20:00
   const target = new Date('2026-10-08T20:00:00');
   function tick() {
