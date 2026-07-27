@@ -42,6 +42,7 @@
   .mono{font-family:'IBM Plex Mono',monospace;}
   a{color:inherit;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+  section > .wrap{position:relative; z-index:1;}
   :focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
   ::selection{background:var(--blue); color:#fff;}
   img{max-width:100%; display:block;}
@@ -194,16 +195,44 @@
   .scroll-cue .arrow{animation:bob 1.6s ease-in-out infinite;}
   @keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);}}
 
-  /* ---------- sections ---------- */
-  section{padding:88px 0;}
-  .section-head{margin-bottom:46px; max-width:60ch;}
-  .eyebrow{
-    font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.1em;
-    text-transform:uppercase; color:var(--blue-light,#4C9AFF); margin-bottom:16px;
+  .hero-float{
+    position:absolute; z-index:3; right:24px; bottom:96px;
+    background:rgba(20,20,24,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.14); border-radius:16px;
+    padding:16px 20px; display:flex; align-items:center; gap:14px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.4);
   }
+  .hero-float .n{font-family:'Barlow Condensed'; font-weight:800; font-size:28px; color:var(--gold); line-height:1;}
+  .hero-float .t{font-size:11.5px; color:rgba(255,255,255,0.7); font-weight:600; line-height:1.4;}
+  @media (max-width:900px){ .hero-float{display:none;} }
+
+  /* ---------- sections ---------- */
+  section{padding:88px 0; position:relative; overflow:hidden;}
+  .section-blob{
+    position:absolute; z-index:0; border-radius:50%; pointer-events:none; filter:blur(2px);
+  }
+  .section-head{margin-bottom:46px; max-width:60ch; position:relative; z-index:1;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.1em;
+    text-transform:uppercase; color:#4C9AFF; margin-bottom:16px;
+  }
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--gold); display:inline-block; border-radius:2px;}
   .section-head h2{font-size:clamp(28px,4.5vw,42px); margin-bottom:16px; color:#fff;}
   .section-head p{font-size:15.5px; line-height:1.65; color:var(--gray);}
   .bg-alt{background:var(--bg-2);}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity 560ms ease, transform 560ms ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none;} }
+  .stub-grid .reveal:nth-child(2){transition-delay:80ms;}
+  .stub-grid .reveal:nth-child(3){transition-delay:160ms;}
+  .prize-grid .reveal:nth-child(2){transition-delay:60ms;}
+  .prize-grid .reveal:nth-child(3){transition-delay:120ms;}
+  .prize-grid .reveal:nth-child(4){transition-delay:180ms;}
+  .prize-grid .reveal:nth-child(5){transition-delay:240ms;}
+  .prize-grid .reveal:nth-child(6){transition-delay:300ms;}
+  .prize-grid .reveal:nth-child(7){transition-delay:360ms;}
 
   /* mehanika cards */
   .stub-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
@@ -211,9 +240,13 @@
   .stub{
     background:var(--card); border:1px solid var(--gray-line); border-radius:16px;
     padding:32px 28px; position:relative; overflow:hidden;
-    transition:border-color 150ms ease, transform 150ms ease;
+    transition:border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
   }
-  .stub:hover{border-color:var(--blue); transform:translateY(-3px);}
+  .stub:hover{border-color:var(--blue); transform:translateY(-4px); box-shadow:0 20px 44px rgba(0,87,184,0.22);}
+  .stub .chip{
+    width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:20px; margin-bottom:18px; background:rgba(0,87,184,0.16);
+  }
   .stub .tag{
     display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
     color:var(--gold); background:rgba(255,210,0,0.1); padding:6px 12px; border-radius:100px; margin-bottom:20px;
@@ -236,16 +269,19 @@
     display:grid; grid-template-columns:68px 1fr 1fr;
     border-bottom:1px solid var(--gray-line);
     padding:22px 28px; align-items:center; gap:18px;
+    transition:background 150ms ease;
   }
+  .board-row:not(.head):hover{background:rgba(0,87,184,0.08);}
   .board-row:last-child{border-bottom:none;}
   .board-row.head{
     background:#0F0F12; font-weight:700; font-size:11.5px;
     text-transform:uppercase; letter-spacing:0.08em; color:var(--gray); padding:15px 28px;
   }
-  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; letter-spacing:0.02em; color:var(--blue-light,#4C9AFF);}
+  .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; letter-spacing:0.02em; color:#4C9AFF;}
   .board-row .period{font-size:14.5px; font-weight:500; letter-spacing:0.005em;}
   .board-row .draw{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray);}
   .board-row.final{background:linear-gradient(90deg, rgba(255,210,0,0.12), transparent);}
+  .board-row.final:hover{background:linear-gradient(90deg, rgba(255,210,0,0.18), transparent);}
   .board-row.final .num{color:var(--gold);}
   .board-row.final .draw{color:var(--gold); font-weight:600;}
   @media (max-width:640px){
@@ -262,8 +298,14 @@
   .prize{
     background:var(--card); border:1px solid var(--gray-line); border-radius:14px;
     padding:26px 22px; text-align:center;
+    transition:transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
   }
-  .prize .ic{font-size:28px; margin-bottom:14px;}
+  .prize:hover{transform:translateY(-4px); box-shadow:0 16px 34px rgba(0,0,0,0.35); border-color:rgba(255,210,0,0.4);}
+  .prize .ic{
+    width:52px; height:52px; margin:0 auto 14px; border-radius:50%;
+    background:rgba(0,87,184,0.16); display:flex; align-items:center; justify-content:center; font-size:24px;
+  }
+  .prize:nth-child(even) .ic{background:rgba(255,210,0,0.14);}
   .prize .name{font-weight:700; font-size:14.5px; margin-bottom:6px; letter-spacing:0.005em;}
   .prize .note{font-size:12px; color:var(--gray);}
 
@@ -287,6 +329,7 @@
   .cd-box{
     background:var(--card); border:1px solid var(--gray-line);
     border-radius:14px; padding:20px 28px; min-width:100px;
+    box-shadow:0 0 0 1px rgba(255,210,0,0.08), 0 16px 34px rgba(0,0,0,0.35);
   }
   .cd-box .n{font-family:'Barlow Condensed'; font-size:38px; font-weight:800; color:var(--gold); line-height:1;}
   .cd-box .l{font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); font-weight:700; margin-top:8px;}
@@ -420,31 +463,40 @@
   </div>
 
   <div class="scroll-cue"><span class="arrow">↓</span> Saznaj više <span class="arrow">↓</span></div>
+
+  <div class="hero-float">
+    <div class="n">08.10</div>
+    <div class="t">Finalno izvlačenje<br>uživo iz TV studija</div>
+  </div>
 </div>
 
 <section id="mehanika" class="bg-alt">
+  <div class="section-blob" style="width:420px; height:420px; top:-140px; right:-120px; background:rgba(0,87,184,0.16);"></div>
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow">Kako učestvovati</div>
       <h2>Tri načina da uđeš u igru</h2>
       <p>Učestvuju isključivo uplate izvršene na SSBT terminalima u poslovnicama. Prijavu upisuješ na poleđinu slipa i ubacuješ u kutiju do isteka kola.</p>
     </div>
     <div class="stub-grid">
-      <div class="stub">
+      <div class="stub reveal">
+        <div class="chip">⚽</div>
         <span class="tag">Sport</span>
         <h3>Sport tiket</h3>
         <div class="amt">5 € <span>minimum</span></div>
         <p>Najmanje tri para na tiketu, ukupna kvota min. 2,00.</p>
         <div class="scale">↑ +1 prijava na svakih dodatnih 5 €</div>
       </div>
-      <div class="stub">
+      <div class="stub reveal">
+        <div class="chip">🎲</div>
         <span class="tag">Alea</span>
         <h3>Alea tiket</h3>
         <div class="amt">3 € <span>minimum</span></div>
         <p>Uplata na Alea igre preko terminala.</p>
         <div class="scale">↑ +1 prijava na svakih dodatnih 3 €</div>
       </div>
-      <div class="stub">
+      <div class="stub reveal">
+        <div class="chip">💳</div>
         <span class="tag">Nalog</span>
         <h3>Depozit na nalog</h3>
         <div class="amt">5 € <span>minimum</span></div>
@@ -456,13 +508,14 @@
 </section>
 
 <section id="kola">
+  <div class="section-blob" style="width:380px; height:380px; bottom:-160px; left:-140px; background:rgba(255,210,0,0.08);"></div>
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow">Raspored</div>
       <h2>7 kola. Izvlačenje svakog četvrtka.</h2>
       <p>Prvo kolo je produženo, sedmo skraćeno. Sve prijave iz svih kola idu i u finalno izvlačenje.</p>
     </div>
-    <div class="board">
+    <div class="board reveal">
       <div class="board-row head"><span></span><span>Period kola</span><span>Izvlačenje</span></div>
       <div class="board-row"><span class="num">01</span><span class="period">15.08. – 23.08.</span><span class="draw">čet 27.08.</span></div>
       <div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="draw">čet 03.09.</span></div>
@@ -476,26 +529,27 @@
 </section>
 
 <section id="nagrade" class="bg-alt">
+  <div class="section-blob" style="width:400px; height:400px; top:-160px; right:-140px; background:rgba(0,87,184,0.14);"></div>
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow">Nagrade po kolu</div>
       <h2>7 nagrada, svake sedmice</h2>
       <p>Max. jedna nagrada po igraču po kolu.</p>
     </div>
     <div class="prize-grid">
-      <div class="prize"><div class="ic">✈️</div><div class="name">Putovanje</div><div class="note">glavna nagrada kola</div></div>
-      <div class="prize"><div class="ic">📱</div><div class="name">iPhone 17 Pro</div><div class="note">2. mjesto</div></div>
-      <div class="prize"><div class="ic">🚲</div><div class="name">E-bicikl</div><div class="note">3. mjesto</div></div>
-      <div class="prize"><div class="ic">⌚</div><div class="name">Pametni sat</div><div class="note">4. mjesto</div></div>
-      <div class="prize"><div class="ic">🎧</div><div class="name">AirPods</div><div class="note">5. mjesto</div></div>
-      <div class="prize"><div class="ic">👕</div><div class="name">Duks + bonus</div><div class="note">6. mjesto</div></div>
-      <div class="prize"><div class="ic">👕</div><div class="name">Majica + bonus</div><div class="note">7. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">✈️</div><div class="name">Putovanje</div><div class="note">glavna nagrada kola</div></div>
+      <div class="prize reveal"><div class="ic">📱</div><div class="name">iPhone 17 Pro</div><div class="note">2. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">🚲</div><div class="name">E-bicikl</div><div class="note">3. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">⌚</div><div class="name">Pametni sat</div><div class="note">4. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">🎧</div><div class="name">AirPods</div><div class="note">5. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">👕</div><div class="name">Duks + bonus</div><div class="note">6. mjesto</div></div>
+      <div class="prize reveal"><div class="ic">👕</div><div class="name">Majica + bonus</div><div class="note">7. mjesto</div></div>
     </div>
   </div>
 </section>
 
 <section id="finale" class="finale">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="eyebrow">Veliko finale · 08.10.2026.</div>
     <h2>Sve prijave. Jedan dobitnik.<br><span class="gold">BMW Serije 1.</span></h2>
     <p>Ko igra od starta kampanje ima najviše prijava u finalnom izvlačenju — svaka prijava iz svakog kola se čuva i ulazi u bubanj 08.10.</p>
@@ -525,6 +579,22 @@
 </footer>
 
 <script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
   // mobile nav toggle
   const navToggle = document.getElementById('navToggle');
   const mobileMenu = document.getElementById('mobileMenu');
