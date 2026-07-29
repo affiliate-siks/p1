@@ -57,7 +57,7 @@ section{padding:clamp(28px,5vw,48px) 0;}
 .btn-outline-green{background:rgba(34,197,94,0.12); color:var(--green); border:2px solid var(--green);}
 .btn-outline-red{background:rgba(240,69,58,0.12); color:var(--red); border:2px solid var(--red);}
 .btn-outline-gold{background:rgba(255,210,0,0.12); color:var(--gold); border:2px solid var(--gold);}
-.btn:disabled{opacity:0.35; cursor:not-allowed; transform:none;}
+.btn:disabled{background:var(--gray-line); color:var(--gray); border-color:var(--gray-line); cursor:not-allowed; transform:none; box-shadow:none;}
 .btn-icon{width:56px; height:56px; border-radius:50%; padding:0; font-size:19px;}
 .btn-icon.x-btn{width:64px; height:64px; font-size:15px; font-weight:800; font-family:'Barlow Condensed';}
 
@@ -267,30 +267,18 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   const BACKEND_URL = "STAVI_SVOJ_APPS_SCRIPT_URL_OVDJE";
 
   // ============================================================
-  // DEMO KOLA — zamijeniti stvarnim rasporedom mečeva po kolu.
-  // "status": 'active' (može se igrati) ili 'past' (samo pregled + rang lista)
+  // KOLA — ovdje se definišu mečevi po kolu.
+  // Počinje se sa jednim čistim, aktivnim kolom — bez izmišljene
+  // istorije. Kad se ovo kolo završi, promijeni mu status na 'past'
+  // i dodaj novo kolo sa 'active' (v. SETUP.md, sekcija "Kola i istorija").
   // ============================================================
   const ROUNDS = {
-    1: { status: 'past', matches: [
-      { league:'Premier League', home:'Tim A', away:'Tim B' },
-      { league:'La Liga', home:'Tim C', away:'Tim D' },
-      { league:'Serie A', home:'Tim E', away:'Tim F' },
-      { league:'Bundesliga', home:'Tim G', away:'Tim H' },
-      { league:'Ligue 1', home:'Tim I', away:'Tim J' },
-    ]},
-    2: { status: 'past', matches: [
-      { league:'Premier League', home:'Tim K', away:'Tim L' },
-      { league:'La Liga', home:'Tim M', away:'Tim N' },
-      { league:'Serie A', home:'Tim O', away:'Tim P' },
-      { league:'Bundesliga', home:'Tim Q', away:'Tim R' },
-      { league:'Ligue 1', home:'Tim S', away:'Tim T' },
-    ]},
-    3: { status: 'active', matches: [
-      { league:'Premier League', home:'Tim U', away:'Tim V' },
-      { league:'La Liga', home:'Tim W', away:'Tim X' },
-      { league:'Serie A', home:'Tim Y', away:'Tim Z' },
-      { league:'Bundesliga', home:'Tim AA', away:'Tim BB' },
-      { league:'Ligue 1', home:'Tim CC', away:'Tim DD' },
+    1: { status: 'active', matches: [
+      { league:'Liga 1', home:'Domaćin 1', away:'Gost 1' },
+      { league:'Liga 2', home:'Domaćin 2', away:'Gost 2' },
+      { league:'Liga 3', home:'Domaćin 3', away:'Gost 3' },
+      { league:'Liga 4', home:'Domaćin 4', away:'Gost 4' },
+      { league:'Liga 5', home:'Domaćin 5', away:'Gost 5' },
     ]},
   };
   const ACTIVE_KOLO = Object.keys(ROUNDS).find(k => ROUNDS[k].status === 'active') || Object.keys(ROUNDS).pop();
