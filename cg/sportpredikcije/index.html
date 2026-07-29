@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Predikcije — Lige Petice & Evroliga</title>
+<title>Admiralbet Sport Kampanje — Sve na jednom mjestu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -137,14 +137,15 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
 }
 
 .selector-wrap{background:var(--bg-2); border-bottom:1px solid var(--gray-line); position:sticky; top:73px; z-index:19;}
-.selector{display:flex; gap:10px; padding:14px 0; flex-wrap:wrap;}
-.selector-btn{flex:1; min-width:180px; display:flex; align-items:center; gap:12px; padding:14px 20px; border-radius:12px; border:1px solid var(--gray-line); background:var(--card); cursor:pointer; transition:all 150ms ease; text-align:left;}
+.selector{display:flex; gap:8px; padding:14px 0; flex-wrap:wrap;}
+.selector-btn{display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px; border:1px solid var(--gray-line); background:var(--card); cursor:pointer; transition:all 150ms ease; text-align:left;}
 .selector-btn:hover{border-color:var(--blue);}
 .selector-btn.active{border-color:var(--gold); background:rgba(255,210,0,0.08);}
-.selector-btn .ic{font-size:22px;}
+.selector-btn .ic{font-size:18px;}
 .selector-btn .txt{display:flex; flex-direction:column;}
-.selector-btn .txt .name{font-family:'Barlow Condensed'; font-weight:800; font-size:17px; letter-spacing:0.01em;}
-.selector-btn .txt .desc{font-size:11.5px; color:var(--gray); margin-top:2px;}
+.selector-btn .txt .name{font-family:'Barlow Condensed'; font-weight:800; font-size:14.5px; letter-spacing:0.01em;}
+.selector-btn .txt .desc{font-size:10.5px; color:var(--gray); margin-top:1px;}
+@media (max-width:900px){ .selector{gap:6px;} .selector-btn{padding:10px 12px;} .selector-btn .txt .desc{display:none;} }
 
 .panel{display:none;}
 .panel.active{display:block;}
@@ -196,36 +197,49 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
 .lookup-result{font-size:13.5px; line-height:1.7;}
 .lookup-result .row2{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-line);}
 .lookup-result .row2:last-child{border-bottom:none;}
+
+.calc-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;}
+@media (max-width:860px){ .calc-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
 
-<div class="topstrip">Besplatne predikcije · Admiralbet</div>
+<div class="topstrip">Sve sportske kampanje na jednom mjestu · Admiralbet</div>
 
 <header>
   <div class="wrap nav">
-    <div class="brand"><span class="dot"></span>ADMIRALBET <span>PREDIKCIJE</span></div>
+    <div class="brand"><span class="dot"></span>ADMIRALBET <span>SPORT</span></div>
   </div>
 </header>
 
 <div class="selector-wrap">
   <div class="wrap selector">
-    <button class="selector-btn active" id="tab-ligepetice" data-panel="ligepetice">
-      <span class="ic">⚽</span>
-      <span class="txt"><span class="name">Lige Petice</span><span class="desc">Sedmične predikcije · 5 top liga</span></span>
+    <button class="selector-btn active" data-panel="ligepetice">
+      <span class="ic">⚽</span><span class="txt"><span class="name">Lige Petice</span><span class="desc">Sedmične predikcije</span></span>
     </button>
-    <button class="selector-btn" id="tab-evroliga" data-panel="evroliga">
-      <span class="ic">🏀</span>
-      <span class="txt"><span class="name">Evroliga</span><span class="desc">Sezonski fantazi · 38 kola + playoff</span></span>
+    <button class="selector-btn" data-panel="evroliga">
+      <span class="ic">🏀</span><span class="txt"><span class="name">Evroliga</span><span class="desc">Sezonski fantazi</span></span>
+    </button>
+    <button class="selector-btn" data-panel="uefa">
+      <span class="ic">🏆</span><span class="txt"><span class="name">UEFA takmičenja</span><span class="desc">Najveća kvota</span></span>
+    </button>
+    <button class="selector-btn" data-panel="liganacija">
+      <span class="ic">🔑</span><span class="txt"><span class="name">UEFA Liga Nacija</span><span class="desc">Kodovi za depozit</span></span>
+    </button>
+    <button class="selector-btn" data-panel="nba">
+      <span class="ic">🏀</span><span class="txt"><span class="name">NBA Liga</span><span class="desc">20% cashback</span></span>
+    </button>
+    <button class="selector-btn" data-panel="aba">
+      <span class="ic">🏀</span><span class="txt"><span class="name">ABA Liga</span><span class="desc">Cashback na propove</span></span>
     </button>
   </div>
 </div>
 
-<section class="hero" style="padding:56px 0 40px;">
+<section class="hero" style="padding:48px 0 36px;">
   <div class="wrap">
     <div class="badge-live"><span class="pulse"></span>Izaberi kampanju iznad</div>
-    <h2 id="heroTitle" style="font-size:clamp(28px,4.5vw,42px); color:#fff; margin-bottom:14px;">Lige Petice — pogodi mečeve, sakupljaj poene</h2>
-    <p class="lead" id="heroLead" style="margin-bottom:0;">Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga. Bez uplate, bez rizika.</p>
+    <h2 id="heroTitle" style="font-size:clamp(26px,4.2vw,40px); color:#fff; margin-bottom:12px;">Lige Petice — pogodi mečeve, sakupljaj poene</h2>
+    <p class="lead" id="heroLead" style="margin-bottom:0;">Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga.</p>
   </div>
 </section>
 
@@ -245,7 +259,6 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
       </div>
     </div>
   </section>
-
   <section class="bg-alt">
     <div class="wrap">
       <div class="section-head">
@@ -269,24 +282,16 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
         </div>
         <div class="match-list" id="lp-matchList"></div>
         <div class="predictor-foot">
-          <div>
-            <span class="demo-note">Mečevi su demo/ilustrativni</span>
-            <p class="hint">U pravoj verziji tim bira stvarni raspored te sedmice iz pet liga.</p>
-          </div>
+          <div><span class="demo-note">Mečevi su demo/ilustrativni</span><p class="hint">U pravoj verziji tim bira stvarni raspored te sedmice iz pet liga.</p></div>
           <button class="btn btn-gold" id="lp-submitBtn" disabled>Predaj predikciju (0/10)</button>
         </div>
         <div class="submit-result" id="lp-submitResult"></div>
       </div>
     </div>
   </section>
-
   <section>
     <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow">Provjeri predikciju</div>
-        <h2>Šta sam predao?</h2>
-        <p>Unesi svoj ID i kolo da vidiš predatu predikciju.</p>
-      </div>
+      <div class="section-head"><div class="eyebrow">Provjeri predikciju</div><h2>Šta sam predao?</h2><p>Unesi svoj ID i kolo da vidiš predatu predikciju.</p></div>
       <div class="lookup-box">
         <div class="row">
           <input id="lp-lookupId" class="mono" placeholder="ID naloga" />
@@ -297,13 +302,9 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
       </div>
     </div>
   </section>
-
   <section class="bg-alt">
     <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow">Nagrade</div>
-        <h2>Mjesečno i tromjesečno</h2>
-      </div>
+      <div class="section-head"><div class="eyebrow">Nagrade</div><h2>Mjesečno i tromjesečno</h2></div>
       <div class="prize-tables">
         <div class="ptable">
           <div class="ptable-title">Mjesečno · Freebet</div>
@@ -315,13 +316,14 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
           <div class="prow"><span>6.–10. mjesto</span><span class="v">25 € svako</span></div>
           <div class="prow"><span>11.–30. mjesto</span><span class="v">10 € svako</span></div>
           <div class="prow"><span>31.–50. mjesto</span><span class="v">5 € svako</span></div>
+          <div class="prow total"><span>Ukupan trošak</span><span class="v">1.000 €</span></div>
         </div>
         <div class="ptable">
           <div class="ptable-title">Tromjesečno · Fizičke nagrade</div>
-          <div class="prow"><span>1. mjesto</span><span class="v">PS5</span></div>
-          <div class="prow"><span>2. mjesto</span><span class="v">AirPods</span></div>
-          <div class="prow"><span>3. mjesto</span><span class="v">Sportski dres</span></div>
-          <div class="prow total"><span>Nagrađuje se ukupno</span><span class="v">Top 3 od 3 mjeseca</span></div>
+          <div class="prow"><span>1. mjesto</span><span class="v">PS5 · 700 €</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">AirPods · 200 €</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">Sportski dres · 100 €</span></div>
+          <div class="prow total"><span>Ukupan trošak</span><span class="v">1.000 €</span></div>
         </div>
       </div>
     </div>
@@ -344,7 +346,6 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
       </div>
     </div>
   </section>
-
   <section class="bg-alt">
     <div class="wrap">
       <div class="section-head">
@@ -353,9 +354,7 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
         <p><span class="demo-note">Pojednostavljena demo verzija</span> — puna verzija (kompletan sastav, sve pozicije, budžet po igraču) zahtijeva poseban fantazi engine.</p>
       </div>
       <div class="predictor">
-        <div class="predictor-head">
-          <div class="qtype">Regularni dio<b>Kolo 1 od 38</b></div>
-        </div>
+        <div class="predictor-head"><div class="qtype">Regularni dio<b>Kolo 1 od 38</b></div></div>
         <div class="id-row">
           <label for="ev-playerIdInput">ID naloga</label>
           <input id="ev-playerIdInput" class="mono" type="text" inputmode="numeric" placeholder="npr. 12345678" maxlength="12">
@@ -371,14 +370,9 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
       </div>
     </div>
   </section>
-
   <section>
     <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow">Provjeri tim</div>
-        <h2>Šta sam predao?</h2>
-        <p>Unesi ID i kolo da vidiš svoj predati tim za to kolo.</p>
-      </div>
+      <div class="section-head"><div class="eyebrow">Provjeri tim</div><h2>Šta sam predao?</h2><p>Unesi ID i kolo da vidiš svoj predati tim za to kolo.</p></div>
       <div class="lookup-box">
         <div class="row">
           <input id="ev-lookupId" class="mono" placeholder="ID naloga" />
@@ -389,13 +383,9 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
       </div>
     </div>
   </section>
-
   <section class="bg-alt">
     <div class="wrap">
-      <div class="section-head">
-        <div class="eyebrow">Nagrade</div>
-        <h2>Tri nivoa nagrađivanja</h2>
-      </div>
+      <div class="section-head"><div class="eyebrow">Nagrade</div><h2>Tri nivoa nagrađivanja</h2></div>
       <div class="prize-tables">
         <div class="ptable">
           <div class="ptable-title">Svako kolo · Top 20</div>
@@ -404,12 +394,149 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
           <div class="prow"><span>3. mjesto</span><span class="v">Sportbonus 30 €</span></div>
           <div class="prow"><span>4. mjesto</span><span class="v">Sportbonus 20 €</span></div>
           <div class="prow"><span>5.–20. mjesto</span><span class="v">Sportbonus 10 € svako</span></div>
+          <div class="prow total"><span>Ukupan trošak (po kolu)</span><span class="v">300 €</span></div>
         </div>
         <div class="ptable">
           <div class="ptable-title">Mjesečno · Top 3</div>
-          <div class="prow"><span>1. mjesto</span><span class="v">225 €</span></div>
-          <div class="prow"><span>2. mjesto</span><span class="v">175 €</span></div>
-          <div class="prow"><span>3. mjesto</span><span class="v">125 €</span></div>
+          <div class="prow"><span>1. mjesto</span><span class="v">Sportbonus+majica 225 €</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">Sportbonus+majica 175 €</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">Sportbonus+majica 125 €</span></div>
+          <div class="prow total"><span>Ukupan trošak (mjesečno)</span><span class="v">525 €</span></div>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+      <div class="ptable">
+        <div class="ptable-title">Kraj sezone · Top 10 + posljednje mjesto</div>
+        <div class="prow"><span>1. mjesto</span><span class="v">iPhone 17 · 1.500 €</span></div>
+        <div class="prow"><span>2. mjesto</span><span class="v">Sony PS5 · 700 €</span></div>
+        <div class="prow"><span>3. mjesto</span><span class="v">El. trotinet · 350 €</span></div>
+        <div class="prow"><span>4. mjesto</span><span class="v">AirPods · 250 €</span></div>
+        <div class="prow"><span>5. mjesto</span><span class="v">Jordan patike · 200 €</span></div>
+        <div class="prow"><span>6. mjesto</span><span class="v">Sportbonus · 200 €</span></div>
+        <div class="prow"><span>7. mjesto</span><span class="v">Sportbonus · 175 €</span></div>
+        <div class="prow"><span>8. mjesto</span><span class="v">Sportbonus · 150 €</span></div>
+        <div class="prow"><span>9. mjesto</span><span class="v">Sportbonus · 125 €</span></div>
+        <div class="prow"><span>10. mjesto</span><span class="v">Sportbonus · 100 €</span></div>
+        <div class="prow"><span>Zadnje mjesto (počasna nagrada)</span><span class="v">Sportbonus+majica · 75 €</span></div>
+        <div class="prow total"><span>Ukupan trošak</span><span class="v">3.825 €</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="panel-uefa">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">UEFA takmičenja · Kako radi</div>
+        <h2>Najveća pogođena kvota pobjeđuje</h2>
+        <p>Za razliku od Lige Petice, ovo su realne novčane uplate od početka — nema besplatne faze. Liga Šampiona · Liga Evrope · Liga Konferencija.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Napraviš kombinaciju</h3><p>Tiket sa minimalno 3 meča iz UEFA klupskih takmičenja. Minimalna uplata 2€.</p></div>
+        <div class="step"><div class="n">02</div><h3>Igraš tokom mjeseca</h3><p>Neograničen broj tiketa — u konkurenciju ulazi samo tvoj najbolji settlovan tiket tog mjeseca.</p></div>
+        <div class="step"><div class="n">03</div><h3>Najveća kvota pobjeđuje</h3><p>Tiket mora biti u potpunosti settlovan do kraja kalendarskog mjeseca.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-alt">
+    <div class="wrap">
+      <div class="section-head"><div class="eyebrow">Nagrade</div><h2>Mjesečna nagradna struktura</h2></div>
+      <div class="ptable">
+        <div class="ptable-title">Pozicija · Nagrada</div>
+        <div class="prow"><span>1. mjesto</span><span class="v">InterSport vaučer · 500 €</span></div>
+        <div class="prow"><span>2. mjesto</span><span class="v">Sto za stoni fudbal · 400 €</span></div>
+        <div class="prow"><span>3. mjesto</span><span class="v">Pametni sat · 250 €</span></div>
+        <div class="prow"><span>4. mjesto</span><span class="v">Mystery dres · 100 €</span></div>
+        <div class="prow"><span>5. mjesto</span><span class="v">Admiralbet majca · 50 €</span></div>
+        <div class="prow"><span>6.–10. mjesto</span><span class="v">60 € freebet svako</span></div>
+        <div class="prow"><span>11.–30. mjesto</span><span class="v">40 € freebet svako</span></div>
+        <div class="prow"><span>31.–50. mjesto</span><span class="v">20 € freebet svako</span></div>
+        <div class="prow total"><span>Ukupan trošak (mjesečno)</span><span class="v">2.800 €</span></div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <div class="section-head"><div class="eyebrow">Pravila</div><h2>Kratko i jasno</h2></div>
+      <div class="rules-grid">
+        <div class="rule"><div class="ic">🎟️</div><p><b>Min. 3 meča po tiketu</b> iz UEFA klupskih takmičenja.</p></div>
+        <div class="rule"><div class="ic">💶</div><p><b>Minimalna uplata 2€.</b> Nema ograničenja broja tiketa.</p></div>
+        <div class="rule"><div class="ic">🏆</div><p><b>Samo najbolji tiket po nalogu</b> ulazi u rang listu.</p></div>
+        <div class="rule"><div class="ic">⏱️</div><p><b>Tiket mora biti settlovan</b> do kraja mjeseca.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="panel-liganacija">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">UEFA Liga Nacija · Kako radi</div>
+        <h2>Kodovi za uplatu depozita</h2>
+        <p>Za ovo takmičenje se opredjeljuju dani sa kodovima na uplatu depozita — broj kodova zavisi od datuma, mečeva i popularnosti ponude.</p>
+      </div>
+      <div class="rules-grid">
+        <div class="rule"><div class="ic">📅</div><p><b>Samo određenim danima.</b> Ne traje kontinuirano kroz cijelo takmičenje.</p></div>
+        <div class="rule"><div class="ic">🔑</div><p><b>Kod otključava bonus</b> na depozit, po istom principu kao standardne KOD kampanje.</p></div>
+        <div class="rule"><div class="ic">👤</div><p><b>Svi registrovani korisnici</b> na Admiralbet platformi mogu učestvovati.</p></div>
+        <div class="rule"><div class="ic">🎯</div><p><b>Cilj: rast depozita</b> kroz aktivaciju igrača za odigravanje tiketa na UEFA Ligu Nacija.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="panel-nba">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">NBA Liga · Kako radi</div>
+        <h2>Trajna ponuda, ne rang lista</h2>
+        <p>Za razliku od Lige Petice i Evrolige, ovo nije rangirano takmičenje — to je trajno dostupna ponuda (cashback osiguranje na gubitak) tokom cijele regularne NBA sezone.</p>
+      </div>
+      <div class="calc-grid">
+        <div class="calc">
+          <label for="nba-betInput">Iznos uplate na kvalifikacioni tiket (€)</label>
+          <input id="nba-betInput" type="number" value="10" min="0" step="1">
+          <div class="calc-result"><div class="big" id="nba-calcResultBig">2.00 €</div><div class="lbl">Cashback ako tiket ne prođe</div></div>
+          <p class="calc-note">20% uplaćenog iznosa nazad u freebet sredstvima, maksimalno 50 € po tiketu. Freebet važi 7 dana.</p>
+        </div>
+        <div class="rules-grid" style="grid-template-columns:1fr; gap:14px;">
+          <div class="rule"><div class="ic">🏀</div><p><b>Min. 5 NBA mečeva</b> na tiketu (može i više selekcija ukupno).</p></div>
+          <div class="rule"><div class="ic">📈</div><p><b>Min. kombinovana kvota 5.0</b>, minimalna uplata 2€.</p></div>
+          <div class="rule"><div class="ic">♻️</div><p><b>Nema ograničenja</b> broja kvalifikacionih tiketa po igraču.</p></div>
+          <div class="rule"><div class="ic">🎟️</div><p><b>Freebet uslov:</b> min. 5 parova, min. kvota 1.5 po paru, važi 7 dana.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="panel-aba">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">ABA Liga · "Tvojih 5"</div>
+        <h2>Cashback na propove</h2>
+        <p>Trajna ponuda koja nagrađuje igranje na individualne igračke propove (poeni, skokovi, asistencije) u ABA ligi.</p>
+      </div>
+      <div class="calc-grid">
+        <div class="calc">
+          <label for="aba-betInput">Iznos uplate na kvalifikacioni tiket (€)</label>
+          <input id="aba-betInput" type="number" value="10" min="0" step="1">
+          <div class="calc-result"><div class="big" id="aba-calcResultBig">1.00 €</div><div class="lbl">Freebet nazad, bez obzira na ishod</div></div>
+          <p class="calc-note">⚠️ Izvorni dokument navodi dvije različite stope na dva mjesta — "Tvojih 5" pregled kaže 15%, "FB mehanika" odjeljak kaže 10%. Kalkulator koristi 10% (konkretniji izvor). <b>Obavezno potvrditi prije lansiranja.</b></p>
+        </div>
+        <div class="rules-grid" style="grid-template-columns:1fr; gap:14px;">
+          <div class="rule"><div class="ic">🏀</div><p><b>Min. 5 selekcija</b> (igračkih propova) na tiketu.</p></div>
+          <div class="rule"><div class="ic">📈</div><p><b>Kvota po selekciji tipično 1.60–2.00</b>, minimalna uplata 2€.</p></div>
+          <div class="rule"><div class="ic">♻️</div><p><b>Bez obzira na ishod</b> — freebet stiže i kad tiket ne prođe.</p></div>
+          <div class="rule"><div class="ic">🎟️</div><p><b>Trošenje FB-a:</b> min. 5 selekcija, svaka uz min. kvotu 1.5.</p></div>
         </div>
       </div>
     </div>
@@ -433,61 +560,49 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
 </footer>
 
 <script>
-  // ============================================================
-  // BACKEND URL — zamijeni nakon Apps Script deploy-a (v. SETUP.md)
-  // Isti backend/URL se koristi za obje kampanje (razdvojene po "campaign" polju).
-  // ============================================================
   const BACKEND_URL = "STAVI_SVOJ_APPS_SCRIPT_URL_OVDJE";
 
-  // ---------- tab switching ----------
-  const tabs = {
-    ligepetice: { btn: document.getElementById('tab-ligepetice'), panel: document.getElementById('panel-ligepetice'),
-      title: 'Lige Petice — pogodi mečeve, sakupljaj poene',
-      lead: 'Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga. Bez uplate, bez rizika.' },
-    evroliga: { btn: document.getElementById('tab-evroliga'), panel: document.getElementById('panel-evroliga'),
-      title: 'Evroliga — sastavi tim, osvajaj kolo za kolom',
-      lead: 'Fantazi takmičenje koje prati kompletnu sezonu Evrolige — nagrade po kolu, mjesečno, i na kraju sezone.' },
+  const TABS = {
+    ligepetice: { title: 'Lige Petice — pogodi mečeve, sakupljaj poene', lead: 'Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga. Bez uplate, bez rizika.' },
+    evroliga: { title: 'Evroliga — sastavi tim, osvajaj kolo za kolom', lead: 'Fantazi takmičenje koje prati kompletnu sezonu Evrolige — nagrade po kolu, mjesečno, i na kraju sezone.' },
+    uefa: { title: 'UEFA takmičenja — najveća kvota, najveća nagrada', lead: 'Mjesečna kampanja koja nagrađuje najveću pogođenu kombinovanu kvotu na UEFA klupskim mečevima.' },
+    liganacija: { title: 'UEFA Liga Nacija — kod za depozit', lead: 'Dani sa kodovima za uplatu depozita, vezano isključivo za UEFA Ligu Nacija.' },
+    nba: { title: 'NBA Liga — 20% cashback', lead: 'Ako kvalifikacioni kombinovani tiket na NBA mečeve ne prođe, dobijaš 20% uplaćenog iznosa nazad u freebet sredstvima.' },
+    aba: { title: 'ABA Liga — "Tvojih 5"', lead: 'Cashback ponuda za igrače koji prate individualne statistike u ABA ligi — poeni, skokovi, asistencije.' },
   };
+
+  const buttons = document.querySelectorAll('.selector-btn');
+  const panels = { ligepetice: document.getElementById('panel-ligepetice'), evroliga: document.getElementById('panel-evroliga'),
+    uefa: document.getElementById('panel-uefa'), liganacija: document.getElementById('panel-liganacija'),
+    nba: document.getElementById('panel-nba'), aba: document.getElementById('panel-aba') };
+
   function selectTab(key) {
-    Object.keys(tabs).forEach(k => {
-      tabs[k].btn.classList.toggle('active', k === key);
-      tabs[k].panel.classList.toggle('active', k === key);
-    });
-    document.getElementById('heroTitle').textContent = tabs[key].title;
-    document.getElementById('heroLead').textContent = tabs[key].lead;
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.panel === key));
+    Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === key));
+    document.getElementById('heroTitle').textContent = TABS[key].title;
+    document.getElementById('heroLead').textContent = TABS[key].lead;
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
-  tabs.ligepetice.btn.addEventListener('click', () => selectTab('ligepetice'));
-  tabs.evroliga.btn.addEventListener('click', () => selectTab('evroliga'));
+  buttons.forEach(b => b.addEventListener('click', () => selectTab(b.dataset.panel)));
   selectTab('ligepetice');
 
   // ============================================================
   // LIGE PETICE
   // ============================================================
   const LP_MATCHES = [
-    { league:'Premier League', home:'Tim A', away:'Tim B' },
-    { league:'Premier League', home:'Tim C', away:'Tim D' },
-    { league:'La Liga', home:'Tim E', away:'Tim F' },
-    { league:'La Liga', home:'Tim G', away:'Tim H' },
-    { league:'Serie A', home:'Tim I', away:'Tim J' },
-    { league:'Serie A', home:'Tim K', away:'Tim L' },
-    { league:'Bundesliga', home:'Tim M', away:'Tim N' },
-    { league:'Bundesliga', home:'Tim O', away:'Tim P' },
-    { league:'Ligue 1', home:'Tim Q', away:'Tim R' },
-    { league:'Ligue 1', home:'Tim S', away:'Tim T' },
+    { league:'Premier League', home:'Tim A', away:'Tim B' }, { league:'Premier League', home:'Tim C', away:'Tim D' },
+    { league:'La Liga', home:'Tim E', away:'Tim F' }, { league:'La Liga', home:'Tim G', away:'Tim H' },
+    { league:'Serie A', home:'Tim I', away:'Tim J' }, { league:'Serie A', home:'Tim K', away:'Tim L' },
+    { league:'Bundesliga', home:'Tim M', away:'Tim N' }, { league:'Bundesliga', home:'Tim O', away:'Tim P' },
+    { league:'Ligue 1', home:'Tim Q', away:'Tim R' }, { league:'Ligue 1', home:'Tim S', away:'Tim T' },
   ];
   const lpListEl = document.getElementById('lp-matchList');
   const lpPicks = new Array(LP_MATCHES.length).fill(null);
   LP_MATCHES.forEach((m, i) => {
     const row = document.createElement('div');
     row.className = 'match-row';
-    row.innerHTML = `
-      <span class="league">${m.league}</span>
-      <span class="teams">${m.home}<span class="vs">vs</span>${m.away}</span>
-      <div class="pick-group" data-idx="${i}">
-        <button class="pick-btn" data-val="1">1</button>
-        <button class="pick-btn" data-val="X">X</button>
-        <button class="pick-btn" data-val="2">2</button>
-      </div>`;
+    row.innerHTML = `<span class="league">${m.league}</span><span class="teams">${m.home}<span class="vs">vs</span>${m.away}</span>
+      <div class="pick-group" data-idx="${i}"><button class="pick-btn" data-val="1">1</button><button class="pick-btn" data-val="X">X</button><button class="pick-btn" data-val="2">2</button></div>`;
     lpListEl.appendChild(row);
   });
   const lpSubmitBtn = document.getElementById('lp-submitBtn');
@@ -502,33 +617,24 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
     lpSubmitBtn.disabled = count < LP_MATCHES.length;
   }
   lpListEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('.pick-btn');
-    if (!btn) return;
-    const group = btn.closest('.pick-group');
-    const idx = parseInt(group.dataset.idx, 10);
+    const btn = e.target.closest('.pick-btn'); if (!btn) return;
+    const group = btn.closest('.pick-group'); const idx = parseInt(group.dataset.idx, 10);
     lpPicks[idx] = btn.dataset.val;
     group.querySelectorAll('.pick-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    lpUpdateProgress();
+    btn.classList.add('active'); lpUpdateProgress();
   });
-  function showResult(el, ok, msg) {
-    el.className = 'submit-result show ' + (ok ? 'ok' : 'err');
-    el.innerHTML = (ok ? '<b>✓ </b>' : '⚠️ ') + msg;
-  }
+  function showResult(el, ok, msg) { el.className = 'submit-result show ' + (ok ? 'ok' : 'err'); el.innerHTML = (ok ? '<b>✓ </b>' : '⚠️ ') + msg; }
   lpSubmitBtn.addEventListener('click', async () => {
     if (lpSubmitBtn.disabled) return;
     const playerId = document.getElementById('lp-playerIdInput').value.trim();
     const kolo = document.getElementById('lp-koloInput').value.trim() || '1';
     if (!playerId) { showResult(lpSubmitResult, false, 'Unesi ID naloga prije predaje.'); return; }
     if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { showResult(lpSubmitResult, false, 'Backend URL nije podešen. Prati SETUP.md.'); return; }
-    const picksObj = {};
-    LP_MATCHES.forEach((m, i) => { picksObj['m' + i] = lpPicks[i]; });
+    const picksObj = {}; LP_MATCHES.forEach((m, i) => { picksObj['m' + i] = lpPicks[i]; });
     lpSubmitBtn.disabled = true; lpSubmitBtn.textContent = 'Šaljem...';
     try {
-      const res = await fetch(BACKEND_URL, {
-        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ campaign: 'LigePetice', playerId, kolo, picks: picksObj }),
-      });
+      const res = await fetch(BACKEND_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ campaign: 'LigePetice', playerId, kolo, picks: picksObj }) });
       const data = await res.json();
       if (data.ok) { showResult(lpSubmitResult, true, 'Predikcija predata i sačuvana!'); lpSubmitBtn.textContent = 'Predikcija predata ✓'; }
       else { showResult(lpSubmitResult, false, data.error || 'Greška prilikom slanja.'); lpSubmitBtn.disabled = false; lpUpdateProgress(); }
@@ -543,16 +649,14 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
     resultEl.textContent = 'Učitavam...';
     try {
       const url = `${BACKEND_URL}?action=lookup&campaign=LigePetice&playerId=${encodeURIComponent(id)}${kolo ? '&kolo=' + encodeURIComponent(kolo) : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
+      const res = await fetch(url); const data = await res.json();
       if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
       if (!data.results.length) { resultEl.textContent = 'Nema predikcije za taj ID' + (kolo ? ' i kolo ' + kolo : '') + '.'; return; }
       resultEl.innerHTML = data.results.map(r => `
         <div class="row2"><span>Kolo</span><span class="mono">${r.kolo}</span></div>
         <div class="row2"><span>Predato</span><span class="mono">${new Date(r.timestamp).toLocaleString('sr-Latn-ME')}</span></div>
         <div class="row2"><span>Predikcija</span><span class="mono">${JSON.stringify(r.picks)}</span></div>
-        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka settlovanje)'}</span></div>`
-      ).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
+        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka settlovanje)'}</span></div>`).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
     } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
   });
 
@@ -567,15 +671,11 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
     { club:'Klub 5', name:'Igrač I', pos:'Centar' },
   ];
   const evGrid = document.getElementById('ev-playerGrid');
-  const evPicked = new Set();
-  const EV_MAX = 3;
+  const evPicked = new Set(); const EV_MAX = 3;
   EV_PLAYERS.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'player-card';
-    card.dataset.idx = i;
+    const card = document.createElement('div'); card.className = 'player-card'; card.dataset.idx = i;
     card.innerHTML = `<div class="club">${p.club}</div><div class="name">${p.name}</div><div class="pos">${p.pos}</div>`;
-    card.addEventListener('click', () => evTogglePick(i, card));
-    evGrid.appendChild(card);
+    card.addEventListener('click', () => evTogglePick(i, card)); evGrid.appendChild(card);
   });
   const evSubmitBtn = document.getElementById('ev-submitBtn');
   const evPickedCountEl = document.getElementById('ev-pickedCount');
@@ -596,10 +696,8 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
     const team = Array.from(evPicked).map(i => EV_PLAYERS[i].name);
     evSubmitBtn.disabled = true; evSubmitBtn.textContent = 'Šaljem...';
     try {
-      const res = await fetch(BACKEND_URL, {
-        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ campaign: 'Evroliga', playerId, kolo, picks: { tim: team } }),
-      });
+      const res = await fetch(BACKEND_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ campaign: 'Evroliga', playerId, kolo, picks: { tim: team } }) });
       const data = await res.json();
       if (data.ok) { showResult(evSubmitResult, true, 'Tim predat i sačuvan za kolo ' + kolo + '.'); evSubmitBtn.textContent = 'Tim predat ✓'; }
       else { showResult(evSubmitResult, false, data.error || 'Greška prilikom slanja.'); evSubmitBtn.disabled = false; evSubmitBtn.textContent = `Predaj tim (${evPicked.size}/${EV_MAX})`; }
@@ -614,18 +712,29 @@ footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gra
     resultEl.textContent = 'Učitavam...';
     try {
       const url = `${BACKEND_URL}?action=lookup&campaign=Evroliga&playerId=${encodeURIComponent(id)}${kolo ? '&kolo=' + encodeURIComponent(kolo) : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
+      const res = await fetch(url); const data = await res.json();
       if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
       if (!data.results.length) { resultEl.textContent = 'Nema predatog tima za taj ID' + (kolo ? ' i kolo ' + kolo : '') + '.'; return; }
       resultEl.innerHTML = data.results.map(r => `
         <div class="row2"><span>Kolo</span><span class="mono">${r.kolo}</span></div>
         <div class="row2"><span>Predato</span><span class="mono">${new Date(r.timestamp).toLocaleString('sr-Latn-ME')}</span></div>
         <div class="row2"><span>Tim</span><span class="mono">${(r.picks && r.picks.tim) ? r.picks.tim.join(', ') : '—'}</span></div>
-        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka rezultat kola)'}</span></div>`
-      ).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
+        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka rezultat kola)'}</span></div>`).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
     } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
   });
+
+  // ============================================================
+  // NBA + ABA CALCULATORS
+  // ============================================================
+  const nbaInput = document.getElementById('nba-betInput');
+  const nbaResult = document.getElementById('nba-calcResultBig');
+  function nbaCalc() { const v = parseFloat(nbaInput.value) || 0; nbaResult.textContent = Math.min(v * 0.20, 50).toFixed(2) + ' €'; }
+  nbaInput.addEventListener('input', nbaCalc); nbaCalc();
+
+  const abaInput = document.getElementById('aba-betInput');
+  const abaResult = document.getElementById('aba-calcResultBig');
+  function abaCalc() { const v = parseFloat(abaInput.value) || 0; abaResult.textContent = (v * 0.10).toFixed(2) + ' €'; }
+  abaInput.addEventListener('input', abaCalc); abaCalc();
 </script>
 </body>
 </html>
