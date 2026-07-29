@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predikcije — Lige Petice & Evroliga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0B0D; --bg-2:#17171B; --card:#1E1E23;
+  --blue:#0057B8; --blue-deep:#003D82; --gold:#FFD200;
+  --gray:#9B9BA3; --gray-line:#2C2C31; --green:#22C55E; --red:#E8121F;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:#fff; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+h1,h2,h3{font-family:'Barlow Condensed',sans-serif; margin:0; text-transform:uppercase; letter-spacing:0.02em; font-weight:800;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:inherit;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+.hero > .wrap, section > .wrap{width:100%; position:relative; z-index:1;}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+::selection{background:var(--gold); color:#101010;}
+button{font-family:inherit;}
+
+.topstrip{background:var(--blue); color:#fff; font-family:'Inter'; font-weight:700; font-size:12.5px; letter-spacing:0.03em; padding:10px 16px; text-align:center;}
+.topstrip b{color:var(--gold);}
+.topstrip a{text-decoration:underline; color:#fff;}
+
+header{background:rgba(11,11,13,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--gray-line); position:sticky; top:0; z-index:20;}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:18px 0;}
+.brand{font-family:'Barlow Condensed'; font-weight:800; font-size:21px; display:flex; align-items:center; gap:9px; text-decoration:none;}
+.brand .dot{width:9px; height:9px; background:var(--gold); border-radius:50%;}
+.brand span{color:var(--gold);}
+.nav-links{display:flex; gap:30px; font-size:14px; font-weight:600;}
+.nav-links a{text-decoration:none; color:var(--gray);}
+.nav-links a:hover{color:#fff;}
+@media (max-width:860px){ .nav-links{display:none;} }
+
+.btn{display:inline-flex; align-items:center; gap:9px; font-weight:700; font-size:15px; letter-spacing:0.02em; padding:16px 30px; border-radius:10px; text-decoration:none; border:none; cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease;}
+.btn:hover{transform:translateY(-2px);}
+.btn-gold{background:var(--gold); color:#1a1400; box-shadow:0 10px 26px rgba(255,210,0,0.3);}
+.btn-ghost{background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.2);}
+.btn-blue{background:var(--blue); color:#fff; box-shadow:0 10px 26px rgba(0,87,184,0.35);}
+.btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+.btn-sm{padding:10px 20px; font-size:13.5px;}
+
+.hero{position:relative; padding:70px 0 90px; overflow:hidden; background:radial-gradient(1000px 500px at 85% -10%, rgba(0,87,184,0.3), transparent 60%), var(--bg);}
+.hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center;}
+@media (max-width:960px){ .hero-grid{grid-template-columns:1fr;} }
+.badge-live{display:inline-flex; align-items:center; gap:9px; background:rgba(0,87,184,0.2); border:1px solid rgba(0,87,184,0.6); color:#fff; font-weight:700; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; padding:7px 14px; border-radius:100px; margin-bottom:24px;}
+.badge-live .pulse{width:7px; height:7px; border-radius:50%; background:var(--gold); animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.4; transform:scale(1.4);}}
+.hero h1{font-size:clamp(36px,5.5vw,58px); line-height:1.05; margin-bottom:22px;}
+.hero h1 .hl{color:var(--gold);}
+.hero p.lead{font-size:17px; line-height:1.65; max-width:48ch; color:var(--gray); margin-bottom:30px;}
+.cta-row{display:flex; gap:16px; flex-wrap:wrap;}
+.chip-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:28px;}
+.chip{font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.04em; background:var(--card); border:1px solid var(--gray-line); padding:6px 12px; border-radius:100px; color:var(--gray);}
+
+.hero-visual{background:var(--card); border:1px solid var(--gray-line); border-radius:20px; padding:26px; box-shadow:0 30px 70px rgba(0,0,0,0.5);}
+.hero-visual .htag{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;}
+.hero-visual .hbig{font-family:'Barlow Condensed'; font-weight:800; font-size:38px; color:#fff; line-height:1.1;}
+.hero-visual .hsub{font-size:13px; color:var(--gray); margin-top:6px; margin-bottom:22px;}
+.mini-row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--gray-line); font-size:13.5px;}
+.mini-row:first-of-type{border-top:none;}
+.mini-row .v{font-family:'IBM Plex Mono'; font-weight:600; color:var(--gold); text-align:right;}
+
+section{padding:80px 0; position:relative; overflow:hidden;}
+.section-blob{position:absolute; z-index:0; border-radius:50%; pointer-events:none;}
+.section-head{margin-bottom:40px; max-width:62ch;}
+.eyebrow{display:inline-flex; align-items:center; gap:10px; font-weight:700; font-size:12.5px; letter-spacing:0.1em; text-transform:uppercase; color:#4C9AFF; margin-bottom:14px;}
+.eyebrow::before{content:""; width:22px; height:2px; background:var(--gold); border-radius:2px;}
+.section-head h2{font-size:clamp(26px,4vw,38px); margin-bottom:14px; color:#fff;}
+.section-head p{font-size:15px; line-height:1.65; color:var(--gray);}
+.bg-alt{background:var(--bg-2);}
+
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+@media (max-width:820px){.steps{grid-template-columns:1fr;}}
+.step{background:var(--card); border:1px solid var(--gray-line); border-radius:16px; padding:28px 24px;}
+.step .n{font-family:'Barlow Condensed'; font-weight:800; font-size:34px; color:var(--gold); margin-bottom:12px;}
+.step h3{font-size:19px; margin-bottom:10px;}
+.step p{font-size:14px; line-height:1.6; color:var(--gray); margin:0;}
+
+.ptable{background:var(--card); border:1px solid var(--gray-line); border-radius:16px; overflow:hidden;}
+.ptable-title{background:#0F0F12; padding:16px 22px; font-family:'Barlow Condensed'; font-weight:700; font-size:17px; letter-spacing:0.01em; text-transform:uppercase;}
+.prow{display:grid; grid-template-columns:1fr auto; padding:13px 22px; border-bottom:1px solid var(--gray-line); font-size:13.5px;}
+.prow:last-child{border-bottom:none;}
+.prow .v{font-family:'IBM Plex Mono'; font-weight:600; color:var(--gold);}
+.prow.total{background:rgba(255,210,0,0.08); font-weight:700;}
+.prow.total .v{color:var(--gold);}
+.prize-tables{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+@media (max-width:820px){ .prize-tables{grid-template-columns:1fr;} }
+
+.rules-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+@media (max-width:760px){ .rules-grid{grid-template-columns:1fr;} }
+.rule{display:flex; gap:14px; background:var(--card); border:1px solid var(--gray-line); border-radius:14px; padding:18px 20px;}
+.rule .ic{width:34px; height:34px; border-radius:9px; background:rgba(0,87,184,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px;}
+.rule p{margin:0; font-size:13.5px; line-height:1.55; color:var(--gray);}
+.rule b{color:#fff;}
+
+.calc{background:var(--card); border:1px solid var(--gray-line); border-radius:20px; padding:30px 28px; max-width:520px;}
+.calc label{display:block; font-size:12.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray); margin-bottom:10px;}
+.calc input{width:100%; font-family:'IBM Plex Mono'; font-size:20px; font-weight:600; padding:14px 16px; border-radius:10px; border:1px solid var(--gray-line); background:#0F0F12; color:#fff; margin-bottom:20px;}
+.calc input:focus{border-color:var(--blue); outline:none;}
+.calc-result{background:rgba(255,210,0,0.08); border:1px solid rgba(255,210,0,0.3); border-radius:14px; padding:20px 22px; text-align:center;}
+.calc-result .big{font-family:'Barlow Condensed'; font-weight:800; font-size:40px; color:var(--gold); line-height:1;}
+.calc-result .lbl{font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:0.05em; margin-top:6px; font-weight:700;}
+.calc-note{font-size:12px; color:var(--gray); margin-top:14px; line-height:1.5;}
+
+.demo-note{font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(255,210,0,0.35); padding:3px 9px; border-radius:100px; display:inline-block;}
+
+.hub-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+@media (max-width:960px){ .hub-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:640px){ .hub-grid{grid-template-columns:1fr;} }
+.hub-card{background:var(--card); border:1px solid var(--gray-line); border-radius:18px; padding:26px 24px; text-decoration:none; color:#fff; display:flex; flex-direction:column; transition:transform 150ms ease, border-color 150ms ease;}
+.hub-card:hover{transform:translateY(-4px); border-color:var(--blue);}
+.hub-card .tag2{font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); background:rgba(255,210,0,0.1); padding:4px 10px; border-radius:100px; width:fit-content; margin-bottom:16px;}
+.hub-card h3{font-size:22px; margin-bottom:10px;}
+.hub-card p{font-size:13.5px; color:var(--gray); line-height:1.55; margin:0 0 16px; flex:1;}
+.hub-card .go{font-size:13px; font-weight:700; color:var(--blue);}
+.hub-card:hover .go{color:var(--gold);}
+
+footer{background:var(--bg); padding:50px 0 30px; border-top:1px solid var(--gray-line);}
+.compliance-bar{display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; background:var(--card); border:1px solid var(--gray-line); border-radius:14px; padding:22px 24px; margin-bottom:28px;}
+.age-badge{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; color:#fff; background:var(--blue); border-radius:10px; width:42px; height:42px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.compliance-bar p{font-size:12.5px; line-height:1.6; color:var(--gray); margin:0;}
+.foot-links{display:flex; gap:24px; flex-wrap:wrap; font-size:13px; font-weight:600; margin-bottom:20px;}
+.foot-links a{text-decoration:none; color:var(--gray);}
+.foot-links a:hover{color:#fff;}
+.fine{font-size:11.5px; color:#5c5c62; line-height:1.6;}
+
+@media (max-width:640px){
+  section{padding:50px 0;}
+}
+
+.selector-wrap{background:var(--bg-2); border-bottom:1px solid var(--gray-line); position:sticky; top:73px; z-index:19;}
+.selector{display:flex; gap:10px; padding:14px 0; flex-wrap:wrap;}
+.selector-btn{flex:1; min-width:180px; display:flex; align-items:center; gap:12px; padding:14px 20px; border-radius:12px; border:1px solid var(--gray-line); background:var(--card); cursor:pointer; transition:all 150ms ease; text-align:left;}
+.selector-btn:hover{border-color:var(--blue);}
+.selector-btn.active{border-color:var(--gold); background:rgba(255,210,0,0.08);}
+.selector-btn .ic{font-size:22px;}
+.selector-btn .txt{display:flex; flex-direction:column;}
+.selector-btn .txt .name{font-family:'Barlow Condensed'; font-weight:800; font-size:17px; letter-spacing:0.01em;}
+.selector-btn .txt .desc{font-size:11.5px; color:var(--gray); margin-top:2px;}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+.predictor{background:var(--card); border:1px solid var(--gray-line); border-radius:20px; overflow:hidden;}
+.predictor-head{background:var(--blue-deep); padding:22px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
+.predictor-head .qtype{font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.65);}
+.predictor-head .qtype b{color:var(--gold); font-size:15px; letter-spacing:0.01em; display:block; margin-top:3px; font-family:'Barlow Condensed'; text-transform:uppercase;}
+.predictor-progress{display:flex; align-items:center; gap:12px;}
+.predictor-progress .bar{width:140px; height:8px; background:rgba(255,255,255,0.15); border-radius:100px; overflow:hidden;}
+.predictor-progress .fill{height:100%; width:0%; background:var(--gold); transition:width 200ms ease;}
+.predictor-progress .count{font-family:'IBM Plex Mono'; font-size:13px; font-weight:600;}
+.id-row{padding:18px 28px; background:#0F0F12; border-bottom:1px solid var(--gray-line); display:flex; gap:12px; align-items:center; flex-wrap:wrap;}
+.id-row label{font-size:12.5px; color:var(--gray); font-weight:600;}
+.id-row input{font-family:'IBM Plex Mono'; font-size:14px; padding:10px 14px; border-radius:8px; border:1px solid var(--gray-line); background:var(--card); color:#fff; min-width:180px;}
+.match-list{padding:8px 0;}
+.match-row{display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:16px; padding:16px 28px; border-bottom:1px solid var(--gray-line);}
+.match-row:last-child{border-bottom:none;}
+.match-row .league{font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray); background:#0F0F12; padding:5px 8px; border-radius:6px; text-align:center;}
+.match-row .teams{font-size:14.5px; font-weight:600;}
+.match-row .teams .vs{color:var(--gray); font-weight:500; margin:0 6px;}
+.pick-group{display:flex; gap:8px;}
+.pick-btn{font-family:'IBM Plex Mono'; font-weight:600; font-size:13px; padding:9px 14px; border-radius:8px; border:1px solid var(--gray-line); background:#0F0F12; color:var(--gray); cursor:pointer; transition:all 120ms ease; min-width:46px;}
+.pick-btn:hover{border-color:var(--blue); color:#fff;}
+.pick-btn.active{background:var(--gold); border-color:var(--gold); color:#1a1400;}
+@media (max-width:640px){
+  .match-row{grid-template-columns:1fr; gap:10px;}
+  .match-row .league{justify-self:start; width:fit-content;}
+}
+.player-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:24px 28px;}
+@media (max-width:760px){ .player-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:480px){ .player-grid{grid-template-columns:1fr;} }
+.player-card{background:#0F0F12; border:1px solid var(--gray-line); border-radius:12px; padding:16px; cursor:pointer; transition:all 120ms ease; text-align:center;}
+.player-card:hover{border-color:var(--blue);}
+.player-card.active{border-color:var(--gold); background:rgba(255,210,0,0.08);}
+.player-card .club{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray); margin-bottom:8px;}
+.player-card .name{font-weight:700; font-size:14px;}
+.player-card .pos{font-size:11.5px; color:var(--gray); margin-top:4px;}
+.predictor-foot{padding:22px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; background:#0F0F12;}
+.predictor-foot .hint{font-size:12.5px; color:var(--gray); max-width:42ch; line-height:1.5;}
+.submit-result{display:none; margin:0 28px 22px; border-radius:12px; padding:16px 20px; font-size:13.5px; line-height:1.6;}
+.submit-result.show{display:block;}
+.submit-result.ok{background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.35);}
+.submit-result.err{background:rgba(232,18,31,0.1); border:1px solid rgba(232,18,31,0.35);}
+
+.lookup-box{background:var(--card); border:1px solid var(--gray-line); border-radius:16px; padding:26px 24px;}
+.lookup-box .row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+.lookup-box input{font-family:'IBM Plex Mono'; font-size:14px; padding:12px 14px; border-radius:8px; border:1px solid var(--gray-line); background:#0F0F12; color:#fff; flex:1; min-width:160px;}
+.lookup-result{font-size:13.5px; line-height:1.7;}
+.lookup-result .row2{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-line);}
+.lookup-result .row2:last-child{border-bottom:none;}
+</style>
+</head>
+<body>
+
+<div class="topstrip">Besplatne predikcije · Admiralbet</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span>ADMIRALBET <span>PREDIKCIJE</span></div>
+  </div>
+</header>
+
+<div class="selector-wrap">
+  <div class="wrap selector">
+    <button class="selector-btn active" id="tab-ligepetice" data-panel="ligepetice">
+      <span class="ic">⚽</span>
+      <span class="txt"><span class="name">Lige Petice</span><span class="desc">Sedmične predikcije · 5 top liga</span></span>
+    </button>
+    <button class="selector-btn" id="tab-evroliga" data-panel="evroliga">
+      <span class="ic">🏀</span>
+      <span class="txt"><span class="name">Evroliga</span><span class="desc">Sezonski fantazi · 38 kola + playoff</span></span>
+    </button>
+  </div>
+</div>
+
+<section class="hero" style="padding:56px 0 40px;">
+  <div class="wrap">
+    <div class="badge-live"><span class="pulse"></span>Izaberi kampanju iznad</div>
+    <h2 id="heroTitle" style="font-size:clamp(28px,4.5vw,42px); color:#fff; margin-bottom:14px;">Lige Petice — pogodi mečeve, sakupljaj poene</h2>
+    <p class="lead" id="heroLead" style="margin-bottom:0;">Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga. Bez uplate, bez rizika.</p>
+  </div>
+</section>
+
+
+<div class="panel" id="panel-ligepetice">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Lige Petice · Kako radi</div>
+        <h2>Tri koraka do rang liste</h2>
+        <p>Svaka sedmica nosi jedan, jedinstven tip pitanja za svih 10 mečeva — pobjednik, ukupan broj golova, oba tima daju gol, rezultat na poluvremenu i slično.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Predaš predikciju</h3><p>Besplatno, jednom sedmično, za svih ~10 izabranih mečeva. Dovoljan je aktivan nalog — bez depozita.</p></div>
+        <div class="step"><div class="n">02</div><h3>Sakupljaš bodove</h3><p>1 bod po tačnom pogotku, max 10 po sedmici. Bodovi se kumuliraju kroz cijeli kalendarski mjesec.</p></div>
+        <div class="step"><div class="n">03</div><h3>Osvajaš nagrade</h3><p>Min. 6 bodova sedmično te uvodi u konkurenciju. Top 50 na kraju mjeseca dijeli freebet nagrade.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Predaj predikciju</div>
+        <h2>Ovosedmični mečevi</h2>
+        <p>Odaberi ishod za svaki meč. Tip pitanja ove sedmice: <b style="color:#fff;">pobjednik (1X2)</b>.</p>
+      </div>
+      <div class="predictor">
+        <div class="predictor-head">
+          <div class="qtype">Tip pitanja ove sedmice<b>Pobjednik · 1X2</b></div>
+          <div class="predictor-progress">
+            <span class="count mono"><span id="lp-pickedCount">0</span>/10 odabrano</span>
+            <div class="bar"><div class="fill" id="lp-progressFill"></div></div>
+          </div>
+        </div>
+        <div class="id-row">
+          <label for="lp-playerIdInput">ID naloga</label>
+          <input id="lp-playerIdInput" class="mono" type="text" inputmode="numeric" placeholder="npr. 12345678" maxlength="12">
+          <label for="lp-koloInput">Kolo</label>
+          <input id="lp-koloInput" class="mono" type="number" value="1" min="1" style="width:70px; padding:10px 14px; border-radius:8px; border:1px solid var(--gray-line); background:var(--card); color:#fff;">
+        </div>
+        <div class="match-list" id="lp-matchList"></div>
+        <div class="predictor-foot">
+          <div>
+            <span class="demo-note">Mečevi su demo/ilustrativni</span>
+            <p class="hint">U pravoj verziji tim bira stvarni raspored te sedmice iz pet liga.</p>
+          </div>
+          <button class="btn btn-gold" id="lp-submitBtn" disabled>Predaj predikciju (0/10)</button>
+        </div>
+        <div class="submit-result" id="lp-submitResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Provjeri predikciju</div>
+        <h2>Šta sam predao?</h2>
+        <p>Unesi svoj ID i kolo da vidiš predatu predikciju.</p>
+      </div>
+      <div class="lookup-box">
+        <div class="row">
+          <input id="lp-lookupId" class="mono" placeholder="ID naloga" />
+          <input id="lp-lookupKolo" class="mono" placeholder="Kolo (npr. 1)" style="max-width:140px;" />
+          <button class="btn btn-blue btn-sm" id="lp-lookupBtn">Provjeri</button>
+        </div>
+        <div class="lookup-result" id="lp-lookupResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Nagrade</div>
+        <h2>Mjesečno i tromjesečno</h2>
+      </div>
+      <div class="prize-tables">
+        <div class="ptable">
+          <div class="ptable-title">Mjesečno · Freebet</div>
+          <div class="prow"><span>1. mjesto</span><span class="v">200 €</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">150 €</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">100 €</span></div>
+          <div class="prow"><span>4. mjesto</span><span class="v">75 €</span></div>
+          <div class="prow"><span>5. mjesto</span><span class="v">50 €</span></div>
+          <div class="prow"><span>6.–10. mjesto</span><span class="v">25 € svako</span></div>
+          <div class="prow"><span>11.–30. mjesto</span><span class="v">10 € svako</span></div>
+          <div class="prow"><span>31.–50. mjesto</span><span class="v">5 € svako</span></div>
+        </div>
+        <div class="ptable">
+          <div class="ptable-title">Tromjesečno · Fizičke nagrade</div>
+          <div class="prow"><span>1. mjesto</span><span class="v">PS5</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">AirPods</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">Sportski dres</span></div>
+          <div class="prow total"><span>Nagrađuje se ukupno</span><span class="v">Top 3 od 3 mjeseca</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<div class="panel" id="panel-evroliga">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Evroliga · Kako radi</div>
+        <h2>Sezonski fantazi format</h2>
+        <p>Takmičenje prati kompletnu sezonu Evrolige: regularni dio (38 kola), playoff top 8, i Final Four. Nagrađivanje ide na tri nivoa — po kolu, mjesečno, i na kraju sezone.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Praviš tim po kolu</h3><p>Biraš igrače za koje misliš da će najbolje odigrati to kolo Evrolige.</p></div>
+        <div class="step"><div class="n">02</div><h3>Rangiranje se ažurira</h3><p>Top 20 nagrađuje se svako kolo, top 3 mjesečno, top 10 na kraju sezone.</p></div>
+        <div class="step"><div class="n">03</div><h3>Sezonski poredak</h3><p>Bodovi iz svih 38 kola + playoff + Final Four grade konačan sezonski plasman.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Napravi tim kola</div>
+        <h2>Ovo kolo — izaberi 3 igrača</h2>
+        <p><span class="demo-note">Pojednostavljena demo verzija</span> — puna verzija (kompletan sastav, sve pozicije, budžet po igraču) zahtijeva poseban fantazi engine.</p>
+      </div>
+      <div class="predictor">
+        <div class="predictor-head">
+          <div class="qtype">Regularni dio<b>Kolo 1 od 38</b></div>
+        </div>
+        <div class="id-row">
+          <label for="ev-playerIdInput">ID naloga</label>
+          <input id="ev-playerIdInput" class="mono" type="text" inputmode="numeric" placeholder="npr. 12345678" maxlength="12">
+          <label for="ev-koloInput">Kolo</label>
+          <input id="ev-koloInput" class="mono" type="number" value="1" min="1" max="38" style="width:70px; padding:10px 14px; border-radius:8px; border:1px solid var(--gray-line); background:var(--card); color:#fff;">
+        </div>
+        <div class="player-grid" id="ev-playerGrid"></div>
+        <div class="predictor-foot">
+          <div><p class="hint">Izabrano: <span id="ev-pickedCount" class="mono">0</span>/3. Igrači su ilustrativni placeholderi.</p></div>
+          <button class="btn btn-gold" id="ev-submitBtn" disabled>Predaj tim (0/3)</button>
+        </div>
+        <div class="submit-result" id="ev-submitResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Provjeri tim</div>
+        <h2>Šta sam predao?</h2>
+        <p>Unesi ID i kolo da vidiš svoj predati tim za to kolo.</p>
+      </div>
+      <div class="lookup-box">
+        <div class="row">
+          <input id="ev-lookupId" class="mono" placeholder="ID naloga" />
+          <input id="ev-lookupKolo" class="mono" placeholder="Kolo (npr. 1)" style="max-width:140px;" />
+          <button class="btn btn-blue btn-sm" id="ev-lookupBtn">Provjeri</button>
+        </div>
+        <div class="lookup-result" id="ev-lookupResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Nagrade</div>
+        <h2>Tri nivoa nagrađivanja</h2>
+      </div>
+      <div class="prize-tables">
+        <div class="ptable">
+          <div class="ptable-title">Svako kolo · Top 20</div>
+          <div class="prow"><span>1. mjesto</span><span class="v">Sportbonus 50 €</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">Sportbonus 40 €</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">Sportbonus 30 €</span></div>
+          <div class="prow"><span>4. mjesto</span><span class="v">Sportbonus 20 €</span></div>
+          <div class="prow"><span>5.–20. mjesto</span><span class="v">Sportbonus 10 € svako</span></div>
+        </div>
+        <div class="ptable">
+          <div class="ptable-title">Mjesečno · Top 3</div>
+          <div class="prow"><span>1. mjesto</span><span class="v">225 €</span></div>
+          <div class="prow"><span>2. mjesto</span><span class="v">175 €</span></div>
+          <div class="prow"><span>3. mjesto</span><span class="v">125 €</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<footer>
+  <div class="wrap">
+    <div class="compliance-bar">
+      <div class="age-badge">18+</div>
+      <p>Namijenjeno isključivo punoljetnim licima. Igrajte odgovorno. [Formulaciju napomene o odgovornoj igri potvrđuje pravna služba prije objave.]</p>
+    </div>
+    <div class="foot-links">
+      <a href="#">Puna pravila kampanje</a>
+      <a href="#">Uslovi učešća</a>
+      <a href="#">Kontakt</a>
+    </div>
+    <p class="fine">Organizator zadržava pravo izmjene pravila. [Naziv organizatora i pravna napomena — popuniti prije objave.]</p>
+  </div>
+</footer>
+
+<script>
+  // ============================================================
+  // BACKEND URL — zamijeni nakon Apps Script deploy-a (v. SETUP.md)
+  // Isti backend/URL se koristi za obje kampanje (razdvojene po "campaign" polju).
+  // ============================================================
+  const BACKEND_URL = "STAVI_SVOJ_APPS_SCRIPT_URL_OVDJE";
+
+  // ---------- tab switching ----------
+  const tabs = {
+    ligepetice: { btn: document.getElementById('tab-ligepetice'), panel: document.getElementById('panel-ligepetice'),
+      title: 'Lige Petice — pogodi mečeve, sakupljaj poene',
+      lead: 'Besplatna sedmična predikcija na +/-10 mečeva iz pet vodećih evropskih fudbalskih liga. Bez uplate, bez rizika.' },
+    evroliga: { btn: document.getElementById('tab-evroliga'), panel: document.getElementById('panel-evroliga'),
+      title: 'Evroliga — sastavi tim, osvajaj kolo za kolom',
+      lead: 'Fantazi takmičenje koje prati kompletnu sezonu Evrolige — nagrade po kolu, mjesečno, i na kraju sezone.' },
+  };
+  function selectTab(key) {
+    Object.keys(tabs).forEach(k => {
+      tabs[k].btn.classList.toggle('active', k === key);
+      tabs[k].panel.classList.toggle('active', k === key);
+    });
+    document.getElementById('heroTitle').textContent = tabs[key].title;
+    document.getElementById('heroLead').textContent = tabs[key].lead;
+  }
+  tabs.ligepetice.btn.addEventListener('click', () => selectTab('ligepetice'));
+  tabs.evroliga.btn.addEventListener('click', () => selectTab('evroliga'));
+  selectTab('ligepetice');
+
+  // ============================================================
+  // LIGE PETICE
+  // ============================================================
+  const LP_MATCHES = [
+    { league:'Premier League', home:'Tim A', away:'Tim B' },
+    { league:'Premier League', home:'Tim C', away:'Tim D' },
+    { league:'La Liga', home:'Tim E', away:'Tim F' },
+    { league:'La Liga', home:'Tim G', away:'Tim H' },
+    { league:'Serie A', home:'Tim I', away:'Tim J' },
+    { league:'Serie A', home:'Tim K', away:'Tim L' },
+    { league:'Bundesliga', home:'Tim M', away:'Tim N' },
+    { league:'Bundesliga', home:'Tim O', away:'Tim P' },
+    { league:'Ligue 1', home:'Tim Q', away:'Tim R' },
+    { league:'Ligue 1', home:'Tim S', away:'Tim T' },
+  ];
+  const lpListEl = document.getElementById('lp-matchList');
+  const lpPicks = new Array(LP_MATCHES.length).fill(null);
+  LP_MATCHES.forEach((m, i) => {
+    const row = document.createElement('div');
+    row.className = 'match-row';
+    row.innerHTML = `
+      <span class="league">${m.league}</span>
+      <span class="teams">${m.home}<span class="vs">vs</span>${m.away}</span>
+      <div class="pick-group" data-idx="${i}">
+        <button class="pick-btn" data-val="1">1</button>
+        <button class="pick-btn" data-val="X">X</button>
+        <button class="pick-btn" data-val="2">2</button>
+      </div>`;
+    lpListEl.appendChild(row);
+  });
+  const lpSubmitBtn = document.getElementById('lp-submitBtn');
+  const lpPickedCountEl = document.getElementById('lp-pickedCount');
+  const lpProgressFill = document.getElementById('lp-progressFill');
+  const lpSubmitResult = document.getElementById('lp-submitResult');
+  function lpUpdateProgress() {
+    const count = lpPicks.filter(p => p !== null).length;
+    lpPickedCountEl.textContent = count;
+    lpProgressFill.style.width = (count / LP_MATCHES.length * 100) + '%';
+    lpSubmitBtn.textContent = `Predaj predikciju (${count}/${LP_MATCHES.length})`;
+    lpSubmitBtn.disabled = count < LP_MATCHES.length;
+  }
+  lpListEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pick-btn');
+    if (!btn) return;
+    const group = btn.closest('.pick-group');
+    const idx = parseInt(group.dataset.idx, 10);
+    lpPicks[idx] = btn.dataset.val;
+    group.querySelectorAll('.pick-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    lpUpdateProgress();
+  });
+  function showResult(el, ok, msg) {
+    el.className = 'submit-result show ' + (ok ? 'ok' : 'err');
+    el.innerHTML = (ok ? '<b>✓ </b>' : '⚠️ ') + msg;
+  }
+  lpSubmitBtn.addEventListener('click', async () => {
+    if (lpSubmitBtn.disabled) return;
+    const playerId = document.getElementById('lp-playerIdInput').value.trim();
+    const kolo = document.getElementById('lp-koloInput').value.trim() || '1';
+    if (!playerId) { showResult(lpSubmitResult, false, 'Unesi ID naloga prije predaje.'); return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { showResult(lpSubmitResult, false, 'Backend URL nije podešen. Prati SETUP.md.'); return; }
+    const picksObj = {};
+    LP_MATCHES.forEach((m, i) => { picksObj['m' + i] = lpPicks[i]; });
+    lpSubmitBtn.disabled = true; lpSubmitBtn.textContent = 'Šaljem...';
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ campaign: 'LigePetice', playerId, kolo, picks: picksObj }),
+      });
+      const data = await res.json();
+      if (data.ok) { showResult(lpSubmitResult, true, 'Predikcija predata i sačuvana!'); lpSubmitBtn.textContent = 'Predikcija predata ✓'; }
+      else { showResult(lpSubmitResult, false, data.error || 'Greška prilikom slanja.'); lpSubmitBtn.disabled = false; lpUpdateProgress(); }
+    } catch (err) { showResult(lpSubmitResult, false, 'Ne mogu da se povežem sa backend-om.'); lpSubmitBtn.disabled = false; lpUpdateProgress(); }
+  });
+  document.getElementById('lp-lookupBtn').addEventListener('click', async () => {
+    const id = document.getElementById('lp-lookupId').value.trim();
+    const kolo = document.getElementById('lp-lookupKolo').value.trim();
+    const resultEl = document.getElementById('lp-lookupResult');
+    if (!id) { resultEl.textContent = 'Unesi ID naloga.'; return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend URL nije podešen.'; return; }
+    resultEl.textContent = 'Učitavam...';
+    try {
+      const url = `${BACKEND_URL}?action=lookup&campaign=LigePetice&playerId=${encodeURIComponent(id)}${kolo ? '&kolo=' + encodeURIComponent(kolo) : ''}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
+      if (!data.results.length) { resultEl.textContent = 'Nema predikcije za taj ID' + (kolo ? ' i kolo ' + kolo : '') + '.'; return; }
+      resultEl.innerHTML = data.results.map(r => `
+        <div class="row2"><span>Kolo</span><span class="mono">${r.kolo}</span></div>
+        <div class="row2"><span>Predato</span><span class="mono">${new Date(r.timestamp).toLocaleString('sr-Latn-ME')}</span></div>
+        <div class="row2"><span>Predikcija</span><span class="mono">${JSON.stringify(r.picks)}</span></div>
+        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka settlovanje)'}</span></div>`
+      ).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
+    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
+  });
+
+  // ============================================================
+  // EVROLIGA
+  // ============================================================
+  const EV_PLAYERS = [
+    { club:'Klub 1', name:'Igrač A', pos:'Bek' }, { club:'Klub 1', name:'Igrač B', pos:'Krilo' },
+    { club:'Klub 2', name:'Igrač C', pos:'Centar' }, { club:'Klub 2', name:'Igrač D', pos:'Bek' },
+    { club:'Klub 3', name:'Igrač E', pos:'Krilo' }, { club:'Klub 3', name:'Igrač F', pos:'Centar' },
+    { club:'Klub 4', name:'Igrač G', pos:'Bek' }, { club:'Klub 4', name:'Igrač H', pos:'Krilo' },
+    { club:'Klub 5', name:'Igrač I', pos:'Centar' },
+  ];
+  const evGrid = document.getElementById('ev-playerGrid');
+  const evPicked = new Set();
+  const EV_MAX = 3;
+  EV_PLAYERS.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.dataset.idx = i;
+    card.innerHTML = `<div class="club">${p.club}</div><div class="name">${p.name}</div><div class="pos">${p.pos}</div>`;
+    card.addEventListener('click', () => evTogglePick(i, card));
+    evGrid.appendChild(card);
+  });
+  const evSubmitBtn = document.getElementById('ev-submitBtn');
+  const evPickedCountEl = document.getElementById('ev-pickedCount');
+  const evSubmitResult = document.getElementById('ev-submitResult');
+  function evTogglePick(idx, card) {
+    if (evPicked.has(idx)) { evPicked.delete(idx); card.classList.remove('active'); }
+    else { if (evPicked.size >= EV_MAX) return; evPicked.add(idx); card.classList.add('active'); }
+    evPickedCountEl.textContent = evPicked.size;
+    evSubmitBtn.textContent = `Predaj tim (${evPicked.size}/${EV_MAX})`;
+    evSubmitBtn.disabled = evPicked.size !== EV_MAX;
+  }
+  evSubmitBtn.addEventListener('click', async () => {
+    if (evSubmitBtn.disabled) return;
+    const playerId = document.getElementById('ev-playerIdInput').value.trim();
+    const kolo = document.getElementById('ev-koloInput').value.trim() || '1';
+    if (!playerId) { showResult(evSubmitResult, false, 'Unesi ID naloga prije predaje.'); return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { showResult(evSubmitResult, false, 'Backend URL nije podešen.'); return; }
+    const team = Array.from(evPicked).map(i => EV_PLAYERS[i].name);
+    evSubmitBtn.disabled = true; evSubmitBtn.textContent = 'Šaljem...';
+    try {
+      const res = await fetch(BACKEND_URL, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ campaign: 'Evroliga', playerId, kolo, picks: { tim: team } }),
+      });
+      const data = await res.json();
+      if (data.ok) { showResult(evSubmitResult, true, 'Tim predat i sačuvan za kolo ' + kolo + '.'); evSubmitBtn.textContent = 'Tim predat ✓'; }
+      else { showResult(evSubmitResult, false, data.error || 'Greška prilikom slanja.'); evSubmitBtn.disabled = false; evSubmitBtn.textContent = `Predaj tim (${evPicked.size}/${EV_MAX})`; }
+    } catch (err) { showResult(evSubmitResult, false, 'Ne mogu da se povežem sa backend-om.'); evSubmitBtn.disabled = false; }
+  });
+  document.getElementById('ev-lookupBtn').addEventListener('click', async () => {
+    const id = document.getElementById('ev-lookupId').value.trim();
+    const kolo = document.getElementById('ev-lookupKolo').value.trim();
+    const resultEl = document.getElementById('ev-lookupResult');
+    if (!id) { resultEl.textContent = 'Unesi ID naloga.'; return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend URL nije podešen.'; return; }
+    resultEl.textContent = 'Učitavam...';
+    try {
+      const url = `${BACKEND_URL}?action=lookup&campaign=Evroliga&playerId=${encodeURIComponent(id)}${kolo ? '&kolo=' + encodeURIComponent(kolo) : ''}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
+      if (!data.results.length) { resultEl.textContent = 'Nema predatog tima za taj ID' + (kolo ? ' i kolo ' + kolo : '') + '.'; return; }
+      resultEl.innerHTML = data.results.map(r => `
+        <div class="row2"><span>Kolo</span><span class="mono">${r.kolo}</span></div>
+        <div class="row2"><span>Predato</span><span class="mono">${new Date(r.timestamp).toLocaleString('sr-Latn-ME')}</span></div>
+        <div class="row2"><span>Tim</span><span class="mono">${(r.picks && r.picks.tim) ? r.picks.tim.join(', ') : '—'}</span></div>
+        <div class="row2"><span>Bodovi</span><span class="mono">${r.bodovi || '— (čeka rezultat kola)'}</span></div>`
+      ).join('<hr style="border-color:var(--gray-line); margin:12px 0;">');
+    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
+  });
+</script>
+</body>
+</html>
