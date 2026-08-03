@@ -1,1 +1,199 @@
-aug
+<!doctype html>
+<html lang="sr-ME">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmiralBET kviz — Uskoro</title>
+  <meta http-equiv="refresh" content="5;url=https://admiralbet.me/promotions" />
+  <style>
+    :root {
+      --bg-1: #08111f;
+      --bg-2: #0d1a30;
+      --bg-3: #13233e;
+      --panel: rgba(13, 24, 45, 0.96);
+      --panel-2: rgba(16, 30, 56, 0.98);
+      --line: rgba(255,255,255,0.10);
+      --line-strong: rgba(243, 200, 74, 0.18);
+      --text: #f7f9ff;
+      --muted: #b7c2e3;
+      --accent: #f3c84a;
+      --accent-2: #ffdf7c;
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --radius: 24px;
+      --max: 560px;
+    }
+
+    * { box-sizing: border-box; min-width: 0; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 20px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 32px 26px;
+      text-align: center;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .logo-wrap {
+      width: min(220px, 62vw);
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 100%;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 7vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    .sub {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      padding: 0 4px;
+    }
+
+    .countdown-box {
+      margin: 0 0 6px;
+      border: 1px solid var(--line-strong);
+      background: rgba(243,200,74,.07);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .countdown-title {
+      margin: 0 0 12px;
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .countdown-value {
+      display: block;
+      font-size: clamp(40px, 10vw, 64px);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .redirect-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .redirect-note strong {
+      color: var(--accent-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 420px) {
+      .wrap { width: calc(100% - 12px); }
+      .card { padding: 24px 18px; }
+      .logo-wrap { width: min(200px, 72vw); padding: 10px 12px; }
+      h1 { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="brand-block">
+        <div class="logo-wrap">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s"
+            alt="AdmiralBET logo"
+          />
+        </div>
+        <div class="brand-pill">AdmiralBET Online · Sportski Kviz</div>
+      </div>
+
+      <h1>Uskoro</h1>
+      <p class="sub">AdmiralBET kviz stiže uskoro. Ostani u toku!</p>
+
+      <div class="countdown-box">
+        <div class="countdown-title">Preusmjeravanje za</div>
+        <span class="countdown-value" id="countValue">5</span>
+      </div>
+
+      <p class="redirect-note" id="redirectNote">
+        Bićeš preusmjeren/a na <strong>admiralbet.me/promotions</strong>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    let remaining = 5;
+    const countValue = document.getElementById('countValue');
+    const target = 'https://admiralbet.me/promotions';
+
+    const interval = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(interval);
+        countValue.textContent = '0';
+        window.location.href = target;
+        return;
+      }
+      countValue.textContent = String(remaining);
+    }, 1000);
+  </script>
+</body>
+</html>
