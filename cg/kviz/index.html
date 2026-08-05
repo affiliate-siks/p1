@@ -124,6 +124,36 @@
 
     .question-title { font-size: clamp(20px, 3.8vw, 27px); line-height: 1.3; margin: 0 0 20px; }
 
+    .category-badge { display: inline-block; margin-bottom: 12px; margin-right: 8px; border: 1px solid var(--line-strong); background: rgba(243,200,74,.08); color: var(--accent-2); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; border-radius: 999px; }
+
+    .difficulty-badge { display: inline-block; margin-bottom: 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; border-radius: 999px; border: 1px solid; }
+    .difficulty-badge.lako { color: var(--success); border-color: rgba(63,209,155,.35); background: rgba(63,209,155,.08); }
+    .difficulty-badge.srednje { color: var(--accent-2); border-color: rgba(243,200,74,.35); background: rgba(243,200,74,.08); }
+    .difficulty-badge.tesko { color: var(--danger); border-color: rgba(255,123,123,.35); background: rgba(255,123,123,.08); }
+
+    .clue-box {
+      border: 1px dashed var(--line-strong);
+      background: rgba(243,200,74,.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .clue-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      color: var(--text); font-size: 15px; line-height: 1.5;
+      padding: 6px 0;
+    }
+    .clue-item + .clue-item { border-top: 1px solid rgba(255,255,255,.06); }
+    .clue-num { flex: 0 0 auto; font-weight: 800; color: var(--accent-2); font-size: 13px; }
+    .clue-reveal-btn {
+      margin-top: 4px; width: 100%; min-height: 46px;
+      border: 1px solid var(--line-strong); background: rgba(243,200,74,.10);
+      color: var(--accent-2); border-radius: 12px; font-size: 14px; font-weight: 700;
+    }
+
+    .remaining-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: -4px; margin-bottom: 4px; }
+    .remaining-note.urgent { color: var(--danger); font-weight: 700; }
+
     .answers { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 18px; }
 
     .answer {
@@ -342,11 +372,17 @@
 
           <div>
             <div class="question-card" id="questionCard">
-              <div class="category-badge" id="categoryBadge" style="display:inline-block;margin-bottom:12px;border:1px solid var(--line-strong);background:rgba(243,200,74,.08);color:var(--accent-2);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:6px 12px;border-radius:999px;"></div>
+              <div class="category-badge" id="categoryBadge"></div>
+              <span class="difficulty-badge" id="difficultyBadge"></span>
               <h2 class="question-title" id="questionText"></h2>
+              <div class="clue-box" id="clueBox" style="display:none;">
+                <div id="clueList"></div>
+                <button type="button" class="clue-reveal-btn" id="clueRevealBtn" style="display:none;">Sledeći trag</button>
+              </div>
               <div class="answers" id="answersWrap"></div>
             </div>
 
+            <div class="remaining-note" id="remainingNote"></div>
             <div class="btn-row">
               <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
             </div>
@@ -405,7 +441,12 @@
   const questionCounter = document.getElementById('questionCounter');
   const timerText = document.getElementById('timerText');
   const categoryBadge = document.getElementById('categoryBadge');
+  const difficultyBadge = document.getElementById('difficultyBadge');
   const questionText = document.getElementById('questionText');
+  const clueBox = document.getElementById('clueBox');
+  const clueList = document.getElementById('clueList');
+  const clueRevealBtn = document.getElementById('clueRevealBtn');
+  const remainingNote = document.getElementById('remainingNote');
   const answersWrap = document.getElementById('answersWrap');
   const questionCard = document.getElementById('questionCard');
   const progressDots = document.getElementById('progressDots');
@@ -414,9 +455,13 @@
   const finalTime = document.getElementById('finalTime');
   const finalStatus = document.getElementById('finalStatus');
 
+  const DIFFICULTY_LABELS = { lako: 'Lako', srednje: 'Srednje', tesko: 'Teško' };
+
   let currentQuestion = 0;
   let activeQuestions = [];
   let selectedAnswers = [];
+  let revealedClues = [];
+  let finishConfirmPending = false;
   let timerInterval = null;
   let clientStartMs = null;
   let participantToken = '';
@@ -467,9 +512,37 @@
     const q = activeQuestions[currentQuestion];
     questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${activeQuestions.length}`;
     categoryBadge.textContent = q.kategorija || '';
-    questionText.textContent = q.text;
-    answersWrap.innerHTML = '';
 
+    const diffKey = q.tezina || 'lako';
+    difficultyBadge.textContent = DIFFICULTY_LABELS[diffKey] || diffKey;
+    difficultyBadge.className = 'difficulty-badge ' + diffKey;
+
+    const remaining = activeQuestions.length - (currentQuestion + 1);
+    if (remaining <= 0) {
+      remainingNote.textContent = 'Ovo je posljednje pitanje.';
+      remainingNote.className = 'remaining-note urgent';
+    } else if (remaining <= 3) {
+      remainingNote.textContent = `Preostalo je još ${remaining} pitanja.`;
+      remainingNote.className = 'remaining-note urgent';
+    } else {
+      remainingNote.textContent = `Preostalo je još ${remaining} pitanja.`;
+      remainingNote.className = 'remaining-note';
+    }
+
+    const isGuessWho = q.tip === 'pogodi_ko_sam';
+    const clues = [q.trag1, q.trag2, q.trag3].filter(Boolean);
+
+    if (isGuessWho && clues.length > 0) {
+      questionText.textContent = q.text || 'Pogodi ko sam!';
+      clueBox.style.display = 'block';
+      if (revealedClues[currentQuestion] === undefined) revealedClues[currentQuestion] = 1;
+      renderClues(clues);
+    } else {
+      questionText.textContent = q.text;
+      clueBox.style.display = 'none';
+    }
+
+    answersWrap.innerHTML = '';
     q.answers.forEach((answerText, index) => {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -477,21 +550,43 @@
       btn.innerHTML = '<span class="answer-badge">' + ANSWER_LETTERS[index] + '</span><span>' + answerText + '</span>';
       btn.addEventListener('click', () => {
         selectedAnswers[currentQuestion] = index;
+        finishConfirmPending = false;
         renderQuestion();
         nextBtn.disabled = false;
       });
       answersWrap.appendChild(btn);
     });
 
+    const isLast = currentQuestion === activeQuestions.length - 1;
     nextBtn.disabled = selectedAnswers[currentQuestion] === null || selectedAnswers[currentQuestion] === undefined;
-    nextBtn.textContent = currentQuestion === activeQuestions.length - 1 ? 'Završi kviz' : 'Dalje';
-    setStatus(quizStatus, '');
+    nextBtn.textContent = finishConfirmPending && isLast ? 'Potvrdi predaju ✅' : (isLast ? 'Završi kviz' : 'Dalje');
+    setStatus(quizStatus, finishConfirmPending && isLast ? 'Provjeri odgovore - klikni ponovo da pošalješ kviz.' : '');
     renderDots();
 
-    // retrigger fade-in animation
     questionCard.style.animation = 'none';
     void questionCard.offsetWidth;
     questionCard.style.animation = '';
+  }
+
+  function renderClues(clues) {
+    const count = Math.min(revealedClues[currentQuestion] || 1, clues.length);
+    clueList.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const item = document.createElement('div');
+      item.className = 'clue-item';
+      item.innerHTML = '<span class="clue-num">Trag ' + (i + 1) + '</span><span>' + clues[i] + '</span>';
+      clueList.appendChild(item);
+    }
+    if (count < clues.length) {
+      clueRevealBtn.style.display = 'block';
+      clueRevealBtn.textContent = 'Sledeći trag (' + count + '/' + clues.length + ')';
+      clueRevealBtn.onclick = () => {
+        revealedClues[currentQuestion] = count + 1;
+        renderClues(clues);
+      };
+    } else {
+      clueRevealBtn.style.display = 'none';
+    }
   }
 
   async function apiRequest(payload) {
@@ -545,6 +640,8 @@
       participantToken = data.participantToken;
       activeQuestions = data.questions;
       selectedAnswers = new Array(activeQuestions.length).fill(null);
+      revealedClues = new Array(activeQuestions.length).fill(undefined);
+      finishConfirmPending = false;
       currentQuestion = 0;
 
       clientStartMs = Date.now();
@@ -566,7 +663,14 @@
     }
 
     if (currentQuestion < activeQuestions.length - 1) {
+      finishConfirmPending = false;
       currentQuestion++;
+      renderQuestion();
+      return;
+    }
+
+    if (!finishConfirmPending) {
+      finishConfirmPending = true;
       renderQuestion();
       return;
     }
@@ -581,6 +685,7 @@
       if (!data.success) {
         setStatus(quizStatus, data.message || 'Pokušaj ponovo.', 'error');
         nextBtn.disabled = false;
+        finishConfirmPending = false;
         return;
       }
 
@@ -590,6 +695,7 @@
       showResult();
     } catch (error) {
       nextBtn.disabled = false;
+      finishConfirmPending = false;
       setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
     }
   }
