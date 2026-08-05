@@ -31,10 +31,16 @@
       margin: 0; padding: 0; min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
-      background: radial-gradient(1200px 600px at 15% -10%, rgba(243,200,74,.08), transparent 60%),
-                  radial-gradient(900px 500px at 110% 10%, rgba(63,209,155,.06), transparent 55%),
-                  linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
       overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(243,200,74,.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(63,209,155,.08), transparent 55%),
+        linear-gradient(180deg, rgba(8,17,31,.88) 0%, rgba(13,26,48,.90) 50%, rgba(19,35,62,.92) 100%),
+        url('https://bluecutglasses.com/cdn/shop/articles/sports_d770a5db-f167-49f3-900d-f690b8aebd0a.jpg?v=1747375034') center center / cover no-repeat;
+      background-color: var(--bg-1);
     }
 
     img { max-width: 100%; display: block; }
@@ -102,12 +108,8 @@
     .quiz-shell, .result-shell { display: none; }
     .quiz-shell.active, .result-shell.active { display: block; }
 
-    /* ---------- Quiz layout ---------- */
     .quiz-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
-
-    .quiz-side {
-      display: flex; flex-direction: column; gap: 14px;
-    }
+    .quiz-side { display: flex; flex-direction: column; gap: 14px; }
 
     .quiz-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .counter, .timer { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--muted); }
@@ -138,11 +140,7 @@
       padding: 14px 16px;
       margin-bottom: 16px;
     }
-    .clue-item {
-      display: flex; gap: 10px; align-items: flex-start;
-      color: var(--text); font-size: 15px; line-height: 1.5;
-      padding: 6px 0;
-    }
+    .clue-item { display: flex; gap: 10px; align-items: flex-start; color: var(--text); font-size: 15px; line-height: 1.5; padding: 6px 0; }
     .clue-item + .clue-item { border-top: 1px solid rgba(255,255,255,.06); }
     .clue-num { flex: 0 0 auto; font-weight: 800; color: var(--accent-2); font-size: 13px; }
     .clue-reveal-btn {
@@ -198,7 +196,6 @@
 
     .footer-space { height: 14px; }
 
-    /* ---------- Responsive breakpoints ---------- */
     @media (min-width: 900px) {
       :root { --max: var(--max-wide); }
       .wrap { padding-top: 40px; }
@@ -392,7 +389,6 @@
   </div>
 
  <script>
-  // NAPOMENA: zamijeni ovaj URL nakon deploy-a Apps Script-a (vidi Code.gs)
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFWp77vnQ3lC62Wvr8J9IqjuPZS1gshI_3xfg0K7kPGeg7qoWq3VKFNyGUGTwVCeGXCg/exec';
   const ANSWER_LETTERS = ['A', 'B', 'C'];
 
@@ -670,7 +666,6 @@
 
   nextBtn.addEventListener('click', finishOrAdvance);
 
-  // Kreativna interakcija: tasteri 1/2/3 biraju odgovor, Enter potvrđuje
   document.addEventListener('keydown', (e) => {
     if (!quizSection.classList.contains('active')) return;
     if (['1', '2', '3'].includes(e.key)) {
