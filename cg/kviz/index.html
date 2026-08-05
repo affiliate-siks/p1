@@ -98,6 +98,17 @@
     .status { min-height: 22px; margin-top: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
     .status.error { color: var(--danger); }
     .status.success { color: var(--success); }
+    .status.loading { color: var(--accent-2); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .status.loading::before {
+      content: "";
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,223,124,.25);
+      border-top-color: var(--accent-2);
+      animation: spin .7s linear infinite;
+      flex: 0 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .details-wrap { margin-top: 14px; border-top: 1px solid rgba(255,255,255,.06); padding-top: 12px; }
     summary { list-style: none; cursor: pointer; color: var(--muted); font-size: 13px; display: inline-flex; align-items: center; gap: 8px; user-select: none; }
@@ -693,15 +704,17 @@
     }
 
     nextBtn.disabled = true;
-    setStatus(quizStatus, '');
+    nextBtn.textContent = 'Slanje...';
+    setStatus(quizStatus, 'Provjera odgovora i slanje kviza...', 'loading');
+    clearInterval(timerInterval);
 
     try {
       const data = await submitQuiz(selectedAnswers);
-      clearInterval(timerInterval);
 
       if (!data.success) {
         setStatus(quizStatus, data.message || 'Pokušaj ponovo.', 'error');
         nextBtn.disabled = false;
+        nextBtn.textContent = 'Završi kviz';
         return;
       }
 
@@ -711,6 +724,7 @@
       showResult();
     } catch (error) {
       nextBtn.disabled = false;
+      nextBtn.textContent = 'Završi kviz';
       setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
     }
   }
