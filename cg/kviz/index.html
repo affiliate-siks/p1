@@ -105,8 +105,26 @@
     .details-content { margin-top: 10px; display: grid; gap: 8px; }
     .detail-item { border: 1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 14px; padding: 12px 13px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 
-    .quiz-shell, .result-shell { display: none; }
-    .quiz-shell.active, .result-shell.active { display: block; }
+    .quiz-shell, .result-shell, .countdown-shell { display: none; }
+    .quiz-shell.active, .result-shell.active, .countdown-shell.active { display: block; }
+
+    .countdown-card { text-align: center; padding: 48px 24px; }
+    .countdown-title { margin: 0 0 22px; font-size: clamp(20px, 4vw, 26px); color: var(--muted); letter-spacing: .02em; }
+    .countdown-number {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 120px; height: 120px; border-radius: 50%;
+      background: linear-gradient(180deg, rgba(243,200,74,.14), rgba(255,223,124,.06));
+      border: 2px solid var(--line-strong);
+      font-size: 56px; font-weight: 900; color: var(--accent-2);
+      font-variant-numeric: tabular-nums;
+      animation: countdownPulse .9s ease infinite;
+    }
+    @keyframes countdownPulse {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .countdown-sub { margin: 22px 0 0; color: var(--muted); font-size: 14px; }
 
     .quiz-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
     .quiz-side { display: flex; flex-direction: column; gap: 14px; }
@@ -115,9 +133,10 @@
     .counter, .timer { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--muted); }
 
     .progress-dots { display: flex; flex-wrap: wrap; gap: 6px; }
-    .progress-dot { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.14); transition: background .2s ease, transform .2s ease; }
-    .progress-dot.done { background: var(--success); border-color: transparent; }
-    .progress-dot.current { background: var(--accent); border-color: transparent; transform: scale(1.3); }
+    .progress-dot { width: 10px; height: 10px; border-radius: 999px; background: transparent; border: 1.5px solid rgba(255,255,255,.16); transition: background .2s ease, border-color .2s ease, transform .2s ease, opacity .2s ease; }
+    .progress-dot.upcoming { border-color: var(--dot-color, rgba(255,255,255,.2)); opacity: .35; }
+    .progress-dot.done { background: var(--dot-color, var(--success)); border-color: transparent; opacity: .8; }
+    .progress-dot.current { background: var(--dot-color, var(--accent)); border-color: transparent; opacity: 1; transform: scale(1.4); box-shadow: 0 0 0 3px rgba(255,255,255,.10); }
 
     .keyboard-hint { display: none; color: var(--muted); font-size: 12px; text-align: center; }
 
@@ -317,6 +336,14 @@
       </div>
     </section>
 
+    <section class="section countdown-shell" id="countdownSection">
+      <div class="card countdown-card">
+        <p class="countdown-title">Spremite se za kviz!</p>
+        <div class="countdown-number" id="countdownNumber">5</div>
+        <p class="countdown-sub">Kviz kreće za trenutak...</p>
+      </div>
+    </section>
+
     <section class="section quiz-shell" id="quizSection">
       <div class="card">
         <div class="quiz-layout">
@@ -396,6 +423,8 @@
   const registerStatus = document.getElementById('registerStatus');
   const quizStatus = document.getElementById('quizStatus');
   const registerSection = document.getElementById('registerSection');
+  const countdownSection = document.getElementById('countdownSection');
+  const countdownNumber = document.getElementById('countdownNumber');
   const quizSection = document.getElementById('quizSection');
   const resultSection = document.getElementById('resultSection');
   const imeInput = document.getElementById('ime');
@@ -425,7 +454,6 @@
   let activeQuestions = [];
   let selectedAnswers = [];
   let revealedClues = [];
-  let finishConfirmPending = false;
   let timerInterval = null;
   let clientStartMs = null;
   let participantToken = '';
@@ -452,9 +480,26 @@
 
   function showQuiz() {
     registerSection.style.display = 'none';
+    countdownSection.classList.remove('active');
     quizSection.classList.add('active');
     resultSection.classList.remove('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function runCountdown(seconds) {
+    return new Promise((resolve) => {
+      let remaining = seconds;
+      countdownNumber.textContent = String(remaining);
+      const interval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(interval);
+          resolve();
+          return;
+        }
+        countdownNumber.textContent = String(remaining);
+      }, 1000);
+    });
   }
 
   function showResult() {
@@ -463,11 +508,17 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  const DIFFICULTY_DOT_COLORS = { lako: 'var(--success)', srednje: 'var(--accent)', tesko: 'var(--danger)' };
+
   function renderDots() {
     progressDots.innerHTML = '';
-    activeQuestions.forEach((_, i) => {
+    activeQuestions.forEach((q, i) => {
       const dot = document.createElement('span');
-      dot.className = 'progress-dot' + (i < currentQuestion ? ' done' : '') + (i === currentQuestion ? ' current' : '');
+      const diffKey = q.tezina || 'lako';
+      const state = i === currentQuestion ? 'current' : (i < currentQuestion ? 'done' : 'upcoming');
+      dot.className = 'progress-dot ' + state;
+      dot.style.setProperty('--dot-color', DIFFICULTY_DOT_COLORS[diffKey] || DIFFICULTY_DOT_COLORS.lako);
+      dot.title = DIFFICULTY_LABELS[diffKey] || diffKey;
       progressDots.appendChild(dot);
     });
   }
@@ -514,7 +565,6 @@
       btn.innerHTML = '<span class="answer-badge">' + ANSWER_LETTERS[index] + '</span><span>' + answerText + '</span>';
       btn.addEventListener('click', () => {
         selectedAnswers[currentQuestion] = index;
-        finishConfirmPending = false;
         renderQuestion();
         nextBtn.disabled = false;
       });
@@ -523,8 +573,8 @@
 
     const isLast = currentQuestion === activeQuestions.length - 1;
     nextBtn.disabled = selectedAnswers[currentQuestion] === null || selectedAnswers[currentQuestion] === undefined;
-    nextBtn.textContent = finishConfirmPending && isLast ? 'Potvrdi predaju ✅' : (isLast ? 'Završi kviz' : 'Dalje');
-    setStatus(quizStatus, finishConfirmPending && isLast ? 'Provjeri odgovore - klikni ponovo da pošalješ kviz.' : '');
+    nextBtn.textContent = isLast ? 'Završi kviz' : 'Dalje';
+    setStatus(quizStatus, '');
     renderDots();
 
     questionCard.style.animation = 'none';
@@ -593,9 +643,18 @@
     startBtn.disabled = true;
     setStatus(registerStatus, '');
 
+    registerSection.style.display = 'none';
+    countdownSection.classList.add('active');
+
     try {
-      const data = await reserveParticipant(ime, email);
+      const [data] = await Promise.all([
+        reserveParticipant(ime, email),
+        runCountdown(5)
+      ]);
+
       if (!data.success) {
+        countdownSection.classList.remove('active');
+        registerSection.style.display = '';
         setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
         startBtn.disabled = false;
         return;
@@ -605,7 +664,6 @@
       activeQuestions = data.questions;
       selectedAnswers = new Array(activeQuestions.length).fill(null);
       revealedClues = new Array(activeQuestions.length).fill(undefined);
-      finishConfirmPending = false;
       currentQuestion = 0;
 
       clientStartMs = Date.now();
@@ -615,6 +673,8 @@
       renderQuestion();
       showQuiz();
     } catch (error) {
+      countdownSection.classList.remove('active');
+      registerSection.style.display = '';
       setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
       startBtn.disabled = false;
     }
@@ -627,14 +687,7 @@
     }
 
     if (currentQuestion < activeQuestions.length - 1) {
-      finishConfirmPending = false;
       currentQuestion++;
-      renderQuestion();
-      return;
-    }
-
-    if (!finishConfirmPending) {
-      finishConfirmPending = true;
       renderQuestion();
       return;
     }
@@ -649,7 +702,6 @@
       if (!data.success) {
         setStatus(quizStatus, data.message || 'Pokušaj ponovo.', 'error');
         nextBtn.disabled = false;
-        finishConfirmPending = false;
         return;
       }
 
@@ -659,7 +711,6 @@
       showResult();
     } catch (error) {
       nextBtn.disabled = false;
-      finishConfirmPending = false;
       setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
     }
   }
