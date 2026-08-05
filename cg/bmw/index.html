@@ -336,6 +336,32 @@ padding:18px 24px; border-top:1px solid var(--gray-line);
 .stream-bar .chan a{color:#4C9AFF; text-decoration:none; font-weight:600;}
 .stream-bar .chan a:hover{text-decoration:underline;}
 
+/* sticky finale counter — vidljiv dok skrolujes van hero/finale sekcije */
+.sticky-counter{
+position:fixed; left:50%; bottom:18px; z-index:70;
+transform:translateX(-50%) translateY(140%); opacity:0;
+background:rgba(15,15,18,0.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+border:1px solid rgba(255,210,0,0.35); border-radius:100px;
+padding:11px 22px; display:flex; align-items:center; gap:14px;
+box-shadow:0 14px 34px rgba(0,0,0,0.5);
+transition:transform 320ms ease, opacity 320ms ease;
+}
+.sticky-counter.show{transform:translateX(-50%) translateY(0); opacity:1;}
+.sticky-counter .sc-label{
+font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.05em;
+white-space:nowrap;
+}
+.sticky-counter .sc-time{
+font-family:'Barlow Condensed'; font-weight:800; font-size:17px; color:var(--gold); white-space:nowrap;
+}
+.sticky-counter .sc-time small{font-family:'Inter'; font-weight:600; font-size:11px; color:var(--white); margin-right:8px;}
+.sticky-counter .sc-time small:last-child{margin-right:0;}
+@media (max-width:640px){
+.sticky-counter{left:14px; right:14px; bottom:14px; transform:translateY(140%); justify-content:center; border-radius:14px; padding:12px 16px;}
+.sticky-counter.show{transform:translateY(0);}
+.sticky-counter .sc-label{display:none;}
+}
+
 .prize-grid{
 display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
 }
@@ -538,6 +564,7 @@ section{padding:48px 0;}
 <div class="brand"><span class="dot"></span>IZ KOLA <span>U KOLA</span></div>
 <nav class="nav-links">
 <a href="#mehanika">Kako učestvovati</a>
+<a href="#nagrade">Nagrade</a>
 <a href="#kola">Kola i izvlačenja</a>
 <a href="#uzivo">Uživo</a>
 <a href="#finale">Finale — BMW</a>
@@ -549,6 +576,7 @@ section{padding:48px 0;}
 </div>
 <div class="mobile-menu" id="mobileMenu">
 <a href="#mehanika">Kako učestvovati</a>
+<a href="#nagrade">Nagrade</a>
 <a href="#kola">Kola i izvlačenja</a>
 <a href="#uzivo">Uživo</a>
 <a href="#finale">Finale — BMW</a>
@@ -611,68 +639,7 @@ section{padding:48px 0;}
 </div>
 </section>
 
-<section id="kola">
-<div class="section-blob" style="width:380px; height:380px; bottom:-160px; left:-140px; background:rgba(255,210,0,0.08);"></div>
-<div class="wrap">
-<div class="section-head reveal">
-<div class="eyebrow">Raspored</div>
-<h2>Iz kola u kola, sve do finala</h2>
-<p>Svako kolo se boduje samostalno — sedmične nagrade idu isključivo prijavama iz tog kola. Kuponi koji ne budu izvučeni kao dobitni u svom kolu ne propadaju, već ulaze i u veliko finale za BMW Serie 1.</p>
-</div>
-<div class="board reveal">
-<div class="board-row head"><span></span><span>Period kola</span><span>Listića u kolu</span><span>Izvlačenje</span></div>
-<div class="board-row"><span class="num">01</span><span class="period">17.08. – 23.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">03</span><span class="period">31.08. – 06.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">04</span><span class="period">07.09. – 13.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">05</span><span class="period">14.09. – 20.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">06</span><span class="period">21.09. – 27.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row final"><span class="num">07</span><span class="period">28.09. – 08.10.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično + FINALE 08–15.10.</span></div>
-</div>
-<div class="pool-total reveal">
-<div>
-<div class="lbl">Ukupno u fondu za finalno izvlačenje</div>
-<div class="val" id="poolTotal">0<span>listića</span></div>
-</div>
-<div class="updated" id="poolUpdated">Ažurirano: —</div>
-</div>
-<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Raspored kola je orijentacioni i računat od zvaničnog perioda uplata (17.08.–08.10.2026). Tačni datumi sedmičnih izvlačenja i finala biće blagovremeno objavljeni od strane Priređivača. Broj listića se ažurira nakon svakog kola.</p>
-</div>
-</section>
-
-<section id="uzivo" class="bg-alt">
-<div class="section-blob" style="width:380px; height:380px; top:-140px; left:-120px; background:rgba(255,210,0,0.08);"></div>
-<div class="wrap">
-<div class="section-head reveal">
-<div class="eyebrow">Prenos</div>
-<h2>Pratite izvlačenja uživo</h2>
-<p>Sedmična i finalno izvlačenje prenose se uživo na zvaničnim kanalima AdmiralBet-a. Snimak ostaje dostupan i nakon prenosa.</p>
-</div>
-<div class="stream-wrap reveal">
-<div class="stream-embed">
-<!-- ==========================================================
-        OVDJE ide embed striming platforme (YouTube/Kick/Twitch).
-        Zamijeni cijeli .stream-placeholder div sa iframe-om, npr:
-        <iframe src="https://www.youtube.com/embed/VIDEO_ID?autoplay=0"
-                title="Iz kola u kola — izvlačenje uživo"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-        ========================================================== -->
-<div class="stream-placeholder">
-<div class="play"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7L8 5z" fill="#FFD200"/></svg></div>
-<div class="when">Sledeći prenos: Kolo 1</div>
-<p>Prenos će biti aktivan u trenutku izvlačenja. Do tada ovdje stoji najava sa tačnim terminom.</p>
-</div>
-</div>
-<div class="stream-bar">
-<div class="status" id="streamStatus"><span class="dot"></span>Van prenosa</div>
-<div class="chan">Kanal: <a href="#" target="_blank" rel="noopener">YouTube — AdmiralBet</a></div>
-</div>
-</div>
-</div>
-</section>
-
-<section id="nagrade" class="bg-alt">
+<section id="nagrade">
 <div class="section-blob" style="width:400px; height:400px; top:-160px; right:-140px; background:rgba(0,87,184,0.14);"></div>
 <div class="wrap">
 <div class="section-head reveal">
@@ -704,6 +671,67 @@ section{padding:48px 0;}
 <div class="qty">7×</div>
 <div class="name">Električni trotinet</div>
 <div class="note">3.430,00 € ukupno</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="kola" class="bg-alt">
+<div class="section-blob" style="width:380px; height:380px; bottom:-160px; left:-140px; background:rgba(255,210,0,0.08);"></div>
+<div class="wrap">
+<div class="section-head reveal">
+<div class="eyebrow">Raspored</div>
+<h2>Iz kola u kola, sve do finala</h2>
+<p>Svako kolo se boduje samostalno — sedmične nagrade idu isključivo prijavama iz tog kola. Kuponi koji ne budu izvučeni kao dobitni u svom kolu ne propadaju, već ulaze i u veliko finale za BMW Serie 1.</p>
+</div>
+<div class="board reveal">
+<div class="board-row head"><span></span><span>Period kola</span><span>Listića u kolu</span><span>Izvlačenje</span></div>
+<div class="board-row"><span class="num">01</span><span class="period">17.08. – 23.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">03</span><span class="period">31.08. – 06.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">04</span><span class="period">07.09. – 13.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">05</span><span class="period">14.09. – 20.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">06</span><span class="period">21.09. – 27.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row final"><span class="num">07</span><span class="period">28.09. – 08.10.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično + FINALE 08–15.10.</span></div>
+</div>
+<div class="pool-total reveal">
+<div>
+<div class="lbl">Ukupno u fondu za finalno izvlačenje</div>
+<div class="val" id="poolTotal">0<span>listića</span></div>
+</div>
+<div class="updated" id="poolUpdated">Ažurirano: —</div>
+</div>
+<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Raspored kola je orijentacioni i računat od zvaničnog perioda uplata (17.08.–08.10.2026). Tačni datumi sedmičnih izvlačenja i finala biće blagovremeno objavljeni od strane Priređivača. Broj listića se ažurira nakon svakog kola.</p>
+</div>
+</section>
+
+<section id="uzivo">
+<div class="section-blob" style="width:380px; height:380px; top:-140px; left:-120px; background:rgba(255,210,0,0.08);"></div>
+<div class="wrap">
+<div class="section-head reveal">
+<div class="eyebrow">Prenos</div>
+<h2>Pratite izvlačenja uživo</h2>
+<p>Sedmična i finalno izvlačenje prenose se uživo na zvaničnim kanalima AdmiralBet-a. Snimak ostaje dostupan i nakon prenosa.</p>
+</div>
+<div class="stream-wrap reveal">
+<div class="stream-embed">
+<!-- ==========================================================
+        OVDJE ide embed striming platforme (YouTube/Kick/Twitch).
+        Zamijeni cijeli .stream-placeholder div sa iframe-om, npr:
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID?autoplay=0"
+                title="Iz kola u kola — izvlačenje uživo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        ========================================================== -->
+<div class="stream-placeholder">
+<div class="play"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7L8 5z" fill="#FFD200"/></svg></div>
+<div class="when">Sledeći prenos: Kolo 1</div>
+<p>Prenos će biti aktivan u trenutku izvlačenja. Do tada ovdje stoji najava sa tačnim terminom.</p>
+</div>
+</div>
+<div class="stream-bar">
+<div class="status" id="streamStatus"><span class="dot"></span>Van prenosa</div>
+<div class="chan">Kanal: <a href="#" target="_blank" rel="noopener">YouTube — AdmiralBet</a></div>
 </div>
 </div>
 </div>
@@ -765,7 +793,7 @@ section{padding:48px 0;}
 <h4>Član 6 — Postupak sprovođenja i izvlačenja nagrada</h4>
 <p>Pravo učešća ostvaruju lica sa aktivnim onlajn nalogom koja izvrše jednu od gore navedenih uplata. Učesnik na poleđini SSBT slipa čitko upisuje ID onlajn naloga, ime i prezime, e-mail adresu i broj telefona, te slip ubacuje u posebno označenu kutiju u poslovnici, najkasnije do isteka posljednjeg kola.</p>
 <p>Po isteku svakog kola, prijave iz svih poslovnica se objedinjuju i sprovodi se sedmično izvlačenje — učestvuju isključivo validni tiketi tog kola. Tiketi koji nijesu izvučeni kao dobitni prelaze u zajedničku kutiju namijenjenu finalnom izvlačenju, koja se dopunjava nakon svakog narednog kola. Svaki učesnik može biti dobitnik sedmične nagrade samo jednom po kolu, bez obzira na broj tiketa; u finalnom izvlačenju učestvuje sa svim validnim tiketima koji prethodno nijesu bili izvučeni kao dobitni. Izvlačenje se sprovodi javnim slučajnim izvlačenjem, uz načela transparentnosti, nepristrasnosti i fer-pleja, pod nadzorom komisije koju imenuje Priređivač.</p>
-<p><strong>Nagrade:</strong> 1× BMW Serie 1, 7× gejming laptop, 7× iPhone 17 Pro, 7× PlayStation 5, 7× električni trotinet.</p>
+<p><strong>Nagrade:</strong> 1× BMW Serie 1 (31.500,00 €), 7× gejming laptop (13.447,00 €), 7× iPhone 17 Pro (9.800,00 €), 7× PlayStation 5 (5.250,00 €), 7× električni trotinet (3.430,00 €). Ukupna vrijednost fonda: 63.427,00 € sa uračunatim PDV-om.</p>
 
 <h4>Član 7 — Način objave rezultata (dobitnika nagrade)</h4>
 <p>Video zapis i prenos izvlačenja objavljuju se na YouTube kanalu Priređivača i/ili drugim zvaničnim kanalima AdmiralBet-a. Dobitnik se obavještava telefonskim pozivom, SMS porukom i/ili e-mailom, na podatke upisane na tiketu. Priređivač javno objavljuje ime i prezime (ili inicijale), mjesto prebivališta i osvojenu nagradu, kao i eventualne fotografije dobitnika — dostupno najduže 90 dana od objave. Obrada i objava podataka vrši se u skladu sa važećim propisima o zaštiti podataka o ličnosti Crne Gore.</p>
@@ -811,6 +839,11 @@ section{padding:48px 0;}
 <p class="fine">Priređivač nagradne igre „Iz kola u kola“ je MNA Gaming doo, PIB: 02757192, sa sjedištem u Ul. Miloja Pavlovića br. 110, Podgorica, na osnovu Zakona o igrama na sreću („Sl. list CG“, br. 91/2025). Pravila nagradne igre objavljena su u dnevnom listu „Vijesti“, u skladu sa zakonskom obavezom.</p>
 </div>
 </footer>
+
+<div class="sticky-counter" id="stickyCounter">
+<span class="sc-label">Do finala — BMW Serie 1</span>
+<span class="sc-time"><small id="scDays">–</small>d <small id="scHours">–</small>h <small id="scMins">–</small>m</span>
+</div>
 
 <script>
 const revealEls = document.querySelectorAll('.reveal');
@@ -918,9 +951,40 @@ const m = Math.floor((diff % 3600000) / 60000);
 document.getElementById('cdDays').textContent = d;
 document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
 document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+const scDays = document.getElementById('scDays');
+const scHours = document.getElementById('scHours');
+const scMins = document.getElementById('scMins');
+if (scDays) scDays.textContent = d;
+if (scHours) scHours.textContent = String(h).padStart(2,'0');
+if (scMins) scMins.textContent = String(m).padStart(2,'0');
 }
 tick();
 setInterval(tick, 30000);
+
+// ==========================================================
+// STICKY COUNTER — prikaz dok je van hero-a i van finale sekcije
+// ==========================================================
+(function(){
+const sticky = document.getElementById('stickyCounter');
+const hero = document.querySelector('.hero');
+const finale = document.getElementById('finale');
+if (!sticky || !hero || !finale) return;
+let heroVisible = true;
+let finaleVisible = false;
+function refresh(){
+sticky.classList.toggle('show', !heroVisible && !finaleVisible);
+}
+if ('IntersectionObserver' in window) {
+const heroObs = new IntersectionObserver(entries => {
+entries.forEach(e => { heroVisible = e.isIntersecting; refresh(); });
+}, { threshold: 0.1 });
+heroObs.observe(hero);
+const finaleObs = new IntersectionObserver(entries => {
+entries.forEach(e => { finaleVisible = e.isIntersecting; refresh(); });
+}, { threshold: 0.15 });
+finaleObs.observe(finale);
+}
+})();
 </script>
 
 </body>
