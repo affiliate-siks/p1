@@ -259,9 +259,9 @@ padding-top:18px; border-top:1px solid var(--gray-line);
 background:var(--card); border:1px solid var(--gray-line); border-radius:16px; overflow:hidden;
 }
 .board-row{
-display:grid; grid-template-columns:68px 1fr 1fr;
+display:grid; grid-template-columns:56px 1fr 1fr 1fr;
 border-bottom:1px solid var(--gray-line);
-padding:22px 28px; align-items:center; gap:18px;
+padding:22px 28px; align-items:center; gap:14px;
 transition:background 150ms ease;
 }
 .board-row:not(.head):hover{background:rgba(0,87,184,0.08);}
@@ -272,15 +272,69 @@ text-transform:uppercase; letter-spacing:0.08em; color:var(--gray); padding:15px
 }
 .board-row .num{font-family:'Barlow Condensed'; font-size:24px; font-weight:800; letter-spacing:0.02em; color:#4C9AFF; text-align:center;}
 .board-row .period{font-size:14.5px; font-weight:500; letter-spacing:0.005em;}
+.board-row .listica{font-family:'IBM Plex Mono'; font-size:13px; color:var(--white); font-weight:600;}
+.board-row .listica .lbl{display:block; font-family:'Inter'; font-weight:500; font-size:10.5px; color:var(--gray); text-transform:none; letter-spacing:0; margin-top:2px;}
 .board-row .draw{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray);}
 .board-row.final{background:linear-gradient(90deg, rgba(255,210,0,0.12), transparent);}
 .board-row.final:hover{background:linear-gradient(90deg, rgba(255,210,0,0.18), transparent);}
 .board-row.final .num{color:var(--gold);}
 .board-row.final .draw{color:var(--gold); font-weight:600;}
+.board-row.final .listica{color:var(--gold);}
 @media (max-width:640px){
-.board-row{grid-template-columns:40px 1fr; row-gap:4px;}
-.board-row .draw{grid-column:2 / 3;}
+.board-row{grid-template-columns:34px 1fr 1fr; row-gap:4px; padding:16px 16px;}
+.board-row.head span:nth-child(4){display:none;}
+.board-row:not(.head) .draw{grid-column:1 / 4; margin-top:6px; padding-top:6px; border-top:1px dashed var(--gray-line);}
 }
+
+/* pool tracker — ukupno listica u fondu za finale */
+.pool-total{
+margin-top:22px; padding:26px 28px;
+background:linear-gradient(135deg, rgba(255,210,0,0.1), rgba(0,87,184,0.08));
+border:1px solid rgba(255,210,0,0.3); border-radius:16px;
+display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.pool-total .lbl{font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); margin-bottom:6px;}
+.pool-total .val{font-family:'Barlow Condensed'; font-weight:800; font-size:clamp(38px,7vw,54px); color:var(--gold); line-height:1;}
+.pool-total .val span{font-size:0.5em; color:var(--white); font-family:'Inter'; font-weight:600; margin-left:6px;}
+.pool-total .updated{font-size:11.5px; color:var(--gray); font-family:'IBM Plex Mono';}
+@media (max-width:640px){
+.pool-total{padding:20px 20px; flex-direction:column; align-items:flex-start;}
+}
+
+/* uzivo — streaming embed portal */
+.stream-wrap{
+background:var(--card); border:1px solid var(--gray-line); border-radius:16px;
+overflow:hidden; position:relative;
+}
+.stream-embed{
+position:relative; width:100%; aspect-ratio:16/9;
+background:
+radial-gradient(circle at 50% 50%, rgba(0,87,184,0.18), transparent 60%),
+#0A0A0D;
+display:flex; align-items:center; justify-content:center;
+}
+.stream-embed iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.stream-placeholder{
+display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; padding:20px;
+}
+.stream-placeholder .play{
+width:64px; height:64px; border-radius:50%; background:rgba(255,210,0,0.14);
+border:1.5px solid rgba(255,210,0,0.5); display:flex; align-items:center; justify-content:center;
+}
+.stream-placeholder .play svg{width:22px; height:22px; margin-left:3px;}
+.stream-placeholder p{font-size:13.5px; color:var(--gray); max-width:38ch; margin:0;}
+.stream-placeholder .when{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; color:var(--gold); letter-spacing:0.02em;}
+.stream-bar{
+display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+padding:18px 24px; border-top:1px solid var(--gray-line);
+}
+.stream-bar .status{display:flex; align-items:center; gap:9px; font-weight:700; font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray);}
+.stream-bar .status .dot{width:8px; height:8px; border-radius:50%; background:var(--gray); flex-shrink:0;}
+.stream-bar .status.live .dot{background:#FF3B3B; animation:pulse 1.2s ease-in-out infinite;}
+.stream-bar .status.live{color:#FF3B3B;}
+.stream-bar .chan{font-size:12.5px; color:var(--gray);}
+.stream-bar .chan a{color:#4C9AFF; text-decoration:none; font-weight:600;}
+.stream-bar .chan a:hover{text-decoration:underline;}
 
 .prize-grid{
 display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
@@ -363,6 +417,55 @@ display:flex; align-items:center; justify-content:center; flex-shrink:0;
 .foot-links a:hover{color:#fff;}
 .fine{font-size:11.5px; color:#5c5c62; line-height:1.65;}
 
+.legal-list{
+list-style:none; margin:0 0 28px; padding:0;
+display:grid; grid-template-columns:repeat(2,1fr); gap:10px 28px;
+}
+@media (max-width:820px){.legal-list{grid-template-columns:1fr;}}
+.legal-list li{
+font-size:12px; line-height:1.55; color:var(--gray);
+padding-left:16px; position:relative;
+}
+.legal-list li::before{
+content:"—"; position:absolute; left:0; top:0; color:#4C9AFF;
+}
+.legal-list li b{color:#c7c7ce; font-weight:600;}
+.legal-eyebrow{
+font-size:11.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+color:var(--gray); margin-bottom:14px;
+}
+
+/* full rules — accordion/dropdown */
+.rules-accordion{
+margin-bottom:28px; border:1px solid var(--gray-line); border-radius:14px;
+overflow:hidden; background:var(--card);
+}
+.rules-toggle{
+width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+padding:18px 22px; background:none; border:none; color:var(--white);
+font-family:'Inter'; font-weight:700; font-size:14px; cursor:pointer; text-align:left;
+}
+.rules-toggle:hover{background:rgba(255,255,255,0.03);}
+.rules-toggle .chev{
+transition:transform 220ms ease; color:var(--gold); font-size:13px; flex-shrink:0;
+width:26px; height:26px; border-radius:50%; border:1px solid rgba(255,210,0,0.35);
+display:flex; align-items:center; justify-content:center;
+}
+.rules-toggle[aria-expanded="true"] .chev{transform:rotate(180deg);}
+.rules-panel{display:grid; grid-template-rows:0fr; transition:grid-template-rows 340ms ease;}
+.rules-panel.open{grid-template-rows:1fr;}
+.rules-inner{overflow:hidden;}
+.rules-content{padding:2px 22px 26px; border-top:1px solid var(--gray-line);}
+.rules-content h4{
+font-family:'Barlow Condensed'; font-weight:700; font-size:16.5px; text-transform:none;
+letter-spacing:0.01em; color:var(--gold); margin:20px 0 8px;
+}
+.rules-content h4:first-of-type{margin-top:20px;}
+.rules-content p{font-size:12.5px; line-height:1.65; color:var(--gray); margin:0 0 8px;}
+.rules-content ul{margin:0 0 10px; padding-left:18px;}
+.rules-content li{font-size:12.5px; line-height:1.6; color:var(--gray); margin-bottom:4px;}
+.rules-content strong{color:#c7c7ce; font-weight:600;}
+
 @media (max-width:900px){
 section{padding:60px 0;}
 .stub-grid{gap:18px;}
@@ -436,6 +539,7 @@ section{padding:48px 0;}
 <nav class="nav-links">
 <a href="#mehanika">Kako učestvovati</a>
 <a href="#kola">Kola i izvlačenja</a>
+<a href="#uzivo">Uživo</a>
 <a href="#finale">Finale — BMW</a>
 <a href="#pravila">Pravila</a>
 </nav>
@@ -446,6 +550,7 @@ section{padding:48px 0;}
 <div class="mobile-menu" id="mobileMenu">
 <a href="#mehanika">Kako učestvovati</a>
 <a href="#kola">Kola i izvlačenja</a>
+<a href="#uzivo">Uživo</a>
 <a href="#finale">Finale — BMW</a>
 <a href="#pravila">Pravila</a>
 </div>
@@ -475,7 +580,7 @@ section{padding:48px 0;}
 <div class="section-head reveal">
 <div class="eyebrow">Kako učestvovati</div>
 <h2>Tri načina da uđeš u igru</h2>
-<p>Učestvuju isključivo uplate izvršene na SSBT terminalima u poslovnicama. Prijavu (ID naloga, ime i prezime, e-mail, broj telefona) upisuješ na poleđinu slipa i ubacuješ u kutiju do isteka kola.</p>
+<p>Učestvuju isključivo uplate izvršene na SSBT terminalima u poslovnicama, uz aktivan onlajn nalog. Prijavu (ID naloga, ime i prezime, e-mail, broj telefona) upisuješ na poleđinu slipa i ubacuješ u kutiju do isteka kola.</p>
 </div>
 <div class="stub-grid">
 <div class="stub reveal">
@@ -515,16 +620,55 @@ section{padding:48px 0;}
 <p>Svako kolo se boduje samostalno — sedmične nagrade idu isključivo prijavama iz tog kola. Kuponi koji ne budu izvučeni kao dobitni u svom kolu ne propadaju, već ulaze i u veliko finale za BMW Serie 1.</p>
 </div>
 <div class="board reveal">
-<div class="board-row head"><span></span><span>Period kola</span><span>Izvlačenje</span></div>
-<div class="board-row"><span class="num">01</span><span class="period">17.08. – 23.08.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">03</span><span class="period">31.08. – 06.09.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">04</span><span class="period">07.09. – 13.09.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">05</span><span class="period">14.09. – 20.09.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row"><span class="num">06</span><span class="period">21.09. – 27.09.</span><span class="draw">Sedmično izvlačenje</span></div>
-<div class="board-row final"><span class="num">07</span><span class="period">28.09. – 08.10.</span><span class="draw">Sedmično + FINALE 08–15.10.</span></div>
+<div class="board-row head"><span></span><span>Period kola</span><span>Listića u kolu</span><span>Izvlačenje</span></div>
+<div class="board-row"><span class="num">01</span><span class="period">17.08. – 23.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">02</span><span class="period">24.08. – 30.08.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">03</span><span class="period">31.08. – 06.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">04</span><span class="period">07.09. – 13.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">05</span><span class="period">14.09. – 20.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row"><span class="num">06</span><span class="period">21.09. – 27.09.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično izvlačenje</span></div>
+<div class="board-row final"><span class="num">07</span><span class="period">28.09. – 08.10.</span><span class="listica" data-listica="0">0<span class="lbl">listića</span></span><span class="draw">Sedmično + FINALE 08–15.10.</span></div>
 </div>
-<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Raspored kola je orijentacioni i računat od zvaničnog perioda uplata (17.08.–08.10.2026). Tačni datumi sedmičnih izvlačenja i finala biće blagovremeno objavljeni od strane Priređivača.</p>
+<div class="pool-total reveal">
+<div>
+<div class="lbl">Ukupno u fondu za finalno izvlačenje</div>
+<div class="val" id="poolTotal">0<span>listića</span></div>
+</div>
+<div class="updated" id="poolUpdated">Ažurirano: —</div>
+</div>
+<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Raspored kola je orijentacioni i računat od zvaničnog perioda uplata (17.08.–08.10.2026). Tačni datumi sedmičnih izvlačenja i finala biće blagovremeno objavljeni od strane Priređivača. Broj listića se ažurira nakon svakog kola.</p>
+</div>
+</section>
+
+<section id="uzivo" class="bg-alt">
+<div class="section-blob" style="width:380px; height:380px; top:-140px; left:-120px; background:rgba(255,210,0,0.08);"></div>
+<div class="wrap">
+<div class="section-head reveal">
+<div class="eyebrow">Prenos</div>
+<h2>Pratite izvlačenja uživo</h2>
+<p>Sedmična i finalno izvlačenje prenose se uživo na zvaničnim kanalima AdmiralBet-a. Snimak ostaje dostupan i nakon prenosa.</p>
+</div>
+<div class="stream-wrap reveal">
+<div class="stream-embed">
+<!-- ==========================================================
+        OVDJE ide embed striming platforme (YouTube/Kick/Twitch).
+        Zamijeni cijeli .stream-placeholder div sa iframe-om, npr:
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID?autoplay=0"
+                title="Iz kola u kola — izvlačenje uživo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        ========================================================== -->
+<div class="stream-placeholder">
+<div class="play"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7L8 5z" fill="#FFD200"/></svg></div>
+<div class="when">Sledeći prenos: Kolo 1</div>
+<p>Prenos će biti aktivan u trenutku izvlačenja. Do tada ovdje stoji najava sa tačnim terminom.</p>
+</div>
+</div>
+<div class="stream-bar">
+<div class="status" id="streamStatus"><span class="dot"></span>Van prenosa</div>
+<div class="chan">Kanal: <a href="#" target="_blank" rel="noopener">YouTube — AdmiralBet</a></div>
+</div>
+</div>
 </div>
 </section>
 
@@ -584,15 +728,87 @@ section{padding:48px 0;}
 <div class="wrap">
 <div class="compliance-bar">
 <div class="age-badge">18+</div>
-<p>Pravo učešća imaju isključivo punoljetna lica (18+). Zaposleni kod Priređivača, članovi komisije za izvlačenje i njihova uža porodica ne mogu učestvovati. Igrajte odgovorno — postavite sebi granice uloga i vremena igre. Igre na sreću mogu izazvati zavisnost.</p>
+<p>Pravo učešća imaju isključivo punoljetna lica (18+) sa aktivnim onlajn nalogom. Zaposleni kod Priređivača, članovi komisije za izvlačenje i njihova uža porodica ne mogu učestvovati. Igrajte odgovorno — postavite sebi granice uloga i vremena igre. Igre na sreću mogu izazvati zavisnost.</p>
 </div>
+
+<div class="rules-accordion">
+<button class="rules-toggle" id="rulesToggle" aria-expanded="false" aria-controls="rulesPanel">
+<span>📄 Puna pravila nagradne igre „Iz kola u kola“</span>
+<span class="chev">▾</span>
+</button>
+<div class="rules-panel" id="rulesPanel">
+<div class="rules-inner">
+<div class="rules-content">
+
+<h4>Član 1 — Podaci o Priređivaču</h4>
+<p>Priređivač nagradne igre pod nazivom „Iz kola u kola“ je MNA Gaming doo, PIB: 02757192, sa adresom sjedišta u Ul. Miloja Pavlovića br. 110, Podgorica.</p>
+
+<h4>Član 2 — Svrha priređivanja</h4>
+<p>Svrha ove nagradne igre je unapređenje prepoznatljivosti brenda, kao i pružanje dodatne zabave i pozitivnog iskustva učesnicima, uz poštovanje načela odgovornog priređivanja igara na sreću.</p>
+
+<h4>Član 3 — Vrijeme trajanja nagradne igre</h4>
+<p>Nagradna igra traje u periodu od 17.08.2026. do 08.10.2026. godine. Uplate koje su osnov za učešće primaju se u istom periodu, dok će datum izvlačenja glavne nagrade biti blagovremeno objavljen — izvlačenje će se realizovati u periodu 08.10–15.10.2026. godine.</p>
+
+<h4>Član 4 — Fond nagradne igre</h4>
+<p>Fond nagrada sastoji se isključivo od dobara koje Priređivač ne može zamijeniti za novac, čija ukupna vrijednost ne prelazi 100.000 EUR. Nagradni fond u vrijednosti većoj od 500 EUR koji ostane nepodijeljen nakon završetka igre, Priređivač je dužan prodati na javnom nadmetanju, a sredstva uplatiti u Budžet Crne Gore u roku od 90 dana od isteka roka za podizanje nagrade.</p>
+
+<h4>Član 5 — Uslovi za učestvovanje</h4>
+<p>Pravo učešća ostvaruje se isključivo uplatama na SSBT terminalima:</p>
+<ul>
+<li>sportski tiket — min. 5 EUR (najmanje 3 para, ukupna kvota min. 2,00);</li>
+<li>depozit na onlajn nalog — min. 5 EUR;</li>
+<li>Alea tiket — min. 3 EUR.</li>
+</ul>
+<p>Svaka ispunjena uplata predstavlja jedan (1) ulazni kupon, dok svaka naredna dodatna uplata (5 EUR odnosno 3 EUR za Alea tiket) ostvaruje pravo na jedan (1) dodatni kupon. Pravo učešća imaju isključivo punoljetna lica (18+). Ne mogu učestvovati zaposleni kod Priređivača, članovi komisije za izvlačenje dobitnika, kao ni članovi njihove uže porodice (bračni/vanbračni partner, roditelji, djeca, braća i sestre). Priređivač zadržava pravo diskvalifikacije učesnika koji postupi suprotno Pravilima, da netačne podatke ili zloupotrijebi sistem učešća.</p>
+<p>Lice koje ne želi da učestvuje, iako ispunjava uslove, dužno je da o tome bez odlaganja obavijesti Priređivača putem zvaničnih kanala podrške — od momenta prijema obavještenja, Priređivač isključuje učesnika iz daljeg učešća u najkraćem roku.</p>
+
+<h4>Član 6 — Postupak sprovođenja i izvlačenja nagrada</h4>
+<p>Pravo učešća ostvaruju lica sa aktivnim onlajn nalogom koja izvrše jednu od gore navedenih uplata. Učesnik na poleđini SSBT slipa čitko upisuje ID onlajn naloga, ime i prezime, e-mail adresu i broj telefona, te slip ubacuje u posebno označenu kutiju u poslovnici, najkasnije do isteka posljednjeg kola.</p>
+<p>Po isteku svakog kola, prijave iz svih poslovnica se objedinjuju i sprovodi se sedmično izvlačenje — učestvuju isključivo validni tiketi tog kola. Tiketi koji nijesu izvučeni kao dobitni prelaze u zajedničku kutiju namijenjenu finalnom izvlačenju, koja se dopunjava nakon svakog narednog kola. Svaki učesnik može biti dobitnik sedmične nagrade samo jednom po kolu, bez obzira na broj tiketa; u finalnom izvlačenju učestvuje sa svim validnim tiketima koji prethodno nijesu bili izvučeni kao dobitni. Izvlačenje se sprovodi javnim slučajnim izvlačenjem, uz načela transparentnosti, nepristrasnosti i fer-pleja, pod nadzorom komisije koju imenuje Priređivač.</p>
+<p><strong>Nagrade:</strong> 1× BMW Serie 1 (31.500,00 €), 7× gejming laptop (13.447,00 €), 7× iPhone 17 Pro (9.800,00 €), 7× PlayStation 5 (5.250,00 €), 7× električni trotinet (3.430,00 €). Ukupna vrijednost fonda: 63.427,00 € sa uračunatim PDV-om.</p>
+
+<h4>Član 7 — Način objave rezultata (dobitnika nagrade)</h4>
+<p>Video zapis i prenos izvlačenja objavljuju se na YouTube kanalu Priređivača i/ili drugim zvaničnim kanalima AdmiralBet-a. Dobitnik se obavještava telefonskim pozivom, SMS porukom i/ili e-mailom, na podatke upisane na tiketu. Priređivač javno objavljuje ime i prezime (ili inicijale), mjesto prebivališta i osvojenu nagradu, kao i eventualne fotografije dobitnika — dostupno najduže 90 dana od objave. Obrada i objava podataka vrši se u skladu sa važećim propisima o zaštiti podataka o ličnosti Crne Gore.</p>
+
+<h4>Član 8 — Rok za podizanje nagrade</h4>
+<p>Ukoliko dobitnik ne potvrdi prihvatanje nagrade u roku od 30 dana od dostavljanja obavještenja, dodjela se neće izvršiti i nagrada se vraća u nagradni fond ili dodjeljuje sljedećem dobitniku, po odluci Priređivača.</p>
+
+<h4>Član 9 — Procedura za podizanje nagrade</h4>
+<p>Dobitnik u roku od 30 dana potvrđuje prihvatanje nagrade i dogovara sa Priređivačem termin preuzimanja. Prije uručenja obavezna je lična identifikacija (lična karta ili pasoš). Nagrada se ne može prenijeti na treća lica niti zamijeniti za novac ili drugu robu/uslugu. Poreske obaveze i prenos vlasništva snosi Priređivač. Dobitnici pristaju da budu fotografisani/snimljeni prilikom uručenja, u promotivne svrhe, bez prava na dodatnu naknadu.</p>
+
+<h4>Član 10 — Komisija za praćenje regulatornosti</h4>
+<p>Priređivač obrazuje komisiju od tri člana koja vodi zapisnik o toku izvlačenja (mjesto, vrijeme, način izvlačenja, podaci o dobitniku) i dostavlja ga nadležnom organu u roku od osam (8) dana od izvlačenja.</p>
+
+<h4>Član 11 — Otkazivanje nagradne igre</h4>
+<p>Priređivač zadržava pravo da otkaže nagradnu igru u slučaju više sile ili drugih okolnosti van svoje razumne kontrole, bez odgovornosti za eventualnu štetu ili troškove učesnika nastale usljed otkazivanja.</p>
+
+<h4>Član 12 — Naknada za priređivanje nagradne igre</h4>
+<p>Priređivač se obavezuje da uplati 5% utvrđene vrijednosti nagradnog fonda u korist budžeta Crne Gore, prije podnošenja zahtjeva za odobrenje priređivanja nadležnom organu.</p>
+
+<h4>Član 13 — Saglasnost učesnika za obradu ličnih podataka</h4>
+<p>Učešćem u nagradnoj igri, učesnik potvrđuje da je upoznat sa Pravilima i da ih prihvata. Učesnik daje izričitu saglasnost da Priređivač, u slučaju dobitka, objavi i koristi njegovo ime i prezime, mjesto prebivališta, fotografije i video-snimke nastale prilikom uručenja nagrade, u promotivne svrhe i bez prava na naknadu. Učesnici takođe daju saglasnost za obradu ličnih podataka u obimu neophodnom za sprovođenje nagradne igre, u skladu sa važećim propisima o zaštiti podataka o ličnosti.</p>
+
+<h4>Član 14 — Rješavanje sporova</h4>
+<p>Eventualni sporovi rješavaju se mirnim putem i u duhu dobre poslovne prakse. Ukoliko sporazum ne bude postignut, nadležan je stvarno nadležni sud u Podgorici.</p>
+
+<h4>Član 15 — Odgovornost Priređivača</h4>
+<p>Priređivač ne snosi odgovornost za tehničke probleme, prekide u radu sistema ili druge okolnosti van svoje razumne kontrole, kao ni za štetu nastalu zloupotrebom korisničkog naloga od trećih lica. Odgovornost Priređivača, po bilo kom osnovu, ne može preći vrijednost osvojene nagrade.</p>
+
+<h4>Član 16 — Objavljivanje pravila</h4>
+<p>Ova Pravila biće objavljena u dnevnom listu „Vijesti“, u skladu sa zakonskom obavezom objave u najmanje jednom štampanom dnevnom mediju koji se distribuira na teritoriji Crne Gore.</p>
+
+</div>
+</div>
+</div>
+</div>
+
 <div class="foot-links">
 <a href="#">Puna pravila nagradne igre</a>
 <a href="#">Uslovi učešća</a>
 <a href="#">Kontakt za pitanja</a>
 <a href="#">Odgovorno igranje</a>
 </div>
-<p class="fine">Priređivač nagradne igre „Iz kola u kola“ je MNA Gaming doo, PIB: 02757192, sa sjedištem u Ul. Miloja Pavlovića br. 110, Podgorica. Pravila nagradne igre objavljena su u dnevnom listu „Vijesti“, u skladu sa Zakonom o igrama na sreću. Nagrada se ne može zamijeniti za novac niti prenijeti na treća lica.</p>
+<p class="fine">Priređivač nagradne igre „Iz kola u kola“ je MNA Gaming doo, PIB: 02757192, sa sjedištem u Ul. Miloja Pavlovića br. 110, Podgorica, na osnovu Zakona o igrama na sreću („Sl. list CG“, br. 91/2025). Pravila nagradne igre objavljena su u dnevnom listu „Vijesti“, u skladu sa zakonskom obavezom.</p>
 </div>
 </footer>
 
@@ -624,6 +840,71 @@ mobileMenu.classList.remove('open');
 navToggle.classList.remove('open');
 navToggle.setAttribute('aria-expanded', 'false');
 }));
+
+// ==========================================================
+// PUNA PRAVILA — dropdown/accordion toggle
+// ==========================================================
+const rulesToggle = document.getElementById('rulesToggle');
+const rulesPanel = document.getElementById('rulesPanel');
+if (rulesToggle && rulesPanel) {
+rulesToggle.addEventListener('click', () => {
+const isOpen = rulesPanel.classList.toggle('open');
+rulesToggle.setAttribute('aria-expanded', String(isOpen));
+});
+}
+
+// ==========================================================
+// BROJ LISTIĆA PO KOLU — ažuriranje pool-a za finalno izvlačenje
+// ==========================================================
+// Da ažuriraš broj listića nakon kola, promijeni data-listica="0"
+// na stvarni broj u odgovarajućem .board-row u HTML-u iznad
+// (svaki red ima data-listica atribut na .listica elementu).
+// Ukupan broj i tekst pored svake stavke se automatski
+// preračunavaju i ispisuju pri učitavanju stranice.
+function formatBroj(n){
+return new Intl.NumberFormat('sr-RS').format(n);
+}
+function initListica(){
+const rows = document.querySelectorAll('.listica[data-listica]');
+let total = 0;
+rows.forEach(el => {
+const val = parseInt(el.getAttribute('data-listica'), 10) || 0;
+total += val;
+el.childNodes[0].nodeValue = formatBroj(val);
+});
+const totalEl = document.getElementById('poolTotal');
+if (totalEl) {
+const span = totalEl.querySelector('span');
+animateCount(totalEl, total, span ? span.outerHTML : '');
+}
+const updatedEl = document.getElementById('poolUpdated');
+if (updatedEl) {
+const now = new Date();
+const datum = now.toLocaleDateString('sr-RS', { day:'2-digit', month:'2-digit', year:'numeric' });
+const vrijeme = now.toLocaleTimeString('sr-RS', { hour:'2-digit', minute:'2-digit' });
+updatedEl.textContent = `Ažurirano: ${datum} u ${vrijeme}`;
+}
+}
+function animateCount(el, target, suffixHTML){
+const dur = 900;
+const start = performance.now();
+function step(now){
+const p = Math.min(1, (now - start) / dur);
+const eased = 1 - Math.pow(1 - p, 3);
+const val = Math.round(target * eased);
+el.innerHTML = formatBroj(val) + suffixHTML;
+if (p < 1) requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+}
+initListica();
+
+// ==========================================================
+// STATUS PRENOSA — ručno prebaci klasu "live" na #streamStatus
+// kad prenos počne, npr: streamStatus.classList.add('live');
+// i promijeni tekst u "UŽIVO".
+// ==========================================================
+
 
 // odbrojavanje do otvaranja perioda finalnog izvlačenja (00:00, 08.10.2026)
 // tačan termin izvlačenja biće blagovremeno objavljen — ovo NIJE tačno vrijeme izvlačenja
