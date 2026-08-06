@@ -416,10 +416,14 @@
         </div>
 
         <div style="margin-top:18px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.10);">
-          <a href="https://bit.ly/4ue09AX" target="_blank" rel="noopener noreferrer">
-            <img src="https://admiralbet.me/assets/images/promotion/AXCSDVFBGFNHGJ.jpg" alt="AdmiralBET promocija" style="width:100%;height:auto;display:block;" />
+          <a href="https://bit.ly/4w3Zl2v" id="redirectBannerLink">
+            <picture>
+              <source media="(min-width: 700px)" srcset="https://admiralbet.me/assets/images/promotion/faesgrdtjfkuglizukzjthg.jpg" />
+              <img src="https://admiralbet.me/assets/images/promotion/ghngmhjhkjhjgfndvdcx.jpg" alt="AdmiralBET ponuda" style="width:100%;height:auto;display:block;" />
+            </picture>
           </a>
         </div>
+        <p class="sub" style="margin-top:14px;margin-bottom:0;font-size:13px;">Vodimo te na sledeću ponudu...</p>
       </div>
     </section>
 
@@ -513,10 +517,19 @@
     });
   }
 
+  const REDIRECT_URL = 'https://bit.ly/4w3Zl2v';
+  const REDIRECT_DELAY_MS = 5000;
+  let redirectTimeout = null;
+
   function showResult() {
     quizSection.classList.remove('active');
     resultSection.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (redirectTimeout) clearTimeout(redirectTimeout);
+    redirectTimeout = setTimeout(() => {
+      window.location.href = REDIRECT_URL;
+    }, REDIRECT_DELAY_MS);
   }
 
   const DIFFICULTY_DOT_COLORS = { lako: 'var(--success)', srednje: 'var(--accent)', tesko: 'var(--danger)' };
