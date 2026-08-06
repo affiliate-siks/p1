@@ -324,7 +324,11 @@
             <div>
               <label for="email">Email adresa</label>
               <input type="email" id="email" placeholder="Kao na admiralbet.me nalogu" maxlength="120" autocomplete="email" inputmode="email" />
-              <div class="field-note">Ime i email moraju biti isti kao na admiralbet.me nalogu, inače se nagrada ne dodjeljuje.</div>
+            </div>
+            <div>
+              <label for="playerId">ID igrača (admiralbet.me)</label>
+              <input type="text" id="playerId" placeholder="Broj korisničkog naloga" maxlength="40" autocomplete="off" inputmode="numeric" />
+              <div class="field-note">Ime, email i ID igrača moraju biti isti kao na admiralbet.me nalogu, inače se nagrada ne dodjeljuje.</div>
             </div>
           </div>
 
@@ -444,6 +448,7 @@
   const resultSection = document.getElementById('resultSection');
   const imeInput = document.getElementById('ime');
   const emailInput = document.getElementById('email');
+  const playerIdInput = document.getElementById('playerId');
   const websiteInput = document.getElementById('website');
   const privacyInput = document.getElementById('privacy');
   const questionCounter = document.getElementById('questionCounter');
@@ -637,11 +642,12 @@
     return await response.json();
   }
 
-  async function reserveParticipant(ime, email) {
+  async function reserveParticipant(ime, email, playerId) {
     return apiRequest({
       action: 'reserveParticipant',
       name: ime,
       email,
+      playerId,
       website: websiteInput.value,
       userAgent: navigator.userAgent,
       pageUrl: location.href,
@@ -659,9 +665,11 @@
   startBtn.addEventListener('click', async () => {
     const ime = imeInput.value.trim();
     const email = emailInput.value.trim().toLowerCase();
+    const playerId = playerIdInput.value.trim();
 
     if (ime.length < 2) { setStatus(registerStatus, 'Unesi ime i prezime.', 'error'); return; }
     if (!isValidEmail(email)) { setStatus(registerStatus, 'Provjeri unos email adrese.', 'error'); return; }
+    if (playerId.length < 3) { setStatus(registerStatus, 'Unesi ID igrača sa admiralbet.me naloga.', 'error'); return; }
     if (!privacyInput.checked) { setStatus(registerStatus, 'Potvrdi saglasnost.', 'error'); return; }
 
     startBtn.disabled = true;
@@ -672,7 +680,7 @@
 
     try {
       const [data] = await Promise.all([
-        reserveParticipant(ime, email),
+        reserveParticipant(ime, email, playerId),
         runCountdown(5)
       ]);
 
