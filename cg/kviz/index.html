@@ -282,6 +282,8 @@
 
     @media (min-width: 900px) { .cover-banner { margin-bottom: 26px; } }
   </style>
+  <!-- Sportradar ROS pixel - fires on every page load -->
+  <script src="https://a.sportradarserving.com/pixel?id=1003864&type=js&aid=1851"></script>
 </head>
 <body>
   <div class="wrap">
@@ -470,6 +472,34 @@
 
   const DIFFICULTY_LABELS = { lako: 'Lako', srednje: 'Srednje', tesko: 'Teško' };
 
+  // --- Sportradar tracking pixels: Engage/Start + Exit ---
+  let engagePixelFired = false;
+  let exitPixelFired = false;
+
+  function firePixel(id) {
+    const s = document.createElement('script');
+    s.src = 'https://a.sportradarserving.com/pixel?id=' + id + '&type=js&aid=1851';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
+  function fireEngagePixel() {
+    if (engagePixelFired) return;
+    engagePixelFired = true;
+    firePixel(1003865);
+  }
+
+  function fireExitPixel() {
+    if (exitPixelFired) return;
+    exitPixelFired = true;
+    firePixel(1003866);
+  }
+
+  // Engage/Start fires the moment the user starts typing into the registration form
+  [imeInput, emailInput, playerIdInput].forEach((el) => {
+    el.addEventListener('input', fireEngagePixel, { once: true });
+  });
+
   let currentQuestion = 0;
   let activeQuestions = [];
   let selectedAnswers = [];
@@ -530,6 +560,8 @@
     quizSection.classList.remove('active');
     resultSection.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    fireExitPixel();
 
     if (redirectTimeout) clearTimeout(redirectTimeout);
     redirectTimeout = setTimeout(() => {
