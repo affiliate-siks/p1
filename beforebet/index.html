@@ -632,6 +632,50 @@
     nav.mainnav button, .mobile-nav button{min-height:40px;}
   }
 
+  /* ========================================================
+     PREDICTOR — dedicated match-card, leaderboard highlight,
+     trend arrows and badge styling (new)
+     ======================================================== */
+  .predict-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+  .predict-card.submitted{opacity:.85;}
+  .predict-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+  .predict-teams{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+  .predict-team{flex:1;min-width:0;text-align:center;}
+  .predict-team-name{font-family:var(--serif);font-weight:600;font-size:14.5px;display:block;line-height:1.3;}
+  .predict-team.home .predict-team-name{text-align:right;}
+  .predict-team.away .predict-team-name{text-align:left;}
+  .predict-vs{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:4px 10px;}
+  .predict-kickoff{font-size:11px;color:var(--faint);white-space:nowrap;flex-shrink:0;}
+  .predict-outcome-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+  .predict-outcome{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 6px;text-align:center;font-family:var(--serif);font-weight:700;font-size:16px;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .predict-outcome span{font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--faint);}
+  .predict-outcome:hover{border-color:var(--gold);}
+  .predict-outcome.active{background:rgba(61,138,95,.16);border-color:var(--green);color:var(--green);}
+  .predict-outcome.active span{color:var(--green);}
+  .predict-outcome:disabled{cursor:default;}
+  .predict-score-input{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);}
+  .predict-score-input input{width:70px;padding:6px 9px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:12.5px;text-align:center;}
+  .predict-score-input input:focus{outline:none;border-color:var(--gold);}
+
+  .lead-row.me{background:var(--gold-soft);border-left:3px solid var(--gold);}
+  .lead-trend{width:16px;text-align:center;font-size:11px;font-weight:700;}
+  .lead-trend.up{color:var(--green);}
+  .lead-trend.down{color:var(--red);}
+  .lead-trend.same{color:var(--faint);}
+  .lead-form-row{display:flex;gap:3px;margin-top:3px;}
+  .lead-form-pip{width:14px;height:14px;border-radius:3px;font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .lead-form-pip.w{background:rgba(61,138,95,.25);color:var(--green);}
+  .lead-form-pip.l{background:rgba(178,75,69,.25);color:var(--red);}
+  .lead-badge-icons{font-size:11px;margin-left:6px;letter-spacing:1px;}
+
+  .badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .badge-card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+  .badge-card.locked{opacity:.45;}
+  .badge-icon{font-size:22px;flex-shrink:0;}
+  .badge-name{font-weight:700;font-size:12.5px;}
+  .badge-desc{font-size:11px;color:var(--faint);margin-top:2px;line-height:1.4;}
+  @media (max-width:640px){.badge-grid{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -1007,6 +1051,12 @@
       <div id="ptab-history" style="display:none;">
         <div id="predictorHistoryList"></div>
       </div>
+    </section>
+
+    <!-- ============ PREDICTOR PLAYER PROFILE (badges + history) ============ -->
+    <section class="view" id="view-predictor-profile">
+      <button class="back-link" onclick="go('predictor')">← Back to Predictor</button>
+      <div id="predictorProfileContent"></div>
     </section>
 
     <!-- ============ TIPSTERS (verified public track record + career ladder) ============ -->
@@ -1824,25 +1874,39 @@ let predictorPicks = {};
 let predictorSubmitted = false;
 let predictorLbScope = 'round';
 
+/* ---------- Badge definitions (new) — referenced by leaderboard rows and the player profile ---------- */
+const PREDICTOR_BADGES = {
+  'perfect-round': {icon:'🎯', label:'Perfect Round', desc:'Pogodio svih 6 ishoda u jednom kolu'},
+  'exact-master': {icon:'🎱', label:'Exact Score Master', desc:'5 ili više tačnih rezultata u sezoni'},
+  'streak-3': {icon:'🔥', label:'3-Round Streak', desc:'Odigrao 3 kola zaredom'},
+  'streak-5': {icon:'🔥', label:'5-Round Streak', desc:'Odigrao 5 kola zaredom'},
+  'top3': {icon:'🏅', label:'Top 3 Finish', desc:'Završio sezonu u top 3 na tabeli'},
+  'first-round': {icon:'⭐', label:'First Round', desc:'Odigrao svoje prvo kolo'},
+  'comeback': {icon:'📈', label:'Comeback', desc:'Popravio poziciju za 5+ mjesta u jednom kolu'},
+};
+
+/* trend: 'up' | 'down' | 'same' — vs. last round's season standing.
+   badges: array of PREDICTOR_BADGES keys already earned this season. */
 const predictorRoundLeaderboard = [
-  {name:'punter_kate', points:16},
-  {name:'footy_fran', points:14},
-  {name:'GaryB', points:13},
-  {name:'DaveM_UK', points:11},
-  {name:'slotsfan22', points:9},
+  {name:'punter_kate', points:16, trend:'up', form:['W','W','L','W','W']},
+  {name:'footy_fran', points:14, trend:'same', form:['W','L','W','W','L']},
+  {name:'GaryB', points:13, trend:'up', form:['L','W','W','L','W']},
+  {name:'DaveM_UK', points:11, trend:'down', form:['W','L','L','W','W']},
+  {name:'slotsfan22', points:9, trend:'down', form:['L','L','W','L','W']},
 ];
 const predictorSeasonLeaderboard = [
-  {name:'punter_kate', points:187, rounds:13},
-  {name:'accaboy', points:171, rounds:13},
-  {name:'footy_fran', points:164, rounds:12},
-  {name:'GaryB', points:158, rounds:13},
-  {name:'DaveM_UK', points:149, rounds:11},
-  {name:'careful_carla', points:132, rounds:10},
+  {name:'punter_kate', points:187, rounds:13, trend:'up', form:['W','W','L','W','W'], badges:['first-round','streak-5','perfect-round','top3']},
+  {name:'accaboy', points:171, rounds:13, trend:'same', form:['W','L','W','W','L'], badges:['first-round','streak-3','top3']},
+  {name:'footy_fran', points:164, rounds:12, trend:'up', form:['W','W','W','L','W'], badges:['first-round','streak-5','exact-master','top3']},
+  {name:'GaryB', points:158, rounds:13, trend:'down', form:['L','W','W','L','W'], badges:['first-round','streak-3','comeback']},
+  {name:'DaveM_UK', points:149, rounds:11, trend:'up', form:['W','L','L','W','W'], badges:['first-round']},
+  {name:'careful_carla', points:132, rounds:10, trend:'down', form:['L','L','W','L','W'], badges:['first-round']},
 ];
+/* Per-round "your points" line for Past Rounds — keyed by round number, You = the visitor. */
 const predictorPastRounds = [
-  {number:13, dateRange:'27–28 Jun 2026', topScorer:'punter_kate', topPoints:19, totalPlayers:842},
-  {number:12, dateRange:'20–21 Jun 2026', topScorer:'accaboy', topPoints:22, totalPlayers:801},
-  {number:11, dateRange:'13–14 Jun 2026', topScorer:'GaryB', topPoints:17, totalPlayers:779},
+  {number:13, dateRange:'27–28 Jun 2026', topScorer:'punter_kate', topPoints:19, totalPlayers:842, yourPoints:11},
+  {number:12, dateRange:'20–21 Jun 2026', topScorer:'accaboy', topPoints:22, totalPlayers:801, yourPoints:8},
+  {number:11, dateRange:'13–14 Jun 2026', topScorer:'GaryB', topPoints:17, totalPlayers:779, yourPoints:14},
 ];
 
 function renderPredictor(){
@@ -1878,22 +1942,23 @@ function renderPredictorMatches(){
     const outcomeBtns = ['1','X','2'].map(o=>{
       const label = o==='1' ? m.home.split(' ')[0] : (o==='2' ? m.away.split(' ')[0] : (isUK?'Draw':'X'));
       const active = pick.outcome===o;
-      return `<button class="chip ${active?'active':''}" ${predictorSubmitted?'disabled':''} onclick="setPredictorPick('${m.id}','${o}')" style="${predictorSubmitted?'opacity:.6;cursor:default;':''}">${label}</button>`;
+      return `<button class="predict-outcome ${active?'active':''}" ${predictorSubmitted?'disabled':''} onclick="setPredictorPick('${m.id}','${o}')">${o}<span>${label}</span></button>`;
     }).join('');
     return `
-    <div class="tourn-row" style="align-items:flex-start;flex-direction:column;gap:10px;">
-      <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:6px;">
-        <div>
-          <div class="tourn-name" style="font-size:14.5px;">${m.home} vs ${m.away}</div>
-          <div class="tourn-sub">${isUK?'Kickoff':'Fischio d\u2019inizio'}: ${m.kickoff}</div>
+    <div class="predict-card ${predictorSubmitted?'submitted':''}">
+      <div class="predict-top">
+        <div class="predict-teams">
+          <div class="predict-team home"><span class="predict-team-name">${m.home}</span></div>
+          <span class="predict-vs">vs</span>
+          <div class="predict-team away"><span class="predict-team-name">${m.away}</span></div>
         </div>
+        <div class="predict-kickoff">${isUK?'Kickoff':'Fischio d\u2019inizio'}: ${m.kickoff}</div>
       </div>
-      <div class="chip-row" style="margin-bottom:0;">${outcomeBtns}</div>
+      <div class="predict-outcome-row">${outcomeBtns}</div>
       ${pick.outcome ? `
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:11px;color:var(--faint);">${isUK?'Exact score (optional, bonus points)':'Risultato esatto (opzionale, bonus)'}:</span>
-        <input type="text" placeholder="e.g. 2-1" maxlength="5" value="${pick.score||''}" ${predictorSubmitted?'disabled':''}
-          style="width:70px;padding:6px 9px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:12.5px;${predictorSubmitted?'opacity:.6;':''}"
+      <div class="predict-score-input">
+        <span>${isUK?'Exact score (optional, bonus points):':'Risultato esatto (opzionale, bonus):'}</span>
+        <input type="text" placeholder="2-1" maxlength="5" value="${pick.score||''}" ${predictorSubmitted?'disabled':''}
           onchange="setPredictorScore('${m.id}', this.value)">
       </div>` : ''}
     </div>`;
@@ -1933,18 +1998,38 @@ function setPredictorLbScope(scope){
   document.getElementById('predictorLbSeasonChip').classList.toggle('active', scope==='season');
   renderPredictorLeaderboard();
 }
+function trendArrowHtml(trend){
+  if(trend==='up') return `<span class="lead-trend up">▲</span>`;
+  if(trend==='down') return `<span class="lead-trend down">▼</span>`;
+  return `<span class="lead-trend same">–</span>`;
+}
+function formPipsHtml(form){
+  if(!form || !form.length) return '';
+  return `<div class="lead-form-row">${form.map(f=>`<span class="lead-form-pip ${f==='W'?'w':'l'}">${f}</span>`).join('')}</div>`;
+}
 function renderPredictorLeaderboard(){
   const isUK = market==='UK';
   const list = predictorLbScope==='round' ? predictorRoundLeaderboard : predictorSeasonLeaderboard;
   const headCols = `<div class="lead-row head"><span>#</span><span>${isUK?'Player':'Giocatore'}</span><span></span><span></span><span>${isUK?'Rounds':'Turni'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
-  const rows = list.map((p,i)=>`
-    <div class="lead-row">
+  const rows = list.map((p,i)=>{
+    const isMe = p.name==='You';
+    const badgeIcons = (p.badges||[]).slice(0,3).map(bId=>PREDICTOR_BADGES[bId] ? PREDICTOR_BADGES[bId].icon : '').join('');
+    return `
+    <div class="lead-row ${isMe?'me':''}" style="cursor:pointer;" onclick="openPredictorProfile('${p.name}')">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
-      <div class="partner-name-cell"><div class="partner-avatar">${p.name.slice(0,2).toUpperCase()}</div><div>${p.name}</div></div>
-      <span></span><span></span>
+      <div class="partner-name-cell">
+        <div class="partner-avatar">${p.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div>${p.name}${isMe?` <span style="color:var(--gold);font-weight:700;">(${isUK?'you':'tu'})</span>`:''}${badgeIcons?`<span class="lead-badge-icons">${badgeIcons}</span>`:''}</div>
+          ${formPipsHtml(p.form)}
+        </div>
+      </div>
+      ${trendArrowHtml(p.trend)}
+      <span></span>
       <span>${p.rounds ? p.rounds : ''}</span>
       <span style="font-weight:700;color:var(--gold);">${p.points}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('predictorLeaderboardTable').innerHTML = headCols + rows;
 }
 function renderPredictorHistory(){
@@ -1958,8 +2043,52 @@ function renderPredictorHistory(){
       <div class="tourn-stats">
         <div class="tourn-stat"><div class="v">${r.topScorer}</div><div class="l">${isUK?'Top scorer':'Miglior punteggio'}</div></div>
         <div class="tourn-stat"><div class="v">${r.topPoints}</div><div class="l">${isUK?'Points':'Punti'}</div></div>
+        <div class="tourn-stat"><div class="v" style="color:var(--text);">${r.yourPoints}</div><div class="l">${isUK?'Your points':'I tuoi punti'}</div></div>
       </div>
     </div>`).join('');
+}
+
+/* ---------- Predictor player profile — badges + season snapshot (new) ---------- */
+function openPredictorProfile(name){
+  const p = predictorSeasonLeaderboard.find(x=>x.name===name) || predictorRoundLeaderboard.find(x=>x.name===name);
+  if(!p) return;
+  const isUK = market==='UK';
+  const allBadgeIds = Object.keys(PREDICTOR_BADGES);
+  const earned = new Set(p.badges||[]);
+  const badgeCardsHtml = allBadgeIds.map(bId=>{
+    const b = PREDICTOR_BADGES[bId];
+    const has = earned.has(bId);
+    return `<div class="badge-card ${has?'':'locked'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div><div class="badge-name">${b.label}</div><div class="badge-desc">${b.desc}${has?'':(isUK?' — not yet earned':' — ancora da ottenere')}</div></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('predictorProfileContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Predictor', action:"go('predictor')"},{label:p.name}])}
+    <div class="op-page-head">
+      <div style="display:flex;gap:16px;">
+        <div class="op-page-mark" style="background:${thumbGradient(p.name)};border:none;color:#fff;">${p.name.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div class="op-page-title"><h1>${p.name}</h1></div>
+          <div class="op-page-sub">${p.rounds ? (isUK?`${p.rounds} rounds played this season`:`${p.rounds} turni giocati questa stagione`) : (isUK?'This round':'Questo turno')}</div>
+          ${formPipsHtml(p.form)}
+        </div>
+      </div>
+      <div class="op-page-score"><div class="n">${p.points}</div><div class="l">${isUK?'points':'punti'}</div></div>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">${isUK?'Badges':'Bedževi'}</h3>
+    <div class="badge-grid">${badgeCardsHtml}</div>
+
+    <div class="sidebar-box" style="margin-top:20px;max-width:520px;">
+      <h4>${isUK?'How badges work':'Kako funkcionišu bedževi'}</h4>
+      <p style="font-size:11.5px;color:var(--dim);line-height:1.6;margin:0;">${isUK
+        ? 'Badges are earned automatically from your Predictor history — no material prizes attached, just recognition on your profile and leaderboard row.'
+        : 'Bedževi se dodjeljuju automatski na osnovu tvoje istorije u Predictoru — bez materijalnih nagrada, samo priznanje na profilu i u redu na tabeli.'}</p>
+    </div>
+  `;
+  go('predictor-profile');
 }
 
 /* ============================================================
@@ -2885,6 +3014,17 @@ document.querySelectorAll('#bkSubtabs button').forEach(b=>b.addEventListener('cl
   if(t==='headtohead') initCompare();
 }));
 
+/* ---------- Predictor subtabs (FIX: this listener was previously missing, which meant the
+   Leaderboard and Past Rounds panes existed in the DOM but nothing ever toggled them into
+   view — clicking those buttons did nothing) ---------- */
+document.querySelectorAll('#predictorSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#predictorSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.ptab;
+  document.getElementById('ptab-play').style.display=t==='play'?'block':'none';
+  document.getElementById('ptab-leaderboard').style.display=t==='leaderboard'?'block':'none';
+  document.getElementById('ptab-history').style.display=t==='history'?'block':'none';
+}));
+
 /* ---------- Odds ---------- */
 function renderOdds(){
   document.getElementById('oddsTbody').innerHTML = matches.map(m=>{
@@ -3490,7 +3630,7 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Round data streams in from the fixtures feed (Digitain / ExeFeed / SportRadar) via the Gamblio gamification engine — editorial picks which 6 matches go into a round.</p>
     <div class="admin-row"><div><div class="n">Round ${predictorRound.number} (current)</div><div class="m">${predictorRound.matches.length} matches · closes ${predictorRound.closesLabel}</div></div><span class="pill wait">Open for picks</span></div>
     ${predictorPastRounds.map(r=>`<div class="admin-row"><div><div class="n">Round ${r.number}</div><div class="m">${r.dateRange} · ${r.totalPlayers} players · top scorer ${r.topScorer} (${r.topPoints} pts)</div></div><span class="pill ok">Settled</span></div>`).join('')}
-    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Scoring engine: +${PREDICTOR_POINTS_OUTCOME} pts correct outcome, +${PREDICTOR_POINTS_EXACT_BONUS} pts exact-score bonus, identical for every player. No monetary prizes live — leaderboard status only pending legal review per market.</p>`,
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Scoring engine: +${PREDICTOR_POINTS_OUTCOME} pts correct outcome, +${PREDICTOR_POINTS_EXACT_BONUS} pts exact-score bonus, identical for every player. Badges (Perfect Round, Streaks, Top 3, etc.) are computed automatically from round history — no material prizes live, pending legal review per market.</p>`,
   quizadmin: ()=>{
     const next = nextQuizDate();
     const nextLabel = next.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'}) + ' 20:00';
