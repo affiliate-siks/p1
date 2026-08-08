@@ -237,6 +237,7 @@
   .pill.ok{color:var(--green);border-color:var(--green);}
   .pill.wait{color:var(--gold);border-color:var(--gold);}
   .pill.off{color:var(--faint);}
+  .pill.gold{color:#1a1400;background:var(--gold);border-color:var(--gold);}
   .admintabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;width:fit-content;margin-bottom:20px;}
   .admintabs button{background:none;border:none;color:var(--dim);font-size:12.5px;padding:7px 15px;border-radius:6px;}
   .admintabs button.active{background:var(--gold);color:#1a1400;font-weight:600;}
@@ -632,50 +633,6 @@
     nav.mainnav button, .mobile-nav button{min-height:40px;}
   }
 
-  /* ========================================================
-     PREDICTOR — dedicated match-card, leaderboard highlight,
-     trend arrows and badge styling (new)
-     ======================================================== */
-  .predict-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
-  .predict-card.submitted{opacity:.85;}
-  .predict-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
-  .predict-teams{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
-  .predict-team{flex:1;min-width:0;text-align:center;}
-  .predict-team-name{font-family:var(--serif);font-weight:600;font-size:14.5px;display:block;line-height:1.3;}
-  .predict-team.home .predict-team-name{text-align:right;}
-  .predict-team.away .predict-team-name{text-align:left;}
-  .predict-vs{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:4px 10px;}
-  .predict-kickoff{font-size:11px;color:var(--faint);white-space:nowrap;flex-shrink:0;}
-  .predict-outcome-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
-  .predict-outcome{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 6px;text-align:center;font-family:var(--serif);font-weight:700;font-size:16px;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:3px;}
-  .predict-outcome span{font-family:var(--body);font-weight:500;font-size:10.5px;color:var(--faint);}
-  .predict-outcome:hover{border-color:var(--gold);}
-  .predict-outcome.active{background:rgba(61,138,95,.16);border-color:var(--green);color:var(--green);}
-  .predict-outcome.active span{color:var(--green);}
-  .predict-outcome:disabled{cursor:default;}
-  .predict-score-input{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--faint);}
-  .predict-score-input input{width:70px;padding:6px 9px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:12.5px;text-align:center;}
-  .predict-score-input input:focus{outline:none;border-color:var(--gold);}
-
-  .lead-row.me{background:var(--gold-soft);border-left:3px solid var(--gold);}
-  .lead-trend{width:16px;text-align:center;font-size:11px;font-weight:700;}
-  .lead-trend.up{color:var(--green);}
-  .lead-trend.down{color:var(--red);}
-  .lead-trend.same{color:var(--faint);}
-  .lead-form-row{display:flex;gap:3px;margin-top:3px;}
-  .lead-form-pip{width:14px;height:14px;border-radius:3px;font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
-  .lead-form-pip.w{background:rgba(61,138,95,.25);color:var(--green);}
-  .lead-form-pip.l{background:rgba(178,75,69,.25);color:var(--red);}
-  .lead-badge-icons{font-size:11px;margin-left:6px;letter-spacing:1px;}
-
-  .badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .badge-card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
-  .badge-card.locked{opacity:.45;}
-  .badge-icon{font-size:22px;flex-shrink:0;}
-  .badge-name{font-weight:700;font-size:12.5px;}
-  .badge-desc{font-size:11px;color:var(--faint);margin-top:2px;line-height:1.4;}
-  @media (max-width:640px){.badge-grid{grid-template-columns:1fr;}}
-
 </style>
 </head>
 <body>
@@ -1037,6 +994,8 @@
           <span style="font-size:12px;color:var(--faint);" id="predictorProgressLabel"></span>
           <button class="btn btn-gold" id="predictorSubmitBtn" onclick="submitPredictorRound()">Submit predictions</button>
         </div>
+        <div id="predictorConfirmBox" style="margin-top:20px;"></div>
+        <p style="font-size:11px;color:var(--faint);margin-top:22px;max-width:600px;" id="predictorNoRewardsNote"></p>
       </div>
 
       <div id="ptab-leaderboard" style="display:none;">
@@ -1051,12 +1010,6 @@
       <div id="ptab-history" style="display:none;">
         <div id="predictorHistoryList"></div>
       </div>
-    </section>
-
-    <!-- ============ PREDICTOR PLAYER PROFILE (badges + history) ============ -->
-    <section class="view" id="view-predictor-profile">
-      <button class="back-link" onclick="go('predictor')">← Back to Predictor</button>
-      <div id="predictorProfileContent"></div>
     </section>
 
     <!-- ============ TIPSTERS (verified public track record + career ladder) ============ -->
@@ -1086,6 +1039,12 @@
     <section class="view" id="view-tipster-profile">
       <button class="back-link" onclick="go('tipsters')">← Back to Tipsters</button>
       <div id="tipsterProfileContent"></div>
+    </section>
+
+    <!-- ============ COMMUNITY ANALYSIS ARTICLE (published tip + live Stats Box) ============ -->
+    <section class="view" id="view-analysis-article">
+      <button class="back-link" onclick="go('guides')">← Back to Guides & News</button>
+      <div id="analysisArticleContent"></div>
     </section>
 
     <!-- ============ WEEKLY QUIZ (Zicer engine) ============ -->
@@ -1871,42 +1830,29 @@ const predictorRound = {
   ],
 };
 let predictorPicks = {};
+let predictorAccountEmail = '';
 let predictorSubmitted = false;
 let predictorLbScope = 'round';
 
-/* ---------- Badge definitions (new) — referenced by leaderboard rows and the player profile ---------- */
-const PREDICTOR_BADGES = {
-  'perfect-round': {icon:'🎯', label:'Perfect Round', desc:'Pogodio svih 6 ishoda u jednom kolu'},
-  'exact-master': {icon:'🎱', label:'Exact Score Master', desc:'5 ili više tačnih rezultata u sezoni'},
-  'streak-3': {icon:'🔥', label:'3-Round Streak', desc:'Odigrao 3 kola zaredom'},
-  'streak-5': {icon:'🔥', label:'5-Round Streak', desc:'Odigrao 5 kola zaredom'},
-  'top3': {icon:'🏅', label:'Top 3 Finish', desc:'Završio sezonu u top 3 na tabeli'},
-  'first-round': {icon:'⭐', label:'First Round', desc:'Odigrao svoje prvo kolo'},
-  'comeback': {icon:'📈', label:'Comeback', desc:'Popravio poziciju za 5+ mjesta u jednom kolu'},
-};
-
-/* trend: 'up' | 'down' | 'same' — vs. last round's season standing.
-   badges: array of PREDICTOR_BADGES keys already earned this season. */
 const predictorRoundLeaderboard = [
-  {name:'punter_kate', points:16, trend:'up', form:['W','W','L','W','W']},
-  {name:'footy_fran', points:14, trend:'same', form:['W','L','W','W','L']},
-  {name:'GaryB', points:13, trend:'up', form:['L','W','W','L','W']},
-  {name:'DaveM_UK', points:11, trend:'down', form:['W','L','L','W','W']},
-  {name:'slotsfan22', points:9, trend:'down', form:['L','L','W','L','W']},
+  {name:'punter_kate', points:16},
+  {name:'footy_fran', points:14},
+  {name:'GaryB', points:13},
+  {name:'DaveM_UK', points:11},
+  {name:'slotsfan22', points:9},
 ];
 const predictorSeasonLeaderboard = [
-  {name:'punter_kate', points:187, rounds:13, trend:'up', form:['W','W','L','W','W'], badges:['first-round','streak-5','perfect-round','top3']},
-  {name:'accaboy', points:171, rounds:13, trend:'same', form:['W','L','W','W','L'], badges:['first-round','streak-3','top3']},
-  {name:'footy_fran', points:164, rounds:12, trend:'up', form:['W','W','W','L','W'], badges:['first-round','streak-5','exact-master','top3']},
-  {name:'GaryB', points:158, rounds:13, trend:'down', form:['L','W','W','L','W'], badges:['first-round','streak-3','comeback']},
-  {name:'DaveM_UK', points:149, rounds:11, trend:'up', form:['W','L','L','W','W'], badges:['first-round']},
-  {name:'careful_carla', points:132, rounds:10, trend:'down', form:['L','L','W','L','W'], badges:['first-round']},
+  {name:'punter_kate', points:187, rounds:13},
+  {name:'accaboy', points:171, rounds:13},
+  {name:'footy_fran', points:164, rounds:12},
+  {name:'GaryB', points:158, rounds:13},
+  {name:'DaveM_UK', points:149, rounds:11},
+  {name:'careful_carla', points:132, rounds:10},
 ];
-/* Per-round "your points" line for Past Rounds — keyed by round number, You = the visitor. */
 const predictorPastRounds = [
-  {number:13, dateRange:'27–28 Jun 2026', topScorer:'punter_kate', topPoints:19, totalPlayers:842, yourPoints:11},
-  {number:12, dateRange:'20–21 Jun 2026', topScorer:'accaboy', topPoints:22, totalPlayers:801, yourPoints:8},
-  {number:11, dateRange:'13–14 Jun 2026', topScorer:'GaryB', topPoints:17, totalPlayers:779, yourPoints:14},
+  {number:13, dateRange:'27–28 Jun 2026', topScorer:'punter_kate', topPoints:19, totalPlayers:842},
+  {number:12, dateRange:'20–21 Jun 2026', topScorer:'accaboy', topPoints:22, totalPlayers:801},
+  {number:11, dateRange:'13–14 Jun 2026', topScorer:'GaryB', topPoints:17, totalPlayers:779},
 ];
 
 function renderPredictor(){
@@ -1914,25 +1860,29 @@ function renderPredictor(){
   document.getElementById('predictorHeading').textContent = isUK ? 'Predictor' : 'Pronostici';
   document.getElementById('predictorRoundSub').textContent = isUK ? `Round ${predictorRound.number}` : `Turno ${predictorRound.number}`;
   document.getElementById('predictorIntro').textContent = isUK
-    ? 'Pick the outcome of 6 matches every round. Get the result right for points, the exact score for a bonus. No account, no commitment — just pick and see where you land on the leaderboard.'
-    : 'Pronostica l\u2019esito di 6 partite ogni turno. Punti per il risultato giusto, bonus per il punteggio esatto. Nessun impegno — scegli e guarda la classifica.';
+    ? 'Pick the outcome of 6 matches every round. Get the result right for points, the exact score for a bonus. Free to play \\u2014 you\\u2019ll just need a free account to save your picks to the leaderboard.'
+    : 'Pronostica l\\u2019esito di 6 partite ogni turno. Punti per il risultato giusto, bonus per il punteggio esatto. Gratuito \\u2014ti servir\\u00e0 solo un account gratuito per salvare i pronostici in classifica.';
   document.getElementById('predictorTabPlayLabel').textContent = isUK ? 'This Round' : 'Turno Attuale';
   document.getElementById('predictorTabLbLabel').textContent = isUK ? 'Leaderboard' : 'Classifica';
   document.getElementById('predictorTabHistoryLabel').textContent = isUK ? 'Past Rounds' : 'Turni Passati';
   document.getElementById('predictorLbRoundChip').textContent = isUK ? 'This round' : 'Questo turno';
   document.getElementById('predictorLbSeasonChip').textContent = isUK ? 'Season' : 'Stagione';
+  document.getElementById('predictorNoRewardsNote').innerHTML = isUK
+    ? 'At launch, Predictor rewards are points, leaderboard position and digital badges only \u2014 no cash or physical prizes. Those depend on legal review per market. See <button onclick="openLegal(\'methodology\')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">How We Rate</button> for details.'
+    : 'Al lancio, le ricompense di Predictor sono solo punti, posizione in classifica e bedge digitali \\u2014 nessun premio in denaro o in natura, in attesa di revisione legale per mercato.';
 
   document.getElementById('predictorScoringBox').innerHTML = `
     <h4>${isUK?'Scoring':'Punteggio'}</h4>
     <div class="account-value-grid" style="margin-bottom:0;">
       <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_OUTCOME}</span><span>${isUK?'Correct outcome (1, X or 2)':'Esito corretto (1, X o 2)'}</span></div>
-      <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_EXACT_BONUS}</span><span>${isUK?'Bonus for the exact scoreline, on top of the outcome points':'Bonus per il punteggio esatto, in aggiunta ai punti per l\u2019esito'}</span></div>
+      <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_EXACT_BONUS}</span><span>${isUK?'Bonus for the exact scoreline, on top of the outcome points':'Bonus per il punteggio esatto, in aggiunta ai punti per l\\u2019esito'}</span></div>
     </div>
     <p style="font-size:11px;color:var(--faint);margin:10px 0 0;">${isUK?'Closes:':'Chiude:'} ${predictorRound.closesLabel}</p>
   `;
   renderPredictorMatches();
   renderPredictorLeaderboard();
   renderPredictorHistory();
+  if(predictorSubmitted) renderPredictorOddsComparison();
 }
 function renderPredictorMatches(){
   const isUK = market==='UK';
@@ -1942,23 +1892,22 @@ function renderPredictorMatches(){
     const outcomeBtns = ['1','X','2'].map(o=>{
       const label = o==='1' ? m.home.split(' ')[0] : (o==='2' ? m.away.split(' ')[0] : (isUK?'Draw':'X'));
       const active = pick.outcome===o;
-      return `<button class="predict-outcome ${active?'active':''}" ${predictorSubmitted?'disabled':''} onclick="setPredictorPick('${m.id}','${o}')">${o}<span>${label}</span></button>`;
+      return `<button class="chip ${active?'active':''}" ${predictorSubmitted?'disabled':''} onclick="setPredictorPick('${m.id}','${o}')" style="${predictorSubmitted?'opacity:.6;cursor:default;':''}">${label}</button>`;
     }).join('');
     return `
-    <div class="predict-card ${predictorSubmitted?'submitted':''}">
-      <div class="predict-top">
-        <div class="predict-teams">
-          <div class="predict-team home"><span class="predict-team-name">${m.home}</span></div>
-          <span class="predict-vs">vs</span>
-          <div class="predict-team away"><span class="predict-team-name">${m.away}</span></div>
+    <div class="tourn-row" style="align-items:flex-start;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:6px;">
+        <div>
+          <div class="tourn-name" style="font-size:14.5px;">${m.home} vs ${m.away}</div>
+          <div class="tourn-sub">${isUK?'Kickoff':'Fischio d\u2019inizio'}: ${m.kickoff}</div>
         </div>
-        <div class="predict-kickoff">${isUK?'Kickoff':'Fischio d\u2019inizio'}: ${m.kickoff}</div>
       </div>
-      <div class="predict-outcome-row">${outcomeBtns}</div>
+      <div class="chip-row" style="margin-bottom:0;">${outcomeBtns}</div>
       ${pick.outcome ? `
-      <div class="predict-score-input">
-        <span>${isUK?'Exact score (optional, bonus points):':'Risultato esatto (opzionale, bonus):'}</span>
-        <input type="text" placeholder="2-1" maxlength="5" value="${pick.score||''}" ${predictorSubmitted?'disabled':''}
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;color:var(--faint);">${isUK?'Exact score (optional, bonus points)':'Risultato esatto (opzionale, bonus)'}:</span>
+        <input type="text" placeholder="e.g. 2-1" maxlength="5" value="${pick.score||''}" ${predictorSubmitted?'disabled':''}
+          style="width:70px;padding:6px 9px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:12.5px;${predictorSubmitted?'opacity:.6;':''}"
           onchange="setPredictorScore('${m.id}', this.value)">
       </div>` : ''}
     </div>`;
@@ -1988,9 +1937,78 @@ function submitPredictorRound(){
     showToast(market==='UK' ? `Pick all ${predictorRound.matches.length} matches before submitting.` : `Seleziona tutte le ${predictorRound.matches.length} partite prima di inviare.`);
     return;
   }
+  if(!predictorAccountEmail){
+    renderPredictorAccountGate();
+    return;
+  }
+  finalizePredictorSubmit();
+}
+function renderPredictorAccountGate(){
+  const isUK = market==='UK';
+  document.getElementById('predictorConfirmBox').innerHTML = `
+    <div class="sidebar-box" style="border-color:var(--gold);">
+      <h4>${isUK?'One step left \\u2014 create your free account':'Un ultimo passo \\u2014 crea il tuo account gratuito'}</h4>
+      <p style="font-size:11.5px;color:var(--dim);margin:0 0 12px;">${isUK?'Predictor needs an account so your picks count toward the leaderboard. Takes 10 seconds \\u2014 email only, no card required.':'Predictor richiede un account per far contare i tuoi pronostici in classifica. Bastano 10 secondi \\u2014 solo email, nessuna carta richiesta.'}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="email" id="predictorEmailInput" placeholder="${isUK?'you@email.com':'tu@email.com'}" style="flex:1;min-width:180px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13px;">
+        <button class="btn btn-gold" onclick="confirmPredictorRegistration()">${isUK?'Create account & submit':'Crea account e invia'}</button>
+      </div>
+    </div>`;
+}
+function confirmPredictorRegistration(){
+  const isUK = market==='UK';
+  const input = document.getElementById('predictorEmailInput');
+  const email = input.value.trim();
+  if(!email || !email.includes('@')){
+    input.style.borderColor = 'var(--red)';
+    showToast(isUK ? 'Enter a valid email to continue.' : 'Inserisci un\\u2019email valida per continuare.');
+    return;
+  }
+  predictorAccountEmail = email;
+  finalizePredictorSubmit();
+}
+function finalizePredictorSubmit(){
+  const isUK = market==='UK';
   predictorSubmitted = true;
   renderPredictorMatches();
-  showToast(market==='UK' ? `Round ${predictorRound.number} submitted — check the leaderboard after kickoff.` : `Turno ${predictorRound.number} inviato — controlla la classifica dopo il fischio d\u2019inizio.`);
+  renderPredictorOddsComparison();
+  showToast(isUK ? `Round ${predictorRound.number} submitted \\u2014 check the leaderboard after kickoff.` : `Turno ${predictorRound.number} inviato \\u2014 controlla la classifica dopo il fischio d\\u2019inizio.`);
+}
+/* ---------- Odds comparison shown right under a submitted Predictor round \\u2014 same "predict,
+   then see where to bet it" pattern as rezultati.com / Sofascore match pages. Fake odds generated
+   deterministically per match so they stay stable across re-renders. ---------- */
+function renderPredictorOddsComparison(){
+  const isUK = market==='UK';
+  const bkList = bookmakers.filter(b=>b.market===market).slice(0,3);
+  if(!bkList.length){ document.getElementById('predictorConfirmBox').innerHTML=''; return; }
+  const rows = predictorRound.matches.map(m=>{
+    const pick = predictorPicks[m.id] || {};
+    const pickLabel = pick.outcome==='1' ? m.home : (pick.outcome==='2' ? m.away : (isUK?'Draw':'Pareggio'));
+    const seed = hashStr(m.id);
+    const oddsCells = bkList.map((b,i)=>{
+      const base = 1.7 + ((seed + i*37) % 140)/100;
+      return base.toFixed(2);
+    });
+    const bestIdx = oddsCells.map(Number).indexOf(Math.max(...oddsCells.map(Number)));
+    return `<tr>
+      <td>${m.home} vs ${m.away}</td>
+      <td style="color:var(--gold);">${pickLabel}</td>
+      ${oddsCells.map((o,i)=>`<td class="${i===bestIdx?'best':''}">${o}</td>`).join('')}
+      <td><button class="btn btn-gold" style="padding:6px 12px;font-size:11.5px;" onclick="simulateClick('${bkList[bestIdx].id}')">${isUK?'Bet this':'Scommetti'}</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('predictorConfirmBox').innerHTML = `
+    <div class="verdict-box">
+      <div class="k">✓ ${isUK?'Predictions submitted':'Pronostici inviati'}</div>
+      <div style="font-size:12.5px;color:var(--dim);">${isUK?'Since you\\u2019re predicting these matches anyway, here\\u2019s where the best price is right now.':'Dato che stai gi\\u00e0 pronosticando queste partite, ecco dove trovare la quota migliore adesso.'}</div>
+    </div>
+    <h3 style="font-family:var(--serif);font-size:16px;margin:0 0 12px;">${isUK?'Compare odds for your picks':'Confronta le quote per i tuoi pronostici'}</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>${isUK?'Match':'Partita'}</th><th>${isUK?'Your pick':'Il tuo pronostico'}</th>${bkList.map(b=>`<th>${b.name}</th>`).join('')}<th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 }
 function setPredictorLbScope(scope){
   predictorLbScope = scope;
@@ -1998,38 +2016,18 @@ function setPredictorLbScope(scope){
   document.getElementById('predictorLbSeasonChip').classList.toggle('active', scope==='season');
   renderPredictorLeaderboard();
 }
-function trendArrowHtml(trend){
-  if(trend==='up') return `<span class="lead-trend up">▲</span>`;
-  if(trend==='down') return `<span class="lead-trend down">▼</span>`;
-  return `<span class="lead-trend same">–</span>`;
-}
-function formPipsHtml(form){
-  if(!form || !form.length) return '';
-  return `<div class="lead-form-row">${form.map(f=>`<span class="lead-form-pip ${f==='W'?'w':'l'}">${f}</span>`).join('')}</div>`;
-}
 function renderPredictorLeaderboard(){
   const isUK = market==='UK';
   const list = predictorLbScope==='round' ? predictorRoundLeaderboard : predictorSeasonLeaderboard;
   const headCols = `<div class="lead-row head"><span>#</span><span>${isUK?'Player':'Giocatore'}</span><span></span><span></span><span>${isUK?'Rounds':'Turni'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
-  const rows = list.map((p,i)=>{
-    const isMe = p.name==='You';
-    const badgeIcons = (p.badges||[]).slice(0,3).map(bId=>PREDICTOR_BADGES[bId] ? PREDICTOR_BADGES[bId].icon : '').join('');
-    return `
-    <div class="lead-row ${isMe?'me':''}" style="cursor:pointer;" onclick="openPredictorProfile('${p.name}')">
+  const rows = list.map((p,i)=>`
+    <div class="lead-row">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
-      <div class="partner-name-cell">
-        <div class="partner-avatar">${p.name.slice(0,2).toUpperCase()}</div>
-        <div>
-          <div>${p.name}${isMe?` <span style="color:var(--gold);font-weight:700;">(${isUK?'you':'tu'})</span>`:''}${badgeIcons?`<span class="lead-badge-icons">${badgeIcons}</span>`:''}</div>
-          ${formPipsHtml(p.form)}
-        </div>
-      </div>
-      ${trendArrowHtml(p.trend)}
-      <span></span>
+      <div class="partner-name-cell"><div class="partner-avatar">${p.name.slice(0,2).toUpperCase()}</div><div>${p.name}</div></div>
+      <span></span><span></span>
       <span>${p.rounds ? p.rounds : ''}</span>
       <span style="font-weight:700;color:var(--gold);">${p.points}</span>
-    </div>`;
-  }).join('');
+    </div>`).join('');
   document.getElementById('predictorLeaderboardTable').innerHTML = headCols + rows;
 }
 function renderPredictorHistory(){
@@ -2043,84 +2041,78 @@ function renderPredictorHistory(){
       <div class="tourn-stats">
         <div class="tourn-stat"><div class="v">${r.topScorer}</div><div class="l">${isUK?'Top scorer':'Miglior punteggio'}</div></div>
         <div class="tourn-stat"><div class="v">${r.topPoints}</div><div class="l">${isUK?'Points':'Punti'}</div></div>
-        <div class="tourn-stat"><div class="v" style="color:var(--text);">${r.yourPoints}</div><div class="l">${isUK?'Your points':'I tuoi punti'}</div></div>
       </div>
     </div>`).join('');
-}
-
-/* ---------- Predictor player profile — badges + season snapshot (new) ---------- */
-function openPredictorProfile(name){
-  const p = predictorSeasonLeaderboard.find(x=>x.name===name) || predictorRoundLeaderboard.find(x=>x.name===name);
-  if(!p) return;
-  const isUK = market==='UK';
-  const allBadgeIds = Object.keys(PREDICTOR_BADGES);
-  const earned = new Set(p.badges||[]);
-  const badgeCardsHtml = allBadgeIds.map(bId=>{
-    const b = PREDICTOR_BADGES[bId];
-    const has = earned.has(bId);
-    return `<div class="badge-card ${has?'':'locked'}">
-      <div class="badge-icon">${b.icon}</div>
-      <div><div class="badge-name">${b.label}</div><div class="badge-desc">${b.desc}${has?'':(isUK?' — not yet earned':' — ancora da ottenere')}</div></div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('predictorProfileContent').innerHTML = `
-    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Predictor', action:"go('predictor')"},{label:p.name}])}
-    <div class="op-page-head">
-      <div style="display:flex;gap:16px;">
-        <div class="op-page-mark" style="background:${thumbGradient(p.name)};border:none;color:#fff;">${p.name.slice(0,2).toUpperCase()}</div>
-        <div>
-          <div class="op-page-title"><h1>${p.name}</h1></div>
-          <div class="op-page-sub">${p.rounds ? (isUK?`${p.rounds} rounds played this season`:`${p.rounds} turni giocati questa stagione`) : (isUK?'This round':'Questo turno')}</div>
-          ${formPipsHtml(p.form)}
-        </div>
-      </div>
-      <div class="op-page-score"><div class="n">${p.points}</div><div class="l">${isUK?'points':'punti'}</div></div>
-    </div>
-
-    <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">${isUK?'Badges':'Bedževi'}</h3>
-    <div class="badge-grid">${badgeCardsHtml}</div>
-
-    <div class="sidebar-box" style="margin-top:20px;max-width:520px;">
-      <h4>${isUK?'How badges work':'Kako funkcionišu bedževi'}</h4>
-      <p style="font-size:11.5px;color:var(--dim);line-height:1.6;margin:0;">${isUK
-        ? 'Badges are earned automatically from your Predictor history — no material prizes attached, just recognition on your profile and leaderboard row.'
-        : 'Bedževi se dodjeljuju automatski na osnovu tvoje istorije u Predictoru — bez materijalnih nagrada, samo priznanje na profilu i u redu na tabeli.'}</p>
-    </div>
-  `;
-  go('predictor-profile');
 }
 
 /* ============================================================
    TIPSTERS — verified public pick record + career ladder
    ============================================================ */
 const tipsters = [
-  {id:'punter_kate', name:'punter_kate', seasonPoints:412.5, hitRate:58, avgOdds:2.35, sampleSize:96, form:['W','W','L','W','W'],
+  {id:'punter_kate', name:'punter_kate', seasonPoints:412.5, hitRate:58, avgOdds:2.35, sampleSize:96, last6moPicks:54, monthlyProfitable:[true,true,false,true,true,true], streak:4, form:['W','W','L','W','W'],
     bio:'Focuses on Premier League and Championship value bets, especially in-form mid-table sides against bigger favourites.',
-    featured:true, featuredTitle:'Why Riverside FC are worth backing against the form table', tier:'Featured Analyst',
+    featured:true, featuredTitle:'Why Riverside FC are worth backing against the form table',
     history:[
       {match:'Riverside FC vs Old Mill Town', pick:'Riverside FC to win', odds:2.40, result:'won', reasoning:'Old Mill Town have lost their last three away league games and are missing their first-choice centre-back pairing through injury. Riverside are unbeaten at home since March.'},
-      {match:'North Harbour vs Castlegate United', pick:'Under 2.5 goals', odds:1.85, result:'won', reasoning:'Both sides have gone under 2.5 in five of their last six meetings — a genuinely low-event fixture historically, and neither manager has changed their setup.'},
-      {match:'Bright Star Athletic vs Vale Rangers', pick:'Bright Star Athletic to win', odds:2.10, result:'lost', reasoning:'Backed home form continuing, but Vale Rangers pressed high all game and deserved the win — this one didn\u2019t play out as expected.'},
+      {match:'North Harbour vs Castlegate United', pick:'Under 2.5 goals', odds:1.85, result:'won', reasoning:'Both sides have gone under 2.5 in five of their last six meetings \u2014 a genuinely low-event fixture historically, and neither manager has changed their setup.'},
+      {match:'Bright Star Athletic vs Vale Rangers', pick:'Bright Star Athletic to win', odds:2.10, result:'lost', reasoning:'Backed home form continuing, but Vale Rangers pressed high all game and deserved the win \u2014 this one didn\u2019t play out as expected.'},
     ]},
-  {id:'accaboy', name:'accaboy', seasonPoints:398.0, hitRate:52, avgOdds:2.80, sampleSize:104, form:['W','L','W','W','L'],
-    bio:'Higher-odds, higher-variance picks — mostly upsets and both-teams-to-score angles across multiple leagues.',
-    featured:false, tier:'User',
+  {id:'accaboy', name:'accaboy', seasonPoints:398.0, hitRate:52, avgOdds:2.80, sampleSize:104, last6moPicks:61, monthlyProfitable:[true,false,true,true,false,true], streak:2, form:['W','L','W','W','L'],
+    bio:'Higher-odds, higher-variance picks \u2014 mostly upsets and both-teams-to-score angles across multiple leagues.',
+    featured:false,
     history:[
       {match:'Iron Bridge City vs Sable Wanderers', pick:'Sable Wanderers to win', odds:3.20, result:'won', reasoning:'Sable have been the better side in each of the last two meetings despite the odds. Iron Bridge are without their top scorer.'},
       {match:'Ashford Rovers vs Millbrook Town', pick:'Both teams to score', odds:1.75, result:'won', reasoning:'Both defences have shipped goals in six of their last seven games combined.'},
     ]},
-  {id:'footy_fran', name:'footy_fran', seasonPoints:355.5, hitRate:61, avgOdds:1.95, sampleSize:88, form:['W','W','W','L','W'],
+  {id:'footy_fran', name:'footy_fran', seasonPoints:355.5, hitRate:61, avgOdds:1.95, sampleSize:88, last6moPicks:47, monthlyProfitable:[true,true,true,true,false,true], streak:5, form:['W','W','W','L','W'],
     bio:'Conservative, favourite-leaning approach with a strong hit rate but lower average odds.',
-    featured:true, featuredTitle:'The stat behind North Harbour\u2019s unbeaten home run', tier:'Featured Analyst',
+    featured:true, featuredTitle:'The stat behind North Harbour\u2019s unbeaten home run',
     history:[
       {match:'North Harbour vs Castlegate United', pick:'North Harbour to win', odds:1.90, result:'won', reasoning:'North Harbour have won 8 of their last 9 at home, and Castlegate have picked up just one point on the road all season.'},
     ]},
-  {id:'GaryB', name:'GaryB', seasonPoints:340.0, hitRate:49, avgOdds:2.60, sampleSize:81, form:['L','W','W','L','W'], featured:false, tier:'User',
+  {id:'GaryB', name:'GaryB', seasonPoints:340.0, hitRate:49, avgOdds:2.60, sampleSize:81, last6moPicks:38, monthlyProfitable:[false,true,true,false,true,false], streak:0, form:['L','W','W','L','W'], featured:false,
     bio:'Mixed portfolio across football and tennis, leaning on head-to-head history.', history:[]},
-  {id:'DaveM_UK', name:'DaveM_UK', seasonPoints:298.5, hitRate:55, avgOdds:2.05, sampleSize:67, form:['W','L','L','W','W'], featured:false, tier:'User',
-    bio:'Newer to the leaderboard — sample size still below the qualifying threshold for some competitions.', history:[]},
+  {id:'DaveM_UK', name:'DaveM_UK', seasonPoints:298.5, hitRate:55, avgOdds:2.05, sampleSize:67, last6moPicks:22, monthlyProfitable:[true,false,true,false,true,true], streak:2, form:['W','L','L','W','W'], featured:false,
+    bio:'Newer to the leaderboard \u2014 sample size still below the qualifying threshold for some competitions.', history:[]},
+  {id:'newplayer01', name:'newplayer01', seasonPoints:24.0, hitRate:44, avgOdds:1.80, sampleSize:6, last6moPicks:6, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:['L','W','L'], featured:false,
+    bio:'Just started picking this season.', history:[]},
 ];
+
+/* ---------- Badge/status ladder \u2014 awarded automatically from performance data, never manually.
+   Novi korisnik: default, no badge. Verifikovan: reaches a minimum number of picks, regardless of result.
+   Expert: minimum picks in the last 6 months AND profitable in most of those months.
+   Master Tipster: bigger sample and stronger consistency than Expert.
+   Status is recalculated on every render (not stored/frozen) \u2014 it can be lost if performance drops. ---------- */
+const BADGE_THRESHOLDS = {
+  verifikovan: {minSample: 10},
+  expert: {minLast6moPicks: 20, minProfitableMonths: 4},
+  master: {minLast6moPicks: 40, minProfitableMonths: 5, minSampleSize: 90},
+};
+function computeBadge(t){
+  const profitableMonths = (t.monthlyProfitable||[]).filter(Boolean).length;
+  if(t.last6moPicks >= BADGE_THRESHOLDS.master.minLast6moPicks && profitableMonths >= BADGE_THRESHOLDS.master.minProfitableMonths && t.sampleSize >= BADGE_THRESHOLDS.master.minSampleSize){
+    return {key:'master', label:'Master Tipster'};
+  }
+  if(t.last6moPicks >= BADGE_THRESHOLDS.expert.minLast6moPicks && profitableMonths >= BADGE_THRESHOLDS.expert.minProfitableMonths){
+    return {key:'expert', label:'Expert'};
+  }
+  if(t.sampleSize >= BADGE_THRESHOLDS.verifikovan.minSample){
+    return {key:'verifikovan', label:'Verified'};
+  }
+  return {key:'new', label:'New'};
+}
+/* ---------- BeforeBet Index \u2014 the single headline performance number shown on the public profile
+   and in the Stats Box next to published analysis. Recomputed live from the same underlying data
+   as everything else here, never a frozen value written at publish time. ---------- */
+function beforeBetIndex(t){
+  return Math.round((t.hitRate * 0.6) + (t.avgOdds * 10 * 0.4));
+}
+function badgeBarHtml(t, size){
+  const b = computeBadge(t);
+  const cls = {new:'off', verifikovan:'ok', expert:'wait', master:'gold'}[b.key] || 'off';
+  const fire = t.streak >= 3 ? ` <span title="${t.streak}-pick win streak">\ud83d\udd25${t.streak}</span>` : '';
+  return `<span class="pill ${cls}" style="${size==='lg'?'font-size:11px;padding:3px 10px;':''}">${b.label}</span>${fire}`;
+}
 let tipsterSortKey = 'points';
 function setTipsterSort(key){
   tipsterSortKey = key;
@@ -2136,17 +2128,19 @@ function renderTipsterLeaderboard(){
   else if(tipsterSortKey==='hitrate') list.sort((a,b)=>b.hitRate-a.hitRate);
   else list.sort((a,b)=>b.avgOdds-a.avgOdds);
 
-  const headCols = `<div class="lead-row head" style="grid-template-columns:30px 1.4fr 70px 70px 70px 80px;"><span>#</span><span>${isUK?'Tipster':'Tipster'}</span><span>${isUK?'Hit %':'Colpi %'}</span><span>${isUK?'Avg odds':'Quota media'}</span><span>${isUK?'Sample':'Campione'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
+  const headCols = `<div class="lead-row head" style="grid-template-columns:30px 1.6fr 60px 70px 70px 60px 70px;"><span>#</span><span>${isUK?'Tipster':'Tipster'}</span><span>${isUK?'Hit %':'Colpi %'}</span><span>${isUK?'Avg odds':'Quota media'}</span><span>${isUK?'Sample':'Campione'}</span><span>${isUK?'Index':'Indeks'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
   const rows = list.map((t,i)=>{
     const qualifies = t.sampleSize >= 50;
     const formHtml = (t.form||[]).map(f=>`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;font-size:9px;font-weight:700;text-align:center;line-height:16px;margin-right:2px;background:${f==='W'?'rgba(61,138,95,.25)':'rgba(178,75,69,.25)'};color:${f==='W'?'var(--green)':'var(--red)'};">${f}</span>`).join('');
+    const featuredTag = t.featured ? `<span class="tier-badge gold" title="${isUK?'Editorial has published this tipster\\u2019s written analysis':'La redazione ha pubblicato l\\u2019analisi scritta di questo tipster'}">${isUK?'★ Published':'★ Pubblicato'}</span>` : '';
     return `
-    <div class="lead-row" style="grid-template-columns:30px 1.4fr 70px 70px 70px 80px;cursor:pointer;" onclick="openTipsterProfile('${t.id}')">
+    <div class="lead-row" style="grid-template-columns:30px 1.6fr 60px 70px 70px 60px 70px;cursor:pointer;" onclick="openTipsterProfile('${t.id}')">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
-      <div class="partner-name-cell"><div class="partner-avatar">${t.name.slice(0,2).toUpperCase()}</div><div>${t.name}${t.featured?`<span class="tier-badge gold">${isUK?'Featured':'In evidenza'}</span>`:''}<div style="margin-top:3px;">${formHtml}</div></div></div>
+      <div class="partner-name-cell"><div class="partner-avatar">${t.name.slice(0,2).toUpperCase()}</div><div>${t.name}${featuredTag}<div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${badgeBarHtml(t)}</div><div style="margin-top:3px;">${formHtml}</div></div></div>
       <span>${t.hitRate}%</span>
       <span>${t.avgOdds.toFixed(2)}</span>
       <span>${t.sampleSize}${!qualifies?' ⚠':''}</span>
+      <span style="font-weight:700;color:var(--text);">${beforeBetIndex(t)}</span>
       <span style="font-weight:700;color:var(--gold);">${t.seasonPoints.toFixed(1)}</span>
     </div>`;
   }).join('');
@@ -2157,6 +2151,8 @@ function openTipsterProfile(id){
   if(!t) return;
   const isUK = market==='UK';
   const qualifies = t.sampleSize >= 50;
+  const badge = computeBadge(t);
+  const idx = beforeBetIndex(t);
   const formHtml = (t.form||[]).map(f=>`<span style="display:inline-block;width:22px;height:22px;border-radius:4px;font-size:11px;font-weight:700;text-align:center;line-height:22px;margin-right:4px;background:${f==='W'?'rgba(61,138,95,.25)':'rgba(178,75,69,.25)'};color:${f==='W'?'var(--green)':'var(--red)'};">${f}</span>`).join('');
   const historyHtml = (t.history||[]).length ? t.history.map(h=>`
     <div class="ureview-card">
@@ -2171,18 +2167,18 @@ function openTipsterProfile(id){
       <div style="display:flex;gap:16px;">
         <div class="op-page-mark" style="background:${thumbGradient(t.id)};border:none;color:#fff;">${t.name.slice(0,2).toUpperCase()}</div>
         <div>
-          <div class="op-page-title"><h1>${t.name}</h1>${t.featured?`<span class="op-featured" style="color:var(--gold);border-color:var(--gold);">${isUK?'Featured Analyst':'Analista in evidenza'}</span>`:''}${!qualifies?`<span class="op-featured" title="${isUK?'Below minimum sample size for season ranking':'Sotto la soglia minima per la classifica stagionale'}">${isUK?'Building sample':'Campione in crescita'}</span>`:''}</div>
-          <div class="op-page-sub">${t.tier} · ${t.sampleSize} ${isUK?'picks recorded':'pronostici registrati'}</div>
+          <div class="op-page-title"><h1>${t.name}</h1>${t.featured?`<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="${isUK?'Editorial has published this tipster\\u2019s written analysis as a site article':'La redazione ha pubblicato l\\u2019analisi scritta di questo tipster come articolo del sito'}">${isUK?'★ Published on-site':'★ Pubblicato sul sito'}</span>`:''}</div>
+          <div class="op-page-sub" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">${badgeBarHtml(t,'lg')} <span>· ${t.sampleSize} ${isUK?'picks recorded':'pronostici registrati'}</span></div>
           <div style="margin-top:8px;">${formHtml}</div>
         </div>
       </div>
-      <div class="op-page-score"><div class="n">${t.seasonPoints.toFixed(1)}</div><div class="l">${isUK?'season pts':'punti stagione'}</div></div>
+      <div class="op-page-score"><div class="n">${idx}</div><div class="l">${isUK?'BeforeBet Index':'BeforeBet Indeks'}</div></div>
     </div>
 
     <div class="op-page-grid">
       <div>
         <div class="review-text"><p>${t.bio}</p></div>
-        ${t.featured ? `<div class="verdict-box"><div class="k">${isUK?'Featured analysis':'Analisi in evidenza'}</div><div style="font-size:13px;color:var(--text);font-weight:600;">${t.featuredTitle}</div></div>` : ''}
+        ${t.featured ? `<div class="verdict-box" style="cursor:pointer;" onclick="openAnalysisArticle('${t.id}')"><div class="k">${isUK?'Featured analysis \\u2014 read full article':'Analisi in evidenza \\u2014 leggi l\\u2019articolo completo'}</div><div style="font-size:13px;color:var(--text);font-weight:600;">${t.featuredTitle} →</div></div>` : ''}
         <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">${isUK?'Pick history':'Storico pronostici'}</h3>
         <div>${historyHtml}</div>
       </div>
@@ -2190,20 +2186,83 @@ function openTipsterProfile(id){
         <div class="sidebar-box">
           <h4>${isUK?'Track record':'Statistiche'}</h4>
           <div class="detail-grid" style="grid-template-columns:1fr;">
+            <div class="detail-cell"><div class="k">${isUK?'Season points':'Punti stagione'}</div><div class="v">${t.seasonPoints.toFixed(1)}</div></div>
             <div class="detail-cell"><div class="k">${isUK?'Hit rate':'% pronostici vinti'}</div><div class="v">${t.hitRate}%</div></div>
             <div class="detail-cell"><div class="k">${isUK?'Average odds':'Quota media'}</div><div class="v">${t.avgOdds.toFixed(2)}</div></div>
-            <div class="detail-cell"><div class="k">${isUK?'Sample size':'Campione'}</div><div class="v">${t.sampleSize} ${isUK?'picks':'pronostici'}</div></div>
-            <div class="detail-cell"><div class="k">${isUK?'Career tier':'Livello'}</div><div class="v">${t.tier}</div></div>
+            <div class="detail-cell"><div class="k">${isUK?'Sample size':'Campione'}</div><div class="v">${t.sampleSize}${!qualifies?` (${isUK?'below ranking min':'sotto il minimo'})`:''}</div></div>
+            <div class="detail-cell"><div class="k">${isUK?'Picks, last 6 months':'Pronostici, ultimi 6 mesi'}</div><div class="v">${t.last6moPicks}</div></div>
+            <div class="detail-cell"><div class="k">${isUK?'Profitable months (of 6)':'Mesi in profitto (su 6)'}</div><div class="v">${(t.monthlyProfitable||[]).filter(Boolean).length}/6</div></div>
           </div>
         </div>
         <div class="sidebar-box">
-          <h4>${isUK?'How this leaderboard works':'Come funziona questa classifica'}</h4>
-          <p style="font-size:11.5px;color:var(--dim);line-height:1.6;margin:0;">${isUK?'Scoring is weighted by odds — a correct pick at higher odds earns more than one at low odds. A minimum sample size applies before a tipster qualifies for season ranking.':'Il punteggio è ponderato in base alla quota — un pronostico vincente a quota alta vale più di uno a quota bassa. È richiesto un campione minimo per entrare in classifica stagionale.'}</p>
+          <h4>${isUK?'Status ladder':'Livelli di stato'}</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:var(--dim);line-height:1.5;">
+            <div><span class="pill off" style="margin-right:6px;">${isUK?'New':'Nuovo'}</span>${isUK?'No badge yet':'Nessun bedge ancora'}</div>
+            <div><span class="pill ok" style="margin-right:6px;">${isUK?'Verified':'Verificato'}</span>${isUK?'10+ picks recorded':'10+ pronostici registrati'}</div>
+            <div><span class="pill wait" style="margin-right:6px;">Expert</span>${isUK?'20+ picks in last 6mo, profitable in 4+ of them':'20+ pronostici negli ultimi 6 mesi, in profitto in 4+'}</div>
+            <div><span class="pill gold" style="margin-right:6px;">Master</span>${isUK?'40+ picks in last 6mo, profitable in 5+, 90+ lifetime':'40+ pronostici negli ultimi 6 mesi, in profitto in 5+, 90+ totali'}</div>
+          </div>
+          <p style="font-size:10.5px;color:var(--faint);margin:10px 0 0;">${isUK?'Status is recalculated automatically, never assigned by hand \\u2014 and can be lost if performance drops.':'Lo stato viene ricalcolato automaticamente, mai assegnato manualmente \\u2014 e puo essere perso se il rendimento peggiora.'}</p>
         </div>
       </div>
     </div>
   `;
   go('tipster-profile');
+}
+
+/* ============================================================
+   ANALYSIS ARTICLE PAGE + STATS BOX
+   Full editorial article built from a tipster's published reasoning,
+   with a live Stats Box widget alongside the text that reads from the
+   same tipster object as the profile \\u2014 never a frozen snapshot from
+   the moment of publishing.
+   ============================================================ */
+function statsBoxHtml(t){
+  const isUK = market==='UK';
+  const idx = beforeBetIndex(t);
+  return `
+    <div class="sidebar-box" style="border-color:var(--gold);">
+      <h4 style="display:flex;align-items:center;justify-content:space-between;">
+        <span>${isUK?'Stats Box':'Stats Box'}</span>
+        <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;">${isUK?'live \\u00b7 updates automatically':'live \\u00b7 aggiornamento automatico'}</span>
+      </h4>
+      <div class="detail-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="detail-cell"><div class="k">${isUK?'Win rate':'% vinti'}</div><div class="v">${t.hitRate}%</div></div>
+        <div class="detail-cell"><div class="k">${isUK?'Picks (6mo)':'Pronostici (6m)'}</div><div class="v">${t.last6moPicks}</div></div>
+        <div class="detail-cell"><div class="k">${isUK?'Avg odds':'Quota media'}</div><div class="v">${t.avgOdds.toFixed(2)}</div></div>
+        <div class="detail-cell"><div class="k">${isUK?'BeforeBet Index':'BeforeBet Indeks'}</div><div class="v" style="color:var(--gold);">${idx}</div></div>
+      </div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${badgeBarHtml(t)}</div>
+      <button class="btn btn-line" style="width:100%;justify-content:center;margin-top:12px;" onclick="openTipsterProfile('${t.id}')">${isUK?'Full profile & pick archive →':'Profilo completo e archivio \\u2192'}</button>
+    </div>`;
+}
+function openAnalysisArticle(tipsterId){
+  const t = tipsters.find(x=>x.id===tipsterId);
+  if(!t || !t.featured) return;
+  const isUK = market==='UK';
+  const mainPick = (t.history && t.history[0]) || null;
+  const author = authorFor('bk', t.id.length);
+  document.getElementById('analysisArticleContent').innerHTML = `
+    ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:isUK?'Guides & News':'Guide e News', action:"go('guides')"},{label:t.featuredTitle}])}
+    <div class="op-page-head" style="border-bottom:none;padding-bottom:0;margin-bottom:16px;">
+      <div>
+        <div class="op-page-title"><h1 style="font-size:26px;">${t.featuredTitle}</h1></div>
+        <div class="op-page-sub">${isUK?'Community analysis':'Analisi della community'} \\u00b7 ${isUK?'by':'di'} <b style="color:var(--dim);">${t.name}</b> \\u00b7 ${isUK?'edited by':'a cura di'} ${author.name} \\u00b7 ${isUK?'Published':'Pubblicato'} 4 Jul 2026</div>
+      </div>
+    </div>
+    <div class="op-page-grid">
+      <div>
+        <div class="review-text">
+          ${mainPick ? `<p><b style="color:var(--text);">${mainPick.match}</b> \\u2014 ${isUK?'pick':'pronostico'}: <span style="color:var(--gold);">${mainPick.pick}</span> @ ${mainPick.odds.toFixed(2)}</p><p>${mainPick.reasoning}</p>` : `<p>${t.bio}</p>`}
+          <p style="color:var(--faint);font-size:11.5px;">${isUK?'This analysis was submitted as part of a Predictor round pick and selected by our editorial team for publication \\u2014 the numbers in the Stats Box are not fixed at publish time, they read live from the same database that runs this author\\u2019s public profile.':'Questa analisi \\u00e8 stata inviata come parte di un pronostico Predictor e selezionata dalla redazione per la pubblicazione \\u2014 i numeri nello Stats Box non sono fissi al momento della pubblicazione, provengono in tempo reale dallo stesso database che alimenta il profilo pubblico dell\\u2019autore.'}</p>
+        </div>
+      </div>
+      <div>
+        ${statsBoxHtml(t)}
+      </div>
+    </div>
+  `;
+  go('analysis-article');
 }
 
 /* ============================================================
@@ -2270,9 +2329,9 @@ function renderFeaturedAnalysis(){
   const isUK = market==='UK';
   const featured = tipsters.filter(t=>t.featured);
   document.getElementById('featuredAnalysisList').innerHTML = featured.map(t=>`
-    <div class="tip-row" style="cursor:pointer;align-items:flex-start;" onclick="openTipsterProfile('${t.id}')">
+    <div class="tip-row" style="cursor:pointer;align-items:flex-start;" onclick="openAnalysisArticle('${t.id}')">
       <div>
-        <div class="tip-sport">${isUK?'Community analysis':'Analisi della community'} · ${t.name} (${t.hitRate}% ${isUK?'hit rate':'colpi'})</div>
+        <div class="tip-sport">${isUK?'Community analysis':'Analisi della community'} · ${t.name} (${badgeBarHtml(t)})</div>
         <div class="tip-match">${t.featuredTitle}</div>
       </div>
       <span class="tip-pred">${isUK?'Read →':'Leggi →'}</span>
@@ -3014,17 +3073,6 @@ document.querySelectorAll('#bkSubtabs button').forEach(b=>b.addEventListener('cl
   if(t==='headtohead') initCompare();
 }));
 
-/* ---------- Predictor subtabs (FIX: this listener was previously missing, which meant the
-   Leaderboard and Past Rounds panes existed in the DOM but nothing ever toggled them into
-   view — clicking those buttons did nothing) ---------- */
-document.querySelectorAll('#predictorSubtabs button').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('#predictorSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
-  const t=b.dataset.ptab;
-  document.getElementById('ptab-play').style.display=t==='play'?'block':'none';
-  document.getElementById('ptab-leaderboard').style.display=t==='leaderboard'?'block':'none';
-  document.getElementById('ptab-history').style.display=t==='history'?'block':'none';
-}));
-
 /* ---------- Odds ---------- */
 function renderOdds(){
   document.getElementById('oddsTbody').innerHTML = matches.map(m=>{
@@ -3586,6 +3634,30 @@ function renderAdminOverview(){
 }
 
 const AUDIT_LOG = ['08 Jul 2026, 14:12 — Admin updated Northline bonus copy','07 Jul 2026, 19:03 — System auto-unpublished expired offer','06 Jul 2026, 09:55 — Admin changed affiliate link for Vantage Bet'];
+/* ---------- Editorial approval pipeline for tipster written analysis \\u2014 five steps before
+   a submitted pick reasoning becomes a published, SEO-indexed article. ---------- */
+const EDITORIAL_STEPS = ['Auto filters','Selection','Fact-check','Language & tone','Approved & published'];
+const editorialQueue = [
+  {author:'punter_kate', match:'Riverside FC vs Old Mill Town', step:5, note:'Live on site \\u2014 linked from Guides & News'},
+  {author:'footy_fran', match:'North Harbour vs Castlegate United', step:5, note:'Live on site \\u2014 linked from Guides & News'},
+  {author:'accaboy', match:'Iron Bridge City vs Sable Wanderers', step:3, note:'Fact-checking injury claim before approval'},
+  {author:'GaryB', match:'Bright Star Athletic vs Vale Rangers', step:1, note:'Below minimum length \\u2014 held at auto filter'},
+  {author:'DaveM_UK', match:'Ashford Rovers vs Millbrook Town', step:2, note:'In selection queue \\u2014 lower search-volume fixture'},
+];
+function editorialPipelineHtml(entry){
+  const dots = EDITORIAL_STEPS.map((label,i)=>{
+    const stepNum = i+1;
+    const state = stepNum < entry.step ? 'done' : (stepNum === entry.step ? 'current' : 'pending');
+    const color = state==='done' ? 'var(--green)' : (state==='current' ? 'var(--gold)' : 'var(--line)');
+    const textColor = state==='pending' ? 'var(--faint)' : 'var(--text)';
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
+      <div style="width:20px;height:20px;border-radius:50%;background:${state==='pending'?'var(--panel)':color};border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${state==='pending'?'var(--faint)':'#1a1400'};">${state==='done'?'✓':stepNum}</div>
+      <span style="font-size:9px;color:${textColor};text-align:center;line-height:1.2;">${label}</span>
+    </div>`;
+  }).join(`<div style="flex:0.4;height:2px;background:var(--line);margin-top:9px;"></div>`);
+  return `<div style="display:flex;align-items:flex-start;margin:14px 0 6px;">${dots}</div>`;
+}
+
 const cmsPanels = {
   operators: ()=>`<div class="admin-toolbar"><h3>Operator profiles</h3><button class="btn btn-gold">+ New</button></div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Commercial deal terms below are internal only — never shown on public pages.</p>
@@ -3630,7 +3702,7 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Round data streams in from the fixtures feed (Digitain / ExeFeed / SportRadar) via the Gamblio gamification engine — editorial picks which 6 matches go into a round.</p>
     <div class="admin-row"><div><div class="n">Round ${predictorRound.number} (current)</div><div class="m">${predictorRound.matches.length} matches · closes ${predictorRound.closesLabel}</div></div><span class="pill wait">Open for picks</span></div>
     ${predictorPastRounds.map(r=>`<div class="admin-row"><div><div class="n">Round ${r.number}</div><div class="m">${r.dateRange} · ${r.totalPlayers} players · top scorer ${r.topScorer} (${r.topPoints} pts)</div></div><span class="pill ok">Settled</span></div>`).join('')}
-    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Scoring engine: +${PREDICTOR_POINTS_OUTCOME} pts correct outcome, +${PREDICTOR_POINTS_EXACT_BONUS} pts exact-score bonus, identical for every player. Badges (Perfect Round, Streaks, Top 3, etc.) are computed automatically from round history — no material prizes live, pending legal review per market.</p>`,
+    <p style="font-size:11px;color:var(--faint);margin-top:12px;">Scoring engine: +${PREDICTOR_POINTS_OUTCOME} pts correct outcome, +${PREDICTOR_POINTS_EXACT_BONUS} pts exact-score bonus, identical for every player. No monetary prizes live — leaderboard status only pending legal review per market.</p>`,
   quizadmin: ()=>{
     const next = nextQuizDate();
     const nextLabel = next.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'}) + ' 20:00';
@@ -3642,7 +3714,15 @@ Authorization: Bearer bb_live_9f2a7c1e4d8b...</div>
   },
   tipsteradmin: ()=>`<div class="admin-toolbar"><h3>Tipster review</h3></div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Editorial reviews pick reasoning for quality before promoting a user to Featured Analyst. Featuring never edits or removes a losing pick — the record stays public and complete either way.</p>
-    ${tipsters.map(t=>`<div class="admin-row"><div><div class="n">${t.name}</div><div class="m">${t.seasonPoints.toFixed(1)} season pts · ${t.hitRate}% hit rate · ${t.sampleSize} picks ${t.sampleSize<50?'(below qualifying sample)':''}</div></div><span class="pill ${t.featured?'ok':'off'}">${t.featured?'Featured Analyst':'User'}</span></div>`).join('')}`,
+    <h4 style="font-family:var(--serif);font-size:14px;margin:16px 0 4px;">Editorial pipeline (this round)</h4>
+    ${editorialQueue.map(e=>`
+      <div style="background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;"><b>${e.author}</b><span style="color:var(--faint);">${e.match}</span></div>
+        ${editorialPipelineHtml(e)}
+        <div style="font-size:10.5px;color:var(--faint);margin-top:4px;">${e.note}</div>
+      </div>`).join('')}
+    <h4 style="font-family:var(--serif);font-size:14px;margin:20px 0 10px;">Tipster status (auto-computed)</h4>
+    ${tipsters.map(t=>`<div class="admin-row"><div><div class="n">${t.name}</div><div class="m">${t.seasonPoints.toFixed(1)} season pts · ${t.hitRate}% hit rate · Index ${beforeBetIndex(t)} · ${t.sampleSize} picks ${t.sampleSize<50?'(below qualifying sample)':''}</div></div><span class="pill ${computeBadge(t).key==='master'?'gold':(computeBadge(t).key==='expert'?'wait':(computeBadge(t).key==='verifikovan'?'ok':'off'))}">${computeBadge(t).label}</span></div>`).join('')}`,
   links: ()=>`<div class="admin-toolbar"><h3>Links &amp; redirects</h3></div>
     <p style="font-size:11px;color:var(--faint);margin-bottom:10px;">Each redirect dynamically mints a fresh <code>bb_click_id</code> per click and links it back to the visitor's original partner <code>ref</code> — never a fixed per-operator link.</p>
     ${[...bookmakers,...casinos].map(o=>`<div class="admin-row"><div><div class="n">/go/${o.id}</div><div class="m">Geo: ${o.market} only · appends <code>sub_id={bb_click_id}</code> to ${o.name}'s affiliate URL</div></div><span class="pill ok">Active</span></div>`).join('')}
