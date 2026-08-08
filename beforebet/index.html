@@ -196,6 +196,16 @@
   /* ---------- Partners ---------- */
   .lead-table{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
   .lead-row{display:grid;grid-template-columns:30px 1fr 90px 90px 80px 90px;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;}
+  .tipster-row{display:grid;grid-template-columns:30px 1.6fr 60px 70px 70px 60px 70px;gap:10px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);font-size:13px;}
+  .tipster-row:last-child{border-bottom:none;}
+  @media (max-width:760px){
+    .tipster-row{grid-template-columns:24px 1fr 55px 60px;gap:8px;padding:12px 14px;}
+    .tipster-row span:nth-child(4),.tipster-row span:nth-child(5),.tipster-row span:nth-child(6){display:none;}
+  }
+  @media (max-width:480px){
+    .tipster-row{grid-template-columns:22px 1fr 60px;gap:6px;}
+    .tipster-row span:nth-child(3){display:none;}
+  }
   .lead-row:last-child{border-bottom:none;}
   .lead-row.head{color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--panel);}
   .rank{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;background:var(--panel);color:var(--faint);border:1px solid var(--line);}
@@ -2128,13 +2138,13 @@ function renderTipsterLeaderboard(){
   else if(tipsterSortKey==='hitrate') list.sort((a,b)=>b.hitRate-a.hitRate);
   else list.sort((a,b)=>b.avgOdds-a.avgOdds);
 
-  const headCols = `<div class="lead-row head" style="grid-template-columns:30px 1.6fr 60px 70px 70px 60px 70px;"><span>#</span><span>${isUK?'Tipster':'Tipster'}</span><span>${isUK?'Hit %':'Colpi %'}</span><span>${isUK?'Avg odds':'Quota media'}</span><span>${isUK?'Sample':'Campione'}</span><span>${isUK?'Index':'Indeks'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
+  const headCols = `<div class="tipster-row head"><span>#</span><span>${isUK?'Tipster':'Tipster'}</span><span>${isUK?'Hit %':'Colpi %'}</span><span>${isUK?'Avg odds':'Quota media'}</span><span>${isUK?'Sample':'Campione'}</span><span>${isUK?'Index':'Indeks'}</span><span>${isUK?'Points':'Punti'}</span></div>`;
   const rows = list.map((t,i)=>{
     const qualifies = t.sampleSize >= 50;
     const formHtml = (t.form||[]).map(f=>`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;font-size:9px;font-weight:700;text-align:center;line-height:16px;margin-right:2px;background:${f==='W'?'rgba(61,138,95,.25)':'rgba(178,75,69,.25)'};color:${f==='W'?'var(--green)':'var(--red)'};">${f}</span>`).join('');
     const featuredTag = t.featured ? `<span class="tier-badge gold" title="${isUK?'Editorial has published this tipster\\u2019s written analysis':'La redazione ha pubblicato l\\u2019analisi scritta di questo tipster'}">${isUK?'★ Published':'★ Pubblicato'}</span>` : '';
     return `
-    <div class="lead-row" style="grid-template-columns:30px 1.6fr 60px 70px 70px 60px 70px;cursor:pointer;" onclick="openTipsterProfile('${t.id}')">
+    <div class="tipster-row" style="cursor:pointer;" onclick="openTipsterProfile('${t.id}')">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
       <div class="partner-name-cell"><div class="partner-avatar">${t.name.slice(0,2).toUpperCase()}</div><div>${t.name}${featuredTag}<div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">${badgeBarHtml(t)}</div><div style="margin-top:3px;">${formHtml}</div></div></div>
       <span>${t.hitRate}%</span>
@@ -3465,6 +3475,14 @@ document.querySelectorAll('#eduSubtabs button').forEach(b=>b.addEventListener('c
   document.getElementById('etab-sport').style.display=t==='sport'?'block':'none';
 }));
 
+document.querySelectorAll('#predictorSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#predictorSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.ptab;
+  document.getElementById('ptab-play').style.display=t==='play'?'block':'none';
+  document.getElementById('ptab-leaderboard').style.display=t==='leaderboard'?'block':'none';
+  document.getElementById('ptab-history').style.display=t==='history'?'block':'none';
+}));
+
 /* ============================================================
    RESPONSIBLE GAMBLING
    ============================================================ */
@@ -3650,12 +3668,12 @@ function editorialPipelineHtml(entry){
     const state = stepNum < entry.step ? 'done' : (stepNum === entry.step ? 'current' : 'pending');
     const color = state==='done' ? 'var(--green)' : (state==='current' ? 'var(--gold)' : 'var(--line)');
     const textColor = state==='pending' ? 'var(--faint)' : 'var(--text)';
-    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">
-      <div style="width:20px;height:20px;border-radius:50%;background:${state==='pending'?'var(--panel)':color};border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${state==='pending'?'var(--faint)':'#1a1400'};">${state==='done'?'✓':stepNum}</div>
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:64px;">
+      <div style="width:20px;height:20px;border-radius:50%;background:${state==='pending'?'var(--panel)':color};border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${state==='pending'?'var(--faint)':'#1a1400'};flex-shrink:0;">${state==='done'?'✓':stepNum}</div>
       <span style="font-size:9px;color:${textColor};text-align:center;line-height:1.2;">${label}</span>
     </div>`;
-  }).join(`<div style="flex:0.4;height:2px;background:var(--line);margin-top:9px;"></div>`);
-  return `<div style="display:flex;align-items:flex-start;margin:14px 0 6px;">${dots}</div>`;
+  }).join(`<div style="flex:0 0 16px;height:2px;background:var(--line);margin-top:9px;"></div>`);
+  return `<div style="display:flex;align-items:flex-start;margin:14px 0 6px;overflow-x:auto;padding-bottom:4px;">${dots}</div>`;
 }
 
 const cmsPanels = {
