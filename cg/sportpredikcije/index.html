@@ -79,6 +79,9 @@ section{padding:clamp(28px,5vw,48px) 0;}
 .howto-banner .ic{font-size:26px; flex-shrink:0; line-height:1;}
 .howto-banner .txt{font-size:13.5px; line-height:1.55; color:#fff;}
 .howto-banner .txt b{color:var(--gold);}
+.hl-1{color:var(--green);}
+.hl-2{color:var(--red);}
+.hl-x{color:var(--gold);}
 
 /* deck */
 .deck-progress{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; font-size:12.5px; color:var(--gray); font-weight:600;}
@@ -93,8 +96,8 @@ section{padding:clamp(28px,5vw,48px) 0;}
 .swipe-card .teams{font-family:'Barlow Condensed'; font-weight:800; font-size:clamp(20px,5vw,26px); line-height:1.15; letter-spacing:0.01em;}
 .swipe-card .teams .vs{display:block; font-size:12.5px; color:var(--gray); font-weight:600; margin:6px 0; letter-spacing:0.08em; text-transform:uppercase;}
 .stamp{position:absolute; top:24px; padding:8px 16px; border-radius:10px; font-family:'Barlow Condensed'; font-weight:800; font-size:22px; letter-spacing:0.04em; border:3px solid; opacity:0; transition:opacity 60ms linear; pointer-events:none;}
-.stamp-right{right:20px; color:var(--green); border-color:var(--green); transform:rotate(-12deg);}
-.stamp-left{left:20px; color:var(--red); border-color:var(--red); transform:rotate(12deg);}
+.stamp-left{left:20px; color:var(--green); border-color:var(--green); transform:rotate(12deg);}
+.stamp-right{right:20px; color:var(--red); border-color:var(--red); transform:rotate(-12deg);}
 .stamp-up{left:50%; top:14px; transform:translateX(-50%); color:var(--gold); border-color:var(--gold);}
 .deck-controls{display:flex; justify-content:center; align-items:center; gap:16px;}
 .deck-done{display:none; text-align:center; padding:16px 0 0;}
@@ -195,7 +198,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       </div>
       <div class="howto-banner">
         <span class="ic">👆</span>
-        <span class="txt">Prevuci karticu <b>desno za pobjedu domaćina (1)</b>, <b>lijevo za pobjedu gosta (2)</b>, <b>gore za nerešeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
+        <span class="txt">Prevuci karticu <b class="hl-1">lijevo za pobjedu domaćina (1)</b>, <b class="hl-2">desno za pobjedu gosta (2)</b>, <b class="hl-x">gore za nerešeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
       </div>
       <div class="deck-progress">
         <span id="progressLabel">Meč 1/5</span>
@@ -204,8 +207,8 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       <div class="swipe-stack" id="stack">
         <div class="swipe-card peek" id="peek"></div>
         <div class="swipe-card current" id="current">
-          <div class="stamp stamp-right" id="stamp-right">1</div>
-          <div class="stamp stamp-left" id="stamp-left">2</div>
+          <div class="stamp stamp-right" id="stamp-right">2</div>
+          <div class="stamp stamp-left" id="stamp-left">1</div>
           <div class="stamp stamp-up" id="stamp-up">X</div>
         </div>
       </div>
@@ -516,11 +519,11 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     showCard();
     if (!deckInited) {
       const swipe = attachSwipe(currentEl, {
-        onRight: () => decide('1'), onLeft: () => decide('2'), onUp: () => decide('X'),
+        onRight: () => decide('2'), onLeft: () => decide('1'), onUp: () => decide('X'),
         stampRight, stampLeft, stampUp,
       });
-      document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('right'); decide('1'); });
-      document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('left'); decide('2'); });
+      document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('left'); decide('1'); });
+      document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('right'); decide('2'); });
       document.getElementById('btn-x').addEventListener('click', () => { swipe.flyOut('up'); decide('X'); });
       deckInited = true;
     }
