@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lige Petice — Teletekst Predikcije</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000; --panel:#000000;
+  --fg:#FFFFFF; --dim:#8FA6A0;
+  --green:#00FF66; --yellow:#FFD200; --red:#FF3B30; --cyan:#00E5FF; --blue:#3FA9FF;
+  --line:#1a3d33;
+}
+*{box-sizing:border-box; border-radius:0 !important;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:'IBM Plex Mono',monospace; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
+}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+h1,h2,h3{font-family:'VT323',monospace; margin:0; text-transform:uppercase; letter-spacing:0.02em; font-weight:400;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:var(--cyan);}
+.wrap{max-width:720px; margin:0 auto; padding:0 clamp(16px,4vw,24px);}
+:focus-visible{outline:3px dashed var(--yellow); outline-offset:2px;}
+::selection{background:var(--yellow); color:#000;}
+button{font-family:inherit;}
+
+.colorbar{height:4px; display:flex;}
+.colorbar span{flex:1; background:var(--green);}
+.colorbar span:nth-child(2){background:var(--yellow);}
+.colorbar span:nth-child(3){background:var(--red);}
+.colorbar span:nth-child(4){background:var(--cyan);}
+.colorbar span:nth-child(5){background:var(--blue);}
+
+.topstrip{background:#000; color:var(--cyan); font-family:'IBM Plex Mono'; font-weight:600; font-size:clamp(10.5px,2.6vw,12.5px); letter-spacing:0.05em; padding:9px 16px; text-align:center; text-transform:uppercase; border-bottom:2px solid var(--fg);}
+header{background:#000; border-bottom:2px solid var(--fg); position:sticky; top:4px; z-index:22;}
+.nav{display:flex; align-items:center; justify-content:space-between; padding:12px 0;}
+.pagecode{font-family:'IBM Plex Mono'; font-size:12px; color:var(--yellow); letter-spacing:0.05em;}
+.brand{font-family:'VT323'; font-weight:400; font-size:28px; display:flex; align-items:center; gap:8px; letter-spacing:0.03em;}
+.brand .dot{color:var(--green); font-size:22px; line-height:1;}
+.brand span{color:var(--yellow);}
+
+.hero{padding:clamp(24px,5vw,36px) 0 clamp(18px,4vw,24px); background:#000; text-align:center; border-bottom:2px solid var(--fg);}
+.hero h1{font-size:clamp(30px,7vw,46px); margin-bottom:10px; line-height:1.05;}
+.hero h1 .hl{color:var(--green);}
+.hero p{font-size:13.5px; color:var(--dim); line-height:1.6; max-width:52ch; margin:0 auto; text-transform:uppercase; letter-spacing:0.02em;}
+
+/* kolo navigator */
+.kolo-nav{display:flex; gap:0; padding:0; overflow-x:auto; scrollbar-width:none; background:#000; border-bottom:2px solid var(--fg);}
+.kolo-nav::-webkit-scrollbar{display:none;}
+.kolo-chip{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 18px; border:none; border-right:2px solid var(--fg); background:#000; color:var(--fg); cursor:pointer;}
+.kolo-chip .k{font-family:'VT323'; font-weight:400; font-size:18px;}
+.kolo-chip .s{font-size:9.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--dim);}
+.kolo-chip.active{background:var(--yellow); color:#000;}
+.kolo-chip.active .k{color:#000;}
+.kolo-chip.active .s{color:#000;}
+.kolo-chip.done .s{color:var(--green);}
+.kolo-nav-msg{padding:14px clamp(16px,4vw,24px); font-size:12.5px; color:var(--yellow); background:#000; border-bottom:2px solid var(--fg); text-transform:uppercase;}
+
+section{padding:clamp(26px,5vw,44px) 0;}
+.section-head{margin-bottom:18px; text-align:center;}
+.section-head h2{font-size:clamp(22px,4vw,30px); margin-bottom:8px;}
+.section-head p{font-size:13px; color:var(--dim); line-height:1.55; margin:0 auto; max-width:50ch; text-transform:uppercase; letter-spacing:0.02em;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; font-weight:700; font-size:14.5px; letter-spacing:0.03em; padding:14px 24px; text-decoration:none; border:2px solid var(--fg); cursor:pointer; text-transform:uppercase; width:100%; font-family:'IBM Plex Mono';}
+.btn-gold{background:var(--yellow); color:#000;}
+.btn-blue{background:var(--cyan); color:#000;}
+.btn-outline-green{background:#000; color:var(--green); border:2px solid var(--green);}
+.btn-outline-red{background:#000; color:var(--red); border:2px solid var(--red);}
+.btn-outline-gold{background:#000; color:var(--yellow); border:2px solid var(--yellow);}
+.btn:disabled{background:#000; color:var(--dim); border-color:var(--dim); cursor:not-allowed;}
+.btn-icon{width:auto; flex:1; height:60px; padding:0; font-size:20px; font-family:'VT323';}
+.btn-icon.x-btn{height:60px; font-size:20px; font-weight:400; font-family:'VT323';}
+
+/* identity gate form */
+.id-form{background:#000; border:2px solid var(--fg); padding:22px 20px;}
+.id-form .field{margin-bottom:14px;}
+.id-form label{display:block; font-size:11.5px; font-weight:700; color:var(--yellow); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em;}
+.id-form input{width:100%; font-family:'IBM Plex Mono'; font-size:14.5px; padding:11px 13px; border:2px solid var(--cyan); background:#000; color:var(--fg);}
+.id-form input:focus{border-color:var(--yellow); outline:none;}
+.id-form .row2col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:480px){ .id-form .row2col{grid-template-columns:1fr;} }
+.id-note{font-size:11.5px; color:var(--dim); line-height:1.5; margin-top:12px; text-transform:uppercase;}
+.id-error{display:none; background:#000; border:2px solid var(--red); padding:12px 14px; font-size:13px; margin-top:12px; color:var(--red); text-transform:uppercase;}
+.id-error.show{display:block;}
+
+/* howto banner */
+.howto-banner{display:flex; align-items:flex-start; gap:12px; background:#000; border:2px solid var(--cyan); padding:14px 16px; margin:0 0 18px;}
+.howto-banner .ic{font-size:20px; flex-shrink:0; line-height:1; color:var(--cyan);}
+.howto-banner .txt{font-size:13px; line-height:1.6; color:var(--fg); text-transform:uppercase; letter-spacing:0.01em;}
+.howto-banner .txt b{font-weight:700;}
+.hl-1{color:var(--green);}
+.hl-2{color:var(--red);}
+.hl-x{color:var(--yellow);}
+
+/* deck */
+.deck-progress{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:12px; color:var(--dim); font-weight:600; text-transform:uppercase;}
+.deck-progress .bar{flex:1; height:10px; background:#000; border:2px solid var(--fg); margin:0 12px; overflow:hidden;
+  background-image:repeating-linear-gradient(to right, transparent 0, transparent calc(20% - 2px), var(--fg) calc(20% - 2px), var(--fg) 20%);}
+.deck-progress .fill{height:100%; background:var(--green); width:0%; transition:width 200ms steps(5);}
+.swipe-stack{position:relative; height:250px; margin-bottom:16px;}
+.swipe-card{position:absolute; inset:0; background:#000; border:3px double var(--fg); padding:24px 22px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; user-select:none; touch-action:none;}
+.swipe-card.peek{z-index:1; transform:scale(0.94) translateY(10px); opacity:0.45; pointer-events:none;}
+.swipe-card.current{z-index:2; cursor:grab;}
+.swipe-card.current:active{cursor:grabbing;}
+.swipe-card .league-tag{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#000; background:var(--cyan); padding:4px 12px; margin-bottom:18px;}
+.swipe-card .teams{font-family:'VT323'; font-weight:400; font-size:clamp(24px,6vw,32px); line-height:1.15; letter-spacing:0.01em;}
+.swipe-card .teams .vs{display:block; font-size:12.5px; color:var(--dim); font-weight:600; margin:6px 0; letter-spacing:0.1em; text-transform:uppercase; font-family:'IBM Plex Mono';}
+.stamp{position:absolute; top:22px; padding:6px 14px; font-family:'VT323'; font-weight:400; font-size:26px; letter-spacing:0.04em; border:3px solid; opacity:0; transition:opacity 60ms linear; pointer-events:none;}
+.stamp-right{right:18px; color:var(--green); border-color:var(--green); transform:rotate(-8deg);}
+.stamp-left{left:18px; color:var(--red); border-color:var(--red); transform:rotate(8deg);}
+.stamp-up{left:50%; top:12px; transform:translateX(-50%); color:var(--yellow); border-color:var(--yellow);}
+.deck-controls{display:flex; justify-content:stretch; align-items:stretch; gap:0; border:2px solid var(--fg);}
+.deck-controls .btn-icon{border-width:0 2px 0 0; margin:0;}
+.deck-controls .btn-icon:last-child{border-right:none;}
+.deck-done{display:none; text-align:center; padding:16px 0 0;}
+.deck-done.show{display:block;}
+.deck-done .big{font-family:'VT323'; font-weight:400; font-size:24px; color:var(--green); margin-bottom:12px; text-transform:uppercase;}
+
+.submit-result{margin-top:16px; display:none; border:2px solid; padding:14px 18px; font-size:13.5px; line-height:1.6; text-transform:uppercase;}
+.submit-result.show{display:block;}
+.submit-result.ok{background:#000; border-color:var(--green); color:var(--green);}
+.submit-result.err{background:#000; border-color:var(--red); color:var(--red);}
+
+.demo-note{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--yellow); border:1px solid var(--yellow); padding:3px 9px; display:inline-block; margin-bottom:10px;}
+
+/* read-only round view */
+.match-row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:#000; border:2px solid var(--fg); padding:12px 16px; margin-bottom:-2px;}
+.match-row .teams-sm{font-size:14px; font-weight:600; font-family:'IBM Plex Mono';}
+.match-row .league-sm{font-family:'IBM Plex Mono'; font-size:10px; color:var(--cyan); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:3px;}
+.match-row .result-badge{font-family:'VT323'; font-weight:400; font-size:18px; background:var(--yellow); color:#000; padding:2px 12px;}
+.match-row .result-pending{font-size:11px; color:var(--dim); font-family:'IBM Plex Mono'; text-transform:uppercase;}
+
+.leaderboard{background:#000; border:2px solid var(--fg); overflow:hidden; margin-top:20px;}
+.lb-row{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:12px; padding:11px 16px; border-bottom:2px solid var(--line); font-size:13px; font-family:'IBM Plex Mono';}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.head{background:var(--fg); color:#000; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.06em;}
+.lb-row .rank{font-family:'VT323'; font-weight:400; font-size:19px; color:var(--cyan);}
+.lb-row.top1{background:rgba(255,210,0,0.08);}
+.lb-row.top1 .rank{color:var(--yellow);}
+.lb-row .pts{font-family:'IBM Plex Mono'; font-weight:700; color:var(--green);}
+.lb-empty{padding:20px; text-align:center; font-size:13px; color:var(--dim); text-transform:uppercase;}
+
+.lookup-box{background:#000; border:2px solid var(--fg); padding:20px 18px;}
+.lookup-box .row{display:flex; gap:0; flex-wrap:wrap; margin-bottom:14px;}
+.lookup-box input{font-family:'IBM Plex Mono'; font-size:14px; padding:11px 13px; border:2px solid var(--cyan); background:#000; color:var(--fg); flex:1; min-width:140px;}
+.lookup-box .btn{width:auto; padding:11px 20px; flex:0 0 auto;}
+.lookup-result .entry{background:#000; border:2px solid var(--line); padding:12px 14px; margin-bottom:-2px; font-size:13px; font-family:'IBM Plex Mono';}
+.lookup-result .entry .row2{display:flex; justify-content:space-between; padding:3px 0;}
+.lookup-result .entry .row2 span:first-child{color:var(--dim); text-transform:uppercase; font-size:11px;}
+.lookup-result .entry .row2 span:last-child{font-family:'IBM Plex Mono'; font-weight:600; color:var(--cyan);}
+
+footer{background:#000; padding:clamp(26px,5vw,36px) 0 22px; border-top:2px solid var(--fg);}
+.compliance-bar{display:flex; gap:14px; align-items:flex-start; background:#000; border:2px solid var(--red); padding:14px 16px; margin-bottom:18px;}
+.age-badge{font-family:'VT323'; font-weight:400; font-size:20px; color:#000; background:var(--red); width:38px; height:38px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.compliance-bar p{font-size:11px; line-height:1.5; color:var(--fg); margin:0; text-transform:uppercase;}
+.fine{font-size:10.5px; color:var(--dim); line-height:1.5;}
+
+.view{display:none;}
+.view.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="colorbar"><span></span><span></span><span></span><span></span><span></span></div>
+<div class="topstrip">P100 · Besplatna sedmična igra predikcija · Lige Petice</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot">█</span>LIGE <span>PETICE</span></div>
+    <div class="pagecode">TXT&nbsp;5/5</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Pogodi <span class="hl">5 mečeva</span>.<br>Sakupljaj poene.</h1>
+    <p>Svake sedmice 5 mečeva iz top 5 evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
+  </div>
+</section>
+
+<div class="kolo-nav" id="koloNav"></div>
+<div class="kolo-nav-msg" id="koloNavMsg" style="display:none;"></div>
+
+<!-- ================= VIEW: aktivno kolo (identity gate -> deck -> submit) ================= -->
+<div class="view active" id="view-active">
+
+  <section id="gate-section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Ko igra?</h2>
+        <p>Popuni podatke prije predikcije. Jedan nalog, email ili broj telefona može predati samo jednu predikciju po kolu.</p>
+      </div>
+      <div class="id-form">
+        <div class="row2col">
+          <div class="field"><label for="f-ime">Ime</label><input id="f-ime" type="text" autocomplete="given-name"></div>
+          <div class="field"><label for="f-prezime">Prezime</label><input id="f-prezime" type="text" autocomplete="family-name"></div>
+        </div>
+        <div class="field"><label for="f-id">ID naloga (Admiralbet platforma)</label><input id="f-id" class="mono" type="text" inputmode="numeric" autocomplete="off"></div>
+        <div class="row2col">
+          <div class="field"><label for="f-tel">Broj telefona</label><input id="f-tel" type="tel" autocomplete="tel"></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email"></div>
+        </div>
+        <button class="btn btn-gold" id="gateBtn">Kreni na predikciju</button>
+        <div class="id-error" id="gateError"></div>
+        <p class="id-note">Podaci se koriste isključivo za dodjelu nagrada i sprečavanje višestrukih predikcija po kolu.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-alt" id="deck-section" style="display:none;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Kolo <span id="deckKoloLabel">1</span> — prevuci za tip</h2>
+      </div>
+      <div class="howto-banner">
+        <span class="ic">▸</span>
+        <span class="txt">Prevuci karticu <b class="hl-1">desno za pobjedu domaćina (1)</b>, <b class="hl-2">lijevo za pobjedu gosta (2)</b>, <b class="hl-x">gore za nerešeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
+      </div>
+      <div class="deck-progress">
+        <span id="progressLabel">Meč 1/5</span>
+        <div class="bar"><div class="fill" id="progressFill"></div></div>
+      </div>
+      <div class="swipe-stack" id="stack">
+        <div class="swipe-card peek" id="peek"></div>
+        <div class="swipe-card current" id="current">
+          <div class="stamp stamp-right" id="stamp-right">1</div>
+          <div class="stamp stamp-left" id="stamp-left">2</div>
+          <div class="stamp stamp-up" id="stamp-up">X</div>
+        </div>
+      </div>
+      <div class="deck-controls">
+        <button class="btn btn-icon btn-outline-green" id="btn-1" aria-label="Pobjeda domaćina (1)">1</button>
+        <button class="btn btn-icon x-btn btn-outline-gold" id="btn-x" aria-label="Nerešeno (X)">X</button>
+        <button class="btn btn-icon btn-outline-red" id="btn-2" aria-label="Pobjeda gosta (2)">2</button>
+      </div>
+      <div class="deck-done" id="deckDone">
+        <div class="big">Sve predikcije unijete ✓</div>
+        <button class="btn btn-gold" id="submitBtn">Predaj predikciju</button>
+      </div>
+      <div class="submit-result" id="submitResult"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= VIEW: prošlo kolo (read-only + leaderboard) ================= -->
+<div class="view" id="view-past">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Kolo <span id="pastKoloLabel">1</span> — pregled</h2>
+        <p>Ovo kolo je završeno. Prijava predikcija za njega više nije moguća.</p>
+      </div>
+      <div id="pastMatches"></div>
+      <div class="leaderboard" id="pastLeaderboard"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= lookup (uvijek vidljivo) ================= -->
+<section class="bg-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Provjeri svoje predikcije</h2>
+      <p>Unesi svoj ID naloga da vidiš sve predikcije koje si predao/la kroz sva kola.</p>
+    </div>
+    <div class="lookup-box">
+      <div class="row">
+        <input id="lookupId" class="mono" placeholder="ID naloga" />
+        <button class="btn btn-blue" id="lookupBtn">Provjeri</button>
+      </div>
+      <div class="lookup-result" id="lookupResult"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="compliance-bar">
+      <div class="age-badge">18+</div>
+      <p>Namijenjeno isključivo punoljetnim licima. Igrajte odgovorno. [Formulaciju napomene o odgovornoj igri potvrđuje pravna služba prije objave.]</p>
+    </div>
+    <p class="fine">Predikcije ne predstavljaju opkladu niti uplatu. Organizator zadržava pravo izmjene pravila. [Naziv organizatora i pravna napomena — popuniti prije objave.]</p>
+  </div>
+</footer>
+
+<script>
+  const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzaStVeyOPnA0MFxxnJ2DiDWs8INdCp9WIFeDK7eA8d5OmqEK28jwV48UXELPU8S9QR/exec";
+
+  // ============================================================
+  // Kola i mečevi se sada učitavaju sa backend-a (Kola + Mecevi
+  // sheet preko action=getRounds) — ne treba ih više ručno kucati
+  // u JS-u. Da dodaš/izmijeniš meč ili kolo, uredi Sheet, ne HTML.
+  // ============================================================
+  let ROUNDS = {};
+  let ACTIVE_KOLO = null;
+
+  const koloNav = document.getElementById('koloNav');
+  const koloNavMsg = document.getElementById('koloNavMsg');
+  const viewActive = document.getElementById('view-active');
+  const viewPast = document.getElementById('view-past');
+  const gateSection = document.getElementById('gate-section');
+  const deckSection = document.getElementById('deck-section');
+
+  function showKoloNavMessage(text) {
+    koloNav.style.display = 'none';
+    koloNavMsg.style.display = 'block';
+    koloNavMsg.textContent = text;
+    gateSection.style.display = 'none';
+    deckSection.style.display = 'none';
+  }
+
+  async function loadRounds() {
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
+      showKoloNavMessage('Backend URL nije podešen — prati SETUP.md.');
+      return;
+    }
+    try {
+      const res = await fetch(`${BACKEND_URL}?action=getRounds`);
+      const data = await res.json();
+      if (!data.ok) { showKoloNavMessage('Greška pri učitavanju kola: ' + (data.error || '')); return; }
+      if (!data.rounds || !data.rounds.length) { showKoloNavMessage('Nema unijetih kola. Dodaj mečeve u Mecevi sheet.'); return; }
+
+      ROUNDS = {};
+      data.rounds.forEach(r => { ROUNDS[r.kolo] = { status: r.status, matches: r.matches }; });
+      const active = data.rounds.find(r => r.status === 'active');
+      ACTIVE_KOLO = active ? active.kolo : data.rounds[data.rounds.length - 1].kolo;
+
+      buildKoloNav();
+      openKolo(ACTIVE_KOLO);
+    } catch (err) {
+      showKoloNavMessage('Ne mogu da se povežem sa backend-om.');
+    }
+  }
+
+  function buildKoloNav() {
+    koloNav.innerHTML = '';
+    Object.keys(ROUNDS).sort((a, b) => a - b).forEach(k => {
+      const chip = document.createElement('button');
+      const isActive = ROUNDS[k].status === 'active';
+      chip.className = 'kolo-chip' + (String(k) === String(ACTIVE_KOLO) ? ' active' : '') + (!isActive ? ' done' : '');
+      chip.innerHTML = `<span class="k">Kolo ${k}</span><span class="s">${isActive ? 'Aktivno' : 'Završeno'}</span>`;
+      chip.addEventListener('click', () => openKolo(k));
+      chip.dataset.kolo = k;
+      koloNav.appendChild(chip);
+    });
+  }
+
+  function openKolo(k) {
+    document.querySelectorAll('.kolo-chip').forEach(c => c.classList.toggle('active', c.dataset.kolo === String(k)));
+    if (ROUNDS[k].status === 'active') {
+      viewActive.classList.add('active'); viewPast.classList.remove('active');
+      document.getElementById('deckKoloLabel').textContent = k;
+      gateSection.style.display = identity ? 'none' : 'block';
+      deckSection.style.display = identity ? 'block' : 'none';
+      if (identity) initDeck(k);
+    } else {
+      viewActive.classList.remove('active'); viewPast.classList.add('active');
+      renderPastKolo(k);
+    }
+  }
+
+  async function renderPastKolo(k) {
+    document.getElementById('pastKoloLabel').textContent = k;
+    const matchesEl = document.getElementById('pastMatches');
+    matchesEl.innerHTML = ROUNDS[k].matches.map((m) => `
+      <div class="match-row">
+        <div><div class="league-sm">${m.league}</div><div class="teams-sm">${m.home} vs ${m.away}</div></div>
+        <span class="result-pending">Rezultat u sheet-u</span>
+      </div>`).join('');
+
+    const lbEl = document.getElementById('pastLeaderboard');
+    lbEl.innerHTML = '<div class="lb-empty">Učitavam rang listu...</div>';
+    try {
+      const res = await fetch(`${BACKEND_URL}?action=leaderboard&kolo=${k}`);
+      const data = await res.json();
+      if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška: ' + data.error + '</div>'; return; }
+      if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu uneseni u Sheet.</div>'; return; }
+      if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
+      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni · Vrijeme</span></div>' +
+        data.results.map((r, i) => `
+          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi} · ${formatVrijeme(r.vrijemeSek)}</span></div>`
+        ).join('');
+    } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa backend-om.</div>'; }
+  }
+
+  // ---------------- identity gate ----------------
+  const gateError = document.getElementById('gateError');
+  let identity = null;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('lp_identity') || 'null');
+    if (saved) {
+      document.getElementById('f-ime').value = saved.ime || '';
+      document.getElementById('f-prezime').value = saved.prezime || '';
+      document.getElementById('f-id').value = saved.playerId || '';
+      document.getElementById('f-tel').value = saved.telefon || '';
+      document.getElementById('f-email').value = saved.email || '';
+    }
+  } catch (e) {}
+
+  document.getElementById('gateBtn').addEventListener('click', async () => {
+    const ime = document.getElementById('f-ime').value.trim();
+    const prezime = document.getElementById('f-prezime').value.trim();
+    const playerId = document.getElementById('f-id').value.trim();
+    const telefon = document.getElementById('f-tel').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    gateError.classList.remove('show');
+
+    if (!ime || !prezime || !playerId || !telefon || !email) {
+      gateError.textContent = 'Popuni sva polja prije nastavka.';
+      gateError.classList.add('show');
+      return;
+    }
+
+    identity = { ime, prezime, playerId, telefon, email };
+    localStorage.setItem('lp_identity', JSON.stringify(identity));
+
+    const btn = document.getElementById('gateBtn');
+    btn.disabled = true; btn.textContent = 'Provjeravam...';
+    try {
+      const url = `${BACKEND_URL}?action=checkDuplicate&kolo=${ACTIVE_KOLO}&playerId=${encodeURIComponent(playerId)}&email=${encodeURIComponent(email)}&telefon=${encodeURIComponent(telefon)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
+      if (data.ok && data.duplicate) {
+        gateError.textContent = 'Već postoji predikcija za ovo kolo sa tvojim ID-em, email-om ili brojem telefona.';
+        gateError.classList.add('show');
+        return;
+      }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
+      // ako provjera ne uspije (npr. offline), pusti dalje — backend će svakako odbiti duplikat pri predaji
+    }
+
+    gateSection.style.display = 'none';
+    deckSection.style.display = 'block';
+    initDeck(ACTIVE_KOLO);
+  });
+
+  // ---------------- swipe engine ----------------
+  function attachSwipe(cardEl, opts) {
+    let startX=0, startY=0, dx=0, dy=0, dragging=false;
+    const threshold = opts.threshold || 90;
+    function reset() {
+      cardEl.style.transition = 'transform 260ms ease';
+      cardEl.style.transform = '';
+      if (opts.stampRight) opts.stampRight.style.opacity = 0;
+      if (opts.stampLeft) opts.stampLeft.style.opacity = 0;
+      if (opts.stampUp) opts.stampUp.style.opacity = 0;
+    }
+    function onDown(e) {
+      dragging = true; cardEl.style.transition = 'none';
+      startX = (e.touches ? e.touches[0].clientX : e.clientX);
+      startY = (e.touches ? e.touches[0].clientY : e.clientY);
+      cardEl.setPointerCapture && e.pointerId !== undefined && cardEl.setPointerCapture(e.pointerId);
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      const cx = (e.touches ? e.touches[0].clientX : e.clientX);
+      const cy = (e.touches ? e.touches[0].clientY : e.clientY);
+      dx = cx - startX; dy = cy - startY;
+      cardEl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/18}deg)`;
+      if (opts.stampRight) opts.stampRight.style.opacity = Math.max(0, Math.min(1, dx / threshold));
+      if (opts.stampLeft) opts.stampLeft.style.opacity = Math.max(0, Math.min(1, -dx / threshold));
+      if (opts.stampUp) opts.stampUp.style.opacity = Math.max(0, Math.min(1, -dy / threshold));
+    }
+    function onUpEnd() {
+      if (!dragging) return; dragging = false;
+      const absX = Math.abs(dx), absY = Math.abs(dy);
+      if (-dy > threshold && absY > absX) { flyOut('up'); opts.onUp(); }
+      else if (dx > threshold) { flyOut('right'); opts.onRight(); }
+      else if (dx < -threshold) { flyOut('left'); opts.onLeft(); }
+      else { reset(); }
+      dx=0; dy=0;
+    }
+    function flyOut(dir) {
+      cardEl.style.transition = 'transform 320ms ease, opacity 320ms ease';
+      cardEl.style.opacity = '0';
+      if (dir === 'right') cardEl.style.transform = 'translate(480px, -40px) rotate(24deg)';
+      else if (dir === 'left') cardEl.style.transform = 'translate(-480px, -40px) rotate(-24deg)';
+      else cardEl.style.transform = 'translate(0, -420px) rotate(0deg)';
+    }
+    cardEl.addEventListener('pointerdown', onDown);
+    cardEl.addEventListener('pointermove', onMove);
+    cardEl.addEventListener('pointerup', onUpEnd);
+    cardEl.addEventListener('pointercancel', onUpEnd);
+    return { flyOut, reset };
+  }
+
+  const picks = [];
+  const currentEl = document.getElementById('current');
+  const peekEl = document.getElementById('peek');
+  const stampRight = document.getElementById('stamp-right');
+  const stampLeft = document.getElementById('stamp-left');
+  const stampUp = document.getElementById('stamp-up');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressFill = document.getElementById('progressFill');
+  const deckDone = document.getElementById('deckDone');
+  let idx = 0;
+  let MATCHES = [];
+  let deckInited = false;
+  let deckStartTime = null;
+
+  function renderMatch(m) { return `<div class="league-tag">${m.league}</div><div class="teams">${m.home}<span class="vs">vs</span>${m.away}</div>`; }
+
+  function formatVrijeme(sek) {
+    if (sek === null || sek === undefined || sek === '') return '—';
+    const s = Number(sek);
+    if (!isFinite(s)) return '—';
+    const m = Math.floor(s / 60), r = s % 60;
+    return m > 0 ? `${m}m ${r}s` : `${r}s`;
+  }
+
+  function showCard() {
+    currentEl.style.transition = 'none'; currentEl.style.opacity = '1'; currentEl.style.transform = '';
+    const stamps = Array.from(currentEl.querySelectorAll('.stamp'));
+    currentEl.querySelectorAll(':not(.stamp)').forEach(n => n.remove());
+    currentEl.insertAdjacentHTML('afterbegin', renderMatch(MATCHES[idx]));
+    stamps.forEach(s => { s.style.opacity = 0; currentEl.appendChild(s); });
+    if (MATCHES[idx+1]) { peekEl.style.display='flex'; peekEl.innerHTML = renderMatch(MATCHES[idx+1]); }
+    else { peekEl.style.display = 'none'; }
+    progressLabel.textContent = `Meč ${idx+1}/${MATCHES.length}`;
+    progressFill.style.width = (idx / MATCHES.length * 100) + '%';
+  }
+  function decide(val) {
+    picks.push(val); idx++;
+    progressFill.style.width = (idx / MATCHES.length * 100) + '%';
+    if (idx >= MATCHES.length) { currentEl.style.opacity = '0'; deckDone.classList.add('show'); return; }
+    setTimeout(showCard, 260);
+  }
+  function initDeck(kolo) {
+    MATCHES = ROUNDS[kolo].matches;
+    picks.length = 0; idx = 0; deckDone.classList.remove('show');
+    if (deckStartTime === null) deckStartTime = Date.now(); // mjerenje vremena popunjavanja kreće ovdje
+    showCard();
+    if (!deckInited) {
+      const swipe = attachSwipe(currentEl, {
+        onRight: () => decide('1'), onLeft: () => decide('2'), onUp: () => decide('X'),
+        stampRight, stampLeft, stampUp,
+      });
+      document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('right'); decide('1'); });
+      document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('left'); decide('2'); });
+      document.getElementById('btn-x').addEventListener('click', () => { swipe.flyOut('up'); decide('X'); });
+      deckInited = true;
+    }
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('submitBtn');
+    const resEl = document.getElementById('submitResult');
+    if (!identity) { return; }
+    const picksObj = {}; MATCHES.forEach((m, i) => { picksObj['m' + i] = picks[i]; });
+    const vrijemeSek = deckStartTime ? Math.round((Date.now() - deckStartTime) / 1000) : '';
+    btn.disabled = true; btn.textContent = 'Šaljem...';
+    try {
+      const res = await fetch(BACKEND_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(Object.assign({}, identity, { kolo: ACTIVE_KOLO, picks: picksObj, vrijeme: vrijemeSek })) });
+      const data = await res.json();
+      if (data.ok) {
+        resEl.className = 'submit-result show ok'; resEl.innerHTML = '<b>✓ </b>Predikcija predata i sačuvana!';
+        btn.textContent = 'Predato ✓';
+      } else {
+        resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ ' + (data.error || 'Greška prilikom slanja.');
+        btn.disabled = false; btn.textContent = 'Predaj predikciju';
+      }
+    } catch (err) {
+      resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ Ne mogu da se povežem sa backend-om.';
+      btn.disabled = false; btn.textContent = 'Predaj predikciju';
+    }
+  });
+
+  // ---------------- lookup ----------------
+  document.getElementById('lookupBtn').addEventListener('click', async () => {
+    const id = document.getElementById('lookupId').value.trim();
+    const resultEl = document.getElementById('lookupResult');
+    if (!id) { resultEl.textContent = 'Unesi ID naloga.'; return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend URL nije podešen.'; return; }
+    resultEl.textContent = 'Učitavam...';
+    try {
+      const res = await fetch(`${BACKEND_URL}?action=lookup&playerId=${encodeURIComponent(id)}`);
+      const data = await res.json();
+      if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
+      if (!data.results.length) { resultEl.textContent = 'Nema predikcija za taj ID.'; return; }
+      resultEl.innerHTML = data.results.map(r => `
+        <div class="entry">
+          <div class="row2"><span>Kolo</span><span>${r.kolo}</span></div>
+          <div class="row2"><span>Predato</span><span>${new Date(r.timestamp).toLocaleDateString('sr-Latn-ME')}</span></div>
+          <div class="row2"><span>Bodovi</span><span>${r.bodovi === null ? '— (čeka rezultat)' : r.bodovi}</span></div>
+          <div class="row2"><span>Vrijeme popunjavanja</span><span>${formatVrijeme(r.vrijemeSek)}</span></div>
+        </div>`).join('');
+    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
+  });
+
+  // ---------------- init ----------------
+  gateSection.style.display = 'none';
+  deckSection.style.display = 'none';
+  loadRounds();
+</script>
+</body>
+</html>
