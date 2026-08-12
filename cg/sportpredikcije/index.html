@@ -1,581 +1,339 @@
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lige Petice — Admiralbet Predikcije</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0B0B0D; --bg-2:#15151A; --card:#1C1C22; --card-2:#232329;
-  --blue:#0B65D6; --gold:#FFD200; --gray:#9CA3AF; --gray-line:#2A2A32; --green:#22C55E; --red:#F0453A;
+/**
+ * LIGE PETICE — Apps Script backend
+ * ============================================================
+ * SHEETOVI (kreira ih setupSheets(), pokreni JEDNOM iz editora):
+ *
+ *   1) Kola        — Kolo | Status
+ *        Status je "active" ili "past". Tačno JEDAN red treba da bude "active".
+ *
+ *   2) Mecevi      — Kolo | MatchIndex | Liga | Domacin | Gost | Rezultat
+ *        MatchIndex je uvijek m0..m4 (5 redova po kolu).
+ *        Rezultat ostaje prazan dok se meč ne odigra, zatim upišeš 1 / X / 2.
+ *
+ *   3) Predikcije  — Timestamp | Kolo | Ime | Prezime | PlayerID | Telefon | Email
+ *                     | Pick_m0 | Pick_m1 | Pick_m2 | Pick_m3 | Pick_m4 | VrijemeSek
+ *        Ovdje se automatski upisuju predikcije igrača (doPost). Ne dira se ručno.
+ *        VrijemeSek = koliko je sekundi igraču trebalo da popuni predikciju
+ *        (mjeri se na frontendu, od otvaranja kartica do klika na "Predaj").
+ *
+ * BODOVANJE I RANG:
+ *   Rang lista se sortira prvo po broju tačnih pogodaka (5 mečeva = max 5 bodova),
+ *   a IZJEDNAČENI (isti broj bodova) se rangiraju po brzini — manje VrijemeSek
+ *   je bolji plasman. Sve se računa automatski, ništa se ne kuca ručno.
+ *
+ * SEDMIČNA RUTINA:
+ *   1. U "Kola": prethodnom aktivnom kolu promijeni Status u "past", dodaj novi
+ *      red za naredno kolo sa Status "active".
+ *   2. U "Mecevi": dodaj 5 novih redova (m0..m4) za novo kolo — Liga/Domaćin/Gost,
+ *      Rezultat prazan.
+ *   3. Kad meč završi, upiši rezultat (1 / X / 2) u kolonu Rezultat. Poeni i
+ *      rang-lista se računaju automatski iz Predikcije + Mecevi — ništa drugo
+ *      nije potrebno dirati.
+ *
+ * DEPLOY:
+ *   Deploy > New deployment > Web app > Execute as: Me > Who has access: Anyone.
+ *   Zalijepi dobijeni /exec URL u BACKEND_URL na vrhu <script> u HTML-u.
+ *
+ * KEŠ:
+ *   getRounds (kola + mečevi) se kešira na serveru jer se čita na svaki
+ *   load stranice. Keš se automatski poništava čim ručno izmijeniš Kola
+ *   ili Mecevi sheet (onEdit funkcija ispod) — ne treba ništa ručno da radiš.
+ * ============================================================
+ */
+
+const SHEET_KOLA = 'Kola';
+const SHEET_MECEVI = 'Mecevi';
+const SHEET_PREDIKCIJE = 'Predikcije';
+const MATCH_KEYS = ['m0', 'm1', 'm2', 'm3', 'm4'];
+
+// ---------------------------------------------------------------
+// SETUP — pokreni ručno jednom (Run > setupSheets). Ne briše
+// postojeće sheetove ako već postoje, samo kreira one koji fale.
+// ---------------------------------------------------------------
+function setupSheets() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  if (!ss.getSheetByName(SHEET_KOLA)) {
+    const kola = ss.insertSheet(SHEET_KOLA);
+    kola.getRange(1, 1, 1, 2).setValues([['Kolo', 'Status']]).setFontWeight('bold');
+    kola.getRange(2, 1, 1, 2).setValues([[1, 'active']]);
+    kola.setFrozenRows(1);
+    kola.autoResizeColumns(1, 2);
+  }
+
+  if (!ss.getSheetByName(SHEET_MECEVI)) {
+    const mecevi = ss.insertSheet(SHEET_MECEVI);
+    mecevi.getRange(1, 1, 1, 6)
+      .setValues([['Kolo', 'MatchIndex', 'Liga', 'Domacin', 'Gost', 'Rezultat']])
+      .setFontWeight('bold');
+    const demo = [
+      [1, 'm0', 'Liga 1', 'Domaćin 1', 'Gost 1', ''],
+      [1, 'm1', 'Liga 2', 'Domaćin 2', 'Gost 2', ''],
+      [1, 'm2', 'Liga 3', 'Domaćin 3', 'Gost 3', ''],
+      [1, 'm3', 'Liga 4', 'Domaćin 4', 'Gost 4', ''],
+      [1, 'm4', 'Liga 5', 'Domaćin 5', 'Gost 5', ''],
+    ];
+    mecevi.getRange(2, 1, demo.length, 6).setValues(demo);
+    mecevi.setFrozenRows(1);
+    mecevi.autoResizeColumns(1, 6);
+    const rule = SpreadsheetApp.newDataValidation().requireValueInList(['1', 'X', '2'], true).setAllowInvalid(false).build();
+    mecevi.getRange(2, 6, 500, 1).setDataValidation(rule);
+  }
+
+  if (!ss.getSheetByName(SHEET_PREDIKCIJE)) {
+    const pred = ss.insertSheet(SHEET_PREDIKCIJE);
+    pred.getRange(1, 1, 1, 13).setValues([[
+      'Timestamp', 'Kolo', 'Ime', 'Prezime', 'PlayerID', 'Telefon', 'Email',
+      'Pick_m0', 'Pick_m1', 'Pick_m2', 'Pick_m3', 'Pick_m4', 'VrijemeSek'
+    ]]).setFontWeight('bold');
+    pred.setFrozenRows(1);
+    pred.autoResizeColumns(1, 13);
+  }
+
+  SpreadsheetApp.flush();
+  SpreadsheetApp.getUi().alert('Setup gotov.\n\nSheetovi: Kola, Mecevi, Predikcije.');
 }
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{margin:0; background:var(--bg); color:#fff; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
-@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
-h1,h2,h3{font-family:'Barlow Condensed',sans-serif; margin:0; text-transform:uppercase; letter-spacing:0.02em; font-weight:800;}
-.mono{font-family:'IBM Plex Mono',monospace;}
-a{color:inherit;}
-.wrap{max-width:720px; margin:0 auto; padding:0 clamp(16px,4vw,24px);}
-:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
-::selection{background:var(--gold); color:#101010;}
-button{font-family:inherit;}
 
-.topstrip{background:var(--blue); color:#fff; font-family:'Inter'; font-weight:700; font-size:clamp(10.5px,2.6vw,12.5px); letter-spacing:0.03em; padding:10px 16px; text-align:center;}
-header{background:rgba(11,11,13,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--gray-line); position:sticky; top:0; z-index:22;}
-.nav{display:flex; align-items:center; justify-content:center; padding:16px 0;}
-.brand{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; display:flex; align-items:center; gap:9px;}
-.brand .dot{width:9px; height:9px; background:var(--gold); border-radius:50%;}
-.brand span{color:var(--gold);}
+// ---------------------------------------------------------------
+// Helpers — čitanje sheetova
+// ---------------------------------------------------------------
+function getSheet_(name) {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
+  if (!sh) throw new Error('Sheet "' + name + '" ne postoji. Pokreni setupSheets() iz editora.');
+  return sh;
+}
 
-.hero{padding:clamp(28px,5vw,44px) 0 clamp(20px,4vw,28px); background:radial-gradient(700px 340px at 50% -20%, rgba(11,101,214,0.25), transparent 60%); text-align:center;}
-.hero h1{font-size:clamp(26px,5vw,38px); margin-bottom:10px;}
-.hero h1 .hl{color:var(--gold);}
-.hero p{font-size:14.5px; color:var(--gray); line-height:1.6; max-width:52ch; margin:0 auto;}
-
-/* kolo navigator */
-.kolo-nav{display:flex; gap:8px; padding:16px clamp(16px,4vw,24px); overflow-x:auto; scrollbar-width:none; background:var(--bg-2); border-bottom:1px solid var(--gray-line); border-top:1px solid var(--gray-line);}
-.kolo-nav::-webkit-scrollbar{display:none;}
-.kolo-chip{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; padding:9px 16px; border-radius:12px; border:1px solid var(--gray-line); background:var(--card); cursor:pointer; transition:all 150ms ease;}
-.kolo-chip .k{font-family:'Barlow Condensed'; font-weight:800; font-size:14px;}
-.kolo-chip .s{font-size:9.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray);}
-.kolo-chip.active{border-color:var(--gold); background:rgba(255,210,0,0.1);}
-.kolo-chip.active .s{color:var(--gold);}
-.kolo-chip.done .s{color:var(--green);}
-.kolo-nav-msg{padding:14px clamp(16px,4vw,24px); font-size:12.5px; color:var(--gray); background:var(--bg-2); border-bottom:1px solid var(--gray-line); border-top:1px solid var(--gray-line);}
-
-section{padding:clamp(28px,5vw,48px) 0;}
-.section-head{margin-bottom:20px; text-align:center;}
-.section-head h2{font-size:clamp(20px,3.5vw,28px); margin-bottom:8px;}
-.section-head p{font-size:13.5px; color:var(--gray); line-height:1.55; margin:0 auto; max-width:50ch;}
-
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; font-weight:700; font-size:14.5px; letter-spacing:0.02em; padding:14px 24px; border-radius:12px; text-decoration:none; border:none; cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease; width:100%;}
-.btn:hover{transform:translateY(-2px);}
-.btn-gold{background:var(--gold); color:#1a1400; box-shadow:0 8px 22px rgba(255,210,0,0.28);}
-.btn-blue{background:var(--blue); color:#fff; box-shadow:0 8px 22px rgba(11,101,214,0.35);}
-.btn-outline-green{background:rgba(34,197,94,0.12); color:var(--green); border:2px solid var(--green);}
-.btn-outline-red{background:rgba(240,69,58,0.12); color:var(--red); border:2px solid var(--red);}
-.btn-outline-gold{background:rgba(255,210,0,0.12); color:var(--gold); border:2px solid var(--gold);}
-.btn:disabled{background:var(--gray-line); color:var(--gray); border-color:var(--gray-line); cursor:not-allowed; transform:none; box-shadow:none;}
-.btn-icon{width:56px; height:56px; border-radius:50%; padding:0; font-size:19px;}
-.btn-icon.x-btn{width:64px; height:64px; font-size:15px; font-weight:800; font-family:'Barlow Condensed';}
-
-/* identity gate form */
-.id-form{background:var(--card); border:1px solid var(--gray-line); border-radius:18px; padding:24px 22px;}
-.id-form .field{margin-bottom:14px;}
-.id-form label{display:block; font-size:12px; font-weight:700; color:var(--gray); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;}
-.id-form input{width:100%; font-family:'Inter'; font-size:14.5px; padding:12px 14px; border-radius:10px; border:1px solid var(--gray-line); background:#0F0F12; color:#fff;}
-.id-form input:focus{border-color:var(--blue); outline:none;}
-.id-form .row2col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-@media (max-width:480px){ .id-form .row2col{grid-template-columns:1fr;} }
-.id-note{font-size:12px; color:var(--gray); line-height:1.5; margin-top:12px;}
-.id-error{display:none; background:rgba(240,69,58,0.1); border:1px solid rgba(240,69,58,0.35); border-radius:10px; padding:12px 14px; font-size:13px; margin-top:12px; color:#fff;}
-.id-error.show{display:block;}
-
-/* howto banner */
-.howto-banner{display:flex; align-items:flex-start; gap:14px; background:linear-gradient(135deg, rgba(11,101,214,0.16), rgba(255,210,0,0.08)); border:1px solid rgba(11,101,214,0.4); border-radius:16px; padding:16px 18px; margin:0 0 18px;}
-.howto-banner .ic{font-size:26px; flex-shrink:0; line-height:1;}
-.howto-banner .txt{font-size:13.5px; line-height:1.55; color:#fff;}
-.howto-banner .txt b{color:var(--gold);}
-
-/* deck */
-.deck-progress{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; font-size:12.5px; color:var(--gray); font-weight:600;}
-.deck-progress .bar{flex:1; height:6px; background:var(--gray-line); border-radius:100px; margin:0 12px; overflow:hidden;}
-.deck-progress .fill{height:100%; background:var(--gold); width:0%; transition:width 300ms ease;}
-.swipe-stack{position:relative; height:260px; margin-bottom:18px;}
-.swipe-card{position:absolute; inset:0; background:linear-gradient(160deg, var(--card-2), var(--card)); border:1px solid var(--gray-line); border-radius:22px; padding:26px 24px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.45); user-select:none; touch-action:none;}
-.swipe-card.peek{z-index:1; transform:scale(0.94) translateY(10px); opacity:0.6; pointer-events:none;}
-.swipe-card.current{z-index:2; cursor:grab;}
-.swipe-card.current:active{cursor:grabbing;}
-.swipe-card .league-tag{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray); background:#0F0F12; padding:5px 12px; border-radius:100px; margin-bottom:18px;}
-.swipe-card .teams{font-family:'Barlow Condensed'; font-weight:800; font-size:clamp(20px,5vw,26px); line-height:1.15; letter-spacing:0.01em;}
-.swipe-card .teams .vs{display:block; font-size:12.5px; color:var(--gray); font-weight:600; margin:6px 0; letter-spacing:0.08em; text-transform:uppercase;}
-.stamp{position:absolute; top:24px; padding:8px 16px; border-radius:10px; font-family:'Barlow Condensed'; font-weight:800; font-size:22px; letter-spacing:0.04em; border:3px solid; opacity:0; transition:opacity 60ms linear; pointer-events:none;}
-.stamp-right{right:20px; color:var(--green); border-color:var(--green); transform:rotate(-12deg);}
-.stamp-left{left:20px; color:var(--red); border-color:var(--red); transform:rotate(12deg);}
-.stamp-up{left:50%; top:14px; transform:translateX(-50%); color:var(--gold); border-color:var(--gold);}
-.deck-controls{display:flex; justify-content:center; align-items:center; gap:16px;}
-.deck-done{display:none; text-align:center; padding:16px 0 0;}
-.deck-done.show{display:block;}
-.deck-done .big{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; color:#fff; margin-bottom:12px;}
-
-.submit-result{margin-top:16px; display:none; border-radius:12px; padding:14px 18px; font-size:13.5px; line-height:1.6;}
-.submit-result.show{display:block;}
-.submit-result.ok{background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.35);}
-.submit-result.err{background:rgba(240,69,58,0.1); border:1px solid rgba(240,69,58,0.35);}
-
-.demo-note{font-family:'IBM Plex Mono'; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(255,210,0,0.35); padding:3px 9px; border-radius:100px; display:inline-block; margin-bottom:10px;}
-
-/* read-only round view */
-.match-row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--card); border:1px solid var(--gray-line); border-radius:12px; padding:14px 18px; margin-bottom:8px;}
-.match-row .teams-sm{font-size:14px; font-weight:600;}
-.match-row .league-sm{font-family:'IBM Plex Mono'; font-size:10px; color:var(--gray); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px;}
-.match-row .result-badge{font-family:'Barlow Condensed'; font-weight:800; font-size:16px; background:var(--gold); color:#1a1400; padding:3px 12px; border-radius:8px;}
-.match-row .result-pending{font-size:11px; color:var(--gray); font-family:'IBM Plex Mono';}
-
-.leaderboard{background:var(--card); border:1px solid var(--gray-line); border-radius:16px; overflow:hidden; margin-top:20px;}
-.lb-row{display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid var(--gray-line); font-size:13.5px;}
-.lb-row:last-child{border-bottom:none;}
-.lb-row.head{background:#0F0F12; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--gray);}
-.lb-row .rank{font-family:'Barlow Condensed'; font-weight:800; font-size:17px; color:#5CA3F5;}
-.lb-row.top1 .rank, .lb-row.top1 .rank{color:var(--gold);}
-.lb-row .pts{font-family:'IBM Plex Mono'; font-weight:700;}
-.lb-empty{padding:20px; text-align:center; font-size:13px; color:var(--gray);}
-
-.lookup-box{background:var(--card); border:1px solid var(--gray-line); border-radius:16px; padding:22px 20px;}
-.lookup-box .row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
-.lookup-box input{font-family:'IBM Plex Mono'; font-size:14px; padding:11px 13px; border-radius:8px; border:1px solid var(--gray-line); background:#0F0F12; color:#fff; flex:1; min-width:140px;}
-.lookup-box .btn{width:auto; padding:11px 20px;}
-.lookup-result .entry{background:#0F0F12; border:1px solid var(--gray-line); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:13px;}
-.lookup-result .entry .row2{display:flex; justify-content:space-between; padding:3px 0;}
-.lookup-result .entry .row2 span:last-child{font-family:'IBM Plex Mono'; font-weight:600;}
-
-footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px solid var(--gray-line);}
-.compliance-bar{display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--gray-line); border-radius:14px; padding:16px 18px; margin-bottom:18px;}
-.age-badge{font-family:'Barlow Condensed'; font-weight:800; font-size:18px; color:#fff; background:var(--blue); border-radius:10px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-.compliance-bar p{font-size:11.5px; line-height:1.5; color:var(--gray); margin:0;}
-.fine{font-size:11px; color:#5c5c62; line-height:1.5;}
-
-.view{display:none;}
-.view.active{display:block;}
-</style>
-</head>
-<body>
-
-<div class="topstrip">Besplatna sedmična igra predikcija · Lige Petice</div>
-
-<header>
-  <div class="wrap nav">
-    <div class="brand"><span class="dot"></span>LIGE <span>PETICE</span></div>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="wrap">
-    <h1>Pogodi <span class="hl">5 mečeva</span>.<br>Sakupljaj poene.</h1>
-    <p>Svake sedmice 5 mečeva iz top 5 evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
-  </div>
-</section>
-
-<div class="kolo-nav" id="koloNav"></div>
-<div class="kolo-nav-msg" id="koloNavMsg" style="display:none;"></div>
-
-<!-- ================= VIEW: aktivno kolo (identity gate -> deck -> submit) ================= -->
-<div class="view active" id="view-active">
-
-  <section id="gate-section">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Ko igra?</h2>
-        <p>Popuni podatke prije predikcije. Jedan nalog, email ili broj telefona može predati samo jednu predikciju po kolu.</p>
-      </div>
-      <div class="id-form">
-        <div class="row2col">
-          <div class="field"><label for="f-ime">Ime</label><input id="f-ime" type="text" autocomplete="given-name"></div>
-          <div class="field"><label for="f-prezime">Prezime</label><input id="f-prezime" type="text" autocomplete="family-name"></div>
-        </div>
-        <div class="field"><label for="f-id">ID naloga (Admiralbet platforma)</label><input id="f-id" class="mono" type="text" inputmode="numeric" autocomplete="off"></div>
-        <div class="row2col">
-          <div class="field"><label for="f-tel">Broj telefona</label><input id="f-tel" type="tel" autocomplete="tel"></div>
-          <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email"></div>
-        </div>
-        <button class="btn btn-gold" id="gateBtn">Kreni na predikciju</button>
-        <div class="id-error" id="gateError"></div>
-        <p class="id-note">Podaci se koriste isključivo za dodjelu nagrada i sprečavanje višestrukih predikcija po kolu.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-alt" id="deck-section" style="display:none;">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Kolo <span id="deckKoloLabel">1</span> — prevuci za tip</h2>
-      </div>
-      <div class="howto-banner">
-        <span class="ic">👆</span>
-        <span class="txt">Prevuci karticu <b>desno za pobjedu domaćina (1)</b>, <b>lijevo za pobjedu gosta (2)</b>, <b>gore za nerešeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
-      </div>
-      <div class="deck-progress">
-        <span id="progressLabel">Meč 1/5</span>
-        <div class="bar"><div class="fill" id="progressFill"></div></div>
-      </div>
-      <div class="swipe-stack" id="stack">
-        <div class="swipe-card peek" id="peek"></div>
-        <div class="swipe-card current" id="current">
-          <div class="stamp stamp-right" id="stamp-right">1</div>
-          <div class="stamp stamp-left" id="stamp-left">2</div>
-          <div class="stamp stamp-up" id="stamp-up">X</div>
-        </div>
-      </div>
-      <div class="deck-controls">
-        <button class="btn btn-icon btn-outline-green" id="btn-1" aria-label="Pobjeda domaćina (1)">1</button>
-        <button class="btn btn-icon x-btn btn-outline-gold" id="btn-x" aria-label="Nerešeno (X)">X</button>
-        <button class="btn btn-icon btn-outline-red" id="btn-2" aria-label="Pobjeda gosta (2)">2</button>
-      </div>
-      <div class="deck-done" id="deckDone">
-        <div class="big">Sve predikcije unijete ✓</div>
-        <button class="btn btn-gold" id="submitBtn">Predaj predikciju</button>
-      </div>
-      <div class="submit-result" id="submitResult"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ================= VIEW: prošlo kolo (read-only + leaderboard) ================= -->
-<div class="view" id="view-past">
-  <section>
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Kolo <span id="pastKoloLabel">1</span> — pregled</h2>
-        <p>Ovo kolo je završeno. Prijava predikcija za njega više nije moguća.</p>
-      </div>
-      <div id="pastMatches"></div>
-      <div class="leaderboard" id="pastLeaderboard"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ================= lookup (uvijek vidljivo) ================= -->
-<section class="bg-alt">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Provjeri svoje predikcije</h2>
-      <p>Unesi svoj ID naloga da vidiš sve predikcije koje si predao/la kroz sva kola.</p>
-    </div>
-    <div class="lookup-box">
-      <div class="row">
-        <input id="lookupId" class="mono" placeholder="ID naloga" />
-        <button class="btn btn-blue" id="lookupBtn">Provjeri</button>
-      </div>
-      <div class="lookup-result" id="lookupResult"></div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="compliance-bar">
-      <div class="age-badge">18+</div>
-      <p>Namijenjeno isključivo punoljetnim licima. Igrajte odgovorno. [Formulaciju napomene o odgovornoj igri potvrđuje pravna služba prije objave.]</p>
-    </div>
-    <p class="fine">Predikcije ne predstavljaju opkladu niti uplatu. Organizator zadržava pravo izmjene pravila. [Naziv organizatora i pravna napomena — popuniti prije objave.]</p>
-  </div>
-</footer>
-
-<script>
-  const BACKEND_URL = "STAVI_SVOJ_APPS_SCRIPT_URL_OVDJE";
-
-  // ============================================================
-  // Kola i mečevi se sada učitavaju sa backend-a (Kola + Mecevi
-  // sheet preko action=getRounds) — ne treba ih više ručno kucati
-  // u JS-u. Da dodaš/izmijeniš meč ili kolo, uredi Sheet, ne HTML.
-  // ============================================================
-  let ROUNDS = {};
-  let ACTIVE_KOLO = null;
-
-  const koloNav = document.getElementById('koloNav');
-  const koloNavMsg = document.getElementById('koloNavMsg');
-  const viewActive = document.getElementById('view-active');
-  const viewPast = document.getElementById('view-past');
-  const gateSection = document.getElementById('gate-section');
-  const deckSection = document.getElementById('deck-section');
-
-  function showKoloNavMessage(text) {
-    koloNav.style.display = 'none';
-    koloNavMsg.style.display = 'block';
-    koloNavMsg.textContent = text;
-    gateSection.style.display = 'none';
-    deckSection.style.display = 'none';
-  }
-
-  async function loadRounds() {
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
-      showKoloNavMessage('Backend URL nije podešen — prati SETUP.md.');
-      return;
-    }
-    try {
-      const res = await fetch(`${BACKEND_URL}?action=getRounds`);
-      const data = await res.json();
-      if (!data.ok) { showKoloNavMessage('Greška pri učitavanju kola: ' + (data.error || '')); return; }
-      if (!data.rounds || !data.rounds.length) { showKoloNavMessage('Nema unijetih kola. Dodaj mečeve u Mecevi sheet.'); return; }
-
-      ROUNDS = {};
-      data.rounds.forEach(r => { ROUNDS[r.kolo] = { status: r.status, matches: r.matches }; });
-      const active = data.rounds.find(r => r.status === 'active');
-      ACTIVE_KOLO = active ? active.kolo : data.rounds[data.rounds.length - 1].kolo;
-
-      buildKoloNav();
-      openKolo(ACTIVE_KOLO);
-    } catch (err) {
-      showKoloNavMessage('Ne mogu da se povežem sa backend-om.');
-    }
-  }
-
-  function buildKoloNav() {
-    koloNav.innerHTML = '';
-    Object.keys(ROUNDS).sort((a, b) => a - b).forEach(k => {
-      const chip = document.createElement('button');
-      const isActive = ROUNDS[k].status === 'active';
-      chip.className = 'kolo-chip' + (String(k) === String(ACTIVE_KOLO) ? ' active' : '') + (!isActive ? ' done' : '');
-      chip.innerHTML = `<span class="k">Kolo ${k}</span><span class="s">${isActive ? 'Aktivno' : 'Završeno'}</span>`;
-      chip.addEventListener('click', () => openKolo(k));
-      chip.dataset.kolo = k;
-      koloNav.appendChild(chip);
+function sheetToObjects_(sheet) {
+  const values = sheet.getDataRange().getValues();
+  const headers = values.shift();
+  return values
+    .filter(row => row.some(c => c !== '' && c !== null))
+    .map(row => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = row[i]; });
+      return obj;
     });
-  }
+}
 
-  function openKolo(k) {
-    document.querySelectorAll('.kolo-chip').forEach(c => c.classList.toggle('active', c.dataset.kolo === String(k)));
-    if (ROUNDS[k].status === 'active') {
-      viewActive.classList.add('active'); viewPast.classList.remove('active');
-      document.getElementById('deckKoloLabel').textContent = k;
-      gateSection.style.display = identity ? 'none' : 'block';
-      deckSection.style.display = identity ? 'block' : 'none';
-      if (identity) initDeck(k);
-    } else {
-      viewActive.classList.remove('active'); viewPast.classList.add('active');
-      renderPastKolo(k);
-    }
-  }
+function getKolaStatuses_() {
+  const rows = sheetToObjects_(getSheet_(SHEET_KOLA));
+  const map = {};
+  rows.forEach(r => { map[String(r.Kolo)] = String(r.Status || '').trim().toLowerCase(); });
+  return map;
+}
 
-  async function renderPastKolo(k) {
-    document.getElementById('pastKoloLabel').textContent = k;
-    const matchesEl = document.getElementById('pastMatches');
-    matchesEl.innerHTML = ROUNDS[k].matches.map((m) => `
-      <div class="match-row">
-        <div><div class="league-sm">${m.league}</div><div class="teams-sm">${m.home} vs ${m.away}</div></div>
-        <span class="result-pending">Rezultat u sheet-u</span>
-      </div>`).join('');
+function getMecevi_() {
+  const rows = sheetToObjects_(getSheet_(SHEET_MECEVI));
+  const byKolo = {};
+  rows.forEach(r => {
+    const k = String(r.Kolo);
+    if (!byKolo[k]) byKolo[k] = {};
+    byKolo[k][String(r.MatchIndex).trim()] = {
+      league: r.Liga,
+      home: r.Domacin,
+      away: r.Gost,
+      result: String(r.Rezultat || '').trim()
+    };
+  });
+  return byKolo;
+}
 
-    const lbEl = document.getElementById('pastLeaderboard');
-    lbEl.innerHTML = '<div class="lb-empty">Učitavam rang listu...</div>';
-    try {
-      const res = await fetch(`${BACKEND_URL}?action=leaderboard&kolo=${k}`);
-      const data = await res.json();
-      if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška: ' + data.error + '</div>'; return; }
-      if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu uneseni u Sheet.</div>'; return; }
-      if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
-      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni · Vrijeme</span></div>' +
-        data.results.map((r, i) => `
-          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi} · ${formatVrijeme(r.vrijemeSek)}</span></div>`
-        ).join('');
-    } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa backend-om.</div>'; }
-  }
+function koloResultsInfo_(kolo) {
+  const mecevi = getMecevi_();
+  const m = mecevi[String(kolo)];
+  if (!m) return { pending: true, results: {} };
+  const results = {};
+  let pending = false;
+  MATCH_KEYS.forEach(mk => {
+    const r = m[mk] ? m[mk].result : '';
+    results[mk] = r;
+    if (!r) pending = true;
+  });
+  return { pending, results };
+}
 
-  // ---------------- identity gate ----------------
-  const gateError = document.getElementById('gateError');
-  let identity = null;
+function computeBodovi_(predRow, resultsMap) {
+  let bodovi = 0;
+  MATCH_KEYS.forEach(mk => {
+    const pick = String(predRow['Pick_' + mk] || '').trim();
+    const rez = String(resultsMap[mk] || '').trim();
+    if (pick && rez && pick === rez) bodovi++;
+  });
+  return bodovi;
+}
 
+function getVrijeme_(predRow) {
+  const v = Number(predRow.VrijemeSek);
+  return isFinite(v) && v >= 0 ? v : Infinity; // bez vremena = ide na kraj kod izjednačenja
+}
+
+// ---------------------------------------------------------------
+// Keš — getRounds se čita mnogo (svaki load stranice), pa ga
+// keširamo na serveru. Keš se sam poništava čim se ručno izmijeni
+// Kola ili Mecevi sheet (vidi onEdit ispod) — ne treba ništa da diraš.
+// ---------------------------------------------------------------
+function getVersion_() {
+  const props = PropertiesService.getScriptProperties();
+  let v = props.getProperty('DATA_VERSION');
+  if (!v) { v = '1'; props.setProperty('DATA_VERSION', v); }
+  return v;
+}
+
+function bumpVersion_() {
+  const props = PropertiesService.getScriptProperties();
+  const v = Number(props.getProperty('DATA_VERSION') || '1') + 1;
+  props.setProperty('DATA_VERSION', String(v));
+}
+
+/**
+ * Google Apps Script "simple trigger" — pokreće se sam, ne treba ga
+ * ručno deploy-ovati ili aktivirati, samo mora da se zove tačno "onEdit".
+ * Kad neko ručno izmijeni Kola ili Mecevi (npr. upiše rezultat, doda meč,
+ * promijeni status kola), keš se odmah poništava.
+ */
+function onEdit(e) {
   try {
-    const saved = JSON.parse(localStorage.getItem('lp_identity') || 'null');
-    if (saved) {
-      document.getElementById('f-ime').value = saved.ime || '';
-      document.getElementById('f-prezime').value = saved.prezime || '';
-      document.getElementById('f-id').value = saved.playerId || '';
-      document.getElementById('f-tel').value = saved.telefon || '';
-      document.getElementById('f-email').value = saved.email || '';
+    const sheetName = e.range.getSheet().getName();
+    if (sheetName === SHEET_KOLA || sheetName === SHEET_MECEVI) {
+      bumpVersion_();
     }
-  } catch (e) {}
+  } catch (err) {
+    // greška ovdje ne smije srušiti korisnikov edit u sheetu
+  }
+}
 
-  document.getElementById('gateBtn').addEventListener('click', async () => {
-    const ime = document.getElementById('f-ime').value.trim();
-    const prezime = document.getElementById('f-prezime').value.trim();
-    const playerId = document.getElementById('f-id').value.trim();
-    const telefon = document.getElementById('f-tel').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    gateError.classList.remove('show');
+// ---------------------------------------------------------------
+// Akcije (GET)
+// ---------------------------------------------------------------
+function actionGetRounds_() {
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'rounds_v' + getVersion_();
+  const cached = cache.get(cacheKey);
+  if (cached) return JSON.parse(cached);
 
-    if (!ime || !prezime || !playerId || !telefon || !email) {
-      gateError.textContent = 'Popuni sva polja prije nastavka.';
-      gateError.classList.add('show');
-      return;
-    }
-
-    identity = { ime, prezime, playerId, telefon, email };
-    localStorage.setItem('lp_identity', JSON.stringify(identity));
-
-    const btn = document.getElementById('gateBtn');
-    btn.disabled = true; btn.textContent = 'Provjeravam...';
-    try {
-      const url = `${BACKEND_URL}?action=checkDuplicate&kolo=${ACTIVE_KOLO}&playerId=${encodeURIComponent(playerId)}&email=${encodeURIComponent(email)}&telefon=${encodeURIComponent(telefon)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
-      if (data.ok && data.duplicate) {
-        gateError.textContent = 'Već postoji predikcija za ovo kolo sa tvojim ID-em, email-om ili brojem telefona.';
-        gateError.classList.add('show');
-        return;
-      }
-    } catch (err) {
-      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
-      // ako provjera ne uspije (npr. offline), pusti dalje — backend će svakako odbiti duplikat pri predaji
-    }
-
-    gateSection.style.display = 'none';
-    deckSection.style.display = 'block';
-    initDeck(ACTIVE_KOLO);
+  const statuses = getKolaStatuses_();
+  const mecevi = getMecevi_();
+  const kolos = Object.keys(mecevi).sort((a, b) => Number(a) - Number(b));
+  const rounds = kolos.map(k => {
+    const matches = MATCH_KEYS
+      .filter(mk => mecevi[k][mk])
+      .map(mk => ({ league: mecevi[k][mk].league, home: mecevi[k][mk].home, away: mecevi[k][mk].away }));
+    return { kolo: Number(k), status: statuses[k] || 'past', matches };
   });
+  const result = { ok: true, rounds };
 
-  // ---------------- swipe engine ----------------
-  function attachSwipe(cardEl, opts) {
-    let startX=0, startY=0, dx=0, dy=0, dragging=false;
-    const threshold = opts.threshold || 90;
-    function reset() {
-      cardEl.style.transition = 'transform 260ms ease';
-      cardEl.style.transform = '';
-      if (opts.stampRight) opts.stampRight.style.opacity = 0;
-      if (opts.stampLeft) opts.stampLeft.style.opacity = 0;
-      if (opts.stampUp) opts.stampUp.style.opacity = 0;
+  cache.put(cacheKey, JSON.stringify(result), 21600); // 6h max (limit CacheService-a), i onako se briše na svaku izmjenu
+  return result;
+}
+
+function actionLeaderboard_(kolo) {
+  if (!kolo) return { ok: false, error: 'Nedostaje kolo.' };
+  const info = koloResultsInfo_(kolo);
+  if (info.pending) return { ok: true, resultsPending: true, results: [] };
+  const pred = sheetToObjects_(getSheet_(SHEET_PREDIKCIJE)).filter(r => String(r.Kolo) === String(kolo));
+  const results = pred
+    .map(r => ({
+      ime: r.Ime,
+      prezime: r.Prezime,
+      bodovi: computeBodovi_(r, info.results),
+      vrijemeSek: isFinite(getVrijeme_(r)) ? getVrijeme_(r) : null
+    }))
+    .sort((a, b) => {
+      if (b.bodovi !== a.bodovi) return b.bodovi - a.bodovi; // više bodova = bolji plasman
+      const va = a.vrijemeSek === null ? Infinity : a.vrijemeSek;
+      const vb = b.vrijemeSek === null ? Infinity : b.vrijemeSek;
+      return va - vb; // izjednačeni po bodovima -> brži je bolji
+    });
+  return { ok: true, resultsPending: false, results };
+}
+
+function actionLookup_(playerId) {
+  if (!playerId) return { ok: false, error: 'Nedostaje ID naloga.' };
+  const pred = sheetToObjects_(getSheet_(SHEET_PREDIKCIJE)).filter(r => String(r.PlayerID).trim() === String(playerId).trim());
+  const results = pred
+    .map(r => {
+      const info = koloResultsInfo_(r.Kolo);
+      const bodovi = info.pending ? null : computeBodovi_(r, info.results);
+      const v = getVrijeme_(r);
+      return { kolo: r.Kolo, timestamp: r.Timestamp, bodovi, vrijemeSek: isFinite(v) ? v : null };
+    })
+    .sort((a, b) => Number(b.kolo) - Number(a.kolo));
+  return { ok: true, results };
+}
+
+function actionCheckDuplicate_(kolo, playerId, email, telefon) {
+  const pred = sheetToObjects_(getSheet_(SHEET_PREDIKCIJE)).filter(r => String(r.Kolo) === String(kolo));
+  const dup = pred.some(r =>
+    (playerId && String(r.PlayerID).trim() === String(playerId).trim()) ||
+    (email && String(r.Email).trim().toLowerCase() === String(email).trim().toLowerCase()) ||
+    (telefon && String(r.Telefon).trim() === String(telefon).trim())
+  );
+  return { ok: true, duplicate: dup };
+}
+
+// ---------------------------------------------------------------
+// Web app entry points
+// ---------------------------------------------------------------
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+    let result;
+    switch (action) {
+      case 'getRounds':
+        result = actionGetRounds_();
+        break;
+      case 'leaderboard':
+        result = actionLeaderboard_(e.parameter.kolo);
+        break;
+      case 'lookup':
+        result = actionLookup_(e.parameter.playerId);
+        break;
+      case 'checkDuplicate':
+        result = actionCheckDuplicate_(e.parameter.kolo, e.parameter.playerId, e.parameter.email, e.parameter.telefon);
+        break;
+      default:
+        result = { ok: false, error: 'Nepoznata akcija: ' + action };
     }
-    function onDown(e) {
-      dragging = true; cardEl.style.transition = 'none';
-      startX = (e.touches ? e.touches[0].clientX : e.clientX);
-      startY = (e.touches ? e.touches[0].clientY : e.clientY);
-      cardEl.setPointerCapture && e.pointerId !== undefined && cardEl.setPointerCapture(e.pointerId);
-    }
-    function onMove(e) {
-      if (!dragging) return;
-      const cx = (e.touches ? e.touches[0].clientX : e.clientX);
-      const cy = (e.touches ? e.touches[0].clientY : e.clientY);
-      dx = cx - startX; dy = cy - startY;
-      cardEl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/18}deg)`;
-      if (opts.stampRight) opts.stampRight.style.opacity = Math.max(0, Math.min(1, dx / threshold));
-      if (opts.stampLeft) opts.stampLeft.style.opacity = Math.max(0, Math.min(1, -dx / threshold));
-      if (opts.stampUp) opts.stampUp.style.opacity = Math.max(0, Math.min(1, -dy / threshold));
-    }
-    function onUpEnd() {
-      if (!dragging) return; dragging = false;
-      const absX = Math.abs(dx), absY = Math.abs(dy);
-      if (-dy > threshold && absY > absX) { flyOut('up'); opts.onUp(); }
-      else if (dx > threshold) { flyOut('right'); opts.onRight(); }
-      else if (dx < -threshold) { flyOut('left'); opts.onLeft(); }
-      else { reset(); }
-      dx=0; dy=0;
-    }
-    function flyOut(dir) {
-      cardEl.style.transition = 'transform 320ms ease, opacity 320ms ease';
-      cardEl.style.opacity = '0';
-      if (dir === 'right') cardEl.style.transform = 'translate(480px, -40px) rotate(24deg)';
-      else if (dir === 'left') cardEl.style.transform = 'translate(-480px, -40px) rotate(-24deg)';
-      else cardEl.style.transform = 'translate(0, -420px) rotate(0deg)';
-    }
-    cardEl.addEventListener('pointerdown', onDown);
-    cardEl.addEventListener('pointermove', onMove);
-    cardEl.addEventListener('pointerup', onUpEnd);
-    cardEl.addEventListener('pointercancel', onUpEnd);
-    return { flyOut, reset };
+    return jsonOut_(result);
+  } catch (err) {
+    return jsonOut_({ ok: false, error: String(err) });
   }
+}
 
-  const picks = [];
-  const currentEl = document.getElementById('current');
-  const peekEl = document.getElementById('peek');
-  const stampRight = document.getElementById('stamp-right');
-  const stampLeft = document.getElementById('stamp-left');
-  const stampUp = document.getElementById('stamp-up');
-  const progressLabel = document.getElementById('progressLabel');
-  const progressFill = document.getElementById('progressFill');
-  const deckDone = document.getElementById('deckDone');
-  let idx = 0;
-  let MATCHES = [];
-  let deckInited = false;
-  let deckStartTime = null;
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const { ime, prezime, playerId, telefon, email, kolo, picks, vrijeme } = data;
 
-  function renderMatch(m) { return `<div class="league-tag">${m.league}</div><div class="teams">${m.home}<span class="vs">vs</span>${m.away}</div>`; }
-
-  function formatVrijeme(sek) {
-    if (sek === null || sek === undefined || sek === '') return '—';
-    const s = Number(sek);
-    if (!isFinite(s)) return '—';
-    const m = Math.floor(s / 60), r = s % 60;
-    return m > 0 ? `${m}m ${r}s` : `${r}s`;
-  }
-
-  function showCard() {
-    currentEl.style.transition = 'none'; currentEl.style.opacity = '1'; currentEl.style.transform = '';
-    const stamps = Array.from(currentEl.querySelectorAll('.stamp'));
-    currentEl.querySelectorAll(':not(.stamp)').forEach(n => n.remove());
-    currentEl.insertAdjacentHTML('afterbegin', renderMatch(MATCHES[idx]));
-    stamps.forEach(s => { s.style.opacity = 0; currentEl.appendChild(s); });
-    if (MATCHES[idx+1]) { peekEl.style.display='flex'; peekEl.innerHTML = renderMatch(MATCHES[idx+1]); }
-    else { peekEl.style.display = 'none'; }
-    progressLabel.textContent = `Meč ${idx+1}/${MATCHES.length}`;
-    progressFill.style.width = (idx / MATCHES.length * 100) + '%';
-  }
-  function decide(val) {
-    picks.push(val); idx++;
-    progressFill.style.width = (idx / MATCHES.length * 100) + '%';
-    if (idx >= MATCHES.length) { currentEl.style.opacity = '0'; deckDone.classList.add('show'); return; }
-    setTimeout(showCard, 260);
-  }
-  function initDeck(kolo) {
-    MATCHES = ROUNDS[kolo].matches;
-    picks.length = 0; idx = 0; deckDone.classList.remove('show');
-    if (deckStartTime === null) deckStartTime = Date.now(); // mjerenje vremena popunjavanja kreće ovdje
-    showCard();
-    if (!deckInited) {
-      const swipe = attachSwipe(currentEl, {
-        onRight: () => decide('1'), onLeft: () => decide('2'), onUp: () => decide('X'),
-        stampRight, stampLeft, stampUp,
-      });
-      document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('right'); decide('1'); });
-      document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('left'); decide('2'); });
-      document.getElementById('btn-x').addEventListener('click', () => { swipe.flyOut('up'); decide('X'); });
-      deckInited = true;
+    if (!ime || !prezime || !playerId || !telefon || !email || !kolo || !picks) {
+      return jsonOut_({ ok: false, error: 'Nedostaju podaci.' });
     }
-  }
 
-  document.getElementById('submitBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('submitBtn');
-    const resEl = document.getElementById('submitResult');
-    if (!identity) { return; }
-    const picksObj = {}; MATCHES.forEach((m, i) => { picksObj['m' + i] = picks[i]; });
-    const vrijemeSek = deckStartTime ? Math.round((Date.now() - deckStartTime) / 1000) : '';
-    btn.disabled = true; btn.textContent = 'Šaljem...';
-    try {
-      const res = await fetch(BACKEND_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({}, identity, { kolo: ACTIVE_KOLO, picks: picksObj, vrijeme: vrijemeSek })) });
-      const data = await res.json();
-      if (data.ok) {
-        resEl.className = 'submit-result show ok'; resEl.innerHTML = '<b>✓ </b>Predikcija predata i sačuvana!';
-        btn.textContent = 'Predato ✓';
-      } else {
-        resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ ' + (data.error || 'Greška prilikom slanja.');
-        btn.disabled = false; btn.textContent = 'Predaj predikciju';
-      }
-    } catch (err) {
-      resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ Ne mogu da se povežem sa backend-om.';
-      btn.disabled = false; btn.textContent = 'Predaj predikciju';
+    const vrijemeSek = Number(vrijeme);
+    const vrijemeOut = isFinite(vrijemeSek) && vrijemeSek >= 0 ? vrijemeSek : '';
+
+    const statuses = getKolaStatuses_();
+    if (statuses[String(kolo)] !== 'active') {
+      return jsonOut_({ ok: false, error: 'Ovo kolo trenutno nije aktivno za predaju predikcija.' });
     }
-  });
 
-  // ---------------- lookup ----------------
-  document.getElementById('lookupBtn').addEventListener('click', async () => {
-    const id = document.getElementById('lookupId').value.trim();
-    const resultEl = document.getElementById('lookupResult');
-    if (!id) { resultEl.textContent = 'Unesi ID naloga.'; return; }
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend URL nije podešen.'; return; }
-    resultEl.textContent = 'Učitavam...';
-    try {
-      const res = await fetch(`${BACKEND_URL}?action=lookup&playerId=${encodeURIComponent(id)}`);
-      const data = await res.json();
-      if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
-      if (!data.results.length) { resultEl.textContent = 'Nema predikcija za taj ID.'; return; }
-      resultEl.innerHTML = data.results.map(r => `
-        <div class="entry">
-          <div class="row2"><span>Kolo</span><span>${r.kolo}</span></div>
-          <div class="row2"><span>Predato</span><span>${new Date(r.timestamp).toLocaleDateString('sr-Latn-ME')}</span></div>
-          <div class="row2"><span>Bodovi</span><span>${r.bodovi === null ? '— (čeka rezultat)' : r.bodovi}</span></div>
-          <div class="row2"><span>Vrijeme popunjavanja</span><span>${formatVrijeme(r.vrijemeSek)}</span></div>
-        </div>`).join('');
-    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
-  });
+    const dup = actionCheckDuplicate_(kolo, playerId, email, telefon);
+    if (dup.duplicate) {
+      return jsonOut_({ ok: false, error: 'Već postoji predikcija za ovo kolo sa tim ID-em, email-om ili brojem telefona.' });
+    }
 
-  // ---------------- init ----------------
-  gateSection.style.display = 'none';
-  deckSection.style.display = 'none';
-  loadRounds();
-</script>
-</body>
-</html>
+    const sh = getSheet_(SHEET_PREDIKCIJE);
+    sh.appendRow([
+      new Date(), kolo, ime, prezime, playerId, telefon, email,
+      picks.m0 || '', picks.m1 || '', picks.m2 || '', picks.m3 || '', picks.m4 || '',
+      vrijemeOut
+    ]);
+    return jsonOut_({ ok: true });
+  } catch (err) {
+    return jsonOut_({ ok: false, error: String(err) });
+  }
+}
+
+function jsonOut_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
