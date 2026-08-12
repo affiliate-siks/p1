@@ -44,6 +44,7 @@ header{background:rgba(11,11,13,0.92); backdrop-filter:blur(10px); border-bottom
 .kolo-chip.active{border-color:var(--gold); background:rgba(255,210,0,0.1);}
 .kolo-chip.active .s{color:var(--gold);}
 .kolo-chip.done .s{color:var(--green);}
+.kolo-nav-msg{padding:14px clamp(16px,4vw,24px); font-size:12.5px; color:var(--gray); background:var(--bg-2); border-bottom:1px solid var(--gray-line); border-top:1px solid var(--gray-line);}
 
 section{padding:clamp(28px,5vw,48px) 0;}
 .section-head{margin-bottom:20px; text-align:center;}
@@ -159,6 +160,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 </section>
 
 <div class="kolo-nav" id="koloNav"></div>
+<div class="kolo-nav-msg" id="koloNavMsg" style="display:none;"></div>
 
 <!-- ================= VIEW: aktivno kolo (identity gate -> deck -> submit) ================= -->
 <div class="view active" id="view-active">
@@ -198,7 +200,6 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       <div class="deck-progress">
         <span id="progressLabel">Meč 1/5</span>
         <div class="bar"><div class="fill" id="progressFill"></div></div>
-        <span class="demo-note" style="margin:0;">Demo mečevi</span>
       </div>
       <div class="swipe-stack" id="stack">
         <div class="swipe-card peek" id="peek"></div>
@@ -267,44 +268,72 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   const BACKEND_URL = "STAVI_SVOJ_APPS_SCRIPT_URL_OVDJE";
 
   // ============================================================
-  // KOLA — ovdje se definišu mečevi po kolu.
-  // Počinje se sa jednim čistim, aktivnim kolom — bez izmišljene
-  // istorije. Kad se ovo kolo završi, promijeni mu status na 'past'
-  // i dodaj novo kolo sa 'active' (v. SETUP.md, sekcija "Kola i istorija").
+  // Kola i mečevi se sada učitavaju sa backend-a (Kola + Mecevi
+  // sheet preko action=getRounds) — ne treba ih više ručno kucati
+  // u JS-u. Da dodaš/izmijeniš meč ili kolo, uredi Sheet, ne HTML.
   // ============================================================
-  const ROUNDS = {
-    1: { status: 'active', matches: [
-      { league:'Liga 1', home:'Domaćin 1', away:'Gost 1' },
-      { league:'Liga 2', home:'Domaćin 2', away:'Gost 2' },
-      { league:'Liga 3', home:'Domaćin 3', away:'Gost 3' },
-      { league:'Liga 4', home:'Domaćin 4', away:'Gost 4' },
-      { league:'Liga 5', home:'Domaćin 5', away:'Gost 5' },
-    ]},
-  };
-  const ACTIVE_KOLO = Object.keys(ROUNDS).find(k => ROUNDS[k].status === 'active') || Object.keys(ROUNDS).pop();
+  let ROUNDS = {};
+  let ACTIVE_KOLO = null;
 
-  // ---------------- kolo nav ----------------
   const koloNav = document.getElementById('koloNav');
-  Object.keys(ROUNDS).sort((a,b)=>a-b).forEach(k => {
-    const chip = document.createElement('button');
-    const isActive = ROUNDS[k].status === 'active';
-    chip.className = 'kolo-chip' + (String(k) === String(ACTIVE_KOLO) ? ' active' : '') + (!isActive ? ' done' : '');
-    chip.innerHTML = `<span class="k">Kolo ${k}</span><span class="s">${isActive ? 'Aktivno' : 'Završeno'}</span>`;
-    chip.addEventListener('click', () => openKolo(k));
-    chip.dataset.kolo = k;
-    koloNav.appendChild(chip);
-  });
-
+  const koloNavMsg = document.getElementById('koloNavMsg');
   const viewActive = document.getElementById('view-active');
   const viewPast = document.getElementById('view-past');
-  let currentOpenKolo = ACTIVE_KOLO;
+  const gateSection = document.getElementById('gate-section');
+  const deckSection = document.getElementById('deck-section');
+
+  function showKoloNavMessage(text) {
+    koloNav.style.display = 'none';
+    koloNavMsg.style.display = 'block';
+    koloNavMsg.textContent = text;
+    gateSection.style.display = 'none';
+    deckSection.style.display = 'none';
+  }
+
+  async function loadRounds() {
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
+      showKoloNavMessage('Backend URL nije podešen — prati SETUP.md.');
+      return;
+    }
+    try {
+      const res = await fetch(`${BACKEND_URL}?action=getRounds`);
+      const data = await res.json();
+      if (!data.ok) { showKoloNavMessage('Greška pri učitavanju kola: ' + (data.error || '')); return; }
+      if (!data.rounds || !data.rounds.length) { showKoloNavMessage('Nema unijetih kola. Dodaj mečeve u Mecevi sheet.'); return; }
+
+      ROUNDS = {};
+      data.rounds.forEach(r => { ROUNDS[r.kolo] = { status: r.status, matches: r.matches }; });
+      const active = data.rounds.find(r => r.status === 'active');
+      ACTIVE_KOLO = active ? active.kolo : data.rounds[data.rounds.length - 1].kolo;
+
+      buildKoloNav();
+      openKolo(ACTIVE_KOLO);
+    } catch (err) {
+      showKoloNavMessage('Ne mogu da se povežem sa backend-om.');
+    }
+  }
+
+  function buildKoloNav() {
+    koloNav.innerHTML = '';
+    Object.keys(ROUNDS).sort((a, b) => a - b).forEach(k => {
+      const chip = document.createElement('button');
+      const isActive = ROUNDS[k].status === 'active';
+      chip.className = 'kolo-chip' + (String(k) === String(ACTIVE_KOLO) ? ' active' : '') + (!isActive ? ' done' : '');
+      chip.innerHTML = `<span class="k">Kolo ${k}</span><span class="s">${isActive ? 'Aktivno' : 'Završeno'}</span>`;
+      chip.addEventListener('click', () => openKolo(k));
+      chip.dataset.kolo = k;
+      koloNav.appendChild(chip);
+    });
+  }
 
   function openKolo(k) {
-    currentOpenKolo = k;
     document.querySelectorAll('.kolo-chip').forEach(c => c.classList.toggle('active', c.dataset.kolo === String(k)));
     if (ROUNDS[k].status === 'active') {
       viewActive.classList.add('active'); viewPast.classList.remove('active');
       document.getElementById('deckKoloLabel').textContent = k;
+      gateSection.style.display = identity ? 'none' : 'block';
+      deckSection.style.display = identity ? 'block' : 'none';
+      if (identity) initDeck(k);
     } else {
       viewActive.classList.remove('active'); viewPast.classList.add('active');
       renderPastKolo(k);
@@ -314,7 +343,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   async function renderPastKolo(k) {
     document.getElementById('pastKoloLabel').textContent = k;
     const matchesEl = document.getElementById('pastMatches');
-    matchesEl.innerHTML = ROUNDS[k].matches.map((m, i) => `
+    matchesEl.innerHTML = ROUNDS[k].matches.map((m) => `
       <div class="match-row">
         <div><div class="league-sm">${m.league}</div><div class="teams-sm">${m.home} vs ${m.away}</div></div>
         <span class="result-pending">Rezultat u sheet-u</span>
@@ -322,30 +351,23 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
     const lbEl = document.getElementById('pastLeaderboard');
     lbEl.innerHTML = '<div class="lb-empty">Učitavam rang listu...</div>';
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
-      lbEl.innerHTML = '<div class="lb-empty">Backend URL nije podešen — prati SETUP.md.</div>';
-      return;
-    }
     try {
       const res = await fetch(`${BACKEND_URL}?action=leaderboard&kolo=${k}`);
       const data = await res.json();
       if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška: ' + data.error + '</div>'; return; }
       if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu uneseni u Sheet.</div>'; return; }
       if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
-      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni</span></div>' +
+      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni · Vrijeme</span></div>' +
         data.results.map((r, i) => `
-          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi}</span></div>`
+          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi} · ${formatVrijeme(r.vrijemeSek)}</span></div>`
         ).join('');
     } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa backend-om.</div>'; }
   }
 
   // ---------------- identity gate ----------------
-  const gateSection = document.getElementById('gate-section');
-  const deckSection = document.getElementById('deck-section');
   const gateError = document.getElementById('gateError');
   let identity = null;
 
-  // restore from localStorage for convenience (server still re-validates duplicates)
   try {
     const saved = JSON.parse(localStorage.getItem('lp_identity') || 'null');
     if (saved) {
@@ -374,30 +396,29 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     identity = { ime, prezime, playerId, telefon, email };
     localStorage.setItem('lp_identity', JSON.stringify(identity));
 
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') === -1) {
-      const btn = document.getElementById('gateBtn');
-      btn.disabled = true; btn.textContent = 'Provjeravam...';
-      try {
-        const url = `${BACKEND_URL}?action=checkDuplicate&kolo=${ACTIVE_KOLO}&playerId=${encodeURIComponent(playerId)}&email=${encodeURIComponent(email)}&telefon=${encodeURIComponent(telefon)}`;
-        const res = await fetch(url);
-        const data = await res.json();
-        btn.disabled = false; btn.textContent = 'Kreni na predikciju';
-        if (data.ok && data.duplicate) {
-          gateError.textContent = 'Već postoji predikcija za ovo kolo sa tvojim ID-em, email-om ili brojem telefona.';
-          gateError.classList.add('show');
-          return;
-        }
-      } catch (err) {
-        btn.disabled = false; btn.textContent = 'Kreni na predikciju';
-        // ako provjera ne uspije (npr. offline), pusti dalje — backend će svakako odbiti duplikat pri predaji
+    const btn = document.getElementById('gateBtn');
+    btn.disabled = true; btn.textContent = 'Provjeravam...';
+    try {
+      const url = `${BACKEND_URL}?action=checkDuplicate&kolo=${ACTIVE_KOLO}&playerId=${encodeURIComponent(playerId)}&email=${encodeURIComponent(email)}&telefon=${encodeURIComponent(telefon)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
+      if (data.ok && data.duplicate) {
+        gateError.textContent = 'Već postoji predikcija za ovo kolo sa tvojim ID-em, email-om ili brojem telefona.';
+        gateError.classList.add('show');
+        return;
       }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Kreni na predikciju';
+      // ako provjera ne uspije (npr. offline), pusti dalje — backend će svakako odbiti duplikat pri predaji
     }
 
     gateSection.style.display = 'none';
     deckSection.style.display = 'block';
+    initDeck(ACTIVE_KOLO);
   });
 
-  // ---------------- swipe engine (isti kao ranije) ----------------
+  // ---------------- swipe engine ----------------
   function attachSwipe(cardEl, opts) {
     let startX=0, startY=0, dx=0, dy=0, dragging=false;
     const threshold = opts.threshold || 90;
@@ -458,8 +479,18 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   const deckDone = document.getElementById('deckDone');
   let idx = 0;
   let MATCHES = [];
+  let deckInited = false;
+  let deckStartTime = null;
 
   function renderMatch(m) { return `<div class="league-tag">${m.league}</div><div class="teams">${m.home}<span class="vs">vs</span>${m.away}</div>`; }
+
+  function formatVrijeme(sek) {
+    if (sek === null || sek === undefined || sek === '') return '—';
+    const s = Number(sek);
+    if (!isFinite(s)) return '—';
+    const m = Math.floor(s / 60), r = s % 60;
+    return m > 0 ? `${m}m ${r}s` : `${r}s`;
+  }
 
   function showCard() {
     currentEl.style.transition = 'none'; currentEl.style.opacity = '1'; currentEl.style.transform = '';
@@ -478,32 +509,33 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     if (idx >= MATCHES.length) { currentEl.style.opacity = '0'; deckDone.classList.add('show'); return; }
     setTimeout(showCard, 260);
   }
-  function initDeck() {
-    MATCHES = ROUNDS[ACTIVE_KOLO].matches;
+  function initDeck(kolo) {
+    MATCHES = ROUNDS[kolo].matches;
     picks.length = 0; idx = 0; deckDone.classList.remove('show');
+    if (deckStartTime === null) deckStartTime = Date.now(); // mjerenje vremena popunjavanja kreće ovdje
     showCard();
+    if (!deckInited) {
+      const swipe = attachSwipe(currentEl, {
+        onRight: () => decide('1'), onLeft: () => decide('2'), onUp: () => decide('X'),
+        stampRight, stampLeft, stampUp,
+      });
+      document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('right'); decide('1'); });
+      document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('left'); decide('2'); });
+      document.getElementById('btn-x').addEventListener('click', () => { swipe.flyOut('up'); decide('X'); });
+      deckInited = true;
+    }
   }
-  const swipe = attachSwipe(currentEl, {
-    onRight: () => decide('1'), onLeft: () => decide('2'), onUp: () => decide('X'),
-    stampRight, stampLeft, stampUp,
-  });
-  document.getElementById('btn-1').addEventListener('click', () => { swipe.flyOut('right'); decide('1'); });
-  document.getElementById('btn-2').addEventListener('click', () => { swipe.flyOut('left'); decide('2'); });
-  document.getElementById('btn-x').addEventListener('click', () => { swipe.flyOut('up'); decide('X'); });
-  initDeck();
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
     const btn = document.getElementById('submitBtn');
     const resEl = document.getElementById('submitResult');
     if (!identity) { return; }
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
-      resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ Backend URL nije podešen. Prati SETUP.md.'; return;
-    }
     const picksObj = {}; MATCHES.forEach((m, i) => { picksObj['m' + i] = picks[i]; });
+    const vrijemeSek = deckStartTime ? Math.round((Date.now() - deckStartTime) / 1000) : '';
     btn.disabled = true; btn.textContent = 'Šaljem...';
     try {
       const res = await fetch(BACKEND_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({}, identity, { kolo: ACTIVE_KOLO, picks: picksObj })) });
+        body: JSON.stringify(Object.assign({}, identity, { kolo: ACTIVE_KOLO, picks: picksObj, vrijeme: vrijemeSek })) });
       const data = await res.json();
       if (data.ok) {
         resEl.className = 'submit-result show ok'; resEl.innerHTML = '<b>✓ </b>Predikcija predata i sačuvana!';
@@ -535,11 +567,15 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
           <div class="row2"><span>Kolo</span><span>${r.kolo}</span></div>
           <div class="row2"><span>Predato</span><span>${new Date(r.timestamp).toLocaleDateString('sr-Latn-ME')}</span></div>
           <div class="row2"><span>Bodovi</span><span>${r.bodovi === null ? '— (čeka rezultat)' : r.bodovi}</span></div>
+          <div class="row2"><span>Vrijeme popunjavanja</span><span>${formatVrijeme(r.vrijemeSek)}</span></div>
         </div>`).join('');
     } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
   });
 
-  openKolo(ACTIVE_KOLO);
+  // ---------------- init ----------------
+  gateSection.style.display = 'none';
+  deckSection.style.display = 'none';
+  loadRounds();
 </script>
 </body>
 </html>
