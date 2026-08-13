@@ -493,6 +493,71 @@
   .tier-badge.silver{background:rgba(154,163,181,.18);color:#c3cad6;}
   .tier-badge.bronze{background:rgba(216,154,106,.18);color:#d89a6a;}
 
+  /* ---------- Rewards: header XP/Level pill ---------- */
+  .xp-pill{display:inline-flex;align-items:center;gap:4px;background:var(--gold-soft);border:1px solid var(--gold);border-radius:14px;padding:5px 11px;font-size:11.5px;font-weight:700;color:var(--gold);white-space:nowrap;}
+  .xp-pill:hover{background:rgba(201,162,39,.22);}
+
+  /* ---------- Rewards: XP progress bar (level-up style, thicker than subrating-bar) ---------- */
+  .xpbar-wrap{background:var(--panel);border-radius:8px;height:14px;overflow:hidden;position:relative;border:1px solid var(--line);}
+  .xpbar-fill{height:100%;background:linear-gradient(90deg, var(--gold), #f0d060);border-radius:8px;transition:width .4s ease;}
+  .xpbar-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:#1a1400;mix-blend-mode:plus-lighter;}
+
+  /* ---------- Rewards: level badge circle ---------- */
+  .level-circle{width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--pct,0)*1%), var(--panel) 0);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+  .level-circle::before{content:'';position:absolute;inset:5px;border-radius:50%;background:var(--card);}
+  .level-circle span{position:relative;font-family:var(--serif);font-weight:700;font-size:18px;color:var(--gold);}
+
+  /* ---------- Rewards: stat cards row (XP / Credits / Streak) ---------- */
+  .reward-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+  .reward-stat-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center;}
+  .reward-stat-card .v{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--gold);}
+  .reward-stat-card .l{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-top:3px;}
+  @media (max-width:640px){.reward-stats-grid{grid-template-columns:1fr 1fr 1fr;gap:8px;} .reward-stat-card{padding:11px 6px;} .reward-stat-card .v{font-size:16px;}}
+
+  /* ---------- Rewards: badge grid ---------- */
+  .badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .badge-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 10px;text-align:center;}
+  .badge-card.locked{opacity:.4;}
+  .badge-card .icon{font-size:28px;margin-bottom:6px;}
+  .badge-card .name{font-size:11px;font-weight:700;}
+  .badge-card .desc{font-size:9.5px;color:var(--faint);margin-top:2px;line-height:1.3;}
+  @media (max-width:640px){.badge-grid{grid-template-columns:repeat(3,1fr);}}
+  @media (max-width:420px){.badge-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- Rewards: weekly challenge row ---------- */
+  .challenge-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:10px;}
+  .challenge-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:10px;}
+  .challenge-name{font-size:13px;font-weight:600;}
+  .challenge-reward{font-size:11px;color:var(--gold);font-weight:700;white-space:nowrap;}
+  .challenge-bar-wrap{height:8px;background:var(--panel);border-radius:5px;overflow:hidden;}
+  .challenge-bar-fill{height:100%;background:var(--green);border-radius:5px;}
+  .challenge-bar-fill.complete{background:var(--gold);}
+
+  /* ---------- Rewards: shop ---------- */
+  .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .shop-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;}
+  .shop-card.disabled{opacity:.55;}
+  .shop-card .icon{font-size:26px;margin-bottom:8px;}
+  .shop-card .name{font-family:var(--serif);font-size:14.5px;font-weight:600;margin-bottom:4px;}
+  .shop-card .desc{font-size:11px;color:var(--faint);line-height:1.4;margin-bottom:10px;flex:1;}
+  .shop-card .price{font-size:12.5px;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  @media (max-width:860px){.shop-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:480px){.shop-grid{grid-template-columns:1fr;}}
+
+  /* ---------- Rewards: battle pass track ---------- */
+  .bp-track{display:flex;overflow-x:auto;gap:10px;padding:8px 4px 14px;}
+  .bp-tier{flex:0 0 84px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;}
+  .bp-tier.unlocked{border-color:var(--gold);}
+  .bp-tier .num{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;}
+  .bp-tier .icon{font-size:22px;margin:6px 0;}
+  .bp-tier .label{font-size:9.5px;color:var(--dim);line-height:1.25;}
+  .bp-tier.unlocked .label{color:var(--gold);font-weight:700;}
+
+  /* ---------- Rewards: streak flame row ---------- */
+  .streak-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .streak-week{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--panel);border:1px solid var(--line);}
+  .streak-week.done{background:rgba(201,162,39,.18);border-color:var(--gold);}
+
   @media (max-width:380px){
     .hero h1{font-size:24px;}
     .op-mark{width:38px;height:38px;font-size:13px;}
@@ -688,6 +753,7 @@
             <button data-view="predictor">🎯 Predictor <span class="nav-dropdown-sub">Free weekly picks</span></button>
             <button data-view="tipsters">🏆 Tipsters <span class="nav-dropdown-sub">Verified pick records</span></button>
             <button data-view="quiz">🧠 Weekly Quiz <span class="nav-dropdown-sub">Live, Thursdays 20:00</span></button>
+            <button data-view="rewards">🎁 Rewards <span class="nav-dropdown-sub">XP, Shop &amp; Battle Pass</span></button>
           </div>
         </div>
         <button data-view="guides">Guides &amp; News</button>
@@ -698,6 +764,7 @@
       </nav>
       <div class="header-right">
         <button class="icon-btn" onclick="openSearch()" aria-label="Search">⌕</button>
+        <button class="xp-pill" id="headerXpPill" onclick="go('rewards')" title="View your rewards">Lvl 1</button>
         <button class="icon-btn header-account-btn" onclick="openAccount()" aria-label="Account">☺</button>
         <button class="market-btn" id="marketBtnLabel" onclick="openCountryPicker()" aria-label="Choose country">🇬🇧 UK</button>
         <button class="icon-btn hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">☰</button>
@@ -728,6 +795,7 @@
         <button data-view="predictor">🎯 Predictor</button>
         <button data-view="tipsters">🏆 Tipsters</button>
         <button data-view="quiz">🧠 Weekly Quiz</button>
+        <button data-view="rewards">🎁 Rewards</button>
       </nav>
       <nav class="mobile-nav" id="mobileNav2">
         <button data-view="education">Education</button>
@@ -1079,6 +1147,84 @@
       <p style="font-size:11px;color:var(--faint);margin-top:10px;">Champion status and season leaderboard position are free rewards. Cash or physical prizes are on hold pending legal review per market — see our <button onclick="openLegal('methodology')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">How We Rate</button> page for how we handle compliance across markets.</p>
     </section>
 
+    <!-- ============ REWARDS (Account XP, Credits, Battle Pass, Shop, Badges) ============ -->
+    <section class="view" id="view-rewards">
+      <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Your progress</p><h2 id="rewardsHeading">Rewards</h2></div></div>
+      <p style="color:var(--faint);font-size:12.5px;max-width:640px;margin:-6px 0 20px;" id="rewardsIntro">Account XP tracks your overall status across the whole site and never resets. Credits are a separate, spendable balance for the Shop. Battle Pass is a season-only track that runs alongside both.</p>
+
+      <div class="subtabs" id="rewardsSubtabs">
+        <button data-rtab="overview" class="active" id="rewardsTabOverviewLabel">Overview</button>
+        <button data-rtab="challenges" id="rewardsTabChallengesLabel">Weekly Challenges</button>
+        <button data-rtab="badges" id="rewardsTabBadgesLabel">Badges</button>
+        <button data-rtab="shop" id="rewardsTabShopLabel">Shop</button>
+        <button data-rtab="battlepass" id="rewardsTabBpLabel">Battle Pass</button>
+      </div>
+
+      <!-- ---- Overview ---- -->
+      <div id="rtab-overview">
+        <div class="reward-stats-grid" id="rewardStatsGrid"></div>
+        <div class="sidebar-box">
+          <h4 id="rewardsLevelHeading">Account Level</h4>
+          <div style="display:flex;gap:16px;align-items:center;">
+            <div class="level-circle" id="rewardsLevelCircle" style="--pct:0;"><span id="rewardsLevelNum">1</span></div>
+            <div style="flex:1;">
+              <div class="xpbar-wrap"><div class="xpbar-fill" id="rewardsXpBarFill" style="width:0%;"></div></div>
+              <p style="font-size:11px;color:var(--faint);margin:6px 0 0;" id="rewardsXpBarLabel"></p>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <h4 id="rewardsStreakHeading">Weekly Streak</h4>
+          <div class="streak-row" id="rewardsStreakRow"></div>
+          <p style="font-size:11px;color:var(--faint);margin:8px 0 0;" id="rewardsStreakNote"></p>
+        </div>
+        <div class="sidebar-box">
+          <h4 id="rewardsInviteHeading">Invite a friend</h4>
+          <p style="font-size:11.5px;color:var(--dim);margin:0 0 10px;" id="rewardsInviteDesc">Earn a one-time XP and Credits bonus when someone you invite registers and verifies their account.</p>
+          <button class="btn btn-gold" onclick="simulateFriendInvite()" id="rewardsInviteBtn">Copy invite link</button>
+        </div>
+        <h4 style="font-family:var(--serif);font-size:14.5px;margin:22px 0 10px;" id="rewardsXpTableHeading">How XP is earned</h4>
+        <div class="table-wrap"><table><thead><tr><th id="rewardsXpTableColAction">Activity</th><th id="rewardsXpTableColXp">XP</th></tr></thead><tbody id="rewardsXpTableBody"></tbody></table></div>
+      </div>
+
+      <!-- ---- Weekly Challenges ---- -->
+      <div id="rtab-challenges" style="display:none;">
+        <p style="font-size:11.5px;color:var(--faint);margin:-4px 0 16px;" id="rewardsChallengesNote">Resets every Monday. A mix of easy participation goals and harder quality goals.</p>
+        <div id="challengesList"></div>
+      </div>
+
+      <!-- ---- Badges ---- -->
+      <div id="rtab-badges" style="display:none;">
+        <p style="font-size:11.5px;color:var(--faint);margin:-4px 0 16px;" id="rewardsBadgesNote">Permanent milestones, separate from your Level — earning one never expires.</p>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </div>
+
+      <!-- ---- Shop ---- -->
+      <div id="rtab-shop" style="display:none;">
+        <div class="verdict-box" style="max-width:100%;">
+          <div class="k" id="rewardsShopBalanceLabel">Your balance</div>
+          <div style="font-size:20px;font-weight:700;color:var(--gold);font-family:var(--serif);" id="rewardsShopBalanceValue">0 Credits</div>
+        </div>
+        <h4 style="font-family:var(--serif);font-size:14.5px;margin:20px 0 10px;" id="rewardsShopDigitalHeading">Digital rewards</h4>
+        <div class="shop-grid" id="shopGridDigital"></div>
+        <h4 style="font-family:var(--serif);font-size:14.5px;margin:24px 0 10px;" id="rewardsShopCommunityHeading">Community rewards</h4>
+        <div class="shop-grid" id="shopGridCommunity"></div>
+        <h4 style="font-family:var(--serif);font-size:14.5px;margin:24px 0 10px;color:var(--faint);" id="rewardsShopComingHeading">Coming later</h4>
+        <div class="shop-grid" id="shopGridComing"></div>
+      </div>
+
+      <!-- ---- Battle Pass ---- -->
+      <div id="rtab-battlepass" style="display:none;">
+        <div class="sidebar-box">
+          <h4 id="bpProgressHeading">Season progress</h4>
+          <div class="xpbar-wrap" style="height:16px;"><div class="xpbar-fill" id="bpXpBarFill" style="width:0%;"></div></div>
+          <p style="font-size:11px;color:var(--faint);margin:8px 0 0;" id="bpXpBarLabel"></p>
+        </div>
+        <p style="font-size:11.5px;color:var(--faint);margin:14px 0 6px;" id="bpTrackNote">Free for everyone — no paid tier. Scroll to see every reward tier this season.</p>
+        <div class="bp-track" id="bpTrack"></div>
+      </div>
+    </section>
+
     <!-- ============ COMMUNITY ============ -->
     <section class="view" id="view-community">
       <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Live chat</p><h2>Community</h2></div></div>
@@ -1300,6 +1446,7 @@
           <button onclick="go('predictor')">Predictor</button>
           <button onclick="go('tipsters')">Tipsters</button>
           <button onclick="go('quiz')">Weekly Quiz</button>
+          <button onclick="go('rewards')">Rewards</button>
         </div>
         <div class="foot-links" style="margin-top:10px;">
           <button onclick="showToast('Opens X (Twitter) — @beforebet')">𝕏 Twitter</button>
@@ -1870,8 +2017,8 @@ function renderPredictor(){
   document.getElementById('predictorHeading').textContent = isUK ? 'Predictor' : 'Pronostici';
   document.getElementById('predictorRoundSub').textContent = isUK ? `Round ${predictorRound.number}` : `Turno ${predictorRound.number}`;
   document.getElementById('predictorIntro').textContent = isUK
-    ? 'Pick the outcome of 6 matches every round. Get the result right for points, the exact score for a bonus. Free to play \\u2014 you\\u2019ll just need a free account to save your picks to the leaderboard.'
-    : 'Pronostica l\\u2019esito di 6 partite ogni turno. Punti per il risultato giusto, bonus per il punteggio esatto. Gratuito \\u2014ti servir\\u00e0 solo un account gratuito per salvare i pronostici in classifica.';
+    ? 'Pick the outcome of 6 matches every round. Get the result right for points, the exact score for a bonus. Free to play \u2014 you\u2019ll just need a free account to save your picks to the leaderboard.'
+    : 'Pronostica l\u2019esito di 6 partite ogni turno. Punti per il risultato giusto, bonus per il punteggio esatto. Gratuito \u2014ti servir\u00e0 solo un account gratuito per salvare i pronostici in classifica.';
   document.getElementById('predictorTabPlayLabel').textContent = isUK ? 'This Round' : 'Turno Attuale';
   document.getElementById('predictorTabLbLabel').textContent = isUK ? 'Leaderboard' : 'Classifica';
   document.getElementById('predictorTabHistoryLabel').textContent = isUK ? 'Past Rounds' : 'Turni Passati';
@@ -1879,13 +2026,13 @@ function renderPredictor(){
   document.getElementById('predictorLbSeasonChip').textContent = isUK ? 'Season' : 'Stagione';
   document.getElementById('predictorNoRewardsNote').innerHTML = isUK
     ? 'At launch, Predictor rewards are points, leaderboard position and digital badges only \u2014 no cash or physical prizes. Those depend on legal review per market. See <button onclick="openLegal(\'methodology\')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">How We Rate</button> for details.'
-    : 'Al lancio, le ricompense di Predictor sono solo punti, posizione in classifica e bedge digitali \\u2014 nessun premio in denaro o in natura, in attesa di revisione legale per mercato.';
+    : 'Al lancio, le ricompense di Predictor sono solo punti, posizione in classifica e bedge digitali \u2014 nessun premio in denaro o in natura, in attesa di revisione legale per mercato.';
 
   document.getElementById('predictorScoringBox').innerHTML = `
     <h4>${isUK?'Scoring':'Punteggio'}</h4>
     <div class="account-value-grid" style="margin-bottom:0;">
       <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_OUTCOME}</span><span>${isUK?'Correct outcome (1, X or 2)':'Esito corretto (1, X o 2)'}</span></div>
-      <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_EXACT_BONUS}</span><span>${isUK?'Bonus for the exact scoreline, on top of the outcome points':'Bonus per il punteggio esatto, in aggiunta ai punti per l\\u2019esito'}</span></div>
+      <div class="account-value-item"><span class="mark">+${PREDICTOR_POINTS_EXACT_BONUS}</span><span>${isUK?'Bonus for the exact scoreline, on top of the outcome points':'Bonus per il punteggio esatto, in aggiunta ai punti per l\u2019esito'}</span></div>
     </div>
     <p style="font-size:11px;color:var(--faint);margin:10px 0 0;">${isUK?'Closes:':'Chiude:'} ${predictorRound.closesLabel}</p>
   `;
@@ -1957,8 +2104,8 @@ function renderPredictorAccountGate(){
   const isUK = market==='UK';
   document.getElementById('predictorConfirmBox').innerHTML = `
     <div class="sidebar-box" style="border-color:var(--gold);">
-      <h4>${isUK?'One step left \\u2014 create your free account':'Un ultimo passo \\u2014 crea il tuo account gratuito'}</h4>
-      <p style="font-size:11.5px;color:var(--dim);margin:0 0 12px;">${isUK?'Predictor needs an account so your picks count toward the leaderboard. Takes 10 seconds \\u2014 email only, no card required.':'Predictor richiede un account per far contare i tuoi pronostici in classifica. Bastano 10 secondi \\u2014 solo email, nessuna carta richiesta.'}</p>
+      <h4>${isUK?'One step left \u2014 create your free account':'Un ultimo passo \u2014 crea il tuo account gratuito'}</h4>
+      <p style="font-size:11.5px;color:var(--dim);margin:0 0 12px;">${isUK?'Predictor needs an account so your picks count toward the leaderboard. Takes 10 seconds \u2014 email only, no card required.':'Predictor richiede un account per far contare i tuoi pronostici in classifica. Bastano 10 secondi \u2014 solo email, nessuna carta richiesta.'}</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <input type="email" id="predictorEmailInput" placeholder="${isUK?'you@email.com':'tu@email.com'}" style="flex:1;min-width:180px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13px;">
         <button class="btn btn-gold" onclick="confirmPredictorRegistration()">${isUK?'Create account & submit':'Crea account e invia'}</button>
@@ -1971,7 +2118,7 @@ function confirmPredictorRegistration(){
   const email = input.value.trim();
   if(!email || !email.includes('@')){
     input.style.borderColor = 'var(--red)';
-    showToast(isUK ? 'Enter a valid email to continue.' : 'Inserisci un\\u2019email valida per continuare.');
+    showToast(isUK ? 'Enter a valid email to continue.' : 'Inserisci un\u2019email valida per continuare.');
     return;
   }
   predictorAccountEmail = email;
@@ -1982,9 +2129,10 @@ function finalizePredictorSubmit(){
   predictorSubmitted = true;
   renderPredictorMatches();
   renderPredictorOddsComparison();
-  showToast(isUK ? `Round ${predictorRound.number} submitted \\u2014 check the leaderboard after kickoff.` : `Turno ${predictorRound.number} inviato \\u2014 controlla la classifica dopo il fischio d\\u2019inizio.`);
+  showToast(isUK ? `Round ${predictorRound.number} submitted \u2014 check the leaderboard after kickoff.` : `Turno ${predictorRound.number} inviato \u2014 controlla la classifica dopo il fischio d\u2019inizio.`);
+  setTimeout(()=>onPredictorRoundPlayed(), 1200);
 }
-/* ---------- Odds comparison shown right under a submitted Predictor round \\u2014 same "predict,
+/* ---------- Odds comparison shown right under a submitted Predictor round \u2014 same "predict,
    then see where to bet it" pattern as rezultati.com / Sofascore match pages. Fake odds generated
    deterministically per match so they stay stable across re-renders. ---------- */
 function renderPredictorOddsComparison(){
@@ -2010,7 +2158,7 @@ function renderPredictorOddsComparison(){
   document.getElementById('predictorConfirmBox').innerHTML = `
     <div class="verdict-box">
       <div class="k">✓ ${isUK?'Predictions submitted':'Pronostici inviati'}</div>
-      <div style="font-size:12.5px;color:var(--dim);">${isUK?'Since you\\u2019re predicting these matches anyway, here\\u2019s where the best price is right now.':'Dato che stai gi\\u00e0 pronosticando queste partite, ecco dove trovare la quota migliore adesso.'}</div>
+      <div style="font-size:12.5px;color:var(--dim);">${isUK?'Since you\u2019re predicting these matches anyway, here\u2019s where the best price is right now.':'Dato che stai gi\u00e0 pronosticando queste partite, ecco dove trovare la quota migliore adesso.'}</div>
     </div>
     <h3 style="font-family:var(--serif);font-size:16px;margin:0 0 12px;">${isUK?'Compare odds for your picks':'Confronta le quote per i tuoi pronostici'}</h3>
     <div class="table-wrap">
@@ -2142,7 +2290,7 @@ function renderTipsterLeaderboard(){
   const rows = list.map((t,i)=>{
     const qualifies = t.sampleSize >= 50;
     const formHtml = (t.form||[]).map(f=>`<span style="display:inline-block;width:16px;height:16px;border-radius:3px;font-size:9px;font-weight:700;text-align:center;line-height:16px;margin-right:2px;background:${f==='W'?'rgba(61,138,95,.25)':'rgba(178,75,69,.25)'};color:${f==='W'?'var(--green)':'var(--red)'};">${f}</span>`).join('');
-    const featuredTag = t.featured ? `<span class="tier-badge gold" title="${isUK?'Editorial has published this tipster\\u2019s written analysis':'La redazione ha pubblicato l\\u2019analisi scritta di questo tipster'}">${isUK?'★ Published':'★ Pubblicato'}</span>` : '';
+    const featuredTag = t.featured ? `<span class="tier-badge gold" title="${isUK?'Editorial has published this tipster\u2019s written analysis':'La redazione ha pubblicato l\u2019analisi scritta di questo tipster'}">${isUK?'★ Published':'★ Pubblicato'}</span>` : '';
     return `
     <div class="tipster-row" style="cursor:pointer;" onclick="openTipsterProfile('${t.id}')">
       <div class="rank ${i===0?'r1':''}">${i+1}</div>
@@ -2177,7 +2325,7 @@ function openTipsterProfile(id){
       <div style="display:flex;gap:16px;">
         <div class="op-page-mark" style="background:${thumbGradient(t.id)};border:none;color:#fff;">${t.name.slice(0,2).toUpperCase()}</div>
         <div>
-          <div class="op-page-title"><h1>${t.name}</h1>${t.featured?`<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="${isUK?'Editorial has published this tipster\\u2019s written analysis as a site article':'La redazione ha pubblicato l\\u2019analisi scritta di questo tipster come articolo del sito'}">${isUK?'★ Published on-site':'★ Pubblicato sul sito'}</span>`:''}</div>
+          <div class="op-page-title"><h1>${t.name}</h1>${t.featured?`<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="${isUK?'Editorial has published this tipster\u2019s written analysis as a site article':'La redazione ha pubblicato l\u2019analisi scritta di questo tipster come articolo del sito'}">${isUK?'★ Published on-site':'★ Pubblicato sul sito'}</span>`:''}</div>
           <div class="op-page-sub" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">${badgeBarHtml(t,'lg')} <span>· ${t.sampleSize} ${isUK?'picks recorded':'pronostici registrati'}</span></div>
           <div style="margin-top:8px;">${formHtml}</div>
         </div>
@@ -2188,7 +2336,7 @@ function openTipsterProfile(id){
     <div class="op-page-grid">
       <div>
         <div class="review-text"><p>${t.bio}</p></div>
-        ${t.featured ? `<div class="verdict-box" style="cursor:pointer;" onclick="openAnalysisArticle('${t.id}')"><div class="k">${isUK?'Featured analysis \\u2014 read full article':'Analisi in evidenza \\u2014 leggi l\\u2019articolo completo'}</div><div style="font-size:13px;color:var(--text);font-weight:600;">${t.featuredTitle} →</div></div>` : ''}
+        ${t.featured ? `<div class="verdict-box" style="cursor:pointer;" onclick="openAnalysisArticle('${t.id}')"><div class="k">${isUK?'Featured analysis \u2014 read full article':'Analisi in evidenza \u2014 leggi l\u2019articolo completo'}</div><div style="font-size:13px;color:var(--text);font-weight:600;">${t.featuredTitle} →</div></div>` : ''}
         <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">${isUK?'Pick history':'Storico pronostici'}</h3>
         <div>${historyHtml}</div>
       </div>
@@ -2212,7 +2360,7 @@ function openTipsterProfile(id){
             <div><span class="pill wait" style="margin-right:6px;">Expert</span>${isUK?'20+ picks in last 6mo, profitable in 4+ of them':'20+ pronostici negli ultimi 6 mesi, in profitto in 4+'}</div>
             <div><span class="pill gold" style="margin-right:6px;">Master</span>${isUK?'40+ picks in last 6mo, profitable in 5+, 90+ lifetime':'40+ pronostici negli ultimi 6 mesi, in profitto in 5+, 90+ totali'}</div>
           </div>
-          <p style="font-size:10.5px;color:var(--faint);margin:10px 0 0;">${isUK?'Status is recalculated automatically, never assigned by hand \\u2014 and can be lost if performance drops.':'Lo stato viene ricalcolato automaticamente, mai assegnato manualmente \\u2014 e puo essere perso se il rendimento peggiora.'}</p>
+          <p style="font-size:10.5px;color:var(--faint);margin:10px 0 0;">${isUK?'Status is recalculated automatically, never assigned by hand \u2014 and can be lost if performance drops.':'Lo stato viene ricalcolato automaticamente, mai assegnato manualmente \u2014 e puo essere perso se il rendimento peggiora.'}</p>
         </div>
       </div>
     </div>
@@ -2224,7 +2372,7 @@ function openTipsterProfile(id){
    ANALYSIS ARTICLE PAGE + STATS BOX
    Full editorial article built from a tipster's published reasoning,
    with a live Stats Box widget alongside the text that reads from the
-   same tipster object as the profile \\u2014 never a frozen snapshot from
+   same tipster object as the profile \u2014 never a frozen snapshot from
    the moment of publishing.
    ============================================================ */
 function statsBoxHtml(t){
@@ -2234,7 +2382,7 @@ function statsBoxHtml(t){
     <div class="sidebar-box" style="border-color:var(--gold);">
       <h4 style="display:flex;align-items:center;justify-content:space-between;">
         <span>${isUK?'Stats Box':'Stats Box'}</span>
-        <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;">${isUK?'live \\u00b7 updates automatically':'live \\u00b7 aggiornamento automatico'}</span>
+        <span style="font-size:9px;color:var(--faint);text-transform:none;font-weight:400;">${isUK?'live \u00b7 updates automatically':'live \u00b7 aggiornamento automatico'}</span>
       </h4>
       <div class="detail-grid" style="grid-template-columns:1fr 1fr;">
         <div class="detail-cell"><div class="k">${isUK?'Win rate':'% vinti'}</div><div class="v">${t.hitRate}%</div></div>
@@ -2243,7 +2391,7 @@ function statsBoxHtml(t){
         <div class="detail-cell"><div class="k">${isUK?'BeforeBet Index':'BeforeBet Indeks'}</div><div class="v" style="color:var(--gold);">${idx}</div></div>
       </div>
       <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${badgeBarHtml(t)}</div>
-      <button class="btn btn-line" style="width:100%;justify-content:center;margin-top:12px;" onclick="openTipsterProfile('${t.id}')">${isUK?'Full profile & pick archive →':'Profilo completo e archivio \\u2192'}</button>
+      <button class="btn btn-line" style="width:100%;justify-content:center;margin-top:12px;" onclick="openTipsterProfile('${t.id}')">${isUK?'Full profile & pick archive →':'Profilo completo e archivio \u2192'}</button>
     </div>`;
 }
 function openAnalysisArticle(tipsterId){
@@ -2257,14 +2405,14 @@ function openAnalysisArticle(tipsterId){
     <div class="op-page-head" style="border-bottom:none;padding-bottom:0;margin-bottom:16px;">
       <div>
         <div class="op-page-title"><h1 style="font-size:26px;">${t.featuredTitle}</h1></div>
-        <div class="op-page-sub">${isUK?'Community analysis':'Analisi della community'} \\u00b7 ${isUK?'by':'di'} <b style="color:var(--dim);">${t.name}</b> \\u00b7 ${isUK?'edited by':'a cura di'} ${author.name} \\u00b7 ${isUK?'Published':'Pubblicato'} 4 Jul 2026</div>
+        <div class="op-page-sub">${isUK?'Community analysis':'Analisi della community'} \u00b7 ${isUK?'by':'di'} <b style="color:var(--dim);">${t.name}</b> \u00b7 ${isUK?'edited by':'a cura di'} ${author.name} \u00b7 ${isUK?'Published':'Pubblicato'} 4 Jul 2026</div>
       </div>
     </div>
     <div class="op-page-grid">
       <div>
         <div class="review-text">
-          ${mainPick ? `<p><b style="color:var(--text);">${mainPick.match}</b> \\u2014 ${isUK?'pick':'pronostico'}: <span style="color:var(--gold);">${mainPick.pick}</span> @ ${mainPick.odds.toFixed(2)}</p><p>${mainPick.reasoning}</p>` : `<p>${t.bio}</p>`}
-          <p style="color:var(--faint);font-size:11.5px;">${isUK?'This analysis was submitted as part of a Predictor round pick and selected by our editorial team for publication \\u2014 the numbers in the Stats Box are not fixed at publish time, they read live from the same database that runs this author\\u2019s public profile.':'Questa analisi \\u00e8 stata inviata come parte di un pronostico Predictor e selezionata dalla redazione per la pubblicazione \\u2014 i numeri nello Stats Box non sono fissi al momento della pubblicazione, provengono in tempo reale dallo stesso database che alimenta il profilo pubblico dell\\u2019autore.'}</p>
+          ${mainPick ? `<p><b style="color:var(--text);">${mainPick.match}</b> \u2014 ${isUK?'pick':'pronostico'}: <span style="color:var(--gold);">${mainPick.pick}</span> @ ${mainPick.odds.toFixed(2)}</p><p>${mainPick.reasoning}</p>` : `<p>${t.bio}</p>`}
+          <p style="color:var(--faint);font-size:11.5px;">${isUK?'This analysis was submitted as part of a Predictor round pick and selected by our editorial team for publication \u2014 the numbers in the Stats Box are not fixed at publish time, they read live from the same database that runs this author\u2019s public profile.':'Questa analisi \u00e8 stata inviata come parte di un pronostico Predictor e selezionata dalla redazione per la pubblicazione \u2014 i numeri nello Stats Box non sono fissi al momento della pubblicazione, provengono in tempo reale dallo stesso database che alimenta il profilo pubblico dell\u2019autore.'}</p>
         </div>
       </div>
       <div>
@@ -2347,6 +2495,266 @@ function renderFeaturedAnalysis(){
       <span class="tip-pred">${isUK?'Read →':'Leggi →'}</span>
     </div>`).join('');
 }
+
+/* ============================================================
+   REWARDS SYSTEM — Account XP (permanent), Credits (spendable),
+   Badges (permanent milestones), Weekly Challenges, Reward Shop,
+   Battle Pass (seasonal, parallel to Account XP).
+   Architecture note: XP and Credits are deliberately separate —
+   XP never depletes and always reflects lifetime status; Credits
+   circulate freely (earned, spent) without touching Level/status.
+   This mirrors Duolingo (XP vs gems), Twitch (sub vs Channel Points)
+   and Fortnite (Account XP vs premium currency) — the pattern Reddit
+   broke when it merged Coins with status, and had to walk back in 2023.
+   ============================================================ */
+let userXP = 340;
+let userCredits = 65;
+let seasonalXP = 210;
+let userWeeklyStreak = 3;
+let dailyCommentXpGiven = false;
+let ownedShopItems = new Set();
+let earnedBadges = new Set(['first_pick','first_comment']);
+
+/* Level thresholds — cumulative XP at which each level starts. Interpolated
+   within the four named bands from the spec (1–3: 0–500, 4–7: 500–2500,
+   8–12: 2500–8000, 13–20: 8000–25000) since the doc gives band totals, not
+   a value for every single level. */
+const XP_LEVEL_THRESHOLDS = (function(){
+  const bands = [[1,3,0,500],[4,7,500,2500],[8,12,2500,8000],[13,20,8000,25000]];
+  const arr = [];
+  bands.forEach(([lo,hi,xlo,xhi])=>{
+    const n = hi-lo+1;
+    for(let i=0;i<n;i++) arr[lo+i-1] = Math.round(xlo + (xhi-xlo)*(i/n));
+  });
+  arr[20] = 25000; // cap / start of "veteran" ceiling
+  return arr; // index 0 = Level 1 threshold, ... index 19 = Level 20 threshold
+})();
+function computeLevelInfo(xp){
+  let level = 1;
+  for(let i=0;i<XP_LEVEL_THRESHOLDS.length;i++){
+    if(xp >= XP_LEVEL_THRESHOLDS[i]) level = i+1;
+  }
+  const curStart = XP_LEVEL_THRESHOLDS[level-1] || 0;
+  const nextStart = XP_LEVEL_THRESHOLDS[level] || (curStart + 5000);
+  const pct = Math.min(100, Math.round(((xp-curStart)/(nextStart-curStart))*100));
+  let tier = 'Rookie';
+  if(level>=13) tier='Veteran';
+  else if(level>=8) tier='Regular';
+  else if(level>=4) tier='Rising';
+  return {level, curStart, nextStart, pct, tier};
+}
+
+const XP_ACTIVITY_TABLE = [
+  ['Played a Predictor round','10 XP'],
+  ['Correct Predictor pick','25 XP'],
+  ['Published a tip (Tipster)','15 XP'],
+  ['Tip confirmed correct by result','40 XP'],
+  ['Played the Weekly Quiz','10 XP'],
+  ['Correct quiz answer','5 XP per question'],
+  ['Community comment (first per day)','5 XP'],
+  ['Weekly streak check-in','5 XP'],
+  ['Weekly Challenge completed','30–60 XP'],
+  ['Friend invite (verified signup)','50 XP'],
+];
+
+const BADGES = [
+  {id:'first_pick', icon:'🎯', name:'First Pick', desc:'Played your first Predictor round'},
+  {id:'first_comment', icon:'💬', name:'First Word', desc:'Posted your first community comment'},
+  {id:'ten_correct', icon:'🏅', name:'10 Correct', desc:'10 correct predictions, lifetime'},
+  {id:'streak4', icon:'🔥', name:'Month Streak', desc:'4 weekly check-ins in a row'},
+  {id:'quiz_master', icon:'🧠', name:'Quiz Regular', desc:'Played 5 Weekly Quiz rounds'},
+  {id:'recruiter', icon:'🤝', name:'Recruiter', desc:'Invited a friend who verified'},
+  {id:'tipster_pub', icon:'📝', name:'Published Tipster', desc:'Had an analysis featured on-site'},
+  {id:'veteran', icon:'⭐', name:'Veteran', desc:'Reached Level 13'},
+];
+
+let weeklyChallengeState = [
+  {id:'wc1', name:'Play 5 Predictor rounds this week', target:5, progress:1, xp:30, credits:5},
+  {id:'wc2', name:'Get 3 correct picks in a row', target:3, progress:1, xp:50, credits:10},
+  {id:'wc3', name:'Post one tip in Community', target:1, progress:0, xp:20, credits:0},
+  {id:'wc4', name:'Play the Weekly Quiz', target:1, progress:0, xp:15, credits:0},
+  {id:'wc5', name:'Log in 3 days this week (streak)', target:3, progress:2, xp:25, credits:5},
+  {id:'wc6', name:'Comment on 3 match threads', target:3, progress:1, xp:15, credits:0},
+  {id:'wc7', name:'Finish top 20 on the weekly leaderboard', target:1, progress:0, xp:40, credits:15},
+];
+
+const SHOP_ITEMS_DIGITAL = [
+  {id:'frame_gold', icon:'🖼️', name:'Gold Avatar Frame', desc:'A gold ring around your profile picture, visible everywhere your name shows up.', cost:40},
+  {id:'theme_dark', icon:'🎨', name:'Midnight Profile Theme', desc:'Recolors your public profile page with an alternate dark palette.', cost:60},
+  {id:'title_legend', icon:'🏷️', name:'"Round Legend" Title', desc:'A custom title shown next to your name on the leaderboard.', cost:80},
+  {id:'badge_custom', icon:'🎖️', name:'Custom Badge Design', desc:'Pick from 6 alternate badge art styles for your earned badges.', cost:50},
+];
+const SHOP_ITEMS_COMMUNITY = [
+  {id:'qa_priority', icon:'🙋', name:'Priority Q&A Slot', desc:'Your question gets answered first in the next community Q&A session. Limited to 20 redemptions per event.', cost:100, limited:true},
+  {id:'event_access', icon:'🎟️', name:'Early Event Access', desc:'See new tournaments and Predictor rounds 2 hours before general release.', cost:120},
+];
+const SHOP_ITEMS_COMING = [
+  {id:'merch', icon:'👕', name:'Before Bet Merch', desc:'Physical items — shipping, customs and returns need a logistics plan first.', cost:null},
+  {id:'giftcard', icon:'💳', name:'Gift Cards', desc:'Real monetary value outside the platform — on hold pending legal review.', cost:null},
+];
+
+function showXpToast(xp, credits, reason){
+  const parts = [];
+  if(xp) parts.push(`+${xp} XP`);
+  if(credits) parts.push(`+${credits} Credits`);
+  showToast(`${parts.join(' · ')} — ${reason}`);
+}
+/* Central grant function — every XP/Credits-earning action in the prototype
+   (Predictor submit, community comment, tip publish, invite) routes through
+   this so Account XP and Battle Pass XP always move together, exactly per
+   the "one source, two parallel tracks" architecture in the spec. */
+function grantRewards(xp, credits, reason){
+  const beforeLevel = computeLevelInfo(userXP).level;
+  userXP += xp;
+  seasonalXP += xp;
+  userCredits += credits;
+  showXpToast(xp, credits, reason);
+  const afterLevel = computeLevelInfo(userXP).level;
+  if(afterLevel > beforeLevel){
+    setTimeout(()=>showToast(`🎉 Level up! You're now Level ${afterLevel}.`), 900);
+  }
+  updateHeaderXpPill();
+  if(document.getElementById('view-rewards').classList.contains('active')) renderRewardsPage();
+}
+function unlockBadge(id){
+  if(earnedBadges.has(id)) return;
+  earnedBadges.add(id);
+  const b = BADGES.find(x=>x.id===id);
+  if(b) setTimeout(()=>showToast(`🏅 Badge unlocked: ${b.name}`), 1400);
+}
+function updateHeaderXpPill(){
+  const info = computeLevelInfo(userXP);
+  const el = document.getElementById('headerXpPill');
+  if(el) el.textContent = `Lvl ${info.level}`;
+}
+function simulateFriendInvite(){
+  showToast('Invite link copied — you\u2019ll get the bonus once they register and verify.');
+  grantRewards(50, 10, 'Friend invite (simulated)');
+  unlockBadge('recruiter');
+}
+function bumpWeeklyChallenge(id, amount){
+  const c = weeklyChallengeState.find(x=>x.id===id);
+  if(!c || c.progress>=c.target) return;
+  c.progress = Math.min(c.target, c.progress+amount);
+  if(c.progress>=c.target) grantRewards(c.xp, c.credits, `Weekly Challenge: ${c.name}`);
+}
+/* Hooked into real interactive actions elsewhere in the prototype:
+   Predictor submit, chat message send, review submit. Nothing here
+   is awarded for actions that don't actually happen in the demo. */
+function onPredictorRoundPlayed(){
+  grantRewards(10, 2, 'Played a Predictor round');
+  bumpWeeklyChallenge('wc1', 1);
+  unlockBadge('first_pick');
+}
+function onCommunityCommentPosted(){
+  if(!dailyCommentXpGiven){
+    dailyCommentXpGiven = true;
+    grantRewards(5, 0, 'Community comment (first today)');
+  }
+  bumpWeeklyChallenge('wc6', 1);
+  unlockBadge('first_comment');
+}
+function onTipPublishedOrReviewed(){
+  grantRewards(15, 0, 'Published a tip');
+  bumpWeeklyChallenge('wc3', 1);
+}
+
+function renderRewardsHeaderPill(){ updateHeaderXpPill(); }
+
+function renderRewardsPage(){
+  const isUK = market==='UK';
+  const info = computeLevelInfo(userXP);
+  document.getElementById('rewardStatsGrid').innerHTML = [
+    [userXP.toLocaleString(), isUK?'Account XP':'XP Naloga'],
+    [userCredits, 'Credits'],
+    [userWeeklyStreak, isUK?'Week streak':'Sedmicni niz'],
+  ].map(s=>`<div class="reward-stat-card"><div class="v">${s[0]}</div><div class="l">${s[1]}</div></div>`).join('');
+
+  document.getElementById('rewardsLevelCircle').style.setProperty('--pct', info.pct);
+  document.getElementById('rewardsLevelNum').textContent = info.level;
+  document.getElementById('rewardsXpBarFill').style.width = info.pct+'%';
+  document.getElementById('rewardsXpBarLabel').textContent = `${info.tier} · ${userXP.toLocaleString()} / ${info.nextStart.toLocaleString()} XP to Level ${info.level+1}`;
+
+  const weeks = ['W1','W2','W3','W4'];
+  document.getElementById('rewardsStreakRow').innerHTML = weeks.map((w,i)=>`<div class="streak-week ${i<userWeeklyStreak?'done':''}">${i<userWeeklyStreak?'🔥':''}</div>`).join('') +
+    `<span style="font-size:11.5px;color:var(--dim);margin-left:6px;">${userWeeklyStreak} ${isUK?'weeks in a row':'sedmica zaredom'}</span>`;
+  document.getElementById('rewardsStreakNote').textContent = isUK
+    ? 'Weekly, not daily — be active at least once a week to keep it alive. Miss a full week and it resets.'
+    : 'Sedmicno, ne dnevno — budi aktivan bar jednom sedmicno da ga odrzis. Propusti cijelu sedmicu i resetuje se.';
+
+  document.getElementById('rewardsXpTableBody').innerHTML = XP_ACTIVITY_TABLE.map(r=>`<tr><td>${r[0]}</td><td style="color:var(--gold);font-weight:600;">${r[1]}</td></tr>`).join('');
+
+  document.getElementById('challengesList').innerHTML = weeklyChallengeState.map(c=>{
+    const pct = Math.round((c.progress/c.target)*100);
+    const complete = c.progress>=c.target;
+    return `<div class="challenge-row">
+      <div class="challenge-top"><span class="challenge-name">${complete?'✓ ':''}${c.name}</span><span class="challenge-reward">+${c.xp} XP${c.credits?` · +${c.credits} Cr`:''}</span></div>
+      <div class="challenge-bar-wrap"><div class="challenge-bar-fill ${complete?'complete':''}" style="width:${pct}%;"></div></div>
+      <div style="font-size:10.5px;color:var(--faint);margin-top:4px;">${c.progress} / ${c.target}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('badgeGrid').innerHTML = BADGES.map(b=>{
+    const locked = !earnedBadges.has(b.id);
+    return `<div class="badge-card ${locked?'locked':''}"><div class="icon">${locked?'🔒':b.icon}</div><div class="name">${b.name}</div><div class="desc">${b.desc}</div></div>`;
+  }).join('');
+
+  document.getElementById('rewardsShopBalanceValue').textContent = `${userCredits} Credits`;
+  document.getElementById('shopGridDigital').innerHTML = SHOP_ITEMS_DIGITAL.map(shopItemHtml).join('');
+  document.getElementById('shopGridCommunity').innerHTML = SHOP_ITEMS_COMMUNITY.map(shopItemHtml).join('');
+  document.getElementById('shopGridComing').innerHTML = SHOP_ITEMS_COMING.map(i=>`
+    <div class="shop-card disabled">
+      <span class="icon">${i.icon}</span>
+      <div class="name">${i.name}</div>
+      <div class="desc">${i.desc}</div>
+      <button class="btn btn-line" disabled style="width:100%;justify-content:center;opacity:.6;">${isUK?'Not available yet':'Non ancora disponibile'}</button>
+    </div>`).join('');
+
+  const bpInfo = {curStart:0, nextStart:2000, pct: Math.min(100, Math.round((seasonalXP/2000)*100))};
+  document.getElementById('bpXpBarFill').style.width = bpInfo.pct+'%';
+  document.getElementById('bpXpBarLabel').textContent = `${seasonalXP} / 2,000 season XP — free track, same XP you earn everywhere else on the site`;
+  const bpTiers = [
+    {n:1,icon:'🥉',label:'Bronze frame',cost:100},{n:2,icon:'🎖️',label:'"Contender" title',cost:250},
+    {n:3,icon:'🥈',label:'Silver frame',cost:450},{n:4,icon:'💬',label:'Chat emote pack',cost:700},
+    {n:5,icon:'🥇',label:'Gold frame',cost:1000},{n:6,icon:'🏆',label:'Season trophy icon',cost:1400},
+    {n:7,icon:'👑',label:'"Champion" title',cost:1800},{n:8,icon:'💎',label:'Diamond frame',cost:2000},
+  ];
+  document.getElementById('bpTrack').innerHTML = bpTiers.map(t=>`
+    <div class="bp-tier ${seasonalXP>=t.cost?'unlocked':''}">
+      <div class="num">Tier ${t.n}</div>
+      <div class="icon">${t.icon}</div>
+      <div class="label">${t.label}</div>
+    </div>`).join('');
+}
+function shopItemHtml(item){
+  const isUK = market==='UK';
+  const owned = ownedShopItems.has(item.id);
+  const canAfford = userCredits >= item.cost;
+  return `<div class="shop-card">
+    <span class="icon">${item.icon}</span>
+    <div class="name">${item.name}${item.limited?' <span class="tag" style="font-size:9px;">LIMITED</span>':''}</div>
+    <div class="desc">${item.desc}</div>
+    <div class="price">${item.cost} Credits</div>
+    <button class="btn ${owned?'btn-line':'btn-gold'}" style="width:100%;justify-content:center;" ${owned?'disabled':''} onclick="buyShopItem('${item.id}')">${owned?(isUK?'Owned':'Posseduto'):(canAfford?(isUK?'Redeem':'Riscatta'):(isUK?'Not enough Credits':'Credits insufficienti'))}</button>
+  </div>`;
+}
+function buyShopItem(id){
+  const all = [...SHOP_ITEMS_DIGITAL, ...SHOP_ITEMS_COMMUNITY];
+  const item = all.find(i=>i.id===id);
+  if(!item || ownedShopItems.has(id)) return;
+  if(userCredits < item.cost){ showToast(market==='UK' ? 'Not enough Credits yet — keep earning XP and Credits from Predictor, Community and Tipster activity.' : 'Credits insufficienti — continua a guadagnare da Predictor, Community e Tipster.'); return; }
+  userCredits -= item.cost;
+  ownedShopItems.add(id);
+  showToast(`${market==='UK'?'Redeemed':'Riscattato'}: ${item.name}`);
+  renderRewardsPage();
+}
+document.querySelectorAll('#rewardsSubtabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#rewardsSubtabs button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=b.dataset.rtab;
+  ['overview','challenges','badges','shop','battlepass'].forEach(k=>{
+    document.getElementById('rtab-'+k).style.display = (k===t)?'block':'none';
+  });
+}));
 
 /* ============================================================
    NAV
@@ -2558,6 +2966,7 @@ function openWriteReview(kind,id){
 function closeReviewModal(){ document.getElementById('reviewModal').classList.remove('show'); }
 function submitReview(kind,id){
   document.getElementById('reviewModalContent').innerHTML = `<button class="modal-close" onclick="closeReviewModal()">&times;</button><h3>Thanks — received</h3><p style="color:var(--dim);font-size:13px;">Simulated submission. In production this would enter a moderation queue before appearing publicly.</p>`;
+  onTipPublishedOrReviewed();
 }
 
 function submitNewsletter(){
@@ -3202,6 +3611,7 @@ function sendChatMessage(){
   activeChatTopic.messages.push(['You','now', text.replace(/</g,'&lt;')]);
   input.value='';
   renderChatLog();
+  onCommunityCommentPosted();
 }
 
 function renderGuides(){
@@ -3652,15 +4062,15 @@ function renderAdminOverview(){
 }
 
 const AUDIT_LOG = ['08 Jul 2026, 14:12 — Admin updated Northline bonus copy','07 Jul 2026, 19:03 — System auto-unpublished expired offer','06 Jul 2026, 09:55 — Admin changed affiliate link for Vantage Bet'];
-/* ---------- Editorial approval pipeline for tipster written analysis \\u2014 five steps before
+/* ---------- Editorial approval pipeline for tipster written analysis \u2014 five steps before
    a submitted pick reasoning becomes a published, SEO-indexed article. ---------- */
 const EDITORIAL_STEPS = ['Auto filters','Selection','Fact-check','Language & tone','Approved & published'];
 const editorialQueue = [
-  {author:'punter_kate', match:'Riverside FC vs Old Mill Town', step:5, note:'Live on site \\u2014 linked from Guides & News'},
-  {author:'footy_fran', match:'North Harbour vs Castlegate United', step:5, note:'Live on site \\u2014 linked from Guides & News'},
+  {author:'punter_kate', match:'Riverside FC vs Old Mill Town', step:5, note:'Live on site \u2014 linked from Guides & News'},
+  {author:'footy_fran', match:'North Harbour vs Castlegate United', step:5, note:'Live on site \u2014 linked from Guides & News'},
   {author:'accaboy', match:'Iron Bridge City vs Sable Wanderers', step:3, note:'Fact-checking injury claim before approval'},
-  {author:'GaryB', match:'Bright Star Athletic vs Vale Rangers', step:1, note:'Below minimum length \\u2014 held at auto filter'},
-  {author:'DaveM_UK', match:'Ashford Rovers vs Millbrook Town', step:2, note:'In selection queue \\u2014 lower search-volume fixture'},
+  {author:'GaryB', match:'Bright Star Athletic vs Vale Rangers', step:1, note:'Below minimum length \u2014 held at auto filter'},
+  {author:'DaveM_UK', match:'Ashford Rovers vs Millbrook Town', step:2, note:'In selection queue \u2014 lower search-volume fixture'},
 ];
 function editorialPipelineHtml(entry){
   const dots = EDITORIAL_STEPS.map((label,i)=>{
@@ -3834,11 +4244,13 @@ function renderAll(){
   renderResponsible();
   renderTeam();
   renderPartnersCompliance();
+  renderRewardsPage();
   closeChatRoom();
   renderChatTopics();
 }
 renderAll();
 renderMarketButton();
+updateHeaderXpPill();
 syncHeaderHeight();
 window.addEventListener('resize', syncHeaderHeight);
 setInterval(tickBonusCountdowns, 60000);
