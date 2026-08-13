@@ -143,6 +143,16 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
 .view{display:none;}
 .view.active{display:block;}
+
+/* redirect popup */
+.redirect-overlay{position:fixed; inset:0; background:rgba(0,0,0,0.72); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+.redirect-modal{position:relative; background:var(--card); border:1px solid var(--gray-line); border-radius:20px; padding:30px 26px 26px; max-width:320px; width:100%; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+.redirect-close{position:absolute; top:10px; right:12px; background:none; border:none; color:var(--gray); font-size:22px; line-height:1; cursor:pointer; padding:4px 8px; width:auto;}
+.redirect-close:hover{color:#fff;}
+.redirect-ic{font-size:34px; margin-bottom:10px;}
+.redirect-modal h3{font-size:20px; margin-bottom:8px;}
+.redirect-modal p{font-size:13px; color:var(--gray); line-height:1.5; margin:0 0 18px;}
+.redirect-modal .btn{display:flex; text-decoration:none;}
 </style>
 </head>
 <body>
@@ -266,6 +276,17 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     <p class="fine">Predikcije ne predstavljaju opkladu niti uplatu. Organizator zadržava pravo izmjene pravila. [Naziv organizatora i pravna napomena — popuniti prije objave.]</p>
   </div>
 </footer>
+
+<!-- ================= redirect popup (nakon neaktivnosti) ================= -->
+<div class="redirect-overlay" id="redirectOverlay">
+  <div class="redirect-modal">
+    <button class="redirect-close" id="redirectClose" aria-label="Zatvori">×</button>
+    <div class="redirect-ic">⚽</div>
+    <h3>Ne propusti kupon dana</h3>
+    <p>Pogledaj ponudu za Kup Sudamerikana dok čekaš rezultate.</p>
+    <a class="btn btn-gold" id="redirectCta" href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717">Pogledaj kupon</a>
+  </div>
+</div>
 
 <script>
   const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzaStVeyOPnA0MFxxnJ2DiDWs8INdCp9WIFeDK7eA8d5OmqEK28jwV48UXELPU8S9QR/exec";
@@ -579,6 +600,47 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   gateSection.style.display = 'none';
   deckSection.style.display = 'none';
   loadRounds();
+
+  // ---------------- redirect popup nakon neaktivnosti ----------------
+  (function () {
+    const REDIRECT_URL = 'https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717';
+    const IDLE_MS = 5000;          // vrijeme neaktivnosti prije nego se popup pojavi
+    const AUTO_REDIRECT_MS = 5000; // ako ni tad nema reakcije, redirekcija je automatska
+
+    const overlay = document.getElementById('redirectOverlay');
+    const closeBtn = document.getElementById('redirectClose');
+    const ctaBtn = document.getElementById('redirectCta');
+
+    let idleTimer = null;
+    let autoRedirectTimer = null;
+    let dismissed = false;
+
+    function showPopup() {
+      if (dismissed || overlay.style.display === 'flex') return;
+      overlay.style.display = 'flex';
+      autoRedirectTimer = setTimeout(() => { window.location.href = REDIRECT_URL; }, AUTO_REDIRECT_MS);
+    }
+
+    function hidePopup() {
+      overlay.style.display = 'none';
+      clearTimeout(autoRedirectTimer);
+    }
+
+    function resetIdleTimer() {
+      if (overlay.style.display === 'flex') return; // ne resetuj dok je popup otvoren — to je namjerni "poziv na akciju"
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(showPopup, IDLE_MS);
+    }
+
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+      document.addEventListener(evt, resetIdleTimer, { passive: true });
+    });
+
+    closeBtn.addEventListener('click', () => { dismissed = true; hidePopup(); });
+    ctaBtn.addEventListener('click', () => { clearTimeout(autoRedirectTimer); }); // link ide dalje normalno
+
+    resetIdleTimer();
+  })();
 </script>
 </body>
 </html>
