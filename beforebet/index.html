@@ -574,13 +574,20 @@
   @media (max-width:480px){.shop-grid{grid-template-columns:1fr;}}
 
   /* ---------- Rewards: battle pass track ---------- */
-  .bp-track{display:flex;overflow-x:auto;gap:10px;padding:8px 4px 14px;}
-  .bp-tier{flex:0 0 84px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;}
-  .bp-tier.unlocked{border-color:var(--gold);}
+  .bp-track-wrap{position:relative;}
+  .bp-track{display:flex;overflow-x:auto;gap:10px;padding:22px 4px 14px;scroll-behavior:smooth;}
+  .bp-tier.current{border-color:var(--live);box-shadow:0 0 0 2px var(--live-soft), 0 0 16px var(--live-glow);position:relative;}
+  .bp-here-marker{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;letter-spacing:.04em;color:var(--live);white-space:nowrap;background:var(--live-soft);padding:2px 6px;border-radius:5px;}
+  .bp-tier{flex:0 0 108px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;}
+  .bp-tier.unlocked{border-color:var(--gold);box-shadow:0 0 0 1px rgba(217,167,46,.15);}
+  .bp-tier.claimed{border-color:var(--live);opacity:.85;}
+  .bp-tier.locked{opacity:.55;}
   .bp-tier .num{font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;}
   .bp-tier .icon{font-size:22px;margin:6px 0;}
-  .bp-tier .label{font-size:9.5px;color:var(--dim);line-height:1.25;}
-  .bp-tier.unlocked .label{color:var(--gold);font-weight:700;}
+  .bp-tier .label{font-size:9.5px;color:var(--dim);line-height:1.25;min-height:24px;}
+  .bp-tier.unlocked .label, .bp-tier.claimed .label{color:var(--gold);font-weight:700;}
+  .bp-tier .xp-req{font-size:9px;color:var(--faint);font-family:var(--mono);margin-top:3px;}
+  .bp-claimed-tag{font-size:10px;color:var(--live);font-weight:700;margin-top:8px;}
 
   /* ---------- Rewards: streak flame row ---------- */
   .streak-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -1255,8 +1262,13 @@
           <div class="xpbar-wrap" style="height:16px;"><div class="xpbar-fill" id="bpXpBarFill" style="width:0%;"></div></div>
           <p style="font-size:11px;color:var(--faint);margin:8px 0 0;" id="bpXpBarLabel"></p>
         </div>
-        <p style="font-size:11.5px;color:var(--faint);margin:14px 0 6px;" id="bpTrackNote">Free for everyone — no paid tier. Scroll to see every reward tier this season.</p>
-        <div class="bp-track" id="bpTrack"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;flex-wrap:wrap;gap:10px;">
+          <p style="font-size:11.5px;color:var(--faint);margin:0;" id="bpTrackNote">Free for everyone — no paid tier. Scroll to see every reward tier this season.</p>
+          <button class="btn btn-gold" style="padding:8px 16px;font-size:12px;flex-shrink:0;" onclick="claimAllBattlePassTiers()" id="bpClaimAllBtn">Claim All</button>
+        </div>
+        <div class="bp-track-wrap">
+          <div class="bp-track" id="bpTrack"></div>
+        </div>
       </div>
     </section>
 
@@ -2549,6 +2561,67 @@ let userWeeklyStreak = 3;
 let dailyCommentXpGiven = false;
 let ownedShopItems = new Set();
 let earnedBadges = new Set(['first_pick','first_comment']);
+let battlePassClaimed = new Set();
+
+/* ---------- Battle Pass — free, season-only track, fed by the exact same XP as
+   Account XP (grantRewards adds to both at once). Built on the actual pattern
+   real game battle passes use (Fortnite/COD/Fall Guys), not an invented curve:
+   1) FLAT XP per tier, not an escalating formula — every tier costs the same
+      200 XP, so progress is predictable and easy to read at a glance.
+   2) EVERY tier gives something — no skipped/empty tiers. Small Credits on
+      most tiers for frequent small wins, a season-exclusive cosmetic every
+      3rd tier as a bigger milestone, and the biggest reward on the final tier.
+   3) Cosmetics from the pass are NEVER sold in the Shop — that's the reason
+      to grind the pass instead of just buying Shop items with Credits.
+   4) 12 tiers x 200 XP = 2,400 XP total, matching an 8-week season at the
+      realistic ~300 XP/week an engaged player earns from Predictor + Weekly
+      Challenges + comments — roughly 1.5 tiers per week, finishing with room
+      to spare rather than requiring perfect attendance. */
+const BATTLE_PASS_SEASON_WEEKS = 8;
+const BATTLE_PASS_XP_PER_TIER = 200;
+const BATTLE_PASS_TIERS = [
+  {tier:1,  type:'credits', amount:10, icon:'🪙', label:'10 Credits'},
+  {tier:2,  type:'credits', amount:15, icon:'🪙', label:'15 Credits'},
+  {tier:3,  type:'cosmetic', id:'bp_frame_bronze', icon:'🥉', label:'Bronze Season Frame'},
+  {tier:4,  type:'credits', amount:20, icon:'🪙', label:'20 Credits'},
+  {tier:5,  type:'credits', amount:20, icon:'🪙', label:'20 Credits'},
+  {tier:6,  type:'cosmetic', id:'bp_title_contender', icon:'🎖️', label:'"Contender" Title'},
+  {tier:7,  type:'credits', amount:25, icon:'🪙', label:'25 Credits'},
+  {tier:8,  type:'credits', amount:25, icon:'🪙', label:'25 Credits'},
+  {tier:9,  type:'cosmetic', id:'bp_frame_silver', icon:'🥈', label:'Silver Season Frame'},
+  {tier:10, type:'credits', amount:30, icon:'🪙', label:'30 Credits'},
+  {tier:11, type:'credits', amount:35, icon:'🪙', label:'35 Credits'},
+  {tier:12, type:'cosmetic', id:'bp_title_champion', icon:'👑', label:'"Champion" Title + Gold Frame'},
+].map(t=>({...t, xpRequired: t.tier*BATTLE_PASS_XP_PER_TIER}));
+function currentBattlePassTier(){
+  return Math.min(BATTLE_PASS_TIERS.length, Math.floor(seasonalXP/BATTLE_PASS_XP_PER_TIER));
+}
+function claimBattlePassTier(tierNum){
+  const t = BATTLE_PASS_TIERS.find(x=>x.tier===tierNum);
+  if(!t) return;
+  if(seasonalXP < t.xpRequired){ showToast(market==='UK' ? `Not unlocked yet — reach ${t.xpRequired} season XP first.` : `Non ancora sbloccato — servono ${t.xpRequired} XP di stagione.`); return; }
+  if(battlePassClaimed.has(tierNum)) return;
+  battlePassClaimed.add(tierNum);
+  if(t.type==='credits'){ userCredits += t.amount; showToast(`+${t.amount} Credits — Battle Pass Tier ${tierNum}`); }
+  else { showToast(`🎁 Claimed: ${t.label} — Battle Pass Tier ${tierNum}`); }
+  renderRewardsPage();
+}
+function claimAllBattlePassTiers(){
+  const isUK = market==='UK';
+  const claimable = BATTLE_PASS_TIERS.filter(t=>seasonalXP>=t.xpRequired && !battlePassClaimed.has(t.tier));
+  if(!claimable.length){ showToast(isUK?'Nothing new to claim right now.':'Niente da riscattare al momento.'); return; }
+  let creditsGained = 0;
+  claimable.forEach(t=>{
+    battlePassClaimed.add(t.tier);
+    if(t.type==='credits'){ userCredits += t.amount; creditsGained += t.amount; }
+  });
+  const cosmeticCount = claimable.filter(t=>t.type==='cosmetic').length;
+  const parts = [];
+  if(creditsGained) parts.push(`+${creditsGained} Credits`);
+  if(cosmeticCount) parts.push(`${cosmeticCount} ${isUK?'cosmetic item(s)':'oggetti cosmetici'}`);
+  showToast(`${isUK?'Claimed':'Riscattato'}: ${parts.join(' \u00b7 ')} (${claimable.length} ${isUK?'tiers':'livelli'})`);
+  renderRewardsPage();
+}
 
 /* Level thresholds — cumulative XP at which each level starts. Interpolated
    within the four named bands from the spec (1–3: 0–500, 4–7: 500–2500,
@@ -2745,21 +2818,51 @@ function renderRewardsPage(){
       <button class="btn btn-line" disabled style="width:100%;justify-content:center;opacity:.6;">${isUK?'Not available yet':'Non ancora disponibile'}</button>
     </div>`).join('');
 
-  const bpInfo = {curStart:0, nextStart:2000, pct: Math.min(100, Math.round((seasonalXP/2000)*100))};
-  document.getElementById('bpXpBarFill').style.width = bpInfo.pct+'%';
-  document.getElementById('bpXpBarLabel').textContent = `${seasonalXP} / 2,000 season XP — free track, same XP you earn everywhere else on the site`;
-  const bpTiers = [
-    {n:1,icon:'🥉',label:'Bronze frame',cost:100},{n:2,icon:'🎖️',label:'"Contender" title',cost:250},
-    {n:3,icon:'🥈',label:'Silver frame',cost:450},{n:4,icon:'💬',label:'Chat emote pack',cost:700},
-    {n:5,icon:'🥇',label:'Gold frame',cost:1000},{n:6,icon:'🏆',label:'Season trophy icon',cost:1400},
-    {n:7,icon:'👑',label:'"Champion" title',cost:1800},{n:8,icon:'💎',label:'Diamond frame',cost:2000},
-  ];
-  document.getElementById('bpTrack').innerHTML = bpTiers.map(t=>`
-    <div class="bp-tier ${seasonalXP>=t.cost?'unlocked':''}">
-      <div class="num">Tier ${t.n}</div>
-      <div class="icon">${t.icon}</div>
+  const curTier = currentBattlePassTier();
+  const nextTierDef = BATTLE_PASS_TIERS[curTier]; // undefined if season complete
+  const prevThreshold = curTier>0 ? BATTLE_PASS_TIERS[curTier-1].xpRequired : 0;
+  const nextThreshold = nextTierDef ? nextTierDef.xpRequired : BATTLE_PASS_TIERS[BATTLE_PASS_TIERS.length-1].xpRequired;
+  const bpPct = nextTierDef ? Math.round(((seasonalXP-prevThreshold)/(nextThreshold-prevThreshold))*100) : 100;
+  document.getElementById('bpXpBarFill').style.width = Math.min(100,bpPct)+'%';
+  document.getElementById('bpProgressHeading').textContent = isUK
+    ? `Tier ${curTier} of ${BATTLE_PASS_TIERS.length}${curTier>=BATTLE_PASS_TIERS.length ? ' — season complete' : ''}`
+    : `Livello ${curTier} di ${BATTLE_PASS_TIERS.length}${curTier>=BATTLE_PASS_TIERS.length ? ' — stagione completata' : ''}`;
+  document.getElementById('bpXpBarLabel').textContent = nextTierDef
+    ? (isUK ? `${seasonalXP.toLocaleString()} / ${nextThreshold.toLocaleString()} XP to Tier ${curTier+1} \u00b7 same XP you earn everywhere else on the site` : `${seasonalXP.toLocaleString()} / ${nextThreshold.toLocaleString()} XP per il Livello ${curTier+1} \u00b7 stesso XP guadagnato ovunque sul sito`)
+    : (isUK ? `${seasonalXP.toLocaleString()} XP \u00b7 all ${BATTLE_PASS_TIERS.length} tiers reached this season` : `${seasonalXP.toLocaleString()} XP \u00b7 tutti i ${BATTLE_PASS_TIERS.length} livelli raggiunti questa stagione`);
+
+  document.getElementById('bpTrackNote').textContent = isUK
+    ? `Free for everyone — no paid tier. ${BATTLE_PASS_XP_PER_TIER} XP per tier, same reward cadence as the games this is modeled on: something every tier, a bigger cosmetic every 3rd. About 1.5 tiers a week if you play Predictor and finish most Weekly Challenges — an ${BATTLE_PASS_SEASON_WEEKS}-week season with room to spare.`
+    : `Gratuito per tutti — nessun livello a pagamento. ${BATTLE_PASS_XP_PER_TIER} XP per livello. Circa 1.5 livelli a settimana su una stagione di ${BATTLE_PASS_SEASON_WEEKS} settimane.`;
+
+  const claimableCount = BATTLE_PASS_TIERS.filter(t=>seasonalXP>=t.xpRequired && !battlePassClaimed.has(t.tier)).length;
+  const claimAllBtn = document.getElementById('bpClaimAllBtn');
+  claimAllBtn.textContent = claimableCount ? `${isUK?'Claim All':'Riscatta tutto'} (${claimableCount})` : (isUK?'All caught up':'Tutto riscattato');
+  claimAllBtn.disabled = !claimableCount;
+  claimAllBtn.className = claimableCount ? 'btn btn-gold' : 'btn btn-line';
+  claimAllBtn.style.cssText = 'padding:8px 16px;font-size:12px;flex-shrink:0;' + (claimableCount ? '' : 'opacity:.55;');
+
+  document.getElementById('bpTrack').innerHTML = BATTLE_PASS_TIERS.map(t=>{
+    const unlocked = seasonalXP >= t.xpRequired;
+    const claimed = battlePassClaimed.has(t.tier);
+    const isCurrent = t.tier === curTier+1 && !claimed;
+    let stateClass = 'locked';
+    if(claimed) stateClass = 'claimed';
+    else if(unlocked) stateClass = 'unlocked';
+    return `
+    <div class="bp-tier ${stateClass} ${isCurrent?'current':''}">
+      ${isCurrent ? `<div class="bp-here-marker">${isUK?'YOU ARE HERE':'SEI QUI'}</div>` : ''}
+      <div class="num">${isUK?'Tier':'Livello'} ${t.tier}</div>
+      <div class="icon">${unlocked ? t.icon : '🔒'}</div>
       <div class="label">${t.label}</div>
-    </div>`).join('');
+      <div class="xp-req">${t.xpRequired.toLocaleString()} XP</div>
+      ${claimed
+        ? `<div class="bp-claimed-tag">${isUK?'✓ Claimed':'✓ Riscattato'}</div>`
+        : `<button class="btn ${unlocked?'btn-gold':'btn-line'}" style="width:100%;justify-content:center;font-size:10.5px;padding:6px 4px;margin-top:6px;" ${unlocked?'':'disabled'} onclick="claimBattlePassTier(${t.tier})">${unlocked?(isUK?'Claim':'Riscatta'):(isUK?'Locked':'Bloccato')}</button>`}
+    </div>`;
+  }).join('');
+  const curEl = document.querySelector('#bpTrack .bp-tier.current');
+  if(curEl) setTimeout(()=>curEl.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}), 50);
 }
 function shopItemHtml(item){
   const isUK = market==='UK';
