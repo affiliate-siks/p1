@@ -163,27 +163,24 @@ max-width:16ch;
 .hero p.lead{
 font-size:18px; line-height:1.65; letter-spacing:0.005em; max-width:50ch; color:rgba(255,255,255,0.82); margin-bottom:38px;
 }
-.cta-row{display:flex; gap:18px; flex-wrap:wrap; align-items:center;}
+.cta-row{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
 .btn{
 display:inline-flex; align-items:center; gap:10px;
-font-family:'Inter'; font-weight:700; font-size:15px; letter-spacing:0.02em;
-padding:18px 34px; border-radius:10px; text-decoration:none;
-border:none; cursor:pointer; transition:transform 120ms ease, box-shadow 120ms ease;
+font-family:'Inter'; font-weight:700; font-size:15px; letter-spacing:0.01em;
+padding:16px 30px; border-radius:8px; text-decoration:none;
+border:none; cursor:pointer; transition:filter 120ms ease, background 120ms ease;
 }
-.btn:hover{transform:translateY(-2px);}
+.btn:hover{filter:brightness(1.08);}
 .btn-primary{
 background:var(--blue); color:#fff;
-box-shadow:0 10px 30px rgba(0,87,184,0.45);
 }
-.btn-primary:hover{box-shadow:0 14px 36px rgba(0,87,184,0.6);}
 .btn-gold{
-background:var(--gold); color:#1a1400;
-box-shadow:0 10px 30px rgba(255,210,0,0.3);
+background:var(--gold); color:#151107;
 }
 .btn-ghost{
-background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.22);
+background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.28);
 }
-.btn-ghost:hover{background:rgba(255,255,255,0.14);}
+.btn-ghost:hover{background:rgba(255,255,255,0.08); filter:none;}
 
 .scroll-cue{
 position:relative; z-index:3;
@@ -196,19 +193,15 @@ color:rgba(255,255,255,0.55); gap:8px; align-items:center;
 
 .hero-float{
 position:absolute; z-index:3; right:24px; top:112px;
-background:rgba(20,20,24,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-border:1px solid rgba(255,255,255,0.14); border-radius:16px;
+background:#12141b;
+border:1px solid var(--gray-line); border-radius:12px;
 padding:14px 18px; display:flex; align-items:center; gap:12px;
-box-shadow:0 20px 45px rgba(0,0,0,0.4);
 }
 .hero-float .n{font-family:'Barlow Condensed'; font-weight:800; font-size:24px; color:var(--gold); line-height:1;}
 .hero-float .t{font-size:11px; color:rgba(255,255,255,0.7); font-weight:600; line-height:1.35;}
 @media (max-width:1100px){ .hero-float{display:none;} }
 
 section{padding:88px 0; position:relative; overflow:hidden;}
-.section-blob{
-position:absolute; z-index:0; border-radius:50%; pointer-events:none; filter:blur(2px);
-}
 .section-head{margin-bottom:46px; max-width:60ch; position:relative; z-index:1;}
 .eyebrow{
 display:inline-flex; align-items:center; gap:10px;
@@ -265,7 +258,7 @@ padding:32px 28px; position:relative; overflow:hidden;
 transition:border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 display:flex; flex-direction:column; height:100%;
 }
-.stub:hover{border-color:var(--blue); transform:translateY(-4px); box-shadow:0 20px 44px rgba(0,87,184,0.22);}
+.stub:hover{border-color:rgba(255,255,255,0.28);}
 .stub .chip{
 width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
 font-size:20px; margin-bottom:18px; background:rgba(0,87,184,0.16);
@@ -326,8 +319,8 @@ text-align:right; min-width:64px;
 /* pool tracker — ukupno listica u fondu za finale */
 .pool-total{
 margin-top:22px; padding:26px 28px;
-background:linear-gradient(135deg, rgba(255,210,0,0.1), rgba(0,87,184,0.08));
-border:1px solid rgba(255,210,0,0.3); border-radius:16px;
+background:var(--card);
+border:1px solid var(--gray-line); border-radius:14px;
 display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
 }
 .pool-total .lbl{font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); margin-bottom:6px;}
@@ -338,49 +331,15 @@ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
 .pool-total{padding:20px 20px; flex-direction:column; align-items:flex-start;}
 }
 
-/* uzivo — streaming embed portal */
-.stream-wrap{
-background:var(--card); border:1px solid var(--gray-line); border-radius:16px;
-overflow:hidden; position:relative;
-}
-.stream-embed{
-position:relative; width:100%; aspect-ratio:16/9;
-background:
-radial-gradient(circle at 50% 50%, rgba(0,87,184,0.18), transparent 60%),
-#0A0A0D;
-display:flex; align-items:center; justify-content:center;
-}
-.stream-embed iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
-.stream-placeholder{
-display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; padding:20px;
-}
-.stream-placeholder .play{
-width:64px; height:64px; border-radius:50%; background:rgba(255,210,0,0.14);
-border:1.5px solid rgba(255,210,0,0.5); display:flex; align-items:center; justify-content:center;
-}
-.stream-placeholder .play svg{width:22px; height:22px; margin-left:3px;}
-.stream-placeholder p{font-size:13.5px; color:var(--gray); max-width:38ch; margin:0;}
-.stream-placeholder .when{font-family:'Barlow Condensed'; font-weight:800; font-size:20px; color:var(--gold); letter-spacing:0.02em;}
-.stream-bar{
-display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
-padding:18px 24px; border-top:1px solid var(--gray-line);
-}
-.stream-bar .status{display:flex; align-items:center; gap:9px; font-weight:700; font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--gray);}
-.stream-bar .status .dot{width:8px; height:8px; border-radius:50%; background:var(--gray); flex-shrink:0;}
-.stream-bar .status.live .dot{background:#FF3B3B; animation:pulse 1.2s ease-in-out infinite;}
-.stream-bar .status.live{color:#FF3B3B;}
-.stream-bar .chan{font-size:12.5px; color:var(--gray);}
-.stream-bar .chan a{color:#4C9AFF; text-decoration:none; font-weight:600;}
-.stream-bar .chan a:hover{text-decoration:underline;}
+
 
 /* sticky finale counter — vidljiv dok skrolujes van hero/finale sekcije */
 .sticky-counter{
 position:fixed; left:50%; bottom:18px; z-index:70;
 transform:translateX(-50%) translateY(140%); opacity:0;
-background:rgba(10,10,13,0.97); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-border:1.5px solid rgba(255,210,0,0.55); border-radius:100px;
+background:#0d0f16;
+border:1px solid var(--gray-line); border-radius:10px;
 padding:14px 28px; display:flex; align-items:center; gap:16px;
-box-shadow:0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,210,0,0.08);
 transition:transform 320ms ease, opacity 320ms ease;
 }
 .sticky-counter.show{transform:translateX(-50%) translateY(0); opacity:1;}
@@ -401,7 +360,7 @@ font-family:'Inter'; font-weight:600; font-size:12px; color:rgba(255,255,255,0.5
 font-style:normal; text-transform:lowercase;
 }
 @media (max-width:640px){
-.sticky-counter{left:14px; right:14px; bottom:14px; transform:translateY(140%); justify-content:center; border-radius:14px; padding:14px 18px;}
+.sticky-counter{left:14px; right:14px; bottom:14px; transform:translateY(140%); justify-content:center; border-radius:10px; padding:14px 18px;}
 .sticky-counter.show{transform:translateY(0);}
 .sticky-counter .sc-label{display:none;}
 }
@@ -412,30 +371,23 @@ display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
 @media (max-width:900px){.prize-grid{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:520px){.prize-grid{grid-template-columns:repeat(2,1fr); gap:12px;}}
 .prize{
-background:linear-gradient(160deg, #182140 0%, #10131f 100%);
-border:1px solid rgba(76,154,255,0.28); border-radius:20px;
+background:var(--card);
+border:1px solid var(--gray-line); border-radius:14px;
 padding:18px 16px 22px; text-align:center;
 position:relative; overflow:hidden;
-transition:transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+transition:border-color 150ms ease;
 }
-.prize::before{
-content:""; position:absolute; top:-40%; left:50%; width:200%; height:140%;
-transform:translateX(-50%);
-background:radial-gradient(closest-side, rgba(76,154,255,0.16), transparent 70%);
-pointer-events:none;
-}
-.prize:hover{transform:translateY(-4px); box-shadow:0 16px 34px rgba(0,0,0,0.4); border-color:rgba(255,210,0,0.45);}
+.prize:hover{border-color:rgba(255,255,255,0.28);}
 .prize .frame{
 position:relative; z-index:1;
-border:1px solid rgba(120,170,255,0.35); border-radius:14px;
-background:rgba(76,154,255,0.06);
+border:1px solid var(--gray-line); border-radius:10px;
+background:#0d0f14;
 padding:10px; margin-bottom:16px;
 display:flex; align-items:center; justify-content:center;
 aspect-ratio:1/1; overflow:hidden;
 }
 .prize .frame img{
 width:100%; height:100%; object-fit:contain;
-filter:drop-shadow(0 10px 18px rgba(0,0,0,0.55));
 }
 .prize .qty{
 font-family:'Barlow Condensed'; font-weight:800;
@@ -447,10 +399,7 @@ color:var(--gold); margin-bottom:6px; position:relative; z-index:1;
 
 .finale{
 position:relative;
-background:
-radial-gradient(900px 500px at 50% -20%, rgba(255,210,0,0.15), transparent 60%),
-radial-gradient(700px 400px at 90% 100%, rgba(0,87,184,0.3), transparent 60%),
-var(--bg-2);
+background:var(--bg-2);
 text-align:center;
 overflow:hidden;
 }
@@ -463,8 +412,7 @@ display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:44
 }
 .cd-box{
 background:var(--card); border:1px solid var(--gray-line);
-border-radius:14px; padding:20px 28px; min-width:100px;
-box-shadow:0 0 0 1px rgba(255,210,0,0.08), 0 16px 34px rgba(0,0,0,0.35);
+border-radius:12px; padding:20px 28px; min-width:100px;
 text-align:center;
 }
 .cd-box .n{font-family:'Barlow Condensed'; font-size:38px; font-weight:800; color:var(--gold); line-height:1;}
@@ -666,7 +614,6 @@ section{padding:48px 0;}
 </section>
 
 <section id="mehanika" class="bg-alt">
-<div class="section-blob" style="width:420px; height:420px; top:-140px; right:-120px; background:rgba(0,87,184,0.16);"></div>
 <div class="wrap">
 <div class="section-head reveal">
 <div class="eyebrow">Kako učestvovati</div>
@@ -706,7 +653,6 @@ section{padding:48px 0;}
 </section>
 
 <section id="nagrade">
-<div class="section-blob" style="width:400px; height:400px; top:-160px; right:-140px; background:rgba(0,87,184,0.14);"></div>
 <div class="wrap">
 <div class="section-head reveal">
 <div class="eyebrow">Nedeljne nagrade</div>
@@ -739,7 +685,6 @@ section{padding:48px 0;}
 </section>
 
 <section id="kola" class="bg-alt">
-<div class="section-blob" style="width:380px; height:380px; bottom:-160px; left:-140px; background:rgba(255,210,0,0.08);"></div>
 <div class="wrap">
 <div class="section-head reveal">
 <div class="eyebrow">Raspored</div>
