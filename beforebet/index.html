@@ -2328,8 +2328,14 @@ const tipsters = [
     bio:'Mixed portfolio across football and tennis, leaning on head-to-head history.', history:[]},
   {id:'DaveM_UK', name:'DaveM_UK', seasonPoints:298.5, hitRate:55, avgOdds:2.05, sampleSize:67, last6moPicks:22, monthlyProfitable:[true,false,true,false,true,true], streak:2, form:['W','L','L','W','W'], featured:false, optedIn:true,
     bio:'Newer to the leaderboard \u2014 sample size still below the qualifying threshold for some competitions.', history:[]},
-  {id:'newplayer01', name:'newplayer01', seasonPoints:24.0, hitRate:44, avgOdds:1.80, sampleSize:6, last6moPicks:6, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:['L','W','L'], featured:false, optedIn:false,
-    bio:'Just started picking this season \u2014 has not opted in to a public profile yet.', history:[]},
+  {id:'newplayer01', name:'newplayer01', seasonPoints:187.5, hitRate:56, avgOdds:2.15, sampleSize:58, last6moPicks:32, monthlyProfitable:[true,true,true,false,true,true], streak:3, form:['W','W','L','W','W'], featured:false, optedIn:true,
+    bio:'Started with Predictor, moved into Tipster picks once past the qualifying sample \u2014 mostly Premier League and Championship, leaning on recent form over reputation.',
+    customTags:[{label:'Comeback king', status:'pending'}],
+    history:[
+      {match:'Ashford Rovers vs Millbrook Town', pick:'Ashford Rovers to win', odds:1.95, result:'won', category:'lowrisk', reasoning:'Ashford have won 4 of their last 5 at home, and Millbrook are missing two starting defenders through suspension.'},
+      {match:'Harborview United vs Preston Combe', pick:'Under 2.5 goals', odds:1.90, result:'won', category:'surebet', reasoning:'Both sides have played cagey, low-scoring games in their last four meetings \u2014 neither manager likes to take risks against the other.'},
+      {match:'Bright Star Athletic vs Vale Rangers', pick:'Vale Rangers to win', odds:3.40, result:'lost', category:'highrisk', reasoning:'Backed the upset on Vale\u2019s away form, but Bright Star\u2019s home record proved too strong on the day.'},
+    ]},
   {id:'nered_analitika', name:'Nered Analitika', seasonPoints:0, hitRate:0, avgOdds:0, sampleSize:0, last6moPicks:0, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:[], featured:false, optedIn:true,
     isGuestAnalyst:true, guestRole:'Invited Analyst \u2014 established football personality',
     bio:'Invited to the platform for reach and recognisability, not for a track record built here yet. Guest Analysts are clearly separated from the earned badge ladder \u2014 no Verified/Expert/Master status until they build their own measured history on-platform, the same as everyone else.',
@@ -2793,8 +2799,12 @@ function renderFeaturedAnalysis(){
    and Fortnite (Account XP vs premium currency) — the pattern Reddit
    broke when it merged Coins with status, and had to walk back in 2023.
    ============================================================ */
-let userXP = 340;
-let userCredits = 65;
+let userXP = 6200;
+let userCredits = 480;
+let userWeeklyStreak = 4;
+let dailyCommentXpGiven = false;
+let ownedShopItems = new Set(['frame_gold','title_legend']);
+let earnedBadges = new Set(['first_pick','first_comment','ten_correct','streak4','quiz_master']);
 /* Level thresholds — cumulative XP at which each level starts. Interpolated
    within the four named bands from the spec (1–3: 0–500, 4–7: 500–2500,
    8–12: 2500–8000, 13–20: 8000–25000) since the doc gives band totals, not
@@ -2847,14 +2857,21 @@ function computeLevelInfo(xp){
    prototype — the spec's requested name for the spendable currency.
    ============================================================ */
 const SPORTSPASS_PRICE = 6.99;
-let sportsPassStatus = 'inactive'; // 'inactive' | 'active' | 'cancelling'
-let sportsPassActive = false; // derived — true for 'active' AND 'cancelling', kept in sync below
-let sportsPassStartDate = null;
-let sportsPassPeriodEnd = null;
-let sportsPassBillingHistory = []; // {date, amount, status}
-let passLaneEligibleLevels = new Set(); // levels reached while subscribed — permanent once recorded
-let freeLaneClaimed = new Set();
-let passLaneClaimed = new Set();
+let sportsPassStatus = 'active'; // 'inactive' | 'active' | 'cancelling'
+let sportsPassActive = true; // derived — true for 'active' AND 'cancelling', kept in sync below
+let sportsPassStartDate = new Date(new Date().setDate(new Date().getDate() - 92)); // ~3 months in
+let sportsPassPeriodEnd = new Date(new Date().setDate(new Date().getDate() + 16)); // mid-cycle
+let sportsPassBillingHistory = [
+  {date: new Date(new Date().setDate(new Date().getDate() - 14)), amount: SPORTSPASS_PRICE, status:'paid'},
+  {date: new Date(new Date().setDate(new Date().getDate() - 44)), amount: SPORTSPASS_PRICE, status:'paid'},
+  {date: new Date(new Date().setDate(new Date().getDate() - 74)), amount: SPORTSPASS_PRICE, status:'paid'},
+];
+/* Levels 1–3 were reached before subscribing — left ineligible on purpose so
+   the "missed, no retroactive claim" rule is visibly demonstrated without
+   needing any clicking. Levels 4+ were reached after subscribing. */
+let passLaneEligibleLevels = new Set([4,5,6,7,8,9,10,11]);
+let freeLaneClaimed = new Set([1,2,3,4,5,6,7,8,9,10]); // level 11 (current) left unclaimed on purpose
+let passLaneClaimed = new Set([4,5,6,7,8,9,10]); // level 11 (current) left unclaimed on purpose
 
 function formatDate(d, isUK){
   return d.toLocaleDateString(isUK?'en-GB':'it-IT', {day:'numeric', month:'short', year:'numeric'});
@@ -2877,7 +2894,7 @@ function openSportsPassCheckout(){
     <div class="account-form" style="margin-bottom:14px;">
       <input type="text" placeholder="${isUK?'Card number':'Numero carta'}" value="5555 5555 5555 5555" readonly style="font-family:var(--mono);">
       <div style="display:flex;gap:8px;">
-        <input type="text" placeholder="MM/YY" value="12/35" readonly style="font-family:var(--mono);flex:1;">
+        <input type="text" placeholder="MM/YY" value="12/28" readonly style="font-family:var(--mono);flex:1;">
         <input type="text" placeholder="CVC" value="123" readonly style="font-family:var(--mono);width:80px;">
       </div>
     </div>
@@ -3018,12 +3035,12 @@ const BADGES = [
 ];
 
 let weeklyChallengeState = [
-  {id:'wc1', name:'Play 5 Predictor rounds this week', target:5, progress:1, xp:30, credits:5},
-  {id:'wc2', name:'Get 3 correct picks in a row', target:3, progress:1, xp:50, credits:10},
-  {id:'wc3', name:'Post one tip in Community', target:1, progress:0, xp:20, credits:0},
-  {id:'wc4', name:'Play the Weekly Quiz', target:1, progress:0, xp:15, credits:0},
-  {id:'wc5', name:'Log in 3 days this week (streak)', target:3, progress:2, xp:25, credits:5},
-  {id:'wc6', name:'Comment on 3 match threads', target:3, progress:1, xp:15, credits:0},
+  {id:'wc1', name:'Play 5 Predictor rounds this week', target:5, progress:3, xp:30, credits:5},
+  {id:'wc2', name:'Get 3 correct picks in a row', target:3, progress:3, xp:50, credits:10},
+  {id:'wc3', name:'Post one tip in Community', target:1, progress:1, xp:20, credits:0},
+  {id:'wc4', name:'Play the Weekly Quiz', target:1, progress:1, xp:15, credits:0},
+  {id:'wc5', name:'Log in 3 days this week (streak)', target:3, progress:3, xp:25, credits:5},
+  {id:'wc6', name:'Comment on 3 match threads', target:3, progress:2, xp:15, credits:0},
   {id:'wc7', name:'Finish top 20 on the weekly leaderboard', target:1, progress:0, xp:40, credits:15},
 ];
 
@@ -3206,7 +3223,7 @@ function renderRewardsPage(){
         </div>
         <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--faint);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;">
           <span style="font-family:var(--mono);">💳 Visa •••• 5555</span>
-          <span>\u00b7 ${isUK?'expires':'scade'} 12/35</span>
+          <span>\u00b7 ${isUK?'expires':'scade'} 12/28</span>
         </div>
         ${sportsPassStatus==='cancelling' ? `<button class="btn btn-line" style="width:100%;justify-content:center;margin-top:10px;font-size:10.5px;opacity:.7;" onclick="simulateSportsPassPeriodEnd()">${isUK?'(Demo) Fast-forward to period end':'(Demo) Salta a fine periodo'}</button>` : ''}
       `;
