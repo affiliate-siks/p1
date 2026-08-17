@@ -764,6 +764,7 @@
 <div class="modal-overlay" id="accountModal"><div class="modal-box"><div id="accountModalContent"></div></div></div>
 <div class="modal-overlay" id="countryModal"><div class="modal-box"><div id="countryModalContent"></div></div></div>
 <div class="modal-overlay" id="quizModal"><div class="modal-box"><div id="quizModalContent"></div></div></div>
+<div class="modal-overlay" id="sportsPassModal"><div class="modal-box"><div id="sportsPassModalContent"></div></div></div>
 
 <div class="toast" id="toast"></div>
 <div class="cookie-banner" id="cookieBanner">
@@ -1274,14 +1275,24 @@
 
       <!-- ---- SportsPass ---- -->
       <div id="rtab-battlepass" style="display:none;">
+        <div class="sidebar-box" id="sportsPassPlanBox"></div>
+
+        <div class="sidebar-box">
+          <h4>Plan benefits</h4>
+          <div class="account-value-grid" style="margin-bottom:0;" id="sportsPassBenefitsBox"></div>
+        </div>
+
+        <div class="sidebar-box">
+          <h4>Billing history</h4>
+          <div id="sportsPassBillingBox"></div>
+        </div>
+
         <div class="sidebar-box">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
             <h4 id="bpProgressHeading" style="margin:0;">Account Level</h4>
-            <div id="bpSubscribeRow" style="display:flex;gap:8px;align-items:center;"></div>
           </div>
           <div class="xpbar-wrap" style="height:16px;"><div class="xpbar-fill" id="bpXpBarFill" style="width:0%;"></div></div>
           <p style="font-size:11px;color:var(--faint);margin:8px 0 0;" id="bpXpBarLabel"></p>
-          <p style="font-size:11px;color:var(--gold);margin:8px 0 0;" id="bpPremiumNote"></p>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;flex-wrap:wrap;gap:10px;">
           <p style="font-size:11.5px;color:var(--faint);margin:0;max-width:640px;" id="bpTrackNote">Free Lane vs. Pass Lane at every Account Level.</p>
@@ -2815,36 +2826,132 @@ function computeLevelInfo(xp){
 
 /* ============================================================
    SPORTSPASS — recurring monthly subscription, single tier, ongoing
-   with no season/end date (unlike the earlier free seasonal Battle Pass
-   this replaces). Rides the SAME Account Level track as everyone else —
-   there is no separate seasonal XP. At every level there are two lanes:
+   with no season/end date. Rides the SAME Account Level track as everyone
+   else. At every level there are two lanes:
      - Free Lane: always active, always safely claimed once a level is
        reached, regardless of subscription status.
      - Pass Lane: a richer reward at that same level, but real-time
        gated — claimable only while subscribed right now. If a level was
        reached while unsubscribed, that level's Pass Lane reward is
        permanently missed; resubscribing later does not retroactively
-       unlock it. This is tracked via passLaneEligibleLevels, populated
-       the moment a level-up happens, using subscription status at that
-       exact moment — not recalculated after the fact.
+       unlock it.
+   Billing model matches how a real subscription actually behaves, not a
+   naive instant on/off switch: sportsPassStatus is 'inactive' | 'active' |
+   'cancelling'. Cancelling does NOT cut access immediately — per the spec,
+   "perks end when the current billing period ends" — so sportsPassActive
+   (the boolean the rest of the prototype checks) stays true for both
+   'active' and 'cancelling', and only 'inactive' turns it off. A demo-only
+   button fast-forwards to the period end since a prototype can't wait 30
+   real days.
    Reward Points below is the same balance as "Credits" elsewhere in the
    prototype — the spec's requested name for the spendable currency.
    ============================================================ */
-let sportsPassActive = false;
+const SPORTSPASS_PRICE = 6.99;
+let sportsPassStatus = 'inactive'; // 'inactive' | 'active' | 'cancelling'
+let sportsPassActive = false; // derived — true for 'active' AND 'cancelling', kept in sync below
+let sportsPassStartDate = null;
+let sportsPassPeriodEnd = null;
+let sportsPassBillingHistory = []; // {date, amount, status}
 let passLaneEligibleLevels = new Set(); // levels reached while subscribed — permanent once recorded
 let freeLaneClaimed = new Set();
 let passLaneClaimed = new Set();
 
-function subscribeSportsPass(){
-  sportsPassActive = true;
-  showToast(market==='UK' ? 'SportsPass active — premium tipster content unlocked, and future levels now earn the Pass Lane reward too.' : 'SportsPass attivo — contenuto tipster premium sbloccato.');
+function formatDate(d, isUK){
+  return d.toLocaleDateString(isUK?'en-GB':'it-IT', {day:'numeric', month:'short', year:'numeric'});
+}
+function addDays(d, n){ const r = new Date(d); r.setDate(r.getDate()+n); return r; }
+function syncSportsPassActive(){ sportsPassActive = (sportsPassStatus==='active' || sportsPassStatus==='cancelling'); }
+
+/* Subscribe flow is a real two-step confirm (mini checkout), not one-click —
+   opens a modal showing price/terms and a mock card before actually charging. */
+function openSportsPassCheckout(){
+  const isUK = market==='UK';
+  document.getElementById('sportsPassModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeSportsPassModal()">&times;</button>
+    <h3>${isUK?'Subscribe to SportsPass':'Abbonati a SportsPass'}</h3>
+    <div class="verdict-box" style="margin:14px 0;">
+      <div class="k">${isUK?'Plan':'Piano'}</div>
+      <div style="font-size:20px;font-weight:700;font-family:var(--mono);color:var(--gold);">\u20ac${SPORTSPASS_PRICE.toFixed(2)} <span style="font-size:12px;color:var(--faint);font-family:var(--body);font-weight:400;">/ ${isUK?'month':'mese'}</span></div>
+      <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">${isUK?'Single tier. Cancel anytime \u2014 you keep access until the end of the period you\u2019ve already paid for.':'Livello unico. Annulla quando vuoi.'}</div>
+    </div>
+    <div class="account-form" style="margin-bottom:14px;">
+      <input type="text" placeholder="${isUK?'Card number':'Numero carta'}" value="4242 4242 4242 4242" readonly style="font-family:var(--mono);">
+      <div style="display:flex;gap:8px;">
+        <input type="text" placeholder="MM/YY" value="12/28" readonly style="font-family:var(--mono);flex:1;">
+        <input type="text" placeholder="CVC" value="123" readonly style="font-family:var(--mono);width:80px;">
+      </div>
+    </div>
+    <p style="font-size:10px;color:var(--faint);margin:0 0 14px;">${isUK?'Demo card, prefilled \u2014 no real payment is processed in this prototype.':'Carta demo, precompilata \u2014 nessun pagamento reale.'}</p>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="confirmSportsPassSubscribe()">${isUK?`Confirm \u2014 \u20ac${SPORTSPASS_PRICE.toFixed(2)}/mo`:`Conferma \u2014 \u20ac${SPORTSPASS_PRICE.toFixed(2)}/mese`}</button>
+  `;
+  document.getElementById('sportsPassModal').classList.add('show');
+}
+function closeSportsPassModal(){ document.getElementById('sportsPassModal').classList.remove('show'); }
+function confirmSportsPassSubscribe(){
+  const isUK = market==='UK';
+  const now = new Date();
+  if(sportsPassStatus==='cancelling'){
+    // Resuming before the paid period lapsed — real subscriptions don't re-charge for this.
+    sportsPassStatus = 'active';
+    syncSportsPassActive();
+    closeSportsPassModal();
+    showToast(isUK ? 'Subscription resumed \u2014 no new charge, you were still inside your paid period.' : 'Abbonamento ripreso \u2014 nessun nuovo addebito.');
+    renderRewardsPage();
+    return;
+  }
+  sportsPassStatus = 'active';
+  syncSportsPassActive();
+  if(!sportsPassStartDate) sportsPassStartDate = now;
+  sportsPassPeriodEnd = addDays(now, 30);
+  sportsPassBillingHistory.unshift({date: now, amount: SPORTSPASS_PRICE, status:'paid'});
+  closeSportsPassModal();
+  showToast(isUK ? 'SportsPass active \u2014 premium tipster content unlocked, and future levels now earn the Pass Lane reward too.' : 'SportsPass attivo \u2014 contenuto tipster premium sbloccato.');
   renderRewardsPage();
 }
-function cancelSportsPass(){
-  sportsPassActive = false;
-  showToast(market==='UK' ? 'SportsPass cancelled — you keep everything already claimed. Future levels will only earn the Free Lane reward until you resubscribe.' : 'SportsPass annullato — mantieni tutto ci\u00f2 che hai gi\u00e0 riscattato.');
+/* Cancel opens a confirmation modal explaining the actual consequence
+   (access continues until period end, no refund, future levels reached
+   after that point permanently miss the Pass Lane reward) instead of
+   silently flipping a switch. */
+function openSportsPassCancelConfirm(){
+  const isUK = market==='UK';
+  const endLabel = sportsPassPeriodEnd ? formatDate(sportsPassPeriodEnd, isUK) : '\u2014';
+  document.getElementById('sportsPassModalContent').innerHTML = `
+    <button class="modal-close" onclick="closeSportsPassModal()">&times;</button>
+    <h3>${isUK?'Cancel SportsPass?':'Annullare SportsPass?'}</h3>
+    <div class="review-text" style="margin:12px 0;">
+      <p style="font-size:12.5px;">${isUK
+        ? `You'll keep full access — Pass Lane claims included — until <strong style="color:var(--text);">${endLabel}</strong>, the end of your current billing period. No refund for the current period. After that date, any new levels you reach will only earn the Free Lane reward until you resubscribe. Anything already claimed is yours regardless.`
+        : `Manterrai l'accesso completo fino al <strong style="color:var(--text);">${endLabel}</strong>. Nessun rimborso per il periodo corrente.`}</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-line" style="flex:1;justify-content:center;" onclick="closeSportsPassModal()">${isUK?'Keep my subscription':'Mantieni abbonamento'}</button>
+      <button class="btn btn-gold" style="flex:1;justify-content:center;" onclick="confirmSportsPassCancel()">${isUK?'Confirm cancel':'Conferma annullamento'}</button>
+    </div>
+  `;
+  document.getElementById('sportsPassModal').classList.add('show');
+}
+function confirmSportsPassCancel(){
+  const isUK = market==='UK';
+  sportsPassStatus = 'cancelling';
+  syncSportsPassActive();
+  closeSportsPassModal();
+  showToast(isUK ? 'Cancelled \u2014 you keep Pass Lane access until your period ends, then it reverts to Free Lane only.' : 'Annullato \u2014 accesso mantenuto fino a fine periodo.');
   renderRewardsPage();
 }
+/* Demo-only: a real subscription would just wait for the billing date.
+   This fast-forwards that so the "period actually ends" state is reachable
+   inside a prototype, and is clearly labelled as a test control, not a
+   real feature. */
+function simulateSportsPassPeriodEnd(){
+  const isUK = market==='UK';
+  sportsPassStatus = 'inactive';
+  sportsPassPeriodEnd = null;
+  syncSportsPassActive();
+  showToast(isUK ? '(Demo) Billing period ended \u2014 SportsPass is now fully inactive.' : '(Demo) Periodo di fatturazione terminato.');
+  renderRewardsPage();
+}
+function subscribeSportsPass(){ openSportsPassCheckout(); }
+function cancelSportsPass(){ openSportsPassCancelConfirm(); }
 /* Called from grantRewards() at the moment a level-up is detected — this
    is the one and only place eligibility gets recorded, which is what
    makes the "no retroactive claiming" rule actually hold. */
@@ -3062,18 +3169,81 @@ function renderRewardsPage(){
     ? `${userXP.toLocaleString()} / ${lvlInfo.nextStart.toLocaleString()} XP to Level ${lvlInfo.level+1}`
     : `${userXP.toLocaleString()} / ${lvlInfo.nextStart.toLocaleString()} XP per il Livello ${lvlInfo.level+1}`;
 
+  /* ---- Real subscription/billing card — status, renewal date, payment method,
+     billing history — instead of a single toggle switch. ---- */
+  const planBox = document.getElementById('sportsPassPlanBox');
+  if(planBox){
+    if(sportsPassStatus==='inactive'){
+      planBox.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;">
+          <div>
+            <div style="font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">SportsPass</div>
+            <div style="font-family:var(--serif);font-size:19px;font-weight:600;">${isUK?'Not subscribed':'Non abbonato'}</div>
+            <div style="font-size:12px;color:var(--dim);margin-top:4px;">\u20ac${SPORTSPASS_PRICE.toFixed(2)}/${isUK?'month':'mese'} \u00b7 ${isUK?'single tier, cancel anytime':'livello singolo'}</div>
+          </div>
+          <button class="btn btn-gold" onclick="openSportsPassCheckout()">${isUK?'Subscribe':'Abbonati'}</button>
+        </div>`;
+    } else {
+      const statusColor = sportsPassStatus==='active' ? 'var(--live)' : 'var(--gold)';
+      const statusLabel = sportsPassStatus==='active' ? (isUK?'Active':'Attivo') : (isUK?'Cancelled \u2014 access continues':'Annullato \u2014 accesso attivo');
+      planBox.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:14px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:${statusColor};box-shadow:0 0 6px ${statusColor};"></span>
+              <span style="font-size:11px;color:${statusColor};text-transform:uppercase;letter-spacing:.05em;font-weight:700;">${statusLabel}</span>
+            </div>
+            <div style="font-family:var(--serif);font-size:19px;font-weight:600;">SportsPass \u2014 \u20ac${SPORTSPASS_PRICE.toFixed(2)}/${isUK?'mo':'mese'}</div>
+            <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">${isUK?'Member since':'Membro dal'} ${formatDate(sportsPassStartDate, isUK)}</div>
+            <div style="font-size:11.5px;color:var(--dim);">${sportsPassStatus==='active' ? (isUK?'Renews':'Si rinnova il') : (isUK?'Access ends':'Accesso termina il')} <strong style="color:var(--text);">${formatDate(sportsPassPeriodEnd, isUK)}</strong></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+            ${sportsPassStatus==='active'
+              ? `<button class="btn btn-line" style="font-size:12px;" onclick="cancelSportsPass()">${isUK?'Cancel subscription':'Annulla abbonamento'}</button>`
+              : `<button class="btn btn-gold" style="font-size:12px;" onclick="openSportsPassCheckout()">${isUK?'Resume subscription':'Riprendi abbonamento'}</button>`}
+            <button class="btn btn-line" style="font-size:10.5px;padding:5px 10px;opacity:.7;" onclick="showToast('${isUK?'In production this opens Stripe/payment provider card management.':'In produzione apre la gestione carta del provider di pagamento.'}')">${isUK?'Update payment method':'Aggiorna metodo di pagamento'}</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--faint);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;">
+          <span style="font-family:var(--mono);">💳 Visa •••• 4242</span>
+          <span>\u00b7 ${isUK?'expires':'scade'} 12/28</span>
+        </div>
+        ${sportsPassStatus==='cancelling' ? `<button class="btn btn-line" style="width:100%;justify-content:center;margin-top:10px;font-size:10.5px;opacity:.7;" onclick="simulateSportsPassPeriodEnd()">${isUK?'(Demo) Fast-forward to period end':'(Demo) Salta a fine periodo'}</button>` : ''}
+      `;
+    }
+  }
+
+  /* ---- Benefits list — what the subscription actually includes, spelled out
+     like a real pricing/plan page instead of only implied by the tier track. ---- */
+  const benefitsBox = document.getElementById('sportsPassBenefitsBox');
+  if(benefitsBox){
+    const benefits = isUK ? [
+      ['🔓','Full tipster reasoning','Every pick\u2019s full write-up, not just the pick itself \u2014 gated for free users on every Tipster profile.'],
+      ['🎁','Richer Pass Lane rewards','A bigger reward at every single Account Level, on top of what Free Lane already gives everyone.'],
+      ['⚡','Real-time perk','Rewards are tied to being subscribed the moment you level up \u2014 no waiting, no banking.'],
+    ] : [
+      ['🔓','Analisi completa dei tipster','Il testo completo di ogni pronostico, non solo la selezione.'],
+      ['🎁','Premi Pass Lane pi\u00f9 ricchi','Un premio pi\u00f9 ricco a ogni Livello Account.'],
+      ['⚡','Vantaggio in tempo reale','I premi sono legati all\u2019abbonamento attivo nel momento del level-up.'],
+    ];
+    benefitsBox.innerHTML = benefits.map(b=>`<div class="account-value-item"><span class="mark">${b[0]}</span><span><b style="color:var(--text);">${b[1]}</b> \u2014 ${b[2]}</span></div>`).join('');
+  }
+
+  /* ---- Billing history — mock invoices, only shown once at least one exists. ---- */
+  const billingBox = document.getElementById('sportsPassBillingBox');
+  if(billingBox){
+    if(!sportsPassBillingHistory.length){
+      billingBox.innerHTML = `<p style="font-size:11.5px;color:var(--faint);">${isUK?'No invoices yet.':'Nessuna fattura ancora.'}</p>`;
+    } else {
+      billingBox.innerHTML = `<div class="table-wrap"><table><thead><tr><th>${isUK?'Date':'Data'}</th><th>${isUK?'Amount':'Importo'}</th><th>${isUK?'Status':'Stato'}</th></tr></thead><tbody>
+        ${sportsPassBillingHistory.map(inv=>`<tr><td>${formatDate(inv.date, isUK)}</td><td style="font-family:var(--mono);">\u20ac${inv.amount.toFixed(2)}</td><td><span class="pill ok">${isUK?'Paid':'Pagato'}</span></td></tr>`).join('')}
+      </tbody></table></div>`;
+    }
+  }
+
   document.getElementById('bpTrackNote').innerHTML = isUK
-    ? `<strong style="color:${sportsPassActive?'var(--live)':'var(--faint)'};">SportsPass: ${sportsPassActive?'ACTIVE':'not active'}</strong> \u00b7 \u20ac6.99/month, single tier, cancel anytime. No seasons, no reset \u2014 it rides your Account Level forever. Free Lane rewards are always yours once you reach a level. Pass Lane rewards are richer, but only claimable while subscribed \u2014 and only for levels you reached <em>while</em> subscribed. Reaching a level unsubscribed permanently forfeits that level's Pass Lane reward.`
-    : `<strong style="color:${sportsPassActive?'var(--live)':'var(--faint)'};">SportsPass: ${sportsPassActive?'ATTIVO':'non attivo'}</strong> \u00b7 \u20ac6.99/mese, livello singolo, annulla quando vuoi.`;
-
-  const passBtnRow = document.getElementById('bpSubscribeRow');
-  passBtnRow.innerHTML = sportsPassActive
-    ? `<button class="btn btn-line" onclick="cancelSportsPass()">${isUK?'Cancel SportsPass':'Annulla SportsPass'}</button><span style="font-size:11px;color:var(--live);align-self:center;">\u25cf ${isUK?'Active':'Attivo'}</span>`
-    : `<button class="btn btn-gold" onclick="subscribeSportsPass()">${isUK?'Subscribe \u2014 \u20ac6.99/mo':'Abbonati \u2014 \u20ac6.99/mese'}</button>`;
-
-  document.getElementById('bpPremiumNote').innerHTML = isUK
-    ? `${sportsPassActive ? '✓ Premium tipster content (full reasoning behind every pick) is unlocked for you right now.' : 'Subscribers get instant access to full tipster reasoning \u2014 see it gated on any Tipster profile.'}`
-    : `${sportsPassActive ? '✓ Contenuto tipster premium sbloccato.' : 'Gli abbonati ottengono accesso immediato al ragionamento completo dei tipster.'}`;
+    ? `Free Lane rewards are always yours once you reach a level. Pass Lane rewards are richer, but only claimable while subscribed \u2014 and only for levels you reached <em>while</em> subscribed. Reaching a level unsubscribed permanently forfeits that level's Pass Lane reward.`
+    : `I premi Free Lane sono sempre tuoi una volta raggiunto un livello. I premi Pass Lane sono pi\u00f9 ricchi, ma riscattabili solo durante l'abbonamento attivo.`;
 
   const claimableFree = FREE_LANE_REWARDS.filter((r,i)=>lvlInfo.level>=(i+1) && !freeLaneClaimed.has(i+1)).length;
   const claimablePass = PASS_LANE_REWARDS.filter((r,i)=>lvlInfo.level>=(i+1) && passLaneEligibleLevels.has(i+1) && sportsPassActive && !passLaneClaimed.has(i+1)).length;
@@ -3289,7 +3459,7 @@ function renderSearchChips(){
     `<button class="chip" onclick="document.getElementById('searchInput').value='${q.replace(/'/g,"\\'")}';runSearch();">${q}</button>`
   ).join('');
 }
-document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); closeCountryPicker(); closeQuiz(); } });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSearch(); closeLegal(); closeApply(); closeOpModal(); closeGlossary(); closeReviewModal(); closeAccount(); closeCountryPicker(); closeQuiz(); closeSportsPassModal(); } });
 function runSearch(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const box = document.getElementById('searchResults');
