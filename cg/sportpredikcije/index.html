@@ -271,13 +271,13 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   <div class="wrap">
     <div class="compliance-bar">
       <div class="age-badge">18+</div>
-      <p>Namijenjeno isključivo punoljetnim licima. Igrajte odgovorno. [Formulaciju napomene o odgovornoj igri potvrđuje pravna služba prije objave.]</p>
+      <p>Namijenjeno isključivo punoljetnim licima. Igrajte odgovorno.</p>
     </div>
     <p class="fine">Predikcije ne predstavljaju opkladu niti uplatu. Organizator zadržava pravo izmjene pravila. [Naziv organizatora i pravna napomena — popuniti prije objave.]</p>
   </div>
 </footer>
 
-<!-- ================= redirect popup (nakon neaktivnosti) ================= -->
+<!-- ================= redirect popup (nakon predaje predikcije) ================= -->
 <div class="redirect-overlay" id="redirectOverlay">
   <div class="redirect-modal">
     <button class="redirect-close" id="redirectClose" aria-label="Zatvori">×</button>
@@ -564,6 +564,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       if (data.ok) {
         resEl.className = 'submit-result show ok'; resEl.innerHTML = '<b>✓ </b>Predikcija predata i sačuvana!';
         btn.textContent = 'Predato ✓';
+        armPostSubmitRedirect(); // popup/redirekcija tek nakon uspješne predaje
       } else {
         resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ ' + (data.error || 'Greška prilikom slanja.');
         btn.disabled = false; btn.textContent = 'Predaj predikciju';
@@ -601,22 +602,20 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   deckSection.style.display = 'none';
   loadRounds();
 
-  // ---------------- redirect popup nakon neaktivnosti ----------------
+  // ---------------- redirect popup — pokreće se TEK nakon predate predikcije ----------------
   (function () {
     const REDIRECT_URL = 'https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717';
-    const IDLE_MS = 5000;          // vrijeme neaktivnosti prije nego se popup pojavi
-    const AUTO_REDIRECT_MS = 5000; // ako ni tad nema reakcije, redirekcija je automatska
+    const DELAY_AFTER_SUBMIT_MS = 4000;  // koliko čekamo nakon uspješne predaje prije nego prikažemo popup
+    const AUTO_REDIRECT_MS = 6000;       // koliko dugo popup stoji prije automatske redirekcije
 
     const overlay = document.getElementById('redirectOverlay');
     const closeBtn = document.getElementById('redirectClose');
     const ctaBtn = document.getElementById('redirectCta');
 
-    let idleTimer = null;
     let autoRedirectTimer = null;
-    let dismissed = false;
+    let armed = false;
 
     function showPopup() {
-      if (dismissed || overlay.style.display === 'flex') return;
       overlay.style.display = 'flex';
       autoRedirectTimer = setTimeout(() => { window.location.href = REDIRECT_URL; }, AUTO_REDIRECT_MS);
     }
@@ -626,21 +625,18 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       clearTimeout(autoRedirectTimer);
     }
 
-    function resetIdleTimer() {
-      if (overlay.style.display === 'flex') return; // ne resetuj dok je popup otvoren — to je namjerni "poziv na akciju"
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(showPopup, IDLE_MS);
-    }
-
-    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
-      document.addEventListener(evt, resetIdleTimer, { passive: true });
-    });
-
-    closeBtn.addEventListener('click', () => { dismissed = true; hidePopup(); });
+    closeBtn.addEventListener('click', () => { hidePopup(); });
     ctaBtn.addEventListener('click', () => { clearTimeout(autoRedirectTimer); }); // link ide dalje normalno
 
-    resetIdleTimer();
+    // izloženo napolje: poziva se tek kad backend potvrdi da je predikcija sačuvana
+    window.armPostSubmitRedirect = function () {
+      if (armed) return; // ne pokreći više puta
+      armed = true;
+      setTimeout(showPopup, DELAY_AFTER_SUBMIT_MS);
+    };
   })();
+
+  function armPostSubmitRedirect() { window.armPostSubmitRedirect(); }
 </script>
 </body>
 </html>
