@@ -790,6 +790,7 @@
             <button data-view="tipsters">🏆 Tipsters <span class="nav-dropdown-sub">Verified pick records</span></button>
             <button data-view="quiz">🧠 Weekly Quiz <span class="nav-dropdown-sub">Live, Thursdays 20:00</span></button>
             <button data-view="rewards">🎁 Rewards <span class="nav-dropdown-sub">XP, Shop &amp; SportsPass</span></button>
+            <button data-view="dashboard">👤 My Dashboard <span class="nav-dropdown-sub">Guest preview or signed-in view</span></button>
           </div>
         </div>
         <div class="nav-dropdown" id="contentDropdown">
@@ -837,6 +838,7 @@
         <button data-view="tipsters">🏆 Tipsters</button>
         <button data-view="quiz">🧠 Weekly Quiz</button>
         <button data-view="rewards">🎁 Rewards</button>
+        <button data-view="dashboard">👤 My Dashboard</button>
       </nav>
       <div style="padding:10px 12px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;">More</div>
       <nav class="mobile-nav" id="mobileNav2">
@@ -1169,6 +1171,11 @@
     <section class="view" id="view-tipster-profile">
       <button class="back-link" onclick="go('tipsters')">← Back to Tipsters</button>
       <div id="tipsterProfileContent"></div>
+    </section>
+
+    <!-- ============ MY DASHBOARD (guest prompt or full signed-in tipster/rewards dashboard) ============ -->
+    <section class="view" id="view-dashboard">
+      <div id="dashboardContent"></div>
     </section>
 
     <!-- ============ COMMUNITY ANALYSIS ARTICLE (published tip + live Stats Box) ============ -->
@@ -2364,14 +2371,113 @@ function setTipsterSort(key){
 /* ---------- Opt-in simulation — "you" are represented by newplayer01 in this
    demo data set (optedIn:false by default). Nobody becomes a publicly ranked
    tipster automatically; this button is the one and only way in. ---------- */
+/* ============================================================
+   MY DASHBOARD — the actual destination of the guest → sign-in flow.
+   Guest state: a locked preview with a clear sign-in prompt (no data shown,
+   since a guest genuinely has no account yet). Signed-in state: real,
+   personalized view built from the same live data everything else on the
+   site reads from (Account XP/Level, Reward Points, SportsPass status,
+   and the "you" tipster record) — nothing here is a separate mock dataset.
+   ============================================================ */
+function renderDashboard(){
+  const isUK = market==='UK';
+  const box = document.getElementById('dashboardContent');
+  if(!isLoggedIn){
+    box.innerHTML = `
+      <div style="max-width:420px;margin:60px auto 0;text-align:center;">
+        <div style="font-size:38px;margin-bottom:10px;">👤</div>
+        <div style="font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:6px;">${isUK?'You\u2019re browsing as a guest':'Stai navigando come ospite'}</div>
+        <p style="color:var(--faint);font-size:12.5px;margin-bottom:22px;">${isUK?'Sign in to see your Account Level, Reward Points, SportsPass status and your own tipster profile in one place.':'Accedi per vedere il tuo Livello, Reward Points, stato SportsPass e il tuo profilo tipster in un unico posto.'}</p>
+        <button class="btn btn-gold" style="justify-content:center;" onclick="openAccount()">${isUK?'Sign in / Create account':'Accedi / Crea account'}</button>
+      </div>`;
+    return;
+  }
+  const info = computeLevelInfo(userXP);
+  const me = tipsters.find(x=>x.id===myTipsterId);
+  const badge = me ? computeBadge(me) : null;
+  const roundPos = predictorRoundLeaderboard.findIndex(p=>p.name===myTipsterId);
+
+  box.innerHTML = `
+    <div class="op-page-head">
+      <div style="display:flex;gap:16px;align-items:center;">
+        <div class="op-page-mark" style="background:${thumbGradient(myTipsterId)};border:none;color:#fff;">${myTipsterId.slice(0,2).toUpperCase()}</div>
+        <div>
+          <div class="op-page-title"><h1 style="font-size:24px;">${isUK?'Welcome back':'Bentornato'}, ${myTipsterId}</h1></div>
+          <div class="op-page-sub">${isUK?'This is your dashboard \u2014 only you see this view.':'Questa \u00e8 la tua dashboard \u2014 solo tu la vedi.'}</div>
+        </div>
+      </div>
+      <button class="btn btn-line" onclick="logOut()">${isUK?'Sign out':'Disconnetti'}</button>
+    </div>
+
+    <div class="reward-stats-grid">
+      <div class="reward-stat-card"><div class="v">${info.level}</div><div class="l">${isUK?'Account Level':'Livello Account'}</div></div>
+      <div class="reward-stat-card"><div class="v">${userCredits}</div><div class="l">Reward Points</div></div>
+      <div class="reward-stat-card"><div class="v" style="color:${sportsPassActive?'var(--live)':'var(--faint)'};">${sportsPassActive?'ACTIVE':(isUK?'INACTIVE':'INATTIVO')}</div><div class="l">SportsPass</div></div>
+    </div>
+
+    <div class="op-page-grid">
+      <div>
+        <div class="sidebar-box">
+          <h4>${isUK?'Your tipster profile':'Il tuo profilo tipster'}</h4>
+          ${me ? `
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+              <div style="display:flex;align-items:center;gap:8px;">${badgeBarHtml(me,'lg')} <span style="font-size:11.5px;color:var(--dim);">${me.sampleSize} ${isUK?'picks recorded':'pronostici registrati'}</span></div>
+              <span class="op-featured" style="${me.optedIn?'color:var(--live);border-color:var(--live);':''}">${me.optedIn?(isUK?'✓ Public':'✓ Pubblico'):(isUK?'Private':'Privato')}</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-cell"><div class="k">${isUK?'Hit rate':'% vinti'}</div><div class="v">${me.hitRate}%</div></div>
+              <div class="detail-cell"><div class="k">${isUK?'Season points':'Punti stagione'}</div><div class="v">${me.seasonPoints.toFixed(1)}</div></div>
+              <div class="detail-cell"><div class="k">${isUK?'BeforeBet Index':'Indeks'}</div><div class="v">${beforeBetIndex(me)}</div></div>
+              <div class="detail-cell"><div class="k">${isUK?'Avg. odds':'Quota media'}</div><div class="v">${me.avgOdds.toFixed(2)}</div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+              <button class="btn btn-line" onclick="openTipsterProfile('${myTipsterId}')">${isUK?'View public preview':'Vedi anteprima pubblica'}</button>
+              <button class="btn ${me.optedIn?'btn-line':'btn-gold'}" onclick="toggleMyTipsterOptIn()" id="dashboardOptInBtn">${me.optedIn?(isUK?'Make private':'Rendi privato'):(isUK?'Make public':'Rendi pubblico')}</button>
+            </div>
+            ${me.sampleSize<10 ? `<p style="font-size:10.5px;color:var(--faint);margin-top:8px;">${isUK?`Need 10+ recorded picks to go public \u2014 you have ${me.sampleSize}.`:`Servono 10+ pronostici \u2014 ne hai ${me.sampleSize}.`}</p>` : ''}
+          ` : `<p style="font-size:12px;color:var(--faint);">${isUK?'No tipster record found.':'Nessun profilo tipster trovato.'}</p>`}
+        </div>
+
+        <div class="sidebar-box">
+          <h4>${isUK?'This week in Predictor':'Questa settimana in Predictor'}</h4>
+          <p style="font-size:12px;color:var(--dim);margin:0 0 10px;">${predictorSubmitted ? (isUK?`✓ Round ${predictorRound.number} submitted.`:`✓ Turno ${predictorRound.number} inviato.`) : (isUK?`Round ${predictorRound.number} still open \u2014 you haven't submitted yet.`:`Turno ${predictorRound.number} ancora aperto.`)}</p>
+          <button class="btn btn-gold" onclick="go('predictor')">${isUK?'Go to this round \u2192':'Vai al turno \u2192'}</button>
+        </div>
+      </div>
+      <div>
+        <div class="sidebar-box">
+          <h4>${isUK?'Account XP':'XP Account'}</h4>
+          <div class="xpbar-wrap"><div class="xpbar-fill" style="width:${info.pct}%;"></div></div>
+          <p style="font-size:11px;color:var(--faint);margin:8px 0 0;">${userXP.toLocaleString()} / ${info.nextStart.toLocaleString()} XP</p>
+        </div>
+        <div class="sidebar-box">
+          <h4>SportsPass</h4>
+          <p style="font-size:11.5px;color:var(--dim);margin:0 0 10px;">${sportsPassActive ? (isUK?'Active \u2014 Pass Lane rewards unlocking as you level up.':'Attivo \u2014 premi Pass Lane sbloccati.') : (isUK?'Not active \u2014 you\u2019re only earning Free Lane rewards.':'Non attivo \u2014 solo premi Free Lane.')}</p>
+          <button class="btn btn-line" style="width:100%;justify-content:center;" onclick="go('rewards');setTimeout(()=>document.querySelector('#rewardsSubtabs button[data-rtab=battlepass]').click(),100);">${isUK?'Manage SportsPass \u2192':'Gestisci SportsPass \u2192'}</button>
+        </div>
+        <div class="sidebar-box">
+          <h4>${isUK?'Quick links':'Link rapidi'}</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn btn-line" style="justify-content:flex-start;" onclick="go('rewards')">🎁 ${isUK?'Rewards & Shop':'Rewards e Shop'}</button>
+            <button class="btn btn-line" style="justify-content:flex-start;" onclick="go('tipsters')">🏆 ${isUK?'Tipster leaderboard':'Classifica tipster'}</button>
+            <button class="btn btn-line" style="justify-content:flex-start;" onclick="go('quiz')">🧠 ${isUK?'Weekly Quiz':'Quiz settimanale'}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function toggleMyTipsterOptIn(){
   const isUK = market==='UK';
-  const me = tipsters.find(x=>x.id==='newplayer01');
+  if(!isLoggedIn){ showToast(isUK ? 'Sign in first \u2014 opting in is tied to your account.' : 'Accedi prima \u2014 l\u2019opt-in \u00e8 legato al tuo account.'); openAccount(); return; }
+  const me = tipsters.find(x=>x.id===myTipsterId);
   if(!me) return;
   if(me.sampleSize < 10){ showToast(isUK ? `Need 10+ recorded picks first \u2014 you have ${me.sampleSize}.` : `Servono 10+ pronostici \u2014 ne hai ${me.sampleSize}.`); return; }
   me.optedIn = !me.optedIn;
   showToast(me.optedIn ? (isUK?'Your picks are now public on the Tipsters leaderboard.':'I tuoi pronostici sono ora pubblici.') : (isUK?'Opted out \u2014 removed from the public leaderboard.':'Rimosso dalla classifica pubblica.'));
   renderTipsterLeaderboard();
+  if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
 }
 function renderTipsterLeaderboard(){
   const isUK = market==='UK';
@@ -3073,6 +3179,7 @@ function go(v){
   document.querySelectorAll('#mainnav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('#mobileNav button, #mobileNavPlay button, #mobileNav2 button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
   document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  if(v==='dashboard') renderDashboard();
   closeMobileNav();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3204,7 +3311,17 @@ function searchClick(i){ closeSearch(); window._sres[i].a(); }
 
 /* ---------- account: value shown before the form, per player type ---------- */
 let accountTab = 'create';
-function openAccount(){ accountTab='create'; renderAccountModal(); document.getElementById('accountModal').classList.add('show'); }
+/* ---------- Real (simulated) session state — this is the difference between a
+   cosmetic modal and an actual guest-vs-signed-in flow. isLoggedIn drives what
+   the header account icon does and what "My Dashboard" shows. myTipsterId links
+   the signed-in demo session to the newplayer01 tipster record so opting in,
+   picks, and dashboard all read from one consistent "you". ---------- */
+let isLoggedIn = false;
+let myTipsterId = 'newplayer01';
+function openAccount(){
+  if(isLoggedIn){ go('dashboard'); return; }
+  accountTab='create'; renderAccountModal(); document.getElementById('accountModal').classList.add('show');
+}
 function closeAccount(){ document.getElementById('accountModal').classList.remove('show'); }
 function setAccountTab(t){ accountTab=t; renderAccountModal(); }
 function renderAccountModal(){
@@ -3233,15 +3350,41 @@ function renderAccountModal(){
       <div class="account-value-grid">
         ${values.map(v=>`<div class="account-value-item"><span class="mark">${v[0]}</span><span>${v[1]}</span></div>`).join('')}
       </div>
-    ` : ''}
+    ` : `
+      <div class="verdict-box" style="cursor:pointer;margin-bottom:14px;" onclick="quickSignIn()">
+        <div class="k" style="color:var(--live);">${isUK?'⚡ Quick sign in (demo)':'⚡ Accesso rapido (demo)'}</div>
+        <div style="font-size:12.5px;color:var(--text);">${isUK?'No password needed for this preview — one tap signs you in as your demo account and opens My Dashboard.':'Nessuna password richiesta in questa anteprima — un tocco ti accede al tuo account demo.'}</div>
+      </div>
+      <p style="font-size:10.5px;color:var(--faint);margin:-6px 0 12px;text-align:center;">${isUK?'— or use email + password below —':'— oppure email e password qui sotto —'}</p>
+    `}
     <div class="account-form">
       <input type="email" placeholder="${isUK?'Email':'Email'}">
       <input type="password" placeholder="${isUK?'Password':'Password'}">
       <button class="btn btn-gold" style="justify-content:center;margin-top:4px;" onclick="submitAccount()">${isCreate ? (isUK?'Create free account':'Crea account gratuito') : (isUK?'Sign in':'Accedi')}</button>
     </div>`;
 }
-function submitAccount(){
-  document.getElementById('accountModalContent').innerHTML = `<button class="modal-close" onclick="closeAccount()">&times;</button><h3>${market==='UK'?'You\'re in':'Fatto'}</h3><p style="color:var(--dim);font-size:13px;">Simulated — in production this creates the session and returns you to where you were.</p>`;
+function submitAccount(){ quickSignIn(); }
+/* One-tap, passwordless sign-in for this preview — sets real session state
+   (isLoggedIn) rather than just showing a "you're in" message, then routes
+   straight to My Dashboard so the guest → signed-in → dashboard flow is a
+   single, real path through the prototype, not three disconnected screens. */
+function quickSignIn(){
+  isLoggedIn = true;
+  closeAccount();
+  showToast(market==='UK' ? 'Signed in \u2014 welcome back.' : 'Accesso effettuato \u2014 bentornato.');
+  updateHeaderAccountIcon();
+  go('dashboard');
+}
+function logOut(){
+  isLoggedIn = false;
+  updateHeaderAccountIcon();
+  showToast(market==='UK' ? 'Signed out.' : 'Disconnesso.');
+  go('home');
+}
+function updateHeaderAccountIcon(){
+  const btn = document.querySelector('.header-account-btn');
+  if(btn) btn.textContent = isLoggedIn ? '●' : '☺';
+  if(btn) btn.title = isLoggedIn ? 'My Dashboard' : 'Account';
 }
 
 
