@@ -789,7 +789,7 @@
             <button data-view="predictor">🎯 Predictor <span class="nav-dropdown-sub">Free weekly picks</span></button>
             <button data-view="tipsters">🏆 Tipsters <span class="nav-dropdown-sub">Verified pick records</span></button>
             <button data-view="quiz">🧠 Weekly Quiz <span class="nav-dropdown-sub">Live, Thursdays 20:00</span></button>
-            <button data-view="rewards">🎁 Rewards <span class="nav-dropdown-sub">XP, Shop &amp; Battle Pass</span></button>
+            <button data-view="rewards">🎁 Rewards <span class="nav-dropdown-sub">XP, Shop &amp; SportsPass</span></button>
           </div>
         </div>
         <div class="nav-dropdown" id="contentDropdown">
@@ -1153,6 +1153,16 @@
         <button class="chip" id="tipsterSortOddsChip" onclick="setTipsterSort('avgodds')">Avg. odds</button>
       </div>
       <div class="lead-table" id="tipsterLeaderboardTable"></div>
+
+      <div class="head" style="margin-top:32px;"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--live);font-weight:700;">Invited, not earned</p><h2 style="font-size:18px;">Guest Analysts</h2></div></div>
+      <p style="color:var(--faint);font-size:11.5px;max-width:600px;margin:-6px 0 14px;">Established football personalities invited for reach and recognisability. Deliberately kept out of the ranked table above — they carry no earned badge or BeforeBet Index until they build a real history here, the same as anyone else.</p>
+      <div class="lead-table" id="guestAnalystsBox"></div>
+
+      <div class="sidebar-box" style="margin-top:24px;">
+        <h4>Become a public tipster</h4>
+        <p style="font-size:11.5px;color:var(--dim);margin:0 0 12px;">Nobody becomes a publicly ranked tipster automatically. Reach 10+ recorded picks in Predictor, then opt in yourself — this only affects visibility, never your underlying stats.</p>
+        <button class="btn btn-gold" onclick="toggleMyTipsterOptIn()" id="tipsterOptInBtn">Make my picks public</button>
+      </div>
     </section>
 
     <!-- ============ TIPSTER PROFILE ============ -->
@@ -1189,17 +1199,17 @@
       <p style="font-size:11px;color:var(--faint);margin-top:10px;">Champion status and season leaderboard position are free rewards. Cash or physical prizes are on hold pending legal review per market — see our <button onclick="openLegal('methodology')" style="background:none;border:none;color:var(--gold);text-decoration:underline;padding:0;font-size:inherit;cursor:pointer;">How We Rate</button> page for how we handle compliance across markets.</p>
     </section>
 
-    <!-- ============ REWARDS (Account XP, Credits, Battle Pass, Shop, Badges) ============ -->
+    <!-- ============ REWARDS (Account XP, Reward Points, SportsPass, Shop, Badges) ============ -->
     <section class="view" id="view-rewards">
       <div class="head"><div><p class="eyebrow" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;">Your progress</p><h2 id="rewardsHeading">Rewards</h2></div></div>
-      <p style="color:var(--faint);font-size:12.5px;max-width:640px;margin:-6px 0 20px;" id="rewardsIntro">Account XP tracks your overall status across the whole site and never resets. Credits are a separate, spendable balance for the Shop. Battle Pass is a season-only track that runs alongside both.</p>
+      <p style="color:var(--faint);font-size:12.5px;max-width:640px;margin:-6px 0 20px;" id="rewardsIntro">Account XP tracks your overall status across the whole site and never resets. Reward Points are a separate, spendable balance for the Shop. SportsPass is an optional monthly subscription that adds a richer reward lane at every Level — it never pauses or speeds up your XP.</p>
 
       <div class="subtabs" id="rewardsSubtabs">
         <button data-rtab="overview" class="active" id="rewardsTabOverviewLabel">Overview</button>
         <button data-rtab="challenges" id="rewardsTabChallengesLabel">Weekly Challenges</button>
         <button data-rtab="badges" id="rewardsTabBadgesLabel">Badges</button>
         <button data-rtab="shop" id="rewardsTabShopLabel">Shop</button>
-        <button data-rtab="battlepass" id="rewardsTabBpLabel">Battle Pass</button>
+        <button data-rtab="battlepass" id="rewardsTabBpLabel">SportsPass</button>
       </div>
 
       <!-- ---- Overview ---- -->
@@ -1222,7 +1232,7 @@
         </div>
         <div class="sidebar-box">
           <h4 id="rewardsInviteHeading">Invite a friend</h4>
-          <p style="font-size:11.5px;color:var(--dim);margin:0 0 10px;" id="rewardsInviteDesc">Earn a one-time XP and Credits bonus when someone you invite registers and verifies their account.</p>
+          <p style="font-size:11.5px;color:var(--dim);margin:0 0 10px;" id="rewardsInviteDesc">Earn a one-time XP and Reward Points bonus when someone you invite registers and verifies their account.</p>
           <button class="btn btn-gold" onclick="simulateFriendInvite()" id="rewardsInviteBtn">Copy invite link</button>
         </div>
         <h4 style="font-family:var(--serif);font-size:14.5px;margin:22px 0 10px;" id="rewardsXpTableHeading">How XP is earned</h4>
@@ -1245,7 +1255,7 @@
       <div id="rtab-shop" style="display:none;">
         <div class="verdict-box" style="max-width:100%;">
           <div class="k" id="rewardsShopBalanceLabel">Your balance</div>
-          <div style="font-size:20px;font-weight:700;color:var(--gold);font-family:var(--serif);" id="rewardsShopBalanceValue">0 Credits</div>
+          <div style="font-size:20px;font-weight:700;color:var(--gold);font-family:var(--serif);" id="rewardsShopBalanceValue">0 Reward Points</div>
         </div>
         <h4 style="font-family:var(--serif);font-size:14.5px;margin:20px 0 10px;" id="rewardsShopDigitalHeading">Digital rewards</h4>
         <div class="shop-grid" id="shopGridDigital"></div>
@@ -1255,15 +1265,19 @@
         <div class="shop-grid" id="shopGridComing"></div>
       </div>
 
-      <!-- ---- Battle Pass ---- -->
+      <!-- ---- SportsPass ---- -->
       <div id="rtab-battlepass" style="display:none;">
         <div class="sidebar-box">
-          <h4 id="bpProgressHeading">Season progress</h4>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <h4 id="bpProgressHeading" style="margin:0;">Account Level</h4>
+            <div id="bpSubscribeRow" style="display:flex;gap:8px;align-items:center;"></div>
+          </div>
           <div class="xpbar-wrap" style="height:16px;"><div class="xpbar-fill" id="bpXpBarFill" style="width:0%;"></div></div>
           <p style="font-size:11px;color:var(--faint);margin:8px 0 0;" id="bpXpBarLabel"></p>
+          <p style="font-size:11px;color:var(--gold);margin:8px 0 0;" id="bpPremiumNote"></p>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;flex-wrap:wrap;gap:10px;">
-          <p style="font-size:11.5px;color:var(--faint);margin:0;" id="bpTrackNote">Free for everyone — no paid tier. Scroll to see every reward tier this season.</p>
+          <p style="font-size:11.5px;color:var(--faint);margin:0;max-width:640px;" id="bpTrackNote">Free Lane vs. Pass Lane at every Account Level.</p>
           <button class="btn btn-gold" style="padding:8px 16px;font-size:12px;flex-shrink:0;" onclick="claimAllBattlePassTiers()" id="bpClaimAllBtn">Claim All</button>
         </div>
         <div class="bp-track-wrap">
@@ -2253,34 +2267,55 @@ function renderPredictorHistory(){
 /* ============================================================
    TIPSTERS — verified public pick record + career ladder
    ============================================================ */
+/* ---------- Tip categories — mandatory, fixed set applied to every pick so all
+   tipsters can be compared and auto-tracked on equal terms. Odds bands are
+   illustrative for football; a real implementation sets bands per sport since
+   football and basketball don't share the same "safe" price range. ---------- */
+const TIP_CATEGORIES = {
+  surebet:    {label:'Sure Bet',       labelIT:'Sure Bet',       color:'var(--live)', desc:'Very low odds (up to ~1.30), highest confidence.', descIT:'Quota molto bassa (fino a ~1,30), massima sicurezza.'},
+  lowrisk:    {label:'Low Risk',       labelIT:'Rischio Basso',  color:'var(--green)', desc:'Odds ~1.30\u20131.80, confident but not a sure thing.', descIT:'Quota ~1,30\u20131,80, sicuro ma non garantito.'},
+  highrisk:   {label:'High Risk',      labelIT:'Rischio Alto',   color:'var(--red)', desc:'Odds 3.00+, or several events combined.', descIT:'Quota 3,00+, o pi\u00f9 eventi combinati.'},
+  singleday:  {label:'Single of the Day', labelIT:'Single del Giorno', color:'var(--gold)', desc:'One pick for the day \u2014 the tipster\u2019s top conviction.', descIT:'Un pronostico al giorno \u2014 la scelta principale.'},
+  ticketday:  {label:'Ticket of the Day', labelIT:'Tiket del Giorno', color:'#8B6FD8', desc:'2\u20134 events combined into one ticket for that day.', descIT:'2\u20134 eventi combinati per quel giorno.'},
+  ticketweek: {label:'Ticket of the Week', labelIT:'Tiket della Settimana', color:'#3D9FD8', desc:'5+ events, usually posted ahead for the full week.', descIT:'5+ eventi, di solito per l\u2019intera settimana.'},
+};
 const tipsters = [
   {id:'punter_kate', name:'punter_kate', seasonPoints:412.5, hitRate:58, avgOdds:2.35, sampleSize:96, last6moPicks:54, monthlyProfitable:[true,true,false,true,true,true], streak:4, form:['W','W','L','W','W'],
     bio:'Focuses on Premier League and Championship value bets, especially in-form mid-table sides against bigger favourites.',
     featured:true, featuredTitle:'Why Riverside FC are worth backing against the form table',
+    customTags:[{label:'Derbi specijal', status:'pending'}, {label:'Value pick', status:'approved'}],
+    optedIn:true,
     history:[
-      {match:'Riverside FC vs Old Mill Town', pick:'Riverside FC to win', odds:2.40, result:'won', reasoning:'Old Mill Town have lost their last three away league games and are missing their first-choice centre-back pairing through injury. Riverside are unbeaten at home since March.'},
-      {match:'North Harbour vs Castlegate United', pick:'Under 2.5 goals', odds:1.85, result:'won', reasoning:'Both sides have gone under 2.5 in five of their last six meetings \u2014 a genuinely low-event fixture historically, and neither manager has changed their setup.'},
-      {match:'Bright Star Athletic vs Vale Rangers', pick:'Bright Star Athletic to win', odds:2.10, result:'lost', reasoning:'Backed home form continuing, but Vale Rangers pressed high all game and deserved the win \u2014 this one didn\u2019t play out as expected.'},
+      {match:'Riverside FC vs Old Mill Town', pick:'Riverside FC to win', odds:2.40, result:'won', category:'lowrisk', reasoning:'Old Mill Town have lost their last three away league games and are missing their first-choice centre-back pairing through injury. Riverside are unbeaten at home since March.'},
+      {match:'North Harbour vs Castlegate United', pick:'Under 2.5 goals', odds:1.85, result:'won', category:'surebet', reasoning:'Both sides have gone under 2.5 in five of their last six meetings \u2014 a genuinely low-event fixture historically, and neither manager has changed their setup.'},
+      {match:'Bright Star Athletic vs Vale Rangers', pick:'Bright Star Athletic to win', odds:2.10, result:'lost', category:'singleday', reasoning:'Backed home form continuing, but Vale Rangers pressed high all game and deserved the win \u2014 this one didn\u2019t play out as expected.'},
+      {match:'Iron Bridge City + Sable Wanderers + Ashford Rovers (3-fold)', pick:'Combo: Iron Bridge win / BTTS / Ashford -1', odds:6.80, result:'won', category:'ticketday', reasoning:'Three separate reads combined \u2014 Iron Bridge at home form, an open, high-event derby, and Ashford heavily favoured on paper. Each leg stands on its own, the combination is just the risk multiplier.'},
+      {match:'5-fold: full Saturday card', pick:'Weekend combo across all 5 kickoffs', odds:14.50, result:'won', category:'ticketweek', reasoning:'Weekly ticket built from the same weekly form review used for single picks \u2014 posted Monday, locked before Saturday\u2019s first kickoff.'},
+      {match:'Harborview United vs Preston Combe', pick:'Harborview United to win', odds:4.20, result:'lost', category:'highrisk', reasoning:'Speculative — backing a mid-table home side on a long unbeaten run against a stronger away side purely on current form momentum.'},
     ]},
   {id:'accaboy', name:'accaboy', seasonPoints:398.0, hitRate:52, avgOdds:2.80, sampleSize:104, last6moPicks:61, monthlyProfitable:[true,false,true,true,false,true], streak:2, form:['W','L','W','W','L'],
     bio:'Higher-odds, higher-variance picks \u2014 mostly upsets and both-teams-to-score angles across multiple leagues.',
-    featured:false,
+    featured:false, optedIn:true,
     history:[
-      {match:'Iron Bridge City vs Sable Wanderers', pick:'Sable Wanderers to win', odds:3.20, result:'won', reasoning:'Sable have been the better side in each of the last two meetings despite the odds. Iron Bridge are without their top scorer.'},
-      {match:'Ashford Rovers vs Millbrook Town', pick:'Both teams to score', odds:1.75, result:'won', reasoning:'Both defences have shipped goals in six of their last seven games combined.'},
+      {match:'Iron Bridge City vs Sable Wanderers', pick:'Sable Wanderers to win', odds:3.20, result:'won', category:'highrisk', reasoning:'Sable have been the better side in each of the last two meetings despite the odds. Iron Bridge are without their top scorer.'},
+      {match:'Ashford Rovers vs Millbrook Town', pick:'Both teams to score', odds:1.75, result:'won', category:'lowrisk', reasoning:'Both defences have shipped goals in six of their last seven games combined.'},
     ]},
   {id:'footy_fran', name:'footy_fran', seasonPoints:355.5, hitRate:61, avgOdds:1.95, sampleSize:88, last6moPicks:47, monthlyProfitable:[true,true,true,true,false,true], streak:5, form:['W','W','W','L','W'],
     bio:'Conservative, favourite-leaning approach with a strong hit rate but lower average odds.',
-    featured:true, featuredTitle:'The stat behind North Harbour\u2019s unbeaten home run',
+    featured:true, featuredTitle:'The stat behind North Harbour\u2019s unbeaten home run', optedIn:true,
     history:[
-      {match:'North Harbour vs Castlegate United', pick:'North Harbour to win', odds:1.90, result:'won', reasoning:'North Harbour have won 8 of their last 9 at home, and Castlegate have picked up just one point on the road all season.'},
+      {match:'North Harbour vs Castlegate United', pick:'North Harbour to win', odds:1.90, result:'won', category:'lowrisk', reasoning:'North Harbour have won 8 of their last 9 at home, and Castlegate have picked up just one point on the road all season.'},
     ]},
-  {id:'GaryB', name:'GaryB', seasonPoints:340.0, hitRate:49, avgOdds:2.60, sampleSize:81, last6moPicks:38, monthlyProfitable:[false,true,true,false,true,false], streak:0, form:['L','W','W','L','W'], featured:false,
+  {id:'GaryB', name:'GaryB', seasonPoints:340.0, hitRate:49, avgOdds:2.60, sampleSize:81, last6moPicks:38, monthlyProfitable:[false,true,true,false,true,false], streak:0, form:['L','W','W','L','W'], featured:false, optedIn:true,
     bio:'Mixed portfolio across football and tennis, leaning on head-to-head history.', history:[]},
-  {id:'DaveM_UK', name:'DaveM_UK', seasonPoints:298.5, hitRate:55, avgOdds:2.05, sampleSize:67, last6moPicks:22, monthlyProfitable:[true,false,true,false,true,true], streak:2, form:['W','L','L','W','W'], featured:false,
+  {id:'DaveM_UK', name:'DaveM_UK', seasonPoints:298.5, hitRate:55, avgOdds:2.05, sampleSize:67, last6moPicks:22, monthlyProfitable:[true,false,true,false,true,true], streak:2, form:['W','L','L','W','W'], featured:false, optedIn:true,
     bio:'Newer to the leaderboard \u2014 sample size still below the qualifying threshold for some competitions.', history:[]},
-  {id:'newplayer01', name:'newplayer01', seasonPoints:24.0, hitRate:44, avgOdds:1.80, sampleSize:6, last6moPicks:6, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:['L','W','L'], featured:false,
-    bio:'Just started picking this season.', history:[]},
+  {id:'newplayer01', name:'newplayer01', seasonPoints:24.0, hitRate:44, avgOdds:1.80, sampleSize:6, last6moPicks:6, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:['L','W','L'], featured:false, optedIn:false,
+    bio:'Just started picking this season \u2014 has not opted in to a public profile yet.', history:[]},
+  {id:'nered_analitika', name:'Nered Analitika', seasonPoints:0, hitRate:0, avgOdds:0, sampleSize:0, last6moPicks:0, monthlyProfitable:[false,false,false,false,false,false], streak:0, form:[], featured:false, optedIn:true,
+    isGuestAnalyst:true, guestRole:'Invited Analyst \u2014 established football personality',
+    bio:'Invited to the platform for reach and recognisability, not for a track record built here yet. Guest Analysts are clearly separated from the earned badge ladder \u2014 no Verified/Expert/Master status until they build their own measured history on-platform, the same as everyone else.',
+    history:[]},
 ];
 
 /* ---------- Badge/status ladder \u2014 awarded automatically from performance data, never manually.
@@ -2326,9 +2361,24 @@ function setTipsterSort(key){
   document.getElementById('tipsterSortOddsChip').classList.toggle('active', key==='avgodds');
   renderTipsterLeaderboard();
 }
+/* ---------- Opt-in simulation — "you" are represented by newplayer01 in this
+   demo data set (optedIn:false by default). Nobody becomes a publicly ranked
+   tipster automatically; this button is the one and only way in. ---------- */
+function toggleMyTipsterOptIn(){
+  const isUK = market==='UK';
+  const me = tipsters.find(x=>x.id==='newplayer01');
+  if(!me) return;
+  if(me.sampleSize < 10){ showToast(isUK ? `Need 10+ recorded picks first \u2014 you have ${me.sampleSize}.` : `Servono 10+ pronostici \u2014 ne hai ${me.sampleSize}.`); return; }
+  me.optedIn = !me.optedIn;
+  showToast(me.optedIn ? (isUK?'Your picks are now public on the Tipsters leaderboard.':'I tuoi pronostici sono ora pubblici.') : (isUK?'Opted out \u2014 removed from the public leaderboard.':'Rimosso dalla classifica pubblica.'));
+  renderTipsterLeaderboard();
+}
 function renderTipsterLeaderboard(){
   const isUK = market==='UK';
-  let list = [...tipsters];
+  /* Opt-in is mandatory (no one becomes a public ranked tipster automatically),
+     and Guest Analysts sit in their own section below, never mixed into the
+     ranked numbers — both directly from the research doc's recommendations. */
+  let list = tipsters.filter(t=>!t.isGuestAnalyst && t.optedIn!==false);
   if(tipsterSortKey==='points') list.sort((a,b)=>b.seasonPoints-a.seasonPoints);
   else if(tipsterSortKey==='hitrate') list.sort((a,b)=>b.hitRate-a.hitRate);
   else list.sort((a,b)=>b.avgOdds-a.avgOdds);
@@ -2350,21 +2400,81 @@ function renderTipsterLeaderboard(){
     </div>`;
   }).join('');
   document.getElementById('tipsterLeaderboardTable').innerHTML = headCols + rows;
+
+  const guests = tipsters.filter(t=>t.isGuestAnalyst);
+  const guestBox = document.getElementById('guestAnalystsBox');
+  if(guestBox){
+    guestBox.innerHTML = guests.length ? guests.map(t=>`
+      <div class="tipster-row" style="cursor:pointer;grid-template-columns:30px 1fr auto;" onclick="openTipsterProfile('${t.id}')">
+        <div class="rank" style="background:var(--live-soft);color:var(--live);border-color:var(--live);">★</div>
+        <div class="partner-name-cell"><div class="partner-avatar">${t.name.slice(0,2).toUpperCase()}</div><div>${t.name}<div style="font-size:10.5px;color:var(--faint);margin-top:2px;">${t.guestRole}</div></div></div>
+        <span class="op-featured" style="color:var(--live);border-color:var(--live);">${isUK?'Guest':'Ospite'}</span>
+      </div>`).join('') : `<p style="font-size:12px;color:var(--faint);">${isUK?'No guest analysts invited yet.':'Nessun analista ospite invitato.'}</p>`;
+  }
 }
 function openTipsterProfile(id){
   const t = tipsters.find(x=>x.id===id);
   if(!t) return;
   const isUK = market==='UK';
+
+  /* ---- Guest / Invited Analyst: separate track, never fed into the earned
+     badge ladder or BeforeBet Index — exactly the "hook without diluting the
+     badge system" recommendation from the tipster research doc. ---- */
+  if(t.isGuestAnalyst){
+    document.getElementById('tipsterProfileContent').innerHTML = `
+      ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Tipsters', action:"go('tipsters')"},{label:t.name}])}
+      <div class="op-page-head">
+        <div style="display:flex;gap:16px;">
+          <div class="op-page-mark" style="background:${thumbGradient(t.id)};border:none;color:#fff;">${t.name.slice(0,2).toUpperCase()}</div>
+          <div>
+            <div class="op-page-title"><h1>${t.name}</h1><span class="op-featured" style="color:var(--live);border-color:var(--live);">${isUK?'★ Guest Analyst':'★ Analista Ospite'}</span></div>
+            <div class="op-page-sub">${t.guestRole}</div>
+          </div>
+        </div>
+      </div>
+      <div class="verdict-box" style="border-left-color:var(--live);">
+        <div class="k" style="color:var(--live);">${isUK?'Why this profile looks different':'Perch\u00e9 questo profilo \u00e8 diverso'}</div>
+        <div style="font-size:12.5px;color:var(--dim);line-height:1.6;">${isUK
+          ? 'Guest Analysts are invited for reach and recognisability, not an earned track record on this platform. They get visibility and a byline, but explicitly do not carry Verified/Expert/Master status or a BeforeBet Index \u2014 assigning the top badge without measured performance here would undercut the entire point of the badge system. If they build a real pick history on-platform over time, they progress through the same ladder as everyone else, starting from zero like any new user.'
+          : 'Gli Analisti Ospiti sono invitati per visibilit\u00e0 e riconoscibilit\u00e0, non per uno storico misurato sulla piattaforma. Ottengono visibilit\u00e0 e una firma, ma non uno stato Verificato/Expert/Master n\u00e9 un BeforeBet Index.'}</div>
+      </div>
+      <div class="review-text"><p>${t.bio}</p></div>
+    `;
+    go('tipster-profile');
+    return;
+  }
+
   const qualifies = t.sampleSize >= 50;
   const badge = computeBadge(t);
   const idx = beforeBetIndex(t);
   const formHtml = (t.form||[]).map(f=>`<span style="display:inline-block;width:22px;height:22px;border-radius:4px;font-size:11px;font-weight:700;text-align:center;line-height:22px;margin-right:4px;background:${f==='W'?'rgba(51,179,122,.25)':'rgba(224,82,82,.25)'};color:${f==='W'?'var(--green)':'var(--red)'};">${f}</span>`).join('');
-  const historyHtml = (t.history||[]).length ? t.history.map(h=>`
+
+  const canReadPremium = sportsPassActive;
+  const historyHtml = (t.history||[]).length ? t.history.map(h=>{
+    const cat = TIP_CATEGORIES[h.category] || {label:'\u2014', color:'var(--faint)'};
+    const reasoningHtml = canReadPremium
+      ? h.reasoning
+      : `<span style="filter:blur(3.5px);user-select:none;pointer-events:none;">${h.reasoning}</span>`;
+    return `
     <div class="ureview-card">
-      <div class="ureview-top"><span class="ureview-user">${h.match}</span><span class="ureview-rating" style="color:${h.result==='won'?'var(--green)':'var(--red)'};">${h.result==='won'?(isUK?'WON':'VINTO'):(isUK?'LOST':'PERSO')} @ ${h.odds.toFixed(2)}</span></div>
-      <div class="ureview-date">${isUK?'Pick':'Pronostico'}: ${h.pick}</div>
-      <div class="ureview-text" style="margin-top:6px;">${h.reasoning}</div>
-    </div>`).join('') : `<p style="font-size:12px;color:var(--faint);">${isUK?'No published reasoning yet.':'Nessuna analisi pubblicata ancora.'}</p>`;
+      <div class="ureview-top">
+        <span class="ureview-user">${h.match}</span>
+        <span class="ureview-rating" style="color:${h.result==='won'?'var(--green)':'var(--red)'};">${h.result==='won'?(isUK?'WON':'VINTO'):(isUK?'LOST':'PERSO')} @ ${h.odds.toFixed(2)}</span>
+      </div>
+      <div class="ureview-date" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <span>${isUK?'Pick':'Pronostico'}: ${h.pick}</span>
+        <span class="tier-badge" style="background:${cat.color}22;color:${cat.color};">${isUK?cat.label:cat.labelIT}</span>
+      </div>
+      <div class="ureview-text" style="margin-top:6px;position:relative;">
+        ${reasoningHtml}
+        ${!canReadPremium ? `<div style="margin-top:8px;"><button class="btn btn-gold" style="font-size:10.5px;padding:6px 12px;" onclick="go('rewards');setTimeout(()=>document.querySelector('#rewardsSubtabs button[data-rtab=battlepass]').click(),100);">${isUK?'\ud83d\udd12 Subscribe to SportsPass to read full reasoning':'\ud83d\udd12 Abbonati a SportsPass per leggere l\u2019analisi completa'}</button></div>` : ''}
+      </div>
+    </div>`;
+  }).join('') : `<p style="font-size:12px;color:var(--faint);">${isUK?'No published reasoning yet.':'Nessuna analisi pubblicata ancora.'}</p>`;
+
+  const customTagsHtml = (t.customTags||[]).map(ct=>`
+    <span class="tag" style="${ct.status==='pending'?'border-style:dashed;color:var(--faint);':'color:var(--gold);border-color:var(--gold);'}" title="${ct.status==='pending' ? (isUK?'Awaiting editorial approval \u2014 not shown in stats':'In attesa di approvazione') : (isUK?'Approved custom tag':'Tag personalizzato approvato')}">${ct.label}${ct.status==='pending'?` (${isUK?'pending':'in attesa'})`:''}</span>
+  `).join('');
 
   document.getElementById('tipsterProfileContent').innerHTML = `
     ${breadcrumbHtml([{label:'Home', action:"go('home')"},{label:'Tipsters', action:"go('tipsters')"},{label:t.name}])}
@@ -2375,6 +2485,7 @@ function openTipsterProfile(id){
           <div class="op-page-title"><h1>${t.name}</h1>${t.featured?`<span class="op-featured" style="color:var(--gold);border-color:var(--gold);" title="${isUK?'Editorial has published this tipster\u2019s written analysis as a site article':'La redazione ha pubblicato l\u2019analisi scritta di questo tipster come articolo del sito'}">${isUK?'★ Published on-site':'★ Pubblicato sul sito'}</span>`:''}</div>
           <div class="op-page-sub" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">${badgeBarHtml(t,'lg')} <span>· ${t.sampleSize} ${isUK?'picks recorded':'pronostici registrati'}</span></div>
           <div style="margin-top:8px;">${formHtml}</div>
+          ${customTagsHtml ? `<div class="tag-row" style="margin-top:8px;">${customTagsHtml}</div>` : ''}
         </div>
       </div>
       <div class="op-page-score"><div class="n">${idx}</div><div class="l">${isUK?'BeforeBet Index':'BeforeBet Indeks'}</div></div>
@@ -2384,7 +2495,10 @@ function openTipsterProfile(id){
       <div>
         <div class="review-text"><p>${t.bio}</p></div>
         ${t.featured ? `<div class="verdict-box" style="cursor:pointer;" onclick="openAnalysisArticle('${t.id}')"><div class="k">${isUK?'Featured analysis \u2014 read full article':'Analisi in evidenza \u2014 leggi l\u2019articolo completo'}</div><div style="font-size:13px;color:var(--text);font-weight:600;">${t.featuredTitle} →</div></div>` : ''}
-        <h3 style="font-family:var(--serif);font-size:16px;margin:20px 0 12px;">${isUK?'Pick history':'Storico pronostici'}</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 4px;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-family:var(--serif);font-size:16px;margin:0;">${isUK?'Pick history':'Storico pronostici'}</h3>
+          ${!canReadPremium ? `<span style="font-size:10.5px;color:var(--faint);">${isUK?'\ud83d\udd12 Full reasoning is a SportsPass benefit':'\ud83d\udd12 Analisi completa con SportsPass'}</span>` : `<span style="font-size:10.5px;color:var(--live);">${isUK?'✓ SportsPass \u2014 full reasoning unlocked':'✓ SportsPass \u2014 analisi sbloccata'}</span>`}
+        </div>
         <div>${historyHtml}</div>
       </div>
       <div>
@@ -2400,12 +2514,20 @@ function openTipsterProfile(id){
           </div>
         </div>
         <div class="sidebar-box">
+          <h4>${isUK?'Tip categories key':'Legenda categorie'}</h4>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--dim);">
+            ${Object.values(TIP_CATEGORIES).map(c=>`<div><span class="tier-badge" style="background:${c.color}22;color:${c.color};margin-right:6px;">${isUK?c.label:c.labelIT}</span>${isUK?c.desc:c.descIT}</div>`).join('')}
+          </div>
+          <p style="font-size:10px;color:var(--faint);margin:10px 0 0;">${isUK?'Odds bands are set per sport \u2014 football and basketball don\u2019t share the same "safe" price.':'Le fasce di quota sono per sport.'}</p>
+        </div>
+        <div class="sidebar-box">
           <h4>${isUK?'Status ladder':'Livelli di stato'}</h4>
           <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:var(--dim);line-height:1.5;">
             <div><span class="pill off" style="margin-right:6px;">${isUK?'New':'Nuovo'}</span>${isUK?'No badge yet':'Nessun bedge ancora'}</div>
             <div><span class="pill ok" style="margin-right:6px;">${isUK?'Verified':'Verificato'}</span>${isUK?'10+ picks recorded':'10+ pronostici registrati'}</div>
             <div><span class="pill wait" style="margin-right:6px;">Expert</span>${isUK?'20+ picks in last 6mo, profitable in 4+ of them':'20+ pronostici negli ultimi 6 mesi, in profitto in 4+'}</div>
             <div><span class="pill gold" style="margin-right:6px;">Master</span>${isUK?'40+ picks in last 6mo, profitable in 5+, 90+ lifetime':'40+ pronostici negli ultimi 6 mesi, in profitto in 5+, 90+ totali'}</div>
+            <div><span class="op-featured" style="color:var(--live);border-color:var(--live);margin-right:6px;">${isUK?'Guest':'Ospite'}</span>${isUK?'Invited for reach \u2014 separate track, no earned badge until they build history here':'Invitato per visibilit\u00e0 \u2014 percorso separato'}</div>
           </div>
           <p style="font-size:10.5px;color:var(--faint);margin:10px 0 0;">${isUK?'Status is recalculated automatically, never assigned by hand \u2014 and can be lost if performance drops.':'Lo stato viene ricalcolato automaticamente, mai assegnato manualmente \u2014 e puo essere perso se il rendimento peggiora.'}</p>
         </div>
@@ -2556,73 +2678,6 @@ function renderFeaturedAnalysis(){
    ============================================================ */
 let userXP = 340;
 let userCredits = 65;
-let seasonalXP = 210;
-let userWeeklyStreak = 3;
-let dailyCommentXpGiven = false;
-let ownedShopItems = new Set();
-let earnedBadges = new Set(['first_pick','first_comment']);
-let battlePassClaimed = new Set();
-
-/* ---------- Battle Pass — free, season-only track, fed by the exact same XP as
-   Account XP (grantRewards adds to both at once). Built on the actual pattern
-   real game battle passes use (Fortnite/COD/Fall Guys), not an invented curve:
-   1) FLAT XP per tier, not an escalating formula — every tier costs the same
-      200 XP, so progress is predictable and easy to read at a glance.
-   2) EVERY tier gives something — no skipped/empty tiers. Small Credits on
-      most tiers for frequent small wins, a season-exclusive cosmetic every
-      3rd tier as a bigger milestone, and the biggest reward on the final tier.
-   3) Cosmetics from the pass are NEVER sold in the Shop — that's the reason
-      to grind the pass instead of just buying Shop items with Credits.
-   4) 12 tiers x 200 XP = 2,400 XP total, matching an 8-week season at the
-      realistic ~300 XP/week an engaged player earns from Predictor + Weekly
-      Challenges + comments — roughly 1.5 tiers per week, finishing with room
-      to spare rather than requiring perfect attendance. */
-const BATTLE_PASS_SEASON_WEEKS = 8;
-const BATTLE_PASS_XP_PER_TIER = 200;
-const BATTLE_PASS_TIERS = [
-  {tier:1,  type:'credits', amount:10, icon:'🪙', label:'10 Credits'},
-  {tier:2,  type:'credits', amount:15, icon:'🪙', label:'15 Credits'},
-  {tier:3,  type:'cosmetic', id:'bp_frame_bronze', icon:'🥉', label:'Bronze Season Frame'},
-  {tier:4,  type:'credits', amount:20, icon:'🪙', label:'20 Credits'},
-  {tier:5,  type:'credits', amount:20, icon:'🪙', label:'20 Credits'},
-  {tier:6,  type:'cosmetic', id:'bp_title_contender', icon:'🎖️', label:'"Contender" Title'},
-  {tier:7,  type:'credits', amount:25, icon:'🪙', label:'25 Credits'},
-  {tier:8,  type:'credits', amount:25, icon:'🪙', label:'25 Credits'},
-  {tier:9,  type:'cosmetic', id:'bp_frame_silver', icon:'🥈', label:'Silver Season Frame'},
-  {tier:10, type:'credits', amount:30, icon:'🪙', label:'30 Credits'},
-  {tier:11, type:'credits', amount:35, icon:'🪙', label:'35 Credits'},
-  {tier:12, type:'cosmetic', id:'bp_title_champion', icon:'👑', label:'"Champion" Title + Gold Frame'},
-].map(t=>({...t, xpRequired: t.tier*BATTLE_PASS_XP_PER_TIER}));
-function currentBattlePassTier(){
-  return Math.min(BATTLE_PASS_TIERS.length, Math.floor(seasonalXP/BATTLE_PASS_XP_PER_TIER));
-}
-function claimBattlePassTier(tierNum){
-  const t = BATTLE_PASS_TIERS.find(x=>x.tier===tierNum);
-  if(!t) return;
-  if(seasonalXP < t.xpRequired){ showToast(market==='UK' ? `Not unlocked yet — reach ${t.xpRequired} season XP first.` : `Non ancora sbloccato — servono ${t.xpRequired} XP di stagione.`); return; }
-  if(battlePassClaimed.has(tierNum)) return;
-  battlePassClaimed.add(tierNum);
-  if(t.type==='credits'){ userCredits += t.amount; showToast(`+${t.amount} Credits — Battle Pass Tier ${tierNum}`); }
-  else { showToast(`🎁 Claimed: ${t.label} — Battle Pass Tier ${tierNum}`); }
-  renderRewardsPage();
-}
-function claimAllBattlePassTiers(){
-  const isUK = market==='UK';
-  const claimable = BATTLE_PASS_TIERS.filter(t=>seasonalXP>=t.xpRequired && !battlePassClaimed.has(t.tier));
-  if(!claimable.length){ showToast(isUK?'Nothing new to claim right now.':'Niente da riscattare al momento.'); return; }
-  let creditsGained = 0;
-  claimable.forEach(t=>{
-    battlePassClaimed.add(t.tier);
-    if(t.type==='credits'){ userCredits += t.amount; creditsGained += t.amount; }
-  });
-  const cosmeticCount = claimable.filter(t=>t.type==='cosmetic').length;
-  const parts = [];
-  if(creditsGained) parts.push(`+${creditsGained} Credits`);
-  if(cosmeticCount) parts.push(`${cosmeticCount} ${isUK?'cosmetic item(s)':'oggetti cosmetici'}`);
-  showToast(`${isUK?'Claimed':'Riscattato'}: ${parts.join(' \u00b7 ')} (${claimable.length} ${isUK?'tiers':'livelli'})`);
-  renderRewardsPage();
-}
-
 /* Level thresholds — cumulative XP at which each level starts. Interpolated
    within the four named bands from the spec (1–3: 0–500, 4–7: 500–2500,
    8–12: 2500–8000, 13–20: 8000–25000) since the doc gives band totals, not
@@ -2651,6 +2706,79 @@ function computeLevelInfo(xp){
   else if(level>=4) tier='Rising';
   return {level, curStart, nextStart, pct, tier};
 }
+
+/* ============================================================
+   SPORTSPASS — recurring monthly subscription, single tier, ongoing
+   with no season/end date (unlike the earlier free seasonal Battle Pass
+   this replaces). Rides the SAME Account Level track as everyone else —
+   there is no separate seasonal XP. At every level there are two lanes:
+     - Free Lane: always active, always safely claimed once a level is
+       reached, regardless of subscription status.
+     - Pass Lane: a richer reward at that same level, but real-time
+       gated — claimable only while subscribed right now. If a level was
+       reached while unsubscribed, that level's Pass Lane reward is
+       permanently missed; resubscribing later does not retroactively
+       unlock it. This is tracked via passLaneEligibleLevels, populated
+       the moment a level-up happens, using subscription status at that
+       exact moment — not recalculated after the fact.
+   Reward Points below is the same balance as "Credits" elsewhere in the
+   prototype — the spec's requested name for the spendable currency.
+   ============================================================ */
+let sportsPassActive = false;
+let passLaneEligibleLevels = new Set(); // levels reached while subscribed — permanent once recorded
+let freeLaneClaimed = new Set();
+let passLaneClaimed = new Set();
+
+function subscribeSportsPass(){
+  sportsPassActive = true;
+  showToast(market==='UK' ? 'SportsPass active — premium tipster content unlocked, and future levels now earn the Pass Lane reward too.' : 'SportsPass attivo — contenuto tipster premium sbloccato.');
+  renderRewardsPage();
+}
+function cancelSportsPass(){
+  sportsPassActive = false;
+  showToast(market==='UK' ? 'SportsPass cancelled — you keep everything already claimed. Future levels will only earn the Free Lane reward until you resubscribe.' : 'SportsPass annullato — mantieni tutto ci\u00f2 che hai gi\u00e0 riscattato.');
+  renderRewardsPage();
+}
+/* Called from grantRewards() at the moment a level-up is detected — this
+   is the one and only place eligibility gets recorded, which is what
+   makes the "no retroactive claiming" rule actually hold. */
+function recordLevelUpEligibility(newLevel){
+  if(sportsPassActive) passLaneEligibleLevels.add(newLevel);
+}
+function claimFreeLane(level){
+  if(computeLevelInfo(userXP).level < level) return;
+  if(freeLaneClaimed.has(level)) return;
+  freeLaneClaimed.add(level);
+  const r = FREE_LANE_REWARDS[level-1];
+  if(r.type==='credits'){ userCredits += r.amount; showToast(`+${r.amount} Reward Points \u2014 Free Lane, Level ${level}`); }
+  else showToast(`\ud83c\udf81 ${r.label} \u2014 Free Lane, Level ${level}`);
+  renderRewardsPage();
+}
+function claimPassLane(level){
+  const isUK = market==='UK';
+  if(computeLevelInfo(userXP).level < level) return;
+  if(passLaneClaimed.has(level)) return;
+  if(!passLaneEligibleLevels.has(level)){ showToast(isUK ? 'Not available \u2014 this level was reached while SportsPass was inactive, so its Pass Lane reward can\u2019t be claimed, even now.' : 'Non disponibile \u2014 questo livello \u00e8 stato raggiunto senza SportsPass attivo.'); return; }
+  if(!sportsPassActive){ showToast(isUK ? 'Resubscribe to SportsPass to claim this — Pass Lane rewards can only be claimed while active.' : 'Riattiva SportsPass per riscattare questo premio.'); return; }
+  passLaneClaimed.add(level);
+  const r = PASS_LANE_REWARDS[level-1];
+  if(r.type==='credits'){ userCredits += r.amount; showToast(`+${r.amount} Reward Points \u2014 Pass Lane, Level ${level}`); }
+  else showToast(`\ud83c\udf81 ${r.label} \u2014 Pass Lane, Level ${level}`);
+  renderRewardsPage();
+}
+/* Reward tables for all 20 levels — Free Lane is modest and steady;
+   Pass Lane is deliberately richer at every single level (never just
+   "sometimes better") since that gap is the entire reason to subscribe. */
+const FREE_LANE_REWARDS = Array.from({length:20}, (_,i)=>{
+  const lvl=i+1;
+  if(lvl%5===0) return {type:'cosmetic', label:`Level ${lvl} Badge Frame`};
+  return {type:'credits', amount:5+lvl*2};
+});
+const PASS_LANE_REWARDS = Array.from({length:20}, (_,i)=>{
+  const lvl=i+1;
+  if(lvl%5===0) return {type:'cosmetic', label:`Level ${lvl} Exclusive Pass Frame + Title`};
+  return {type:'credits', amount:15+lvl*4};
+});
 
 const XP_ACTIVITY_TABLE = [
   ['Played a Predictor round','10 XP'],
@@ -2704,22 +2832,22 @@ const SHOP_ITEMS_COMING = [
 function showXpToast(xp, credits, reason){
   const parts = [];
   if(xp) parts.push(`+${xp} XP`);
-  if(credits) parts.push(`+${credits} Credits`);
+  if(credits) parts.push(`+${credits} Reward Points`);
   showToast(`${parts.join(' · ')} — ${reason}`);
 }
 /* Central grant function — every XP/Credits-earning action in the prototype
    (Predictor submit, community comment, tip publish, invite) routes through
-   this so Account XP and Battle Pass XP always move together, exactly per
-   the "one source, two parallel tracks" architecture in the spec. */
+   this so Account XP and every reward system in the prototype (Levels,
+   SportsPass Pass Lane eligibility, Badges) always move together. */
 function grantRewards(xp, credits, reason){
   const beforeLevel = computeLevelInfo(userXP).level;
   userXP += xp;
-  seasonalXP += xp;
   userCredits += credits;
   showXpToast(xp, credits, reason);
   const afterLevel = computeLevelInfo(userXP).level;
   if(afterLevel > beforeLevel){
-    setTimeout(()=>showToast(`🎉 Level up! You're now Level ${afterLevel}.`), 900);
+    for(let lvl=beforeLevel+1; lvl<=afterLevel; lvl++) recordLevelUpEligibility(lvl);
+    setTimeout(()=>showToast(`🎉 Level up! You're now Level ${afterLevel}.${sportsPassActive ? ' Pass Lane reward unlocked too.' : ''}`), 900);
   }
   updateHeaderXpPill();
   if(document.getElementById('view-rewards').classList.contains('active')) renderRewardsPage();
@@ -2774,7 +2902,7 @@ function renderRewardsPage(){
   const info = computeLevelInfo(userXP);
   document.getElementById('rewardStatsGrid').innerHTML = [
     [userXP.toLocaleString(), isUK?'Account XP':'XP Naloga'],
-    [userCredits, 'Credits'],
+    [userCredits, 'Reward Points'],
     [userWeeklyStreak, isUK?'Week streak':'Sedmicni niz'],
   ].map(s=>`<div class="reward-stat-card"><div class="v">${s[0]}</div><div class="l">${s[1]}</div></div>`).join('');
 
@@ -2818,51 +2946,92 @@ function renderRewardsPage(){
       <button class="btn btn-line" disabled style="width:100%;justify-content:center;opacity:.6;">${isUK?'Not available yet':'Non ancora disponibile'}</button>
     </div>`).join('');
 
-  const curTier = currentBattlePassTier();
-  const nextTierDef = BATTLE_PASS_TIERS[curTier]; // undefined if season complete
-  const prevThreshold = curTier>0 ? BATTLE_PASS_TIERS[curTier-1].xpRequired : 0;
-  const nextThreshold = nextTierDef ? nextTierDef.xpRequired : BATTLE_PASS_TIERS[BATTLE_PASS_TIERS.length-1].xpRequired;
-  const bpPct = nextTierDef ? Math.round(((seasonalXP-prevThreshold)/(nextThreshold-prevThreshold))*100) : 100;
-  document.getElementById('bpXpBarFill').style.width = Math.min(100,bpPct)+'%';
+  /* ---- SportsPass: subscription status + dual-lane reward list per Account Level ---- */
+  const lvlInfo = computeLevelInfo(userXP);
   document.getElementById('bpProgressHeading').textContent = isUK
-    ? `Tier ${curTier} of ${BATTLE_PASS_TIERS.length}${curTier>=BATTLE_PASS_TIERS.length ? ' — season complete' : ''}`
-    : `Livello ${curTier} di ${BATTLE_PASS_TIERS.length}${curTier>=BATTLE_PASS_TIERS.length ? ' — stagione completata' : ''}`;
-  document.getElementById('bpXpBarLabel').textContent = nextTierDef
-    ? (isUK ? `${seasonalXP.toLocaleString()} / ${nextThreshold.toLocaleString()} XP to Tier ${curTier+1} \u00b7 same XP you earn everywhere else on the site` : `${seasonalXP.toLocaleString()} / ${nextThreshold.toLocaleString()} XP per il Livello ${curTier+1} \u00b7 stesso XP guadagnato ovunque sul sito`)
-    : (isUK ? `${seasonalXP.toLocaleString()} XP \u00b7 all ${BATTLE_PASS_TIERS.length} tiers reached this season` : `${seasonalXP.toLocaleString()} XP \u00b7 tutti i ${BATTLE_PASS_TIERS.length} livelli raggiunti questa stagione`);
+    ? `Account Level ${lvlInfo.level} \u00b7 same XP and Level as the rest of your profile`
+    : `Livello Account ${lvlInfo.level} \u00b7 stesso XP e Livello del tuo profilo`;
+  document.getElementById('bpXpBarFill').style.width = lvlInfo.pct+'%';
+  document.getElementById('bpXpBarLabel').textContent = isUK
+    ? `${userXP.toLocaleString()} / ${lvlInfo.nextStart.toLocaleString()} XP to Level ${lvlInfo.level+1}`
+    : `${userXP.toLocaleString()} / ${lvlInfo.nextStart.toLocaleString()} XP per il Livello ${lvlInfo.level+1}`;
 
-  document.getElementById('bpTrackNote').textContent = isUK
-    ? `Free for everyone — no paid tier. ${BATTLE_PASS_XP_PER_TIER} XP per tier, same reward cadence as the games this is modeled on: something every tier, a bigger cosmetic every 3rd. About 1.5 tiers a week if you play Predictor and finish most Weekly Challenges — an ${BATTLE_PASS_SEASON_WEEKS}-week season with room to spare.`
-    : `Gratuito per tutti — nessun livello a pagamento. ${BATTLE_PASS_XP_PER_TIER} XP per livello. Circa 1.5 livelli a settimana su una stagione di ${BATTLE_PASS_SEASON_WEEKS} settimane.`;
+  document.getElementById('bpTrackNote').innerHTML = isUK
+    ? `<strong style="color:${sportsPassActive?'var(--live)':'var(--faint)'};">SportsPass: ${sportsPassActive?'ACTIVE':'not active'}</strong> \u00b7 \u20ac6.99/month, single tier, cancel anytime. No seasons, no reset \u2014 it rides your Account Level forever. Free Lane rewards are always yours once you reach a level. Pass Lane rewards are richer, but only claimable while subscribed \u2014 and only for levels you reached <em>while</em> subscribed. Reaching a level unsubscribed permanently forfeits that level's Pass Lane reward.`
+    : `<strong style="color:${sportsPassActive?'var(--live)':'var(--faint)'};">SportsPass: ${sportsPassActive?'ATTIVO':'non attivo'}</strong> \u00b7 \u20ac6.99/mese, livello singolo, annulla quando vuoi.`;
 
-  const claimableCount = BATTLE_PASS_TIERS.filter(t=>seasonalXP>=t.xpRequired && !battlePassClaimed.has(t.tier)).length;
+  const passBtnRow = document.getElementById('bpSubscribeRow');
+  passBtnRow.innerHTML = sportsPassActive
+    ? `<button class="btn btn-line" onclick="cancelSportsPass()">${isUK?'Cancel SportsPass':'Annulla SportsPass'}</button><span style="font-size:11px;color:var(--live);align-self:center;">\u25cf ${isUK?'Active':'Attivo'}</span>`
+    : `<button class="btn btn-gold" onclick="subscribeSportsPass()">${isUK?'Subscribe \u2014 \u20ac6.99/mo':'Abbonati \u2014 \u20ac6.99/mese'}</button>`;
+
+  document.getElementById('bpPremiumNote').innerHTML = isUK
+    ? `${sportsPassActive ? '✓ Premium tipster content (full reasoning behind every pick) is unlocked for you right now.' : 'Subscribers get instant access to full tipster reasoning \u2014 see it gated on any Tipster profile.'}`
+    : `${sportsPassActive ? '✓ Contenuto tipster premium sbloccato.' : 'Gli abbonati ottengono accesso immediato al ragionamento completo dei tipster.'}`;
+
+  const claimableFree = FREE_LANE_REWARDS.filter((r,i)=>lvlInfo.level>=(i+1) && !freeLaneClaimed.has(i+1)).length;
+  const claimablePass = PASS_LANE_REWARDS.filter((r,i)=>lvlInfo.level>=(i+1) && passLaneEligibleLevels.has(i+1) && sportsPassActive && !passLaneClaimed.has(i+1)).length;
   const claimAllBtn = document.getElementById('bpClaimAllBtn');
-  claimAllBtn.textContent = claimableCount ? `${isUK?'Claim All':'Riscatta tutto'} (${claimableCount})` : (isUK?'All caught up':'Tutto riscattato');
-  claimAllBtn.disabled = !claimableCount;
-  claimAllBtn.className = claimableCount ? 'btn btn-gold' : 'btn btn-line';
-  claimAllBtn.style.cssText = 'padding:8px 16px;font-size:12px;flex-shrink:0;' + (claimableCount ? '' : 'opacity:.55;');
+  const totalClaimable = claimableFree + claimablePass;
+  claimAllBtn.textContent = totalClaimable ? `${isUK?'Claim All':'Riscatta tutto'} (${totalClaimable})` : (isUK?'All caught up':'Tutto riscattato');
+  claimAllBtn.disabled = !totalClaimable;
+  claimAllBtn.className = totalClaimable ? 'btn btn-gold' : 'btn btn-line';
+  claimAllBtn.style.cssText = 'padding:8px 16px;font-size:12px;flex-shrink:0;' + (totalClaimable ? '' : 'opacity:.55;');
 
-  document.getElementById('bpTrack').innerHTML = BATTLE_PASS_TIERS.map(t=>{
-    const unlocked = seasonalXP >= t.xpRequired;
-    const claimed = battlePassClaimed.has(t.tier);
-    const isCurrent = t.tier === curTier+1 && !claimed;
-    let stateClass = 'locked';
-    if(claimed) stateClass = 'claimed';
-    else if(unlocked) stateClass = 'unlocked';
+  document.getElementById('bpTrack').innerHTML = FREE_LANE_REWARDS.map((freeR,i)=>{
+    const level = i+1;
+    const passR = PASS_LANE_REWARDS[i];
+    const levelReached = lvlInfo.level >= level;
+    const isCurrent = level === lvlInfo.level+1;
+    const freeClaimed = freeLaneClaimed.has(level);
+    const passEligible = passLaneEligibleLevels.has(level);
+    const passClaimableNow = levelReached && passEligible && sportsPassActive && !passLaneClaimed.has(level);
+    const passClaimed = passLaneClaimed.has(level);
     return `
-    <div class="bp-tier ${stateClass} ${isCurrent?'current':''}">
+    <div class="bp-tier ${levelReached?(freeClaimed?'claimed':'unlocked'):'locked'} ${isCurrent?'current':''}" style="flex:0 0 132px;">
       ${isCurrent ? `<div class="bp-here-marker">${isUK?'YOU ARE HERE':'SEI QUI'}</div>` : ''}
-      <div class="num">${isUK?'Tier':'Livello'} ${t.tier}</div>
-      <div class="icon">${unlocked ? t.icon : '🔒'}</div>
-      <div class="label">${t.label}</div>
-      <div class="xp-req">${t.xpRequired.toLocaleString()} XP</div>
-      ${claimed
-        ? `<div class="bp-claimed-tag">${isUK?'✓ Claimed':'✓ Riscattato'}</div>`
-        : `<button class="btn ${unlocked?'btn-gold':'btn-line'}" style="width:100%;justify-content:center;font-size:10.5px;padding:6px 4px;margin-top:6px;" ${unlocked?'':'disabled'} onclick="claimBattlePassTier(${t.tier})">${unlocked?(isUK?'Claim':'Riscatta'):(isUK?'Locked':'Bloccato')}</button>`}
+      <div class="num">${isUK?'Level':'Livello'} ${level}</div>
+      <div class="icon">${levelReached ? (freeR.type==='cosmetic'?'🎖️':'🪙') : '🔒'}</div>
+      <div class="label" style="min-height:16px;">${freeR.type==='cosmetic'?freeR.label:freeR.amount+' RP'}</div>
+      ${freeClaimed
+        ? `<div class="bp-claimed-tag" style="margin-top:2px;">${isUK?'✓ Free claimed':'✓ Gratis riscattato'}</div>`
+        : `<button class="btn ${levelReached?'btn-line':'btn-line'}" style="width:100%;justify-content:center;font-size:9.5px;padding:5px 3px;margin-top:4px;opacity:${levelReached?1:.5};" ${levelReached?'':'disabled'} onclick="claimFreeLane(${level})">${levelReached?(isUK?'Claim Free':'Riscatta'):'\u2014'}</button>`}
+      <div style="border-top:1px dashed var(--line);margin:8px 0 6px;"></div>
+      <div class="label" style="color:var(--gold);min-height:16px;">${passR.type==='cosmetic'?passR.label:passR.amount+' RP'}</div>
+      ${passClaimed
+        ? `<div class="bp-claimed-tag" style="margin-top:2px;">${isUK?'✓ Pass claimed':'✓ Pass riscattato'}</div>`
+        : (!passEligible && levelReached
+          ? `<div style="font-size:8.5px;color:var(--red);margin-top:5px;line-height:1.3;">${isUK?'Missed \u2014 not subscribed at level-up':'Perso \u2014 non abbonato'}</div>`
+          : `<button class="btn ${passClaimableNow?'btn-gold':'btn-line'}" style="width:100%;justify-content:center;font-size:9.5px;padding:5px 3px;margin-top:4px;opacity:${levelReached?1:.5};" ${passClaimableNow?'':'disabled'} onclick="claimPassLane(${level})">${passClaimableNow?(isUK?'Claim Pass':'Riscatta Pass'):(levelReached?(isUK?'Need SportsPass':'Serve SportsPass'):'\u2014')}</button>`)}
     </div>`;
   }).join('');
   const curEl = document.querySelector('#bpTrack .bp-tier.current');
   if(curEl) setTimeout(()=>curEl.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}), 50);
+}
+function claimAllBattlePassTiers(){
+  const isUK = market==='UK';
+  const lvlInfo = computeLevelInfo(userXP);
+  let creditsGained = 0, cosmeticCount = 0, claimedCount = 0;
+  FREE_LANE_REWARDS.forEach((r,i)=>{
+    const level = i+1;
+    if(lvlInfo.level>=level && !freeLaneClaimed.has(level)){
+      freeLaneClaimed.add(level); claimedCount++;
+      if(r.type==='credits'){ userCredits += r.amount; creditsGained += r.amount; } else cosmeticCount++;
+    }
+  });
+  PASS_LANE_REWARDS.forEach((r,i)=>{
+    const level = i+1;
+    if(lvlInfo.level>=level && passLaneEligibleLevels.has(level) && sportsPassActive && !passLaneClaimed.has(level)){
+      passLaneClaimed.add(level); claimedCount++;
+      if(r.type==='credits'){ userCredits += r.amount; creditsGained += r.amount; } else cosmeticCount++;
+    }
+  });
+  if(!claimedCount){ showToast(isUK?'Nothing new to claim right now.':'Niente da riscattare al momento.'); return; }
+  const parts = [];
+  if(creditsGained) parts.push(`+${creditsGained} Reward Points`);
+  if(cosmeticCount) parts.push(`${cosmeticCount} ${isUK?'cosmetic item(s)':'oggetti cosmetici'}`);
+  showToast(`${isUK?'Claimed':'Riscattato'}: ${parts.join(' \u00b7 ')} (${claimedCount} ${isUK?'rewards':'premi'})`);
+  renderRewardsPage();
 }
 function shopItemHtml(item){
   const isUK = market==='UK';
@@ -2872,8 +3041,8 @@ function shopItemHtml(item){
     <span class="icon">${item.icon}</span>
     <div class="name">${item.name}${item.limited?' <span class="tag" style="font-size:9px;">LIMITED</span>':''}</div>
     <div class="desc">${item.desc}</div>
-    <div class="price">${item.cost} Credits</div>
-    <button class="btn ${owned?'btn-line':'btn-gold'}" style="width:100%;justify-content:center;" ${owned?'disabled':''} onclick="buyShopItem('${item.id}')">${owned?(isUK?'Owned':'Posseduto'):(canAfford?(isUK?'Redeem':'Riscatta'):(isUK?'Not enough Credits':'Credits insufficienti'))}</button>
+    <div class="price">${item.cost} Reward Points</div>
+    <button class="btn ${owned?'btn-line':'btn-gold'}" style="width:100%;justify-content:center;" ${owned?'disabled':''} onclick="buyShopItem('${item.id}')">${owned?(isUK?'Owned':'Posseduto'):(canAfford?(isUK?'Redeem':'Riscatta'):(isUK?'Not enough Reward Points':'Reward Points insufficienti'))}</button>
   </div>`;
 }
 function buyShopItem(id){
