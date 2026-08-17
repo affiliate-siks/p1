@@ -2875,9 +2875,9 @@ function openSportsPassCheckout(){
       <div style="font-size:11.5px;color:var(--dim);margin-top:4px;">${isUK?'Single tier. Cancel anytime \u2014 you keep access until the end of the period you\u2019ve already paid for.':'Livello unico. Annulla quando vuoi.'}</div>
     </div>
     <div class="account-form" style="margin-bottom:14px;">
-      <input type="text" placeholder="${isUK?'Card number':'Numero carta'}" value="4242 4242 4242 4242" readonly style="font-family:var(--mono);">
+      <input type="text" placeholder="${isUK?'Card number':'Numero carta'}" value="5555 5555 5555 5555" readonly style="font-family:var(--mono);">
       <div style="display:flex;gap:8px;">
-        <input type="text" placeholder="MM/YY" value="12/28" readonly style="font-family:var(--mono);flex:1;">
+        <input type="text" placeholder="MM/YY" value="12/35" readonly style="font-family:var(--mono);flex:1;">
         <input type="text" placeholder="CVC" value="123" readonly style="font-family:var(--mono);width:80px;">
       </div>
     </div>
@@ -3205,8 +3205,8 @@ function renderRewardsPage(){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--faint);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;">
-          <span style="font-family:var(--mono);">💳 Visa •••• 4242</span>
-          <span>\u00b7 ${isUK?'expires':'scade'} 12/28</span>
+          <span style="font-family:var(--mono);">💳 Visa •••• 5555</span>
+          <span>\u00b7 ${isUK?'expires':'scade'} 12/35</span>
         </div>
         ${sportsPassStatus==='cancelling' ? `<button class="btn btn-line" style="width:100%;justify-content:center;margin-top:10px;font-size:10.5px;opacity:.7;" onclick="simulateSportsPassPeriodEnd()">${isUK?'(Demo) Fast-forward to period end':'(Demo) Salta a fine periodo'}</button>` : ''}
       `;
