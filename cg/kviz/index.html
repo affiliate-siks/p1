@@ -24,16 +24,13 @@
       --max: 560px;
       --max-wide: 1040px;
     }
-
     * { box-sizing: border-box; min-width: 0; }
-
     html, body {
       margin: 0; padding: 0; min-height: 100%;
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text);
       overflow-x: hidden;
     }
-
     body {
       background:
         radial-gradient(1200px 600px at 15% -10%, rgba(243,200,74,.10), transparent 60%),
@@ -42,13 +39,10 @@
         url('https://bluecutglasses.com/cdn/shop/articles/sports_d770a5db-f167-49f3-900d-f690b8aebd0a.jpg?v=1747375034') center center / cover no-repeat;
       background-color: var(--bg-1);
     }
-
     img { max-width: 100%; display: block; }
     button, input, textarea, select, a { font: inherit; }
-
     .wrap { width: min(var(--max), calc(100% - 20px)); margin: 0 auto; padding: 16px 0 24px; }
     .section { margin: 18px 0; }
-
     .card {
       position: relative; overflow: hidden;
       background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
@@ -59,19 +53,15 @@
       backdrop-filter: blur(10px);
       padding: 22px;
     }
-
     .brand-block { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 18px; text-align: center; }
     .logo-wrap { width: min(220px, 62vw); padding: 12px 16px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.03); }
     .brand-pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.04); font-size: 13px; color: var(--muted); text-align: center; max-width: 100%; }
-
     h1, h2, h3, p { word-wrap: break-word; overflow-wrap: anywhere; }
     h1 { margin: 0 0 10px; text-align: center; font-size: clamp(26px, 5.6vw, 40px); line-height: 1.1; letter-spacing: -.03em; }
     h2 { margin: 0 0 12px; font-size: clamp(22px, 4.2vw, 30px); line-height: 1.15; letter-spacing: -.02em; }
     .sub { margin: 0 0 18px; color: var(--muted); font-size: 16px; line-height: 1.55; text-align: center; padding: 0 4px; }
-
     .form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
     label { display: block; font-size: 14px; margin-bottom: 8px; color: var(--muted); }
-
     input[type="text"], input[type="email"] {
       width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,.045);
       color: var(--text); border-radius: 15px; padding: 15px 16px; font-size: 16px;
@@ -79,22 +69,17 @@
     }
     input::placeholder { color: rgba(183,194,227,.72); }
     input:focus { border-color: rgba(243,200,74,.55); box-shadow: 0 0 0 4px rgba(243,200,74,.10); background: rgba(255,255,255,.06); }
-
     .field-note { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.45; }
-
     .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.55; }
     .checkbox-row input { margin-top: 2px; width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,.04); position: relative; flex: 0 0 auto; }
     .checkbox-row input:checked { border-color: rgba(243,200,74,.55); background: rgba(243,200,74,.10); }
     .checkbox-row input:checked::after { content: ""; position: absolute; inset: 3px; border-radius: 3px; background: var(--accent); }
-
     .hp-field { position: absolute; left: -9999px; top: -9999px; opacity: 0; height: 0; width: 0; overflow: hidden; }
-
     .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
     button { border: 0; cursor: pointer; font-weight: 700; transition: transform .18s ease, opacity .18s ease, background .18s ease; -webkit-tap-highlight-color: transparent; min-height: 58px; }
     button:hover { transform: translateY(-1px); }
     button:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-primary { width: 100%; min-height: 58px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); color: #111; padding: 15px 20px; border-radius: 16px; font-size: 16px; }
-
     .status { min-height: 22px; margin-top: 12px; font-size: 14px; line-height: 1.45; color: var(--muted); }
     .status.error { color: var(--danger); }
     .status.success { color: var(--success); }
@@ -109,16 +94,22 @@
       flex: 0 0 auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .details-wrap { margin-top: 14px; border-top: 1px solid rgba(255,255,255,.06); padding-top: 12px; }
     summary { list-style: none; cursor: pointer; color: var(--muted); font-size: 13px; display: inline-flex; align-items: center; gap: 8px; user-select: none; }
     summary::-webkit-details-marker { display: none; }
     .details-content { margin-top: 10px; display: grid; gap: 8px; }
     .detail-item { border: 1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 14px; padding: 12px 13px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 
+    .prize-table { display: grid; gap: 8px; margin: 0 0 18px; }
+    .prize-row { display: grid; grid-template-columns: 1fr 1.4fr; border: 1.5px solid var(--accent); border-radius: 12px; overflow: hidden; }
+    .prize-row.head { border-color: var(--accent); background: rgba(243,200,74,.08); }
+    .prize-pos, .prize-value { padding: 12px 14px; font-weight: 800; font-size: 14px; display: flex; align-items: center; }
+    .prize-pos { border-right: 1.5px solid var(--accent); color: var(--accent-2); justify-content: center; text-align: center; }
+    .prize-value { color: var(--text); }
+    .prize-row.head .prize-pos, .prize-row.head .prize-value { color: var(--accent-2); text-transform: uppercase; letter-spacing: .04em; justify-content: center; text-align: center; }
+
     .quiz-shell, .result-shell, .countdown-shell { display: none; }
     .quiz-shell.active, .result-shell.active, .countdown-shell.active { display: block; }
-
     .countdown-card { text-align: center; padding: 48px 24px; }
     .countdown-title { margin: 0 0 22px; font-size: clamp(20px, 4vw, 26px); color: var(--muted); letter-spacing: .02em; }
     .countdown-number {
@@ -136,34 +127,25 @@
       100% { transform: scale(1); }
     }
     .countdown-sub { margin: 22px 0 0; color: var(--muted); font-size: 14px; }
-
     .quiz-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
     .quiz-side { display: flex; flex-direction: column; gap: 14px; }
-
     .quiz-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
     .counter, .timer { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--muted); }
-
     .progress-dots { display: flex; flex-wrap: wrap; gap: 6px; }
     .progress-dot { width: 10px; height: 10px; border-radius: 999px; background: transparent; border: 1.5px solid rgba(255,255,255,.16); transition: background .2s ease, border-color .2s ease, transform .2s ease, opacity .2s ease; }
     .progress-dot.upcoming { border-color: var(--dot-color, rgba(255,255,255,.2)); opacity: .35; }
     .progress-dot.done { background: var(--dot-color, var(--success)); border-color: transparent; opacity: .8; }
     .progress-dot.current { background: var(--dot-color, var(--accent)); border-color: transparent; opacity: 1; transform: scale(1.4); box-shadow: 0 0 0 3px rgba(255,255,255,.10); }
-
     .keyboard-hint { display: none; color: var(--muted); font-size: 12px; text-align: center; }
-
     .question-card { animation: fadeSlide .28s ease; }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
     .question-title { font-size: clamp(20px, 3.8vw, 27px); line-height: 1.3; margin: 0 0 20px; }
-
     .category-badge { display: inline-block; margin-bottom: 12px; margin-right: 8px; border: 1px solid var(--line-strong); background: rgba(243,200,74,.08); color: var(--accent-2); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; border-radius: 999px; }
-
     .difficulty-badge { display: inline-block; margin-bottom: 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; border-radius: 999px; border: 1px solid; }
     .difficulty-badge.lako { color: var(--success); border-color: rgba(63,209,155,.35); background: rgba(63,209,155,.08); }
     .difficulty-badge.srednje { color: var(--accent-2); border-color: rgba(243,200,74,.35); background: rgba(243,200,74,.08); }
     .difficulty-badge.tesko { color: var(--danger); border-color: rgba(255,123,123,.35); background: rgba(255,123,123,.08); }
     .difficulty-badge.kompleksno { color: #d9a8ff; border-color: rgba(217,168,255,.4); background: rgba(217,168,255,.10); }
-
     .clue-box {
       border: 1px dashed var(--line-strong);
       background: rgba(243,200,74,.05);
@@ -179,12 +161,9 @@
       border: 1px solid var(--line-strong); background: rgba(243,200,74,.10);
       color: var(--accent-2); border-radius: 12px; font-size: 14px; font-weight: 700;
     }
-
     .remaining-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: -4px; margin-bottom: 4px; }
     .remaining-note.urgent { color: var(--danger); font-weight: 700; }
-
     .answers { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 18px; }
-
     .answer {
       position: relative;
       display: flex; align-items: center; gap: 14px;
@@ -196,7 +175,6 @@
       transition: border-color .16s ease, background .16s ease, transform .12s ease;
     }
     .answer:active { transform: scale(.985); }
-
     .answer-badge {
       flex: 0 0 auto;
       width: 34px; height: 34px;
@@ -208,33 +186,25 @@
       color: var(--muted);
       transition: background .16s ease, color .16s ease, border-color .16s ease;
     }
-
     .answer.selected { border-color: rgba(243,200,74,.60); box-shadow: 0 0 0 4px rgba(243,200,74,.10); background: rgba(243,200,74,.08); }
     .answer.selected .answer-badge { background: var(--accent); border-color: transparent; color: #111; }
-
     @media (min-width: 620px) {
       .answers { grid-template-columns: 1fr 1fr; }
       .answers .answer:last-child:nth-child(odd) { grid-column: 1 / -1; }
     }
-
     .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
     .result-box { border: 1px solid var(--line-strong); background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025)); border-radius: 18px; padding: 18px 14px; text-align: center; }
     .result-box .label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 7px; text-transform: uppercase; letter-spacing: .08em; line-height: 1.4; }
     .result-box .value { font-size: clamp(24px, 5vw, 36px); font-weight: 800; letter-spacing: -.03em; line-height: 1.1; word-break: break-word; }
     .result-box .value.status-value { font-size: clamp(18px, 3.6vw, 28px); white-space: nowrap; word-break: normal; overflow-wrap: normal; display: block; text-align: center; }
-
     .viber-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; padding: 15px 18px; border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 16px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); color: #111; text-align: center; }
-
     .extra-banner { margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.10); }
     .extra-banner img { width: 100%; height: auto; display: block; }
-
     .footer-space { height: 14px; }
-
     @media (min-width: 900px) {
       :root { --max: var(--max-wide); }
       .wrap { padding-top: 40px; }
       .card { padding: 34px 38px; }
-
       #registerSection .card {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -246,13 +216,11 @@
       #registerSection .sub { text-align: left; padding: 0; }
       #registerSection h1 { text-align: left; }
       #registerSection .form-col { display: flex; flex-direction: column; }
-
       .quiz-layout { grid-template-columns: 220px 1fr; align-items: start; }
       .quiz-side { position: sticky; top: 24px; }
       .progress-dots { max-width: 220px; }
       .keyboard-hint { display: block; }
     }
-
     @media (max-width: 760px) {
       .wrap { width: min(var(--max), calc(100% - 14px)); padding-top: 12px; }
       .card { padding: 18px 16px; border-radius: 20px; }
@@ -263,7 +231,6 @@
       .btn-primary, .answer, .viber-btn { width: 100%; min-height: 58px; }
       .result-grid { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 420px) {
       .wrap { width: calc(100% - 12px); }
       .card { padding: 16px 14px; }
@@ -283,7 +250,6 @@
       margin-bottom: 18px;
     }
     .cover-banner svg { display: block; width: 100%; height: auto; }
-
     @media (min-width: 900px) { .cover-banner { margin-bottom: 26px; } }
   </style>
 </head>
@@ -301,15 +267,37 @@
             </div>
             <div class="brand-pill">AdmiralBET Crna Gora · Sportski Kviz</div>
           </div>
-
           <h1>ADMIRALBET SPORTSKI KVIZ!</h1>
           <p class="sub">Pokaži znanje, budi najbrži i osvoji sport bonus! Riješi kviz, mjeri svoje vrijeme i uđi u Top 20 najbržih igrača.</p>
+
+          <div class="prize-table">
+            <div class="prize-row head">
+              <span class="prize-pos">Pozicija</span>
+              <span class="prize-value">Nagrada</span>
+            </div>
+            <div class="prize-row">
+              <span class="prize-pos">1.</span>
+              <span class="prize-value">75€ Sport Bonus</span>
+            </div>
+            <div class="prize-row">
+              <span class="prize-pos">2-5.</span>
+              <span class="prize-value">50€ Sport Bonus</span>
+            </div>
+            <div class="prize-row">
+              <span class="prize-pos">6-10.</span>
+              <span class="prize-value">20€ Sport Bonus</span>
+            </div>
+            <div class="prize-row">
+              <span class="prize-pos">11-20.</span>
+              <span class="prize-value">10€ Sport Bonus</span>
+            </div>
+          </div>
 
           <div class="details-wrap">
             <details>
               <summary>Detalji kampanje</summary>
               <div class="details-content">
-                <div class="detail-item">Kviz sadrži 20 pitanja iz fudbala, košarke, tenisa, boksa/MMA i Formule 1.</div>
+                <div class="detail-item">Kviz sadrži 20 pitanja iz fudbala, košarke, UFC-a i Formule 1.</div>
                 <div class="detail-item">Jedan email i jedan ID igrača mogu učestvovati samo jednom po sedmičnom presjeku.</div>
                 <div class="detail-item">Kviz je aktivan svaki dan u sedmici (ponedjeljak-nedjelja) - možeš igrati bilo kog dana.</div>
                 <div class="detail-item">Presjek rezultata se radi ponedjeljkom, kad se ujedno objavljuje i novi set pitanja.</div>
@@ -319,7 +307,6 @@
             </details>
           </div>
         </div>
-
         <div class="form-col">
           <div class="form-grid">
             <div>
@@ -336,26 +323,21 @@
               <div class="field-note">Ime, email i ID igrača moraju biti isti kao na admiralbet.me nalogu, inače se nagrada ne dodjeljuje.</div>
             </div>
           </div>
-
           <div class="hp-field" aria-hidden="true">
             <label for="website">Website</label>
             <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
           </div>
-
           <label class="checkbox-row">
             <input type="checkbox" id="privacy" />
             <span>Saglasan/na sam sa obradom podataka za potrebe učešća u kvizu.</span>
           </label>
-
           <div class="btn-row">
             <button class="btn-primary" id="startBtn">Pokreni kviz</button>
           </div>
-
           <div class="status" id="registerStatus"></div>
         </div>
       </div>
     </section>
-
     <section class="section countdown-shell" id="countdownSection">
       <div class="card countdown-card">
         <p class="countdown-title">Spremite se za kviz!</p>
@@ -363,7 +345,6 @@
         <p class="countdown-sub">Kviz kreće za trenutak...</p>
       </div>
     </section>
-
     <section class="section quiz-shell" id="quizSection">
       <div class="card">
         <div class="quiz-layout">
@@ -375,7 +356,6 @@
             <div class="progress-dots" id="progressDots"></div>
             <div class="keyboard-hint">Tasteri 1 / 2 / 3 biraju odgovor, Enter ide dalje.</div>
           </div>
-
           <div>
             <div class="question-card" id="questionCard">
               <div class="category-badge" id="categoryBadge"></div>
@@ -387,7 +367,6 @@
               </div>
               <div class="answers" id="answersWrap"></div>
             </div>
-
             <div class="remaining-note" id="remainingNote"></div>
             <div class="btn-row">
               <button class="btn-primary" id="nextBtn" disabled>Dalje</button>
@@ -397,12 +376,10 @@
         </div>
       </div>
     </section>
-
     <section class="section result-shell" id="resultSection">
       <div class="card">
         <h2>Tvoj rezultat je zabilježen</h2>
         <p class="sub">Osvoji novi BMW - proveri svoju nagradu!</p>
-
         <div class="result-grid">
           <div class="result-box">
             <span class="label">Tačnih odgovora</span>
@@ -417,28 +394,22 @@
             <span class="value status-value" id="finalStatus">Poslato</span>
           </div>
         </div>
-
         <div class="btn-row">
           <a href="https://www.promoadmiral.me/" target="_blank" rel="noopener noreferrer" class="viber-btn">
             Osvoji novi BMW
           </a>
         </div>
-
         <a href="https://www.promoadmiral.me/" target="_blank" rel="noopener noreferrer" class="extra-banner">
           <img src="https://admiralbet.me/assets/images/promotion/oiuztrfcgvhbjnkml.jpg" alt="Osvoji novi BMW" />
         </a>
-
         <p class="sub" style="margin-top:14px;margin-bottom:0;font-size:13px;">Vodimo te na nagradnu igru...</p>
       </div>
     </section>
-
     <div class="footer-space"></div>
   </div>
-
  <script>
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFWp77vnQ3lC62Wvr8J9IqjuPZS1gshI_3xfg0K7kPGeg7qoWq3VKFNyGUGTwVCeGXCg/exec';
   const ANSWER_LETTERS = ['A', 'B', 'C'];
-
   const startBtn = document.getElementById('startBtn');
   const registerStatus = document.getElementById('registerStatus');
   const quizStatus = document.getElementById('quizStatus');
@@ -468,9 +439,7 @@
   const finalCorrect = document.getElementById('finalCorrect');
   const finalTime = document.getElementById('finalTime');
   const finalStatus = document.getElementById('finalStatus');
-
   const DIFFICULTY_LABELS = { lako: 'Lako', srednje: 'Srednje', tesko: 'Teško', kompleksno: 'Baš kompleksno' };
-
   let currentQuestion = 0;
   let activeQuestions = [];
   let selectedAnswers = [];
@@ -478,27 +447,21 @@
   let timerInterval = null;
   let clientStartMs = null;
   let participantToken = '';
-
   function setStatus(el, msg, type = '') {
     el.textContent = msg || '';
     el.className = 'status' + (type ? ' ' + type : '');
   }
-
   function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-
   function formatTime(totalSeconds) {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
     return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
   }
-
   function clientElapsedSeconds() {
     if (!clientStartMs) return 0;
     return Math.max(0, Math.floor((Date.now() - clientStartMs) / 1000));
   }
-
   function updateTimerUI() { timerText.textContent = formatTime(clientElapsedSeconds()); }
-
   function showQuiz() {
     registerSection.style.display = 'none';
     countdownSection.classList.remove('active');
@@ -506,7 +469,6 @@
     resultSection.classList.remove('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
   function runCountdown(seconds) {
     return new Promise((resolve) => {
       let remaining = seconds;
@@ -522,24 +484,19 @@
       }, 1000);
     });
   }
-
   const REDIRECT_URL = 'https://www.promoadmiral.me/';
   const REDIRECT_DELAY_MS = 5000;
   let redirectTimeout = null;
-
   function showResult() {
     quizSection.classList.remove('active');
     resultSection.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
     if (redirectTimeout) clearTimeout(redirectTimeout);
     redirectTimeout = setTimeout(() => {
       window.location.href = REDIRECT_URL;
     }, REDIRECT_DELAY_MS);
   }
-
   const DIFFICULTY_DOT_COLORS = { lako: 'var(--success)', srednje: 'var(--accent)', tesko: 'var(--danger)', kompleksno: '#d9a8ff' };
-
   function renderDots() {
     progressDots.innerHTML = '';
     activeQuestions.forEach((q, i) => {
@@ -552,16 +509,13 @@
       progressDots.appendChild(dot);
     });
   }
-
   function renderQuestion() {
     const q = activeQuestions[currentQuestion];
     questionCounter.textContent = `Pitanje ${currentQuestion + 1} / ${activeQuestions.length}`;
     categoryBadge.textContent = q.kategorija || '';
-
     const diffKey = q.tezina || 'lako';
     difficultyBadge.textContent = DIFFICULTY_LABELS[diffKey] || diffKey;
     difficultyBadge.className = 'difficulty-badge ' + diffKey;
-
     const remaining = activeQuestions.length - (currentQuestion + 1);
     if (remaining <= 0) {
       remainingNote.textContent = 'Ovo je posljednje pitanje.';
@@ -573,10 +527,8 @@
       remainingNote.textContent = `Preostalo je još ${remaining} pitanja.`;
       remainingNote.className = 'remaining-note';
     }
-
     const isGuessWho = q.tip === 'pogodi_ko_sam';
     const clues = [q.trag1, q.trag2, q.trag3].filter(Boolean);
-
     if (isGuessWho && clues.length > 0) {
       questionText.textContent = q.text || 'Pogodi ko sam!';
       clueBox.style.display = 'block';
@@ -586,7 +538,6 @@
       questionText.textContent = q.text;
       clueBox.style.display = 'none';
     }
-
     answersWrap.innerHTML = '';
     q.answers.forEach((answerText, index) => {
       const btn = document.createElement('button');
@@ -600,18 +551,15 @@
       });
       answersWrap.appendChild(btn);
     });
-
     const isLast = currentQuestion === activeQuestions.length - 1;
     nextBtn.disabled = selectedAnswers[currentQuestion] === null || selectedAnswers[currentQuestion] === undefined;
     nextBtn.textContent = isLast ? 'Završi kviz' : 'Dalje';
     setStatus(quizStatus, '');
     renderDots();
-
     questionCard.style.animation = 'none';
     void questionCard.offsetWidth;
     questionCard.style.animation = '';
   }
-
   function renderClues(clues) {
     const count = Math.min(revealedClues[currentQuestion] || 1, clues.length);
     clueList.innerHTML = '';
@@ -632,7 +580,6 @@
       clueRevealBtn.style.display = 'none';
     }
   }
-
   async function apiRequest(payload) {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -642,7 +589,6 @@
     if (!response.ok) throw new Error('Server error: ' + response.status);
     return await response.json();
   }
-
   async function reserveParticipant(ime, email, playerId) {
     return apiRequest({
       action: 'reserveParticipant',
@@ -658,33 +604,26 @@
       utm_campaign: new URLSearchParams(location.search).get('utm_campaign') || ''
     });
   }
-
   async function submitQuiz(answers) {
     return apiRequest({ action: 'submitQuiz', participantToken, answers });
   }
-
   startBtn.addEventListener('click', async () => {
     const ime = imeInput.value.trim();
     const email = emailInput.value.trim().toLowerCase();
     const playerId = playerIdInput.value.trim();
-
     if (ime.length < 2) { setStatus(registerStatus, 'Unesi ime i prezime.', 'error'); return; }
     if (!isValidEmail(email)) { setStatus(registerStatus, 'Provjeri unos email adrese.', 'error'); return; }
     if (playerId.length < 3) { setStatus(registerStatus, 'Unesi ID igrača sa admiralbet.me naloga.', 'error'); return; }
     if (!privacyInput.checked) { setStatus(registerStatus, 'Potvrdi saglasnost.', 'error'); return; }
-
     startBtn.disabled = true;
     setStatus(registerStatus, '');
-
     registerSection.style.display = 'none';
     countdownSection.classList.add('active');
-
     try {
       const [data] = await Promise.all([
         reserveParticipant(ime, email, playerId),
         runCountdown(5)
       ]);
-
       if (!data.success) {
         countdownSection.classList.remove('active');
         registerSection.style.display = '';
@@ -692,17 +631,14 @@
         startBtn.disabled = false;
         return;
       }
-
       participantToken = data.participantToken;
       activeQuestions = data.questions;
       selectedAnswers = new Array(activeQuestions.length).fill(null);
       revealedClues = new Array(activeQuestions.length).fill(undefined);
       currentQuestion = 0;
-
       clientStartMs = Date.now();
       updateTimerUI();
       timerInterval = setInterval(updateTimerUI, 1000);
-
       renderQuestion();
       showQuiz();
     } catch (error) {
@@ -712,34 +648,28 @@
       startBtn.disabled = false;
     }
   });
-
   async function finishOrAdvance() {
     if (selectedAnswers[currentQuestion] === null || selectedAnswers[currentQuestion] === undefined) {
       setStatus(quizStatus, 'Izaberi odgovor.', 'error');
       return;
     }
-
     if (currentQuestion < activeQuestions.length - 1) {
       currentQuestion++;
       renderQuestion();
       return;
     }
-
     nextBtn.disabled = true;
     nextBtn.textContent = 'Slanje...';
     setStatus(quizStatus, 'Provjera odgovora i slanje kviza...', 'loading');
     clearInterval(timerInterval);
-
     try {
       const data = await submitQuiz(selectedAnswers);
-
       if (!data.success) {
         setStatus(quizStatus, data.message || 'Pokušaj ponovo.', 'error');
         nextBtn.disabled = false;
         nextBtn.textContent = 'Završi kviz';
         return;
       }
-
       finalCorrect.textContent = `${data.correctAnswers}/${data.totalQuestions}`;
       finalTime.textContent = formatTime(data.timeSeconds);
       finalStatus.textContent = 'Poslato';
@@ -750,9 +680,7 @@
       setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
     }
   }
-
   nextBtn.addEventListener('click', finishOrAdvance);
-
   document.addEventListener('keydown', (e) => {
     if (!quizSection.classList.contains('active')) return;
     if (['1', '2', '3'].includes(e.key)) {
