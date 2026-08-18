@@ -129,8 +129,8 @@
     .countdown-sub { margin: 22px 0 0; color: var(--muted); font-size: 14px; }
     .quiz-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
     .quiz-side { display: flex; flex-direction: column; gap: 14px; }
-    .quiz-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .counter, .timer { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--muted); }
+    .quiz-top { display: flex; justify-content: center; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .counter { border: 1px solid var(--line); background: rgba(255,255,255,.04); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--muted); }
     .progress-dots { display: flex; flex-wrap: wrap; gap: 6px; }
     .progress-dot { width: 10px; height: 10px; border-radius: 999px; background: transparent; border: 1.5px solid rgba(255,255,255,.16); transition: background .2s ease, border-color .2s ease, transform .2s ease, opacity .2s ease; }
     .progress-dot.upcoming { border-color: var(--dot-color, rgba(255,255,255,.2)); opacity: .35; }
@@ -226,7 +226,7 @@
       .card { padding: 18px 16px; border-radius: 20px; }
       .sub { font-size: 15px; }
       .quiz-top { flex-direction: column; align-items: stretch; }
-      .counter, .timer { width: 100%; text-align: center; }
+      .counter { width: 100%; text-align: center; }
       .btn-row { flex-direction: column; }
       .btn-primary, .answer, .viber-btn { width: 100%; min-height: 58px; }
       .result-grid { grid-template-columns: 1fr; }
@@ -351,7 +351,6 @@
           <div class="quiz-side">
             <div class="quiz-top">
               <div class="counter" id="questionCounter">Pitanje 1 / 20</div>
-              <div class="timer">Vrijeme: <strong id="timerText">00:00</strong></div>
             </div>
             <div class="progress-dots" id="progressDots"></div>
             <div class="keyboard-hint">Tasteri 1 / 2 / 3 biraju odgovor, Enter ide dalje.</div>
@@ -384,10 +383,6 @@
           <div class="result-box">
             <span class="label">Tačnih odgovora</span>
             <span class="value" id="finalCorrect">0/20</span>
-          </div>
-          <div class="result-box">
-            <span class="label">Vrijeme</span>
-            <span class="value" id="finalTime">00:00</span>
           </div>
           <div class="result-box">
             <span class="label">Status</span>
@@ -424,7 +419,6 @@
   const websiteInput = document.getElementById('website');
   const privacyInput = document.getElementById('privacy');
   const questionCounter = document.getElementById('questionCounter');
-  const timerText = document.getElementById('timerText');
   const categoryBadge = document.getElementById('categoryBadge');
   const difficultyBadge = document.getElementById('difficultyBadge');
   const questionText = document.getElementById('questionText');
@@ -437,15 +431,12 @@
   const progressDots = document.getElementById('progressDots');
   const nextBtn = document.getElementById('nextBtn');
   const finalCorrect = document.getElementById('finalCorrect');
-  const finalTime = document.getElementById('finalTime');
   const finalStatus = document.getElementById('finalStatus');
   const DIFFICULTY_LABELS = { lako: 'Lako', srednje: 'Srednje', tesko: 'Teško', kompleksno: 'Baš kompleksno' };
   let currentQuestion = 0;
   let activeQuestions = [];
   let selectedAnswers = [];
   let revealedClues = [];
-  let timerInterval = null;
-  let clientStartMs = null;
   let participantToken = '';
   function setStatus(el, msg, type = '') {
     el.textContent = msg || '';
@@ -457,11 +448,6 @@
     const secs = totalSeconds % 60;
     return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
   }
-  function clientElapsedSeconds() {
-    if (!clientStartMs) return 0;
-    return Math.max(0, Math.floor((Date.now() - clientStartMs) / 1000));
-  }
-  function updateTimerUI() { timerText.textContent = formatTime(clientElapsedSeconds()); }
   function showQuiz() {
     registerSection.style.display = 'none';
     countdownSection.classList.remove('active');
@@ -636,9 +622,6 @@
       selectedAnswers = new Array(activeQuestions.length).fill(null);
       revealedClues = new Array(activeQuestions.length).fill(undefined);
       currentQuestion = 0;
-      clientStartMs = Date.now();
-      updateTimerUI();
-      timerInterval = setInterval(updateTimerUI, 1000);
       renderQuestion();
       showQuiz();
     } catch (error) {
@@ -661,7 +644,6 @@
     nextBtn.disabled = true;
     nextBtn.textContent = 'Slanje...';
     setStatus(quizStatus, 'Provjera odgovora i slanje kviza...', 'loading');
-    clearInterval(timerInterval);
     try {
       const data = await submitQuiz(selectedAnswers);
       if (!data.success) {
@@ -671,7 +653,6 @@
         return;
       }
       finalCorrect.textContent = `${data.correctAnswers}/${data.totalQuestions}`;
-      finalTime.textContent = formatTime(data.timeSeconds);
       finalStatus.textContent = 'Poslato';
       showResult();
     } catch (error) {
