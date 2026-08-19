@@ -225,6 +225,19 @@ background:rgba(255,255,255,0.04); width:fit-content;
 .rules-cta-row{margin-top:34px; display:flex; justify-content:center;}
 .rules-cta-link{width:fit-content;}
 
+.stream-wrap{border-radius:14px; overflow:hidden; border:1px solid var(--gray-line);}
+.live-badge{
+position:absolute; top:14px; left:14px; z-index:2;
+background:#e0263f; color:#fff; font-size:11.5px; font-weight:800;
+letter-spacing:0.04em; padding:5px 11px; border-radius:100px;
+}
+.stream-waiting{
+position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+text-align:center; padding:20px; color:rgba(255,255,255,0.65); font-size:13.5px;
+background:rgba(0,0,0,0.55); pointer-events:none;
+}
+.stream-waiting.hide{display:none;}
+
 .countdown-top-inner{text-align:center; padding:14px 0;}
 .ct-label{
 font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
@@ -718,6 +731,27 @@ section{padding:48px 0;}
 </section>
 
 
+<section id="uzivo" class="bg-alt" style="display:none;">
+<div class="wrap">
+<div class="section-head reveal">
+<div class="eyebrow">Prenos</div>
+<h2>Pratite izvlačenje uživo</h2>
+<p>Sedmično i finalno izvlačenje prenose se uživo na zvaničnim kanalima AdmiralBet-a.</p>
+</div>
+<div class="stream-wrap reveal" style="position:relative;">
+<span id="streamLiveBadge" class="live-badge" style="display:none;">● UŽIVO</span>
+<video
+id="bmwStream"
+controls
+playsinline
+preload="none"
+style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; display:block; background:#000;"
+></video>
+<div id="streamWaiting" class="stream-waiting">Prenos još nije počeo. Provjerite ponovo malo prije zakazanog termina.</div>
+</div>
+</div>
+</section>
+
 <section id="finale" class="finale">
 <div class="wrap reveal">
 <div class="eyebrow">Veliko finale · 08 - 15.10.2026.</div>
@@ -964,6 +998,67 @@ if (cdTopMins) cdTopMins.textContent = String(m).padStart(2,'0');
 }
 tick();
 setInterval(tick, 30000);
+
+// Uživo prenos — konfiguracija (isti format kao na ostalim promo stranicama)
+// live_stream_id je za Mux dashboard/enkoder (RTMP ingest) — plejer koristi samo playback_id
+const STREAM_CONFIG = {
+type: "live",
+playback_id: "rfPRzxeCInIGgZk02N53uKEJ2PBLix5e58SFK2JERM5c",
+live_stream_id: "yIC7KoXuQMmaBep01M16jJ4UwzaHyWHbaFDvIrGkLPi00",
+poster: "photos/stream-pocinje2.png",
+disabled: false
+};
+(function () {
+const section = document.getElementById('uzivo');
+const video = document.getElementById('bmwStream');
+if (!section || !video) return;
+if (STREAM_CONFIG.disabled || !STREAM_CONFIG.playback_id) return;
+
+// Prikaz samo na dan izvlačenja (četvrtak). getDay(): 0=nedjelja...4=četvrtak
+const isDrawDay = new Date().getDay() === 4;
+if (!isDrawDay) return;
+
+const hlsUrl = 'https://stream.mux.com/' + STREAM_CONFIG.playback_id + '.m3u8';
+if (STREAM_CONFIG.poster) video.setAttribute('poster', STREAM_CONFIG.poster);
+section.style.display = '';
+
+const liveBadge = document.getElementById('streamLiveBadge');
+const waiting = document.getElementById('streamWaiting');
+
+function markLive() {
+if (STREAM_CONFIG.type === 'live' && liveBadge) liveBadge.style.display = '';
+if (waiting) waiting.classList.add('hide');
+}
+function markWaiting() {
+if (liveBadge) liveBadge.style.display = 'none';
+if (waiting) waiting.classList.remove('hide');
+}
+video.addEventListener('playing', markLive);
+video.addEventListener('error', markWaiting);
+video.addEventListener('stalled', markWaiting);
+
+// Safari i iOS podržavaju HLS nativno — hls.js nepotreban
+if (video.canPlayType('application/vnd.apple.mpegurl')) {
+video.src = hlsUrl;
+video.play().catch(function () {});
+} else {
+// Svi ostali browseri (Chrome, Firefox, Edge...) — učitaj hls.js samo kad je stvarno potreban
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js';
+script.onload = function () {
+if (window.Hls && window.Hls.isSupported()) {
+const hls = new window.Hls();
+hls.loadSource(hlsUrl);
+hls.attachMedia(video);
+hls.on(window.Hls.Events.ERROR, function (_, data) {
+if (data && data.fatal) markWaiting();
+});
+video.play().catch(function () {});
+}
+};
+document.body.appendChild(script);
+}
+})();
 
 // Sticky counter prikaz
 (function(){
