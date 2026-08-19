@@ -718,6 +718,25 @@ section{padding:48px 0;}
 </section>
 
 
+<section id="uzivo" class="bg-alt" style="display:none;">
+<div class="wrap">
+<div class="section-head reveal">
+<div class="eyebrow">Prenos</div>
+<h2>Pratite izvlačenje uživo</h2>
+<p>Sedmično i finalno izvlačenje prenose se uživo na zvaničnim kanalima AdmiralBet-a.</p>
+</div>
+<div class="stream-wrap reveal">
+<video
+id="bmwStream"
+controls
+playsinline
+preload="none"
+style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; display:block; background:#000;"
+></video>
+</div>
+</div>
+</section>
+
 <section id="finale" class="finale">
 <div class="wrap reveal">
 <div class="eyebrow">Veliko finale · 08 - 15.10.2026.</div>
@@ -964,6 +983,42 @@ if (cdTopMins) cdTopMins.textContent = String(m).padStart(2,'0');
 }
 tick();
 setInterval(tick, 30000);
+
+// Uživo prenos — konfiguracija (isti format kao na ostalim promo stranicama)
+// Kad izvlačenje krene: postaviti disabled:false i unijeti pravi playback_id + poster
+const STREAM_CONFIG = {
+type: "on-demand",
+playback_id: "",
+poster: "photos/stream-pocinje2.png",
+disabled: true
+};
+(function () {
+const section = document.getElementById('uzivo');
+const video = document.getElementById('bmwStream');
+if (!section || !video) return;
+if (STREAM_CONFIG.disabled || !STREAM_CONFIG.playback_id) return;
+
+const hlsUrl = 'https://stream.mux.com/' + STREAM_CONFIG.playback_id + '.m3u8';
+if (STREAM_CONFIG.poster) video.setAttribute('poster', STREAM_CONFIG.poster);
+section.style.display = '';
+
+// Safari i iOS podržavaju HLS nativno — hls.js nepotreban
+if (video.canPlayType('application/vnd.apple.mpegurl')) {
+video.src = hlsUrl;
+} else {
+// Svi ostali browseri (Chrome, Firefox, Edge...) — učitaj hls.js samo kad je stvarno potreban
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js';
+script.onload = function () {
+if (window.Hls && window.Hls.isSupported()) {
+const hls = new window.Hls();
+hls.loadSource(hlsUrl);
+hls.attachMedia(video);
+}
+};
+document.body.appendChild(script);
+}
+})();
 
 // Sticky counter prikaz
 (function(){
