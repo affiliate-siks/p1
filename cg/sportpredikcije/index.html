@@ -149,6 +149,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 .redirect-modal{position:relative; background:var(--card); border:1px solid var(--gray-line); border-radius:20px; padding:30px 26px 26px; max-width:320px; width:100%; text-align:center; box-shadow:0 24px 60px rgba(0,0,0,0.5);}
 .redirect-close{position:absolute; top:10px; right:12px; background:none; border:none; color:var(--gray); font-size:22px; line-height:1; cursor:pointer; padding:4px 8px; width:auto;}
 .redirect-close:hover{color:#fff;}
+.redirect-img{width:100%; max-height:150px; object-fit:cover; border-radius:14px; display:block; margin-bottom:16px;}
 .redirect-ic{font-size:34px; margin-bottom:10px;}
 .redirect-modal h3{font-size:20px; margin-bottom:8px;}
 .redirect-modal p{font-size:13px; color:var(--gray); line-height:1.5; margin:0 0 18px;}
@@ -281,10 +282,13 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 <div class="redirect-overlay" id="redirectOverlay">
   <div class="redirect-modal">
     <button class="redirect-close" id="redirectClose" aria-label="Zatvori">×</button>
-    <div class="redirect-ic">⚽</div>
+    <img class="redirect-img" id="redirectImg" src="https://admiralbet.me/assets/images/promotion/SDVGFJKJKHGREDWSQ.jpg" alt="AdmiralBet ponuda"
+         onload="document.getElementById('redirectIc').style.display='none';"
+         onerror="this.style.display='none';">
+    <div class="redirect-ic" id="redirectIc">⚽</div>
     <h3>Idi direktno na sajt</h3>
     <p>Pogledaj sportsku ponudu dok čekaš rezultate.</p>
-    <a class="btn btn-gold" id="redirectCta" href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717">Pogledaj kupon</a>
+    <a class="btn btn-gold" id="redirectCta" href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717">Pogledaj ponudu</a>
   </div>
 </div>
 
