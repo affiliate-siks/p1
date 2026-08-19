@@ -1014,8 +1014,8 @@ const video = document.getElementById('bmwStream');
 if (!section || !video) return;
 if (STREAM_CONFIG.disabled || !STREAM_CONFIG.playback_id) return;
 
-// Prikaz samo na dan izvlačenja (četvrtak). getDay(): 0=nedjelja...4=četvrtak
-const isDrawDay = new Date().getDay() === 4;
+// Prikaz samo na dan izvlačenja (nedjelja — prvo izvlačenje je 23.08.2026.). getDay(): 0=nedjelja
+const isDrawDay = new Date().getDay() === 0;
 if (!isDrawDay) return;
 
 const hlsUrl = 'https://stream.mux.com/' + STREAM_CONFIG.playback_id + '.m3u8';
