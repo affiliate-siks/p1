@@ -209,7 +209,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       </div>
       <div class="howto-banner">
         <span class="ic">👆</span>
-        <span class="txt">Prevuci karticu <b class="hl-1">lijevo za pobjedu domaćina (1)</b>, <b class="hl-2">desno za pobjedu gosta (2)</b>, <b class="hl-x">gore za nerešeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
+        <span class="txt">Prevuci karticu <b class="hl-1">lijevo za pobjedu domaćina (1)</b>, <b class="hl-2">desno za pobjedu gosta (2)</b>, <b class="hl-x">gore za neriješeno (X)</b>. Ne umiješ da prevučeš? Klikni dugme ispod karte.</span>
       </div>
       <div class="deck-progress">
         <span id="progressLabel">Meč 1/5</span>
@@ -225,7 +225,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       </div>
       <div class="deck-controls">
         <button class="btn btn-icon btn-outline-green" id="btn-1" aria-label="Pobjeda domaćina (1)">1</button>
-        <button class="btn btn-icon x-btn btn-outline-gold" id="btn-x" aria-label="Nerešeno (X)">X</button>
+        <button class="btn btn-icon x-btn btn-outline-gold" id="btn-x" aria-label="Neriješeno (X)">X</button>
         <button class="btn btn-icon btn-outline-red" id="btn-2" aria-label="Pobjeda gosta (2)">2</button>
       </div>
       <div class="deck-done" id="deckDone">
@@ -282,13 +282,13 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 <div class="redirect-overlay" id="redirectOverlay">
   <div class="redirect-modal">
     <button class="redirect-close" id="redirectClose" aria-label="Zatvori">×</button>
-    <img class="redirect-img" id="redirectImg" src="https://admiralbet.me/assets/images/promotion/SDVGFJKJKHGREDWSQ.jpg" alt="AdmiralBet ponuda"
+    <img class="redirect-img" id="redirectImg" src="STAVI_URL_SLIKE_OVDJE.jpg" alt="AdmiralBet ponuda"
          onload="document.getElementById('redirectIc').style.display='none';"
          onerror="this.style.display='none';">
     <div class="redirect-ic" id="redirectIc">⚽</div>
     <h3>Idi direktno na sajt</h3>
     <p>Pogledaj sportsku ponudu dok čekaš rezultate.</p>
-    <a class="btn btn-gold" id="redirectCta" href="https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717">Pogledaj ponudu</a>
+    <a class="btn btn-gold" id="redirectCta" href="https://admiralbet.me/sport-prematch">Pogledaj ponudu</a>
   </div>
 </div>
 
@@ -608,7 +608,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
   // ---------------- redirect popup — pokreće se TEK nakon predate predikcije ----------------
   (function () {
-    const REDIRECT_URL = 'https://admiralbet.me/sport-prematch?sport=Fudbal&region=Me%C4%91unarodne_klupske&competition=Kup_Sudamerikana&competitionId=1-104-717';
+    const REDIRECT_URL = 'https://admiralbet.me/sport-prematch';
     const DELAY_AFTER_SUBMIT_MS = 4000;  // koliko čekamo nakon uspješne predaje prije nego prikažemo popup
     const AUTO_REDIRECT_MS = 6000;       // koliko dugo popup stoji prije automatske redirekcije
 
