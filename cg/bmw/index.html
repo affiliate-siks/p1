@@ -1060,6 +1060,127 @@ document.body.appendChild(script);
 }
 })();
 
+// ==========================================================
+// TRACKING — šalje podatke o posjeti u Google Sheet
+// Da aktiviraš: nakon deploy-a Google Apps Script-a (vidi
+// priloženi google_apps_script.js), zalijepi dobijeni URL ovdje:
+// ==========================================================
+const TRACKING_ENDPOINT = "PASTE_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+(function () {
+if (!TRACKING_ENDPOINT || TRACKING_ENDPOINT.indexOf("PASTE_") === 0) return;
+
+function getParam(name) {
+try {
+return new URLSearchParams(window.location.search).get(name) || "";
+} catch (e) { return ""; }
+}
+
+function getDeviceType() {
+const ua = navigator.userAgent;
+if (/Tablet|iPad/i.test(ua)) return "tablet";
+if (/Mobi|Android/i.test(ua)) return "mobile";
+return "desktop";
+}
+
+function getBrowser() {
+const ua = navigator.userAgent;
+if (ua.indexOf("Edg/") > -1) return "Edge";
+if (ua.indexOf("OPR/") > -1) return "Opera";
+if (ua.indexOf("Chrome/") > -1) return "Chrome";
+if (ua.indexOf("Firefox/") > -1) return "Firefox";
+if (ua.indexOf("Safari/") > -1) return "Safari";
+return "Ostalo";
+}
+
+function getOS() {
+const ua = navigator.userAgent;
+if (ua.indexOf("Windows") > -1) return "Windows";
+if (ua.indexOf("Mac OS") > -1) return "macOS";
+if (ua.indexOf("Android") > -1) return "Android";
+if (/iPhone|iPad|iPod/.test(ua)) return "iOS";
+if (ua.indexOf("Linux") > -1) return "Linux";
+return "Ostalo";
+}
+
+const sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+const pageLoadTime = Date.now();
+let maxScrollPercent = 0;
+
+const baseData = {
+session_id: sessionId,
+page_url: window.location.href,
+referrer: document.referrer || "direktno",
+utm_source: getParam("utm_source"),
+utm_medium: getParam("utm_medium"),
+utm_campaign: getParam("utm_campaign"),
+utm_term: getParam("utm_term"),
+utm_content: getParam("utm_content"),
+device_type: getDeviceType(),
+browser: getBrowser(),
+os: getOS(),
+screen_width: window.screen.width,
+screen_height: window.screen.height,
+language: navigator.language || "",
+timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone) || "",
+user_agent: navigator.userAgent
+};
+
+function sendToSheet(payload) {
+try {
+navigator.sendBeacon(
+TRACKING_ENDPOINT,
+new Blob([JSON.stringify(payload)], { type: "text/plain" })
+);
+} catch (e) {
+fetch(TRACKING_ENDPOINT, {
+method: "POST",
+mode: "no-cors",
+headers: { "Content-Type": "text/plain" },
+body: JSON.stringify(payload)
+}).catch(function () {});
+}
+}
+
+// Geolokacija po IP-u (besplatan servis, bez API ključa) — pa slanje pageview-a
+fetch('https://ipwho.is/')
+.then(function (r) { return r.json(); })
+.then(function (geo) {
+sendToSheet(Object.assign({}, baseData, {
+event: "pageview",
+timestamp: new Date().toISOString(),
+ip: geo.ip || "",
+country: geo.country || "",
+city: geo.city || "",
+region: geo.region || "",
+isp: (geo.connection && geo.connection.isp) || ""
+}));
+})
+.catch(function () {
+sendToSheet(Object.assign({}, baseData, {
+event: "pageview",
+timestamp: new Date().toISOString()
+}));
+});
+
+window.addEventListener('scroll', function () {
+const docHeight = document.body.scrollHeight - window.innerHeight;
+if (docHeight <= 0) return;
+const pct = Math.round((window.scrollY / docHeight) * 100);
+if (pct > maxScrollPercent) maxScrollPercent = Math.min(100, pct);
+}, { passive: true });
+
+window.addEventListener('pagehide', function () {
+sendToSheet({
+event: "exit",
+session_id: sessionId,
+timestamp: new Date().toISOString(),
+time_on_page_seconds: Math.round((Date.now() - pageLoadTime) / 1000),
+max_scroll_percent: maxScrollPercent
+});
+});
+})();
+
 // Sticky counter prikaz
 (function(){
 const sticky = document.getElementById('stickyCounter');
