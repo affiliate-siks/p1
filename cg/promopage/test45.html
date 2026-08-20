@@ -1065,7 +1065,7 @@ document.body.appendChild(script);
 // Da aktiviraš: nakon deploy-a Google Apps Script-a (vidi
 // priloženi google_apps_script.js), zalijepi dobijeni URL ovdje:
 // ==========================================================
-const TRACKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbzgS6UAz7JviAEgcRlmnzXzzZbVwvKOxn2CBh-zPw_ed64ng9xhyXAfQrXNkDh-JllS/exec";
+const TRACKING_ENDPOINT = "PASTE_GOOGLE_APPS_SCRIPT_URL_HERE";
 
 (function () {
 if (!TRACKING_ENDPOINT || TRACKING_ENDPOINT.indexOf("PASTE_") === 0) return;
@@ -1103,6 +1103,18 @@ if (ua.indexOf("Linux") > -1) return "Linux";
 return "Ostalo";
 }
 
+// BOT DETEKCIJA — best-effort signali, ne 100% pouzdano, ali hvata veliku vecinu
+function isWebdriver() {
+try { return navigator.webdriver === true; } catch (e) { return false; }
+}
+function isBotUA() {
+return /bot|crawl|spider|slurp|headless|phantom|selenium|puppeteer|playwright|scrapy|curl|wget|python-requests|axios|okhttp|postman|go-http-client/i.test(navigator.userAgent);
+}
+function isDatacenterIsp(ispOrOrg) {
+if (!ispOrOrg) return false;
+return /amazon|aws|google cloud|microsoft|azure|digitalocean|linode|vultr|ovh|hetzner|alibaba|tencent|cloudflare|oracle cloud|contabo|scaleway|hosting|datacenter|data center|choopa|leaseweb/i.test(ispOrOrg);
+}
+
 const sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
 const pageLoadTime = Date.now();
 let maxScrollPercent = 0;
@@ -1123,7 +1135,9 @@ screen_width: window.screen.width,
 screen_height: window.screen.height,
 language: navigator.language || "",
 timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone) || "",
-user_agent: navigator.userAgent
+user_agent: navigator.userAgent,
+is_webdriver: isWebdriver(),
+is_bot_ua: isBotUA()
 };
 
 function sendToSheet(payload) {
@@ -1146,6 +1160,7 @@ body: JSON.stringify(payload)
 fetch('https://ipwho.is/')
 .then(function (r) { return r.json(); })
 .then(function (geo) {
+const isp = (geo.connection && geo.connection.isp) || (geo.connection && geo.connection.org) || "";
 sendToSheet(Object.assign({}, baseData, {
 event: "pageview",
 timestamp: new Date().toISOString(),
@@ -1153,7 +1168,8 @@ ip: geo.ip || "",
 country: geo.country || "",
 city: geo.city || "",
 region: geo.region || "",
-isp: (geo.connection && geo.connection.isp) || ""
+isp: isp,
+is_datacenter_isp: isDatacenterIsp(isp)
 }));
 })
 .catch(function () {
@@ -1171,12 +1187,15 @@ if (pct > maxScrollPercent) maxScrollPercent = Math.min(100, pct);
 }, { passive: true });
 
 window.addEventListener('pagehide', function () {
+const timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
+const suspicious = baseData.is_webdriver || baseData.is_bot_ua || (maxScrollPercent === 0 && timeOnPage < 2);
 sendToSheet({
 event: "exit",
 session_id: sessionId,
 timestamp: new Date().toISOString(),
-time_on_page_seconds: Math.round((Date.now() - pageLoadTime) / 1000),
-max_scroll_percent: maxScrollPercent
+time_on_page_seconds: timeOnPage,
+max_scroll_percent: maxScrollPercent,
+suspicious_traffic: suspicious
 });
 });
 })();
