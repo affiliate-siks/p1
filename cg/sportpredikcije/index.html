@@ -320,14 +320,14 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
   async function loadRounds() {
     if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) {
-      showKoloNavMessage('Backend URL nije podešen — prati SETUP.md.');
+      showKoloNavMessage('Backend nije podešen. Kontaktiraj administratora.');
       return;
     }
     try {
       const res = await fetch(`${BACKEND_URL}?action=getRounds`);
       const data = await res.json();
-      if (!data.ok) { showKoloNavMessage('Greška pri učitavanju kola: ' + (data.error || '')); return; }
-      if (!data.rounds || !data.rounds.length) { showKoloNavMessage('Nema unijetih kola. Dodaj mečeve u Mecevi sheet.'); return; }
+      if (!data.ok) { showKoloNavMessage('Greška pri učitavanju kola.'); return; }
+      if (!data.rounds || !data.rounds.length) { showKoloNavMessage('Trenutno nema aktivnih kola.'); return; }
 
       ROUNDS = {};
       data.rounds.forEach(r => { ROUNDS[r.kolo] = { status: r.status, matches: r.matches }; });
@@ -337,7 +337,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       buildKoloNav();
       openKolo(ACTIVE_KOLO);
     } catch (err) {
-      showKoloNavMessage('Ne mogu da se povežem sa backend-om.');
+      showKoloNavMessage('Ne mogu da se povežem sa serverom.');
     }
   }
 
@@ -371,25 +371,31 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
   async function renderPastKolo(k) {
     document.getElementById('pastKoloLabel').textContent = k;
     const matchesEl = document.getElementById('pastMatches');
-    matchesEl.innerHTML = ROUNDS[k].matches.map((m) => `
+    matchesEl.innerHTML = ROUNDS[k].matches.map((m) => {
+      const rez = String(m.result || '').trim();
+      const resultHtml = rez
+        ? `<span class="result-badge">${rez}</span>`
+        : `<span class="result-pending">Rezultat uskoro</span>`;
+      return `
       <div class="match-row">
         <div><div class="league-sm">${m.league}</div><div class="teams-sm">${m.home} vs ${m.away}</div></div>
-        <span class="result-pending">Rezultat u sheet-u</span>
-      </div>`).join('');
+        ${resultHtml}
+      </div>`;
+    }).join('');
 
     const lbEl = document.getElementById('pastLeaderboard');
     lbEl.innerHTML = '<div class="lb-empty">Učitavam rang listu...</div>';
     try {
       const res = await fetch(`${BACKEND_URL}?action=leaderboard&kolo=${k}`);
       const data = await res.json();
-      if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška: ' + data.error + '</div>'; return; }
-      if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu uneseni u Sheet.</div>'; return; }
+      if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška pri učitavanju rang liste.</div>'; return; }
+      if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu objavljeni.</div>'; return; }
       if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
       lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni · Vrijeme</span></div>' +
         data.results.map((r, i) => `
           <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi} · ${formatVrijeme(r.vrijemeSek)}</span></div>`
         ).join('');
-    } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa backend-om.</div>'; }
+    } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa serverom.</div>'; }
   }
 
   // ---------------- identity gate ----------------
@@ -558,7 +564,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     const btn = document.getElementById('submitBtn');
     const resEl = document.getElementById('submitResult');
     if (!identity) { return; }
-    const picksObj = {}; MATCHES.forEach((m, i) => { picksObj['m' + i] = picks[i]; });
+    const picksObj = {}; MATCHES.forEach((m, i) => { picksObj[m.key] = picks[i]; });
     const vrijemeSek = deckStartTime ? Math.round((Date.now() - deckStartTime) / 1000) : '';
     btn.disabled = true; btn.textContent = 'Šaljem...';
     try {
@@ -574,7 +580,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
         btn.disabled = false; btn.textContent = 'Predaj predikciju';
       }
     } catch (err) {
-      resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ Ne mogu da se povežem sa backend-om.';
+      resEl.className = 'submit-result show err'; resEl.innerHTML = '⚠️ Ne mogu da se povežem sa serverom.';
       btn.disabled = false; btn.textContent = 'Predaj predikciju';
     }
   });
@@ -584,12 +590,12 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
     const id = document.getElementById('lookupId').value.trim();
     const resultEl = document.getElementById('lookupResult');
     if (!id) { resultEl.textContent = 'Unesi ID naloga.'; return; }
-    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend URL nije podešen.'; return; }
+    if (BACKEND_URL.indexOf('STAVI_SVOJ') !== -1) { resultEl.textContent = 'Backend nije podešen.'; return; }
     resultEl.textContent = 'Učitavam...';
     try {
       const res = await fetch(`${BACKEND_URL}?action=lookup&playerId=${encodeURIComponent(id)}`);
       const data = await res.json();
-      if (!data.ok) { resultEl.textContent = 'Greška: ' + data.error; return; }
+      if (!data.ok) { resultEl.textContent = 'Greška pri učitavanju.'; return; }
       if (!data.results.length) { resultEl.textContent = 'Nema predikcija za taj ID.'; return; }
       resultEl.innerHTML = data.results.map(r => `
         <div class="entry">
@@ -598,7 +604,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
           <div class="row2"><span>Bodovi</span><span>${r.bodovi === null ? '— (čeka rezultat)' : r.bodovi}</span></div>
           <div class="row2"><span>Vrijeme popunjavanja</span><span>${formatVrijeme(r.vrijemeSek)}</span></div>
         </div>`).join('');
-    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa backend-om.'; }
+    } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa serverom.'; }
   });
 
   // ---------------- init ----------------
