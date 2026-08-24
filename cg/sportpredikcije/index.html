@@ -168,8 +168,8 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
 <section class="hero">
   <div class="wrap">
-    <h1>Pogodi <span class="hl">5 mečeva</span>.<br>Sakupljaj poene.</h1>
-    <p>Svake sedmice 5 mečeva iz top 5 evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
+    <h1>Pogodi <span class="hl">mečeve</span>.<br>Sakupljaj poene.</h1>
+    <p>Svake sedmice mečevi iz top evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
   </div>
 </section>
 
@@ -393,7 +393,7 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
       lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni</span></div>' +
         data.results.map((r, i) => `
-          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.initials} · ID ${r.playerId}</span><span class="pts">${r.bodovi}</span></div>`
+          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>ID ${r.playerId}</span><span class="pts">${r.bodovi}</span></div>`
         ).join('');
     } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa serverom.</div>'; }
   }
