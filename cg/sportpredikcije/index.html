@@ -168,8 +168,8 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
 <section class="hero">
   <div class="wrap">
-    <h1>Pogodi <span class="hl">mečeve</span>.<br>Sakupljaj poene.</h1>
-    <p>Svake sedmice mečevi iz top evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
+    <h1>Pogodi <span class="hl">5 mečeva</span>.<br>Sakupljaj poene.</h1>
+    <p>Svake sedmice 5 mečeva iz top 5 evropskih liga. Besplatno, jednom po kolu, jedan nalog/email/broj = jedna predikcija.</p>
   </div>
 </section>
 
@@ -391,9 +391,9 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
       if (!data.ok) { lbEl.innerHTML = '<div class="lb-empty">Greška pri učitavanju rang liste.</div>'; return; }
       if (data.resultsPending) { lbEl.innerHTML = '<div class="lb-empty">Rezultati za ovo kolo još nisu objavljeni.</div>'; return; }
       if (!data.results.length) { lbEl.innerHTML = '<div class="lb-empty">Nema predatih predikcija za ovo kolo.</div>'; return; }
-      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni · Vrijeme</span></div>' +
+      lbEl.innerHTML = '<div class="lb-row head"><span></span><span>Igrač</span><span>Poeni</span></div>' +
         data.results.map((r, i) => `
-          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.ime} ${r.prezime}</span><span class="pts">${r.bodovi} · ${formatVrijeme(r.vrijemeSek)}</span></div>`
+          <div class="lb-row ${i===0?'top1':''}"><span class="rank">${i+1}</span><span>${r.initials} · ID ${r.playerId}</span><span class="pts">${r.bodovi}</span></div>`
         ).join('');
     } catch (err) { lbEl.innerHTML = '<div class="lb-empty">Ne mogu da se povežem sa serverom.</div>'; }
   }
@@ -518,14 +518,6 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
 
   function renderMatch(m) { return `<div class="league-tag">${m.league}</div><div class="teams">${m.home}<span class="vs">vs</span>${m.away}</div>`; }
 
-  function formatVrijeme(sek) {
-    if (sek === null || sek === undefined || sek === '') return '—';
-    const s = Number(sek);
-    if (!isFinite(s)) return '—';
-    const m = Math.floor(s / 60), r = s % 60;
-    return m > 0 ? `${m}m ${r}s` : `${r}s`;
-  }
-
   function showCard() {
     currentEl.style.transition = 'none'; currentEl.style.opacity = '1'; currentEl.style.transform = '';
     const stamps = Array.from(currentEl.querySelectorAll('.stamp'));
@@ -602,7 +594,6 @@ footer{background:var(--bg); padding:clamp(28px,5vw,40px) 0 24px; border-top:1px
           <div class="row2"><span>Kolo</span><span>${r.kolo}</span></div>
           <div class="row2"><span>Predato</span><span>${new Date(r.timestamp).toLocaleDateString('sr-Latn-ME')}</span></div>
           <div class="row2"><span>Bodovi</span><span>${r.bodovi === null ? '— (čeka rezultat)' : r.bodovi}</span></div>
-          <div class="row2"><span>Vrijeme popunjavanja</span><span>${formatVrijeme(r.vrijemeSek)}</span></div>
         </div>`).join('');
     } catch (err) { resultEl.textContent = 'Ne mogu da se povežem sa serverom.'; }
   });
