@@ -41,12 +41,14 @@
   }
   .mono{ font-family:'JetBrains Mono', monospace; }
 
-  /* ============ HEADER (no outbound nav — dead-end page) ============ */
+  /* ============ HEADER ============ */
   header{
     display:flex; align-items:center; justify-content:space-between;
     padding:20px 5vw;
     border-bottom:1px solid var(--line-strong);
-    background:var(--paper);
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px);
+    position:sticky; top:0; z-index:40;
   }
   .logo{
     font-size:clamp(26px,4vw,34px);
@@ -181,8 +183,12 @@
   .ad-slot .frame .dim{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted-2); opacity:0.7; }
 
   /* ============ BANNER AD ============ */
+  .ad-slot{ text-align:center; }
   .banner-ad{
-    display:block;
+    display:inline-block;
+    width:100%;
+    max-width:640px;
+    margin:0 auto;
     text-align:center;
     position:relative;
     padding:14px;
@@ -266,65 +272,95 @@
   /* ============ SCROLL POPUP (embed style) ============ */
   .popup-overlay{
     position:fixed; inset:0; z-index:80;
-    background:rgba(10,12,15,0.72);
+    background:rgba(10,12,15,0.78);
+    backdrop-filter:blur(3px);
     display:flex; align-items:center; justify-content:center;
     padding:20px;
     opacity:0; pointer-events:none;
-    transition:opacity .25s ease;
+    transition:opacity .3s ease;
   }
   .popup-overlay.show{ opacity:1; pointer-events:auto; }
   .popup-card{
-    width:100%; max-width:460px;
+    width:100%; max-width:420px;
     background:#12151b;
-    border-radius:14px;
+    border-radius:20px;
     overflow:hidden;
-    border:1px solid rgba(232,168,0,0.3);
-    box-shadow:0 40px 90px -30px rgba(0,0,0,0.7);
-    transform:scale(0.94) translateY(10px);
-    transition:transform .25s ease;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 50px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(232,168,0,0.15);
+    transform:scale(0.9) translateY(24px);
+    opacity:0;
+    transition:transform .35s cubic-bezier(.2,.9,.25,1.2), opacity .3s ease;
   }
-  .popup-overlay.show .popup-card{ transform:scale(1) translateY(0); }
+  .popup-overlay.show .popup-card{ transform:scale(1) translateY(0); opacity:1; }
   .popup-chrome{
-    display:flex; align-items:center; gap:8px;
-    padding:10px 14px;
+    display:flex; align-items:center; gap:10px;
+    padding:11px 14px;
     background:#1a1e25;
     border-bottom:1px solid rgba(255,255,255,0.06);
   }
-  .popup-chrome .dot{ width:9px; height:9px; border-radius:50%; }
+  .popup-chrome .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
   .popup-chrome .dot.r{ background:#E8564A; }
   .popup-chrome .dot.y{ background:#E8C24A; }
   .popup-chrome .dot.g{ background:#4AE87A; }
   .popup-chrome .url{
-    flex:1; margin-left:8px;
-    background:#0d0f13; border-radius:6px;
-    padding:6px 12px;
+    flex:1; margin-left:6px;
+    background:#0d0f13; border-radius:20px;
+    padding:6px 14px;
     font-family:'JetBrains Mono',monospace; font-size:11px; color:#8B92A0;
     display:flex; align-items:center; gap:6px;
   }
-  .popup-chrome .url .lock{ color:#4AE87A; }
-  .popup-body{ position:relative; }
-  .popup-body img{ width:100%; display:block; }
+  .popup-chrome .url .lock{ color:#4AE87A; font-size:10px; }
+  .popup-media{ position:relative; }
+  .popup-media img{ width:100%; display:block; }
+  .popup-media::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:60%;
+    background:linear-gradient(0deg, rgba(18,21,27,1), rgba(18,21,27,0));
+    pointer-events:none;
+  }
+  .popup-media .live-badge{
+    position:absolute; top:12px; left:12px; z-index:2;
+    display:flex; align-items:center; gap:6px;
+    background:rgba(13,15,19,0.85);
+    color:#fff;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;
+    padding:6px 10px; border-radius:20px;
+    backdrop-filter:blur(4px);
+  }
+  .popup-media .live-badge .dotp{ width:6px; height:6px; border-radius:50%; background:#E8564A; animation:blink 1.4s infinite; }
   .popup-close{
-    position:absolute; top:-2px; right:-2px;
-    width:34px; height:34px; border-radius:50%;
-    background:#0d0f13; border:1px solid rgba(255,255,255,0.15);
-    color:#fff; font-size:18px; cursor:pointer;
+    position:absolute; top:12px; right:12px; z-index:3;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(13,15,19,0.7);
+    backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff; font-size:16px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    margin:10px;
+    transition:background .2s ease;
   }
-  .popup-info{ padding:18px 20px 22px; }
+  .popup-close:hover{ background:rgba(214,48,26,0.85); }
+  .popup-info{ padding:6px 22px 24px; text-align:center; }
   .popup-info .eyebrow-p{
-    font-family:'Anton',sans-serif; color:var(--red); font-size:12px; letter-spacing:0.06em; margin-bottom:6px;
+    font-family:'Anton',sans-serif; color:var(--yellow); font-size:12px; letter-spacing:0.08em; margin-bottom:8px;
   }
-  .popup-info h3{ color:#fff; font-size:20px; margin:0 0 8px; line-height:1.25; }
-  .popup-info p{ color:#A9ADB4; font-size:13px; margin:0 0 16px; line-height:1.5; }
+  .popup-info h3{ color:#fff; font-size:23px; margin:0 0 10px; line-height:1.2; }
+  .popup-info p{ color:#A9ADB4; font-size:13.5px; margin:0 0 18px; line-height:1.55; }
   .popup-info .btn-full{
     display:block; width:100%; text-align:center;
     background:var(--yellow); color:#3a2c05;
-    font-family:'Anton',sans-serif; font-size:14px; letter-spacing:0.05em;
-    padding:14px; border-radius:8px; border:none; cursor:pointer;
+    font-family:'Anton',sans-serif; font-size:15px; letter-spacing:0.04em;
+    padding:15px; border-radius:10px; border:none; cursor:pointer;
+    box-shadow:0 14px 30px -10px rgba(232,168,0,0.5);
+    transition:transform .15s ease;
   }
-  .popup-info .fine{ text-align:center; font-size:10.5px; color:#5a5e66; margin-top:10px; }
+  .popup-info .btn-full:hover{ transform:translateY(-2px); }
+  .popup-trust{
+    display:flex; justify-content:center; gap:16px;
+    margin-top:14px;
+    font-size:10.5px; color:#6D7280; font-weight:700;
+  }
+  .popup-trust span{ display:flex; align-items:center; gap:5px; }
+  .popup-info .fine{ text-align:center; font-size:10px; color:#4a4e56; margin-top:14px; }
 
   /* ============ PUSH NOTIFICATION ============ */
   .push-toast{
@@ -548,13 +584,36 @@
   footer .logo{ justify-content:center; margin-bottom:10px; font-size:20px; }
 
   @media (max-width:620px){
-    .hero-media{ height:280px; }
-    .art-body{ font-size:16.5px; }
-    .art-body h2{ font-size:22px; }
-    .pull-quote{ font-size:19px; }
-    .byline .stats{ display:none; }
+    .hero-media{ height:240px; border-radius:10px; }
+    .art-hero{ padding-top:26px; }
+    .art-hero h1{ font-size:26px; }
+    .art-hero .dek{ font-size:15.5px; }
+    .art-body{ font-size:16px; }
+    .art-body h2{ font-size:21px; margin:34px 0 14px; }
+    .pull-quote{ font-size:18px; padding-left:16px; margin:24px 0; }
+    .byline{ flex-wrap:wrap; row-gap:8px; }
+    .byline .stats{ display:flex; margin-left:0; width:100%; order:3; gap:16px; }
+    .badges{ flex-wrap:wrap; }
+    .banner-ad{ padding:10px; border-radius:12px; }
+    .banner-ad .cta-line{ width:100%; padding:13px 20px; font-size:13px; }
+    .sticky-ad{ padding:9px 12px; gap:10px; }
+    .sticky-ad img{ height:40px; }
     .sticky-ad .txt span{ display:none; }
+    .sticky-ad .txt b{ font-size:12.5px; }
+    .sticky-ad .go-btn{ padding:9px 14px; font-size:11.5px; }
     .push-toast{ width:calc(100vw - 24px); top:12px; right:12px; }
+    .popup-info h3{ font-size:20px; }
+    .popup-info{ padding:6px 18px 20px; }
+    .related-section{ padding-top:20px; }
+    .caption-box, .inline-note{ font-size:13.5px; padding:14px 16px; }
+    header{ padding:16px 5vw; }
+    .crumbs{ font-size:11px; }
+  }
+
+  @media (min-width:1200px){
+    .art-hero{ max-width:860px; }
+    .ad-slot{ max-width:940px; }
+    .related-section{ max-width:1000px; }
   }
 </style>
 </head>
@@ -802,17 +861,22 @@
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="url"><span class="lock">🔒</span> admiralbet.me/promocija</span>
       </div>
-      <div class="popup-body">
+      <div class="popup-media">
+        <span class="live-badge"><span class="dotp"></span> UŽIVO · 214 registracija danas</span>
+        <button class="popup-close" id="popupClose" aria-label="Zatvori">×</button>
         <img src="https://admiralbet.me/assets/images/promotion/oiuztrfcgvhbjnkml.jpg" alt="AdmiralBet promocija">
       </div>
       <div class="popup-info">
-        <div class="eyebrow-p">EKSKLUZIVNA PONUDA</div>
+        <div class="eyebrow-p">EKSKLUZIVNA PONUDA ZA ČITAOCE</div>
         <h3>Registruj se i uzmi 1000€</h3>
         <p>Napravi nalog za manje od 2 minuta i aktiviraj dobrodošli bonus dok ponuda još traje.</p>
         <button class="btn-full" onclick="window.open('https://admiralbet.me','_blank')">REGISTRUJ SE SADA ▸</button>
+        <div class="popup-trust">
+          <span>✓ Licencirano u CG</span>
+          <span>✓ Brza isplata</span>
+        </div>
         <div class="fine">18+ · Igra na sreću može izazvati zavisnost. Igraj odgovorno.</div>
       </div>
-      <button class="popup-close" id="popupClose" aria-label="Zatvori">×</button>
     </div>
   </div>
 
