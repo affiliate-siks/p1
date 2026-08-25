@@ -276,20 +276,24 @@
     backdrop-filter:blur(3px);
     display:flex; align-items:center; justify-content:center;
     padding:20px;
+    overflow-y:auto;
     opacity:0; pointer-events:none;
     transition:opacity .3s ease;
   }
   .popup-overlay.show{ opacity:1; pointer-events:auto; }
   .popup-card{
     width:100%; max-width:420px;
+    max-height:calc(100vh - 40px);
     background:#12151b;
     border-radius:20px;
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
     border:1px solid rgba(255,255,255,0.08);
     box-shadow:0 50px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(232,168,0,0.15);
     transform:scale(0.9) translateY(24px);
     opacity:0;
     transition:transform .35s cubic-bezier(.2,.9,.25,1.2), opacity .3s ease;
+    margin:auto;
   }
   .popup-overlay.show .popup-card{ transform:scale(1) translateY(0); opacity:1; }
   .popup-chrome{
@@ -297,6 +301,7 @@
     padding:11px 14px;
     background:#1a1e25;
     border-bottom:1px solid rgba(255,255,255,0.06);
+    position:sticky; top:0; z-index:6;
   }
   .popup-chrome .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
   .popup-chrome .dot.r{ background:#E8564A; }
@@ -310,8 +315,8 @@
     display:flex; align-items:center; gap:6px;
   }
   .popup-chrome .url .lock{ color:#4AE87A; font-size:10px; }
-  .popup-media{ position:relative; }
-  .popup-media img{ width:100%; display:block; }
+  .popup-media{ position:relative; height:200px; background:#1a1e25; overflow:hidden; }
+  .popup-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .popup-media::after{
     content:"";
     position:absolute; left:0; right:0; bottom:0; height:60%;
@@ -329,12 +334,11 @@
   }
   .popup-media .live-badge .dotp{ width:6px; height:6px; border-radius:50%; background:#E8564A; animation:blink 1.4s infinite; }
   .popup-close{
-    position:absolute; top:12px; right:12px; z-index:3;
-    width:30px; height:30px; border-radius:50%;
-    background:rgba(13,15,19,0.7);
-    backdrop-filter:blur(4px);
+    flex:none; margin-left:4px;
+    width:26px; height:26px; border-radius:50%;
+    background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.15);
-    color:#fff; font-size:16px; cursor:pointer;
+    color:#fff; font-size:15px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     transition:background .2s ease;
   }
@@ -860,10 +864,10 @@
       <div class="popup-chrome">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
         <span class="url"><span class="lock">🔒</span> admiralbet.me/promocija</span>
+        <button class="popup-close" id="popupClose" aria-label="Zatvori">×</button>
       </div>
       <div class="popup-media">
         <span class="live-badge"><span class="dotp"></span> UŽIVO · 214 registracija danas</span>
-        <button class="popup-close" id="popupClose" aria-label="Zatvori">×</button>
         <img src="https://admiralbet.me/assets/images/promotion/oiuztrfcgvhbjnkml.jpg" alt="AdmiralBet promocija">
       </div>
       <div class="popup-info">
