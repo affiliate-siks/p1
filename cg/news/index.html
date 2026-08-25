@@ -272,13 +272,13 @@
   /* ============ SCROLL POPUP (embed style) ============ */
   .popup-overlay{
     position:fixed; inset:0; z-index:80;
-    background:rgba(10,12,15,0.78);
-    backdrop-filter:blur(3px);
+    background:rgba(10,12,15,0.6);
+    backdrop-filter:blur(2px);
     display:flex; align-items:center; justify-content:center;
     padding:20px;
     overflow-y:auto;
     opacity:0; pointer-events:none;
-    transition:opacity .3s ease;
+    transition:opacity .4s ease;
   }
   .popup-overlay.show{ opacity:1; pointer-events:auto; }
   .popup-card{
@@ -289,10 +289,10 @@
     overflow-x:hidden;
     overflow-y:auto;
     border:1px solid rgba(255,255,255,0.08);
-    box-shadow:0 50px 100px -20px rgba(0,0,0,0.75), 0 0 0 1px rgba(232,168,0,0.15);
-    transform:scale(0.9) translateY(24px);
+    box-shadow:0 30px 70px -24px rgba(0,0,0,0.5);
+    transform:scale(0.97) translateY(10px);
     opacity:0;
-    transition:transform .35s cubic-bezier(.2,.9,.25,1.2), opacity .3s ease;
+    transition:transform .4s cubic-bezier(.16,1,.3,1), opacity .35s ease;
     margin:auto;
   }
   .popup-overlay.show .popup-card{ transform:scale(1) translateY(0); opacity:1; }
@@ -308,12 +308,18 @@
   .popup-chrome .dot.y{ background:#E8C24A; }
   .popup-chrome .dot.g{ background:#4AE87A; }
   .popup-chrome .url{
-    flex:1; margin-left:6px;
+    flex:1; margin-left:6px; min-width:0;
     background:#0d0f13; border-radius:20px;
     padding:6px 14px;
     font-family:'JetBrains Mono',monospace; font-size:11px; color:#8B92A0;
     display:flex; align-items:center; gap:6px;
+    overflow:hidden;
   }
+  .popup-chrome .url span:last-child{
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;
+  }
+  .popup-chrome .url .lock{ flex:none; }
+  .popup-chrome .url .url-text{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .popup-chrome .url .lock{ color:#4AE87A; font-size:10px; }
   .popup-media{ position:relative; height:200px; background:#1a1e25; overflow:hidden; }
   .popup-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
@@ -332,7 +338,7 @@
     padding:6px 10px; border-radius:20px;
     backdrop-filter:blur(4px);
   }
-  .popup-media .live-badge .dotp{ width:6px; height:6px; border-radius:50%; background:#E8564A; animation:blink 1.4s infinite; }
+  .popup-media .live-badge .dotp{ width:6px; height:6px; border-radius:50%; background:#E8564A; box-shadow:0 0 0 0 rgba(232,86,74,0.5); animation:pulse 2s infinite; }
   .popup-close{
     flex:none; margin-left:4px;
     width:26px; height:26px; border-radius:50%;
@@ -863,7 +869,7 @@
     <div class="popup-card">
       <div class="popup-chrome">
         <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-        <span class="url"><span class="lock">🔒</span> admiralbet.me/promocija</span>
+        <span class="url"><span class="lock">🔒</span><span class="url-text">admiralbet.me/promocija</span></span>
         <button class="popup-close" id="popupClose" aria-label="Zatvori">×</button>
       </div>
       <div class="popup-media">
