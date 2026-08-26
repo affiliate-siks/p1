@@ -191,6 +191,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .odd-btn{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 13px;text-align:center;min-width:54px;transition:.12s;}
 .odd-btn:hover{border-color:var(--green);}
 .odd-btn.selected{background:rgba(0,231,1,.16);border-color:var(--green);box-shadow:var(--glow-green-soft);}
+.tip-form-pick.active{background:rgba(0,231,1,.16);border-color:var(--green);box-shadow:var(--glow-green-soft);}
+.tip-form-pick.active .lbl{color:var(--green);}
 .odd-btn .lbl{font-size:9px;color:var(--text-faint);display:block;}
 .odd-btn .val{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--green);display:block;margin-top:1px;}
 
@@ -496,7 +498,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <div class="slip-body" id="mobileSlipBody"></div>
       <div class="slip-foot">
         <div class="slip-row"><span>Odabrano</span><span class="val" id="mobileSlipTotal">0</span></div>
-        <button class="slip-cta" id="mobileSlipCta" disabled>Uporedi kvote →</button>
+        <button class="slip-cta" id="mobileSlipCta" disabled onclick="openCompareView();">Uporedi kvote →</button>
       </div>
     </div>
   </div>
@@ -511,7 +513,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     </div>
     <div class="slip-foot">
       <div class="slip-row"><span>Odabrano</span><span class="val" id="slipTotal">0</span></div>
-      <button class="slip-cta" id="slipCta" disabled>Uporedi kvote →</button>
+      <button class="slip-cta" id="slipCta" disabled onclick="openCompareView();">Uporedi kvote →</button>
     </div>
   </aside>
 </div>
@@ -610,6 +612,12 @@ let currentMarket = 'UK';
 let selectedMatchId = null;
 let selectedOperator = null; // {type, id}
 let selectedRoomId = null;
+let predictorPicks = {};      // matchId -> '1'|'X'|'2'
+let predictorSubmitted = false;
+let publishedTips = [
+  {author:'punter_kate', matchId:1, pick:'1', reasoning:'Arsenal ima domaću prednost i Liverpool putuje bez dva startera u odbrani.', time:'prije 2h'},
+  {author:'sharp_marko', matchId:4, pick:'1', reasoning:'Bayern gubi samo 1 od zadnjih 12 domaćih utakmica protiv Dortmunda.', time:'prije 5h'},
+];
 
 let mode = 'sport';
 let page = 'sport-home';
@@ -619,15 +627,17 @@ let sidebarCollapsed = false;
 function starRow(rating){ const full = Math.round(parseFloat(rating)); return '★'.repeat(full) + '☆'.repeat(5-full); }
 function initials(name){ return name.charAt(0).toUpperCase(); }
 function imgUrl(seed, w, h){ return 'https://picsum.photos/seed/' + encodeURIComponent(seed) + '/' + w + '/' + (h||w); }
+function unsplashUrl(topic, seed, w, h){ return 'https://source.unsplash.com/' + w + 'x' + (h||w) + '/?' + encodeURIComponent(topic) + '&sig=' + encodeURIComponent(seed); }
 function avatarImg(seed, size){
   var init = (seed||'?').charAt(0).toUpperCase();
   return '<img src="' + imgUrl('av-'+seed, size||64) + '" alt="' + seed + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;img-fallback&quot;>' + init + '</span>\'">';
 }
-function decorImg(cls, seed, w, h, alt){
-  return '<img class="' + cls + '" src="' + imgUrl(seed,w,h) + '" alt="' + (alt||'') + '" loading="lazy" onerror="this.style.display=\'none\';this.closest(\'.op-banner,.game-tile,.article-card,.promo-banner\').classList.add(\'img-failed\');">';
+function decorImg(cls, seed, w, h, alt, topic){
+  var src = topic ? unsplashUrl(topic, seed, w, h) : imgUrl(seed, w, h);
+  return '<img class="' + cls + '" src="' + src + '" alt="' + (alt||'') + '" loading="lazy" onerror="this.style.display=\'none\';this.closest(\'.op-banner,.game-tile,.article-card,.promo-banner\').classList.add(\'img-failed\');">';
 }
 function articleCardHtml(cat, title, seed){
-  return '<div class="article-card">' + decorImg('article-thumb',seed,300,160,cat)
+  return '<div class="article-card">' + decorImg('article-thumb',seed,300,160,cat,'sports betting')
     + '<div class="article-body"><div class="article-cat">' + cat + '</div><div class="article-title">' + title + '</div></div></div>';
 }
 
@@ -647,7 +657,7 @@ function matchRowHtml(m){
 function opCardHtml(op, tagIcon, type){
   var t = type || 'bookmaker';
   var imgSeed = (t==='casino'?'casino-':'book-') + op.id;
-  return '<div class="op-card" onclick="openOperator(\'' + t + '\',\'' + op.id + '\')" style="cursor:pointer;"><div class="op-banner">' + decorImg('',imgSeed,300,150,op.name) + '<div class="featured-tag">Featured</div></div>'
+  return '<div class="op-card" onclick="openOperator(\'' + t + '\',\'' + op.id + '\')" style="cursor:pointer;"><div class="op-banner">' + decorImg('',imgSeed,300,150,op.name,(t==='casino'?'casino,slot machine':'sports betting,stadium')) + '<div class="featured-tag">Featured</div></div>'
     + '<div class="op-body"><div class="op-name">' + op.name + '</div>'
     + '<div class="op-rating"><span class="stars">' + starRow(op.rating) + '</span><span class="rating-num">' + op.rating + '</span></div>'
     + '<div class="op-bonus">' + op.bonus + '</div>'
@@ -682,6 +692,13 @@ function addToSlip(matchId, pick, label, odd){
 }
 function removeFromSlip(matchId){ slip = slip.filter(function(s){ return s.matchId!==matchId; }); renderSlip(); render(); }
 function toggleMobileSlip(){ document.getElementById('mobileSlipOverlay').classList.toggle('open'); }
+function openCompareView(){
+  if(slip.length===0) return;
+  document.getElementById('mobileSlipOverlay').classList.remove('open');
+  page = 'compare-view';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 function openMatch(id){ selectedMatchId = id; page = 'match-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function openOperator(type, id){ selectedOperator = {type:type,id:id}; page = 'operator-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
@@ -800,7 +817,7 @@ const navGames = [
 ];
 
 function homeSport(){
-  return '<div class="promo-banner">' + decorImg('promo-bg','promo-sport',900,300,'') + '<span class="promo-eyebrow">⚡ Kolo 14 u toku</span>'
+  return '<div class="promo-banner">' + decorImg('promo-bg','promo-sport',900,300,'','football stadium night') + '<span class="promo-eyebrow">⚡ Kolo 14 u toku</span>'
     + '<div class="promo-title">Besplatni Predictor — pogodi 6 mečeva, osvoji nagrade</div>'
     + '<div class="promo-desc">Bez pologa, bez rizika. Unesi tipove prije zaključavanja kola i popni se na leaderboard.</div></div>'
     + '<div class="block"><div class="block-head"><div><div class="block-title"><span class="dot-live"></span>Today</div><div class="block-sub">Mečevi na dan posjete — najrelevantnije lige prvo</div></div><a href="#" class="see-all sub-link" data-target="sport-matches">Svi mečevi →</a></div>'
@@ -818,7 +835,7 @@ function homeSport(){
 }
 
 function homeCasino(){
-  return '<div class="promo-banner" style="background:linear-gradient(120deg,#241C0B 0%,#1A140B 55%,var(--surface) 100%);border-color:rgba(201,162,75,.25);">' + decorImg('promo-bg','promo-casino',900,300,'') + '<span class="promo-eyebrow" style="background:rgba(201,162,75,.16);color:var(--gold);">🎰 Free Play</span>'
+  return '<div class="promo-banner" style="background:linear-gradient(120deg,#241C0B 0%,#1A140B 55%,var(--surface) 100%);border-color:rgba(201,162,75,.25);">' + decorImg('promo-bg','promo-casino',900,300,'','casino,roulette') + '<span class="promo-eyebrow" style="background:rgba(201,162,75,.16);color:var(--gold);">🎰 Free Play</span>'
     + '<div class="promo-title">Isprobaj slotove bez rizika, bez registracije</div>'
     + '<div class="promo-desc">Demo verzije popularnih igara — najbrži način da testiraš prije nego uplatiš.</div></div>'
     + '<div class="block"><div class="block-head"><div><div class="block-title">Today</div><div class="block-sub">Novi bonusi i promocije dana</div></div><a href="#" class="see-all sub-link" data-target="global-bonuses">Svi bonusi →</a></div>'
@@ -835,8 +852,8 @@ function homeCasino(){
     + '<tr><td>Gates of Olympus</td><td>Pragmatic Play</td><td class="mono" style="color:var(--green);">96.9%</td><td>Aurora Casino</td></tr>'
     + '<tr><td>Starburst</td><td>NetEnt</td><td class="mono" style="color:var(--green);">96.1%</td><td>Emerald Palace</td></tr></table></div>'
     + '<div class="block"><div class="block-head"><div class="block-title">Aktivni turniri</div><a href="#" class="see-all">Svi turniri →</a></div>'
-    + '<div class="cards-grid"><div class="article-card">' + decorImg('article-thumb','tourn1',300,160,'Turnir') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Slots Masters — nagradni fond €10,000, prijava do 31.08.</div></div></div>'
-    + '<div class="article-card">' + decorImg('article-thumb','tourn2',300,160,'Turnir') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Weekend Spin Race — top 50 dijeli free spinove</div></div></div></div></div>'
+    + '<div class="cards-grid"><div class="article-card">' + decorImg('article-thumb','tourn1',300,160,'Turnir','slot machine,casino') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Slots Masters — nagradni fond €10,000, prijava do 31.08.</div></div></div>'
+    + '<div class="article-card">' + decorImg('article-thumb','tourn2',300,160,'Turnir','casino,poker chips') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Weekend Spin Race — top 50 dijeli free spinove</div></div></div></div></div>'
     + '<div class="block"><div class="block-head"><div class="block-title">Vodiči &amp; edukacija</div><a href="#" class="see-all">Svi članci →</a></div>'
     + '<div class="cards-grid">' + articles.map(function(a,i){return articleCardHtml(a.cat,a.title,'article-'+i);}).join('') + '</div></div>';
 }
@@ -851,16 +868,107 @@ function pageMatches(){
     + '<div class="footnote">Klik na kvotu dodaje meč u Compare Tray desno. Klik na red meča otvara Match detail.</div>';
 }
 
+function setPredictorPick(matchId, pick){
+  if(predictorSubmitted) return;
+  predictorPicks[matchId] = pick;
+  render();
+}
+function submitPredictorRound(){
+  var roundMatches = matches.slice(0,6);
+  var picked = roundMatches.filter(function(m){ return predictorPicks[m.id]; }).length;
+  if(picked < roundMatches.length){ return; }
+  if(!loggedIn){ toggleLogin(); }
+  page = 'sport-predictions';
+  predictorSubmitted = true;
+  render();
+}
+function resetPredictorRound(){ predictorPicks = {}; predictorSubmitted = false; render(); }
+
+function publishTip(){
+  var matchSel = document.getElementById('tipMatchSelect');
+  var pickBtns = document.querySelectorAll('.tip-form-pick.active');
+  var reasoning = document.getElementById('tipReasoning').value.trim();
+  if(!matchSel || pickBtns.length===0 || !reasoning){
+    document.getElementById('tipFormError').textContent = 'Odaberi meč, tip (1/X/2) i napiši kratko obrazloženje prije objave.';
+    return;
+  }
+  publishedTips.unshift({
+    author: loggedIn ? 'ti (demo nalog)' : 'Gost',
+    matchId: parseInt(matchSel.value,10),
+    pick: pickBtns[0].dataset.pick,
+    reasoning: reasoning,
+    time: 'upravo sad'
+  });
+  document.getElementById('tipReasoning').value = '';
+  document.querySelectorAll('.tip-form-pick').forEach(function(b){ b.classList.remove('active'); });
+  render();
+}
+function selectTipFormPick(el){
+  document.querySelectorAll('.tip-form-pick').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function tipCardHtml(t){
+  var m = matches.find(function(x){ return x.id===t.matchId; });
+  var pickLabel = t.pick==='1' ? (m?m.home:'1') : t.pick==='2' ? (m?m.away:'2') : 'Neriješeno';
+  return '<div class="acca-card" style="margin-bottom:8px;"><div class="acca-head">'
+    + '<div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(t.author,48) + '</div><b>' + t.author + '</b></div>'
+    + '<div class="footnote" style="margin:0;">' + t.time + '</div></div>'
+    + '<div class="leg" style="margin-bottom:8px;"><span>' + (m? m.home+' — '+m.away : 'Meč') + '</span><span class="odd">Tip: ' + pickLabel + '</span></div>'
+    + '<div style="font-size:12.5px;color:var(--text-dim);">' + t.reasoning + '</div></div>';
+}
+
 function pagePredictions(){
+  var roundMatches = matches.slice(0,6);
+  var pickedCount = roundMatches.filter(function(m){ return predictorPicks[m.id]; }).length;
+  var rowsHtml = roundMatches.map(function(m){
+    var pick = predictorPicks[m.id];
+    return '<div class="match-row" style="grid-template-columns:1fr auto;">'
+      + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams">'
+      + '<div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
+      + '<div class="odds-row">'
+      + '<div class="odd-btn ' + (pick==='1'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'1')\"><span class=\"lbl\">1</span><span class=\"val\">" + m.odds[0] + '</span></div>'
+      + '<div class="odd-btn ' + (pick==='X'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'X')\"><span class=\"lbl\">X</span><span class=\"val\">" + m.odds[1] + '</span></div>'
+      + '<div class="odd-btn ' + (pick==='2'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'2')\"><span class=\"lbl\">2</span><span class=\"val\">" + m.odds[2] + '</span></div>'
+      + '</div></div>';
+  }).join('');
+
+  var ctaBlock;
+  if(predictorSubmitted){
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(0,231,1,.4);"><div class="left"><div class="round-pill">✓ Tipovi predati</div><h3>Vidimo se poslije mečeva</h3><p>Poeni se računaju automatski kad mečevi završe. Pratiš status na My Dashboard.</p></div>'
+      + '<button class="btn-primary" onclick="resetPredictorRound();">Izmijeni tipove</button></div>';
+  } else {
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč, pa predaj kolo prije zaključavanja.</p></div>'
+      + '<button class="btn-primary" ' + (pickedCount<6?'style="opacity:.45;pointer-events:none;"':'') + ' onclick="submitPredictorRound();">Predaj tipove →</button></div>';
+  }
+
   return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — besplatna igra pogađanja rezultata</div></div>'
-    + '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>6 mečeva čeka tvoj tip</h3><p>Unesi predviđanja prije zaključavanja kola.</p></div>'
-    + '<button class="btn-primary">Unesi tipove →</button></div>'
+    + ctaBlock
+    + '<div class="block-head"><div class="block-title">Kolo 14 — mečevi</div></div>'
+    + '<div class="match-list" style="margin-bottom:26px;">' + rowsHtml + '</div>'
     + '<div class="block-head"><div class="block-title">Leaderboard — Kolo 14</div></div>'
     + '<div class="tipster-list">' + tipsters.map(tipsterRowHtml).join('') + '</div>';
 }
 
 function pageTipsters(){
+  var matchOptions = matches.map(function(m){ return '<option value="'+m.id+'">'+m.home+' — '+m.away+'</option>'; }).join('');
+  var publishForm = '<div class="tool-card" style="margin-bottom:24px;">'
+    + '<div class="tool-title">Objavi predikciju <span class="badge-open">' + (loggedIn?'ti (demo nalog)':'kao gost') + '</span></div>'
+    + '<div class="tool-desc">Opt-in je obavezan — ovim potvrđuješ da tvoj tip postaje javno vidljiv sa tvojim imenom.</div>'
+    + '<div style="margin-bottom:10px;"><select id="tipMatchSelect" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:12.5px;">' + matchOptions + '</select></div>'
+    + '<div class="odds-row" style="margin-bottom:10px;">'
+    + '<div class="odd-btn tip-form-pick" data-pick="1" onclick="selectTipFormPick(this)"><span class="lbl">1</span></div>'
+    + '<div class="odd-btn tip-form-pick" data-pick="X" onclick="selectTipFormPick(this)"><span class="lbl">X</span></div>'
+    + '<div class="odd-btn tip-form-pick" data-pick="2" onclick="selectTipFormPick(this)"><span class="lbl">2</span></div>'
+    + '</div>'
+    + '<textarea id="tipReasoning" placeholder="Kratko obrazloženje (obavezno — bez obrazloženja se ne objavljuje)" style="width:100%;min-height:64px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:12.5px;font-family:inherit;resize:vertical;margin-bottom:8px;"></textarea>'
+    + '<div id="tipFormError" style="color:var(--live);font-size:11.5px;margin-bottom:8px;"></div>'
+    + '<button class="op-cta" style="width:100%;" onclick="publishTip();">Objavi predikciju →</button></div>';
+
   return '<div class="page-header"><div class="page-title">Tipsters</div><div class="page-desc">Verifikovana zajednica — opt-in obavezan, niko ne postaje javan automatski</div></div>'
+    + publishForm
+    + '<div class="block-head"><div class="block-title">Najnovije analize zajednice</div></div>'
+    + '<div style="margin-bottom:24px;">' + publishedTips.slice(0,5).map(tipCardHtml).join('') + '</div>'
     + '<div class="block-head"><div class="block-title">Leaderboard</div></div>'
     + '<div class="tipster-list">' + tipsters.map(tipsterRowHtml).join('') + '</div>'
     + '<div class="block" style="margin-top:24px;"><div class="block-head"><div class="block-title">Guest Analysts</div><div class="block-sub" style="margin:0;">Nisu javno vezani za profil</div></div>'
@@ -935,15 +1043,26 @@ function pageMyDashboard(){
     return '<div class="page-header"><div class="page-title">My Dashboard</div><div class="page-desc">Prijavi se da vidiš svoje poene, kola i tipove</div></div>'
       + '<div class="predictor-cta"><div class="left"><h3>Nisi prijavljen</h3><p>Prijavi se (Sign Up gore desno) da otključaš Dashboard sa svojim XP-om, nivoom i istorijom tipova.</p></div><button class="btn-primary" onclick="toggleLogin();">Sign Up →</button></div>';
   }
+  var pickedCount = matches.slice(0,6).filter(function(m){ return predictorPicks[m.id]; }).length;
+  var round14Status = predictorSubmitted ? 'Predato' : (pickedCount>0 ? 'U toku' : 'Nije početo');
+  var round14Val = predictorSubmitted ? '✓' : pickedCount+'/6';
+  var myTipsHtml;
+  if(predictorSubmitted){
+    myTipsHtml = matches.slice(0,6).map(function(m){
+      var pick = predictorPicks[m.id];
+      var label = pick==='1'?m.home : pick==='2'?m.away : 'Neriješeno';
+      return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + m.home + ' — ' + m.away + '</div><div class="tip-status">Tip: ' + label + '</div></div><div class="tip-stat"><div class="num">' + m.odds[pick==='1'?0:pick==='X'?1:2] + '</div><div class="lbl">kvota</div></div></div>';
+    }).join('');
+  } else {
+    myTipsHtml = '<div class="footnote" style="padding:14px;">Još nisi predao tipove za Kolo 14. <a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-predictions\');" style="display:inline;">Unesi tipove →</a></div>';
+  }
   return '<div class="page-header"><div class="page-title">My Dashboard</div><div class="page-desc">Poeni, nivo, moja kola, moji tipovi</div></div>'
     + '<div class="predictor-cta" style="margin-bottom:22px;"><div class="left"><div class="round-pill">Level 11</div><h3>2,340 / 3,650 XP</h3><p>1,310 XP do sljedećeg nivoa.</p></div><div class="vip-bar" style="width:180px;"><div class="vip-bar-fill"></div></div></div>'
     + '<div class="block-head"><div class="block-title">Moja kola — Predictor</div></div>'
     + '<div class="tipster-list" style="margin-bottom:22px;"><div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 13</div><div class="tip-status">Završeno</div></div><div class="tip-stat"><div class="num">#4</div><div class="lbl">plasman</div></div></div>'
-    + '<div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 14</div><div class="tip-status featured">U toku</div></div><div class="tip-stat"><div class="num">2/6</div><div class="lbl">unesenih tipova</div></div></div></div>'
-    + '<div class="block-head"><div class="block-title">Moji tipovi</div></div>'
-    + '<div class="tipster-list">' + sampleAcca[0].legs.map(function(l){
-        return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + l.m + '</div><div class="tip-status">' + l.pick + '</div></div><div class="tip-stat"><div class="num">' + l.odd + '</div><div class="lbl">kvota</div></div></div>';
-      }).join('') + '</div>';
+    + '<div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 14</div><div class="tip-status featured">' + round14Status + '</div></div><div class="tip-stat"><div class="num">' + round14Val + '</div><div class="lbl">unesenih tipova</div></div></div></div>'
+    + '<div class="block-head"><div class="block-title">Moji tipovi — Kolo 14</div></div>'
+    + '<div class="tipster-list">' + myTipsHtml + '</div>';
 }
 
 function pageChatRoom(){
@@ -959,7 +1078,7 @@ function pageChatRoom(){
 
 function pageCasinoGames(){
   var tiles = navGames.map(function(g){
-    return '<div class="game-tile">' + decorImg('',('game-'+g.name),260,340,g.name)
+    return '<div class="game-tile">' + decorImg('',('game-'+g.name),260,340,g.name,'slot machine,casino lights')
       + '<div class="game-overlay"><div class="game-name">' + g.name + '</div><div class="game-rtp">RTP ' + g.rtp + '</div></div></div>';
   }).join('');
   return '<div class="page-header"><div class="page-title">Games</div><div class="page-desc">Sve igre po kategoriji i provajderu</div></div>'
@@ -978,7 +1097,7 @@ function pageCasinoCasinos(){
 
 function pageCasinoFreeplay(){
   var tiles = navGames.map(function(g){
-    return '<div class="game-tile">' + decorImg('',('game-'+g.name),260,340,g.name)
+    return '<div class="game-tile">' + decorImg('',('game-'+g.name),260,340,g.name,'slot machine,casino lights')
       + '<div class="game-overlay"><div class="game-name">' + g.name + '</div><div class="game-rtp" style="color:var(--gold);">Demo · bez novca</div></div></div>';
   }).join('');
   return '<div class="page-header"><div class="page-title">Free Play</div><div class="page-desc">Demo igre bez novca — najbrži način da testiraš prije uplate</div></div>'
@@ -1031,8 +1150,8 @@ function pageGlobalContent(){
     + '<div class="cards-grid" style="margin-bottom:22px;">' + articles.map(function(a,i){return articleCardHtml(a.cat,a.title,'article-'+i);}).join('') + '</div>'
     + '<div class="block-head"><div class="block-title">Education</div></div>'
     + '<div class="cards-grid">'
-    + '<div class="article-card">' + decorImg('article-thumb','edu1',300,160,'Education') + '<div class="article-body"><div class="article-cat">Sports Betting 101</div><div class="article-title">Tipovi opklada objašnjeni — od 1X2 do Asian Handicap</div></div></div>'
-    + '<div class="article-card">' + decorImg('article-thumb','edu2',300,160,'Education') + '<div class="article-body"><div class="article-cat">Casino Strategy</div><div class="article-title">Šta znači volatilnost slota i zašto je bitna</div></div></div>'
+    + '<div class="article-card">' + decorImg('article-thumb','edu1',300,160,'Education','sports betting,soccer') + '<div class="article-body"><div class="article-cat">Sports Betting 101</div><div class="article-title">Tipovi opklada objašnjeni — od 1X2 do Asian Handicap</div></div></div>'
+    + '<div class="article-card">' + decorImg('article-thumb','edu2',300,160,'Education','casino,cards') + '<div class="article-body"><div class="article-cat">Casino Strategy</div><div class="article-title">Šta znači volatilnost slota i zašto je bitna</div></div></div>'
     + '</div>';
 }
 
@@ -1076,6 +1195,36 @@ function pageGlobalRg(){
     + '</div>';
 }
 
+function pageCompareView(){
+  if(slip.length===0){
+    return '<div class="page-header"><div class="page-title">Uporedi kvote</div><div class="page-desc">Tray je prazan</div></div>'
+      + '<div class="footnote">Dodaj bar jednu kvotu klikom na 1/X/2 na Matches stranici, pa se vrati ovdje.</div>';
+  }
+  var bms = featuredBookmakers.concat([{id:'winzone',name:'WinZone',rating:'4.1'}]);
+  var rows = slip.map(function(s){
+    var m = matches.find(function(x){ return x.id===s.matchId; });
+    var baseOdd = parseFloat(s.odd);
+    var cells = bms.map(function(b,i){
+      var variance = ((i*7 + s.matchId*3) % 9) / 100; // deterministic small variance per bookmaker
+      var val = (baseOdd + variance).toFixed(2);
+      return {name:b.name, val:val};
+    });
+    var best = cells.reduce(function(a,c){ return parseFloat(c.val)>parseFloat(a.val)?c:a; });
+    return {label:(m?m.home+' — '+m.away:'')+' · '+s.label, cells:cells, bestName:best.name};
+  });
+  var header = '<tr><th>Odabir</th>' + bms.map(function(b){ return '<th>'+b.name+'</th>'; }).join('') + '</tr>';
+  var body = rows.map(function(r){
+    return '<tr><td class="bm-name">' + r.label + '</td>' + r.cells.map(function(c){
+      var isBest = c.name===r.bestName;
+      return '<td class="mono" style="' + (isBest?'color:var(--green);font-weight:800;':'color:var(--text-dim);') + '">' + c.val + (isBest?' ★':'') + '</td>';
+    }).join('') + '</tr>';
+  }).join('');
+  return '<div class="page-header"><a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-matches\');">← Nastavi biranje</a>'
+    + '<div class="page-title" style="margin-top:8px;">Uporedi kvote</div><div class="page-desc">' + slip.length + ' odabrano · ★ = najbolja kvota po redu</div></div>'
+    + '<div style="overflow-x:auto;"><table class="bm-table">' + header + body + '</table></div>'
+    + '<div class="footnote">Kvote su simulirane radi demonstracije poređenja — u produkciji dolaze iz live feed integracije (Odds API / Sportmonks).</div>';
+}
+
 const routes = {
   'sport-home': homeSport, 'casino-home': homeCasino, 'sport-matches': pageMatches,
   'sport-predictions': pagePredictions, 'sport-tipsters': pageTipsters,
@@ -1086,7 +1235,7 @@ const routes = {
   'global-community': pageGlobalCommunity, 'global-partners': pageGlobalPartners,
   'global-methodology': pageGlobalMethodology, 'global-rg': pageGlobalRg,
   'match-detail': pageMatchDetail, 'operator-detail': pageOperatorDetail,
-  'my-dashboard': pageMyDashboard, 'chat-room': pageChatRoom,
+  'my-dashboard': pageMyDashboard, 'chat-room': pageChatRoom, 'compare-view': pageCompareView,
 };
 
 function render(){
