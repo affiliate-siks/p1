@@ -1017,7 +1017,7 @@ if (!section || !video) return;
 if (STREAM_CONFIG.disabled || !STREAM_CONFIG.playback_id) return;
 
 // Prikaz samo na dan izvlačenja (četvrtak, od 18h). getDay(): 4=četvrtak
-const isDrawDay = new Date().getDay() === 5;
+const isDrawDay = new Date().getDay() === 4;
 if (!isDrawDay) return;
 
 const hlsUrl = 'https://stream.mux.com/' + STREAM_CONFIG.playback_id + '.m3u8';
