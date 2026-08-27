@@ -1040,7 +1040,10 @@ video.addEventListener('error', markWaiting);
 video.addEventListener('stalled', markWaiting);
 
 // Safari i iOS podržavaju HLS nativno — hls.js nepotreban
-if (video.canPlayType('application/vnd.apple.mpegurl')) {
+const isSafariBrowser = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+const nativeHlsSupport = video.canPlayType('application/vnd.apple.mpegurl');
+
+if (isSafariBrowser && nativeHlsSupport) {
 video.src = hlsUrl;
 video.play().catch(function () {});
 } else {
@@ -1056,7 +1059,12 @@ hls.on(window.Hls.Events.ERROR, function (_, data) {
 if (data && data.fatal) markWaiting();
 });
 video.play().catch(function () {});
+} else {
+markWaiting();
 }
+};
+script.onerror = function () {
+markWaiting();
 };
 document.body.appendChild(script);
 }
