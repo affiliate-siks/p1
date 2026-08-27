@@ -553,6 +553,21 @@ const guestAnalysts = [
   {name:'anon_9013', status:'Guest Analyst', wr:'59%', tips:33},
 ];
 
+// Fiksne kategorije tipsterskih tipova — obavezne za svaki objavljeni tip.
+// minLegs/maxLegs kontrolišu koliko događaja tip smije da sadrži u prototipu;
+// granice kvota (sureBet/lowRisk/highRisk) su orijentacione za fudbal — u produkciji se
+// određuju po sportu, ne isto za sve.
+const tipCategories = [
+  {id:'sure-bet', label:'Sure bet', hint:'Kvota do 1.30 — tipster jako siguran u ishod. Ne predstavlja garanciju, samo promociju.', minLegs:1, maxLegs:1},
+  {id:'low-risk', label:'Low risk', hint:'Kvota 1.30–1.80 — siguran tip, ali manje izvjestan od sure bet-a.', minLegs:1, maxLegs:1},
+  {id:'high-risk', label:'High risk', hint:'Kvota 3.00+ ili više događaja spojenih u tiket — za smjelije kombinacije.', minLegs:1, maxLegs:6},
+  {id:'single-dana', label:'Single dana', hint:'Jedan tip za taj dan — ono u šta tipster najviše vjeruje.', minLegs:1, maxLegs:1},
+  {id:'tiket-dana', label:'Tiket dana', hint:'2 do 4 događaja spojena u jedan tiket za taj dan.', minLegs:2, maxLegs:4},
+  {id:'tiket-nedjelje', label:'Tiket nedjelje', hint:'5 ili više događaja, obično za cijelu sedmicu unaprijed.', minLegs:5, maxLegs:8},
+];
+function tipCategoryLabel(id){ var c = tipCategories.find(function(x){ return x.id===id; }); return c ? c.label : id; }
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 const articles = [
   {cat:'Guide', title:'Kako se čita decimalna kvota — vodič za početnike'},
   {cat:'News', title:'Transferni rok: 5 poteza koji mijenjaju kvote ove sedmice'},
@@ -615,9 +630,16 @@ let selectedRoomId = null;
 let predictorPicks = {};      // matchId -> '1'|'X'|'2'
 let predictorSubmitted = false;
 let publishedTips = [
-  {author:'punter_kate', matchId:1, pick:'1', reasoning:'Arsenal ima domaću prednost i Liverpool putuje bez dva startera u odbrani.', time:'prije 2h'},
-  {author:'sharp_marko', matchId:4, pick:'1', reasoning:'Bayern gubi samo 1 od zadnjih 12 domaćih utakmica protiv Dortmunda.', time:'prije 5h'},
+  {author:'punter_kate', category:'single-dana', legs:[{matchId:1,pick:'1'}], customTag:null, reasoning:'Arsenal ima domaću prednost i Liverpool putuje bez dva startera u odbrani.', time:'prije 2h'},
+  {author:'sharp_marko', category:'high-risk', legs:[{matchId:4,pick:'1'},{matchId:5,pick:'1'},{matchId:6,pick:'1'}], customTag:'Derbi specijal', reasoning:'Tri favorita danas igraju kod kuće — Bayern gubi samo 1 od zadnjih 12 protiv Dortmunda, PSG i City takođe favoriti.', time:'prije 5h'},
+  {author:'valuehunter', category:'tiket-dana', legs:[{matchId:1,pick:'1'},{matchId:3,pick:'1'},{matchId:2,pick:'2'}], customTag:null, reasoning:'Tri domaćina u dobroj formi, plus Sevilla kao value na gostovanju kod Reala.', time:'prije 8h'},
 ];
+
+// State forme za objavu tipsterskog tipa (odvojeno od Predictor state-a — Predictor ostaje prost 1/X/2 po meču)
+let tipFormCategory = 'single-dana';
+let tipFormLegs = [{matchId:matches[0].id, pick:null}];
+let tipFormReasoning = '';
+let tipFormCustomTag = '';
 
 let mode = 'sport';
 let page = 'sport-home';
@@ -884,38 +906,68 @@ function submitPredictorRound(){
 }
 function resetPredictorRound(){ predictorPicks = {}; predictorSubmitted = false; render(); }
 
+function setTipCategory(catId){
+  var cat = tipCategories.find(function(c){ return c.id===catId; });
+  if(!cat) return;
+  tipFormCategory = catId;
+  while(tipFormLegs.length < cat.minLegs){ tipFormLegs.push({matchId: matches[tipFormLegs.length % matches.length].id, pick:null}); }
+  if(cat.maxLegs && tipFormLegs.length > cat.maxLegs){ tipFormLegs = tipFormLegs.slice(0, cat.maxLegs); }
+  document.getElementById('tipFormError').textContent = '';
+  render();
+}
+function addTipLeg(){
+  var cat = tipCategories.find(function(c){ return c.id===tipFormCategory; });
+  if(cat.maxLegs && tipFormLegs.length>=cat.maxLegs) return;
+  tipFormLegs.push({matchId: matches[tipFormLegs.length % matches.length].id, pick:null});
+  render();
+}
+function removeTipLeg(idx){
+  var cat = tipCategories.find(function(c){ return c.id===tipFormCategory; });
+  if(tipFormLegs.length<=cat.minLegs) return;
+  tipFormLegs.splice(idx,1);
+  render();
+}
+function setTipLegMatch(idx, matchId){ tipFormLegs[idx].matchId = parseInt(matchId,10); render(); }
+function setTipLegPick(idx, pick){ tipFormLegs[idx].pick = pick; render(); }
+
 function publishTip(){
-  var matchSel = document.getElementById('tipMatchSelect');
-  var pickBtns = document.querySelectorAll('.tip-form-pick.active');
-  var reasoning = document.getElementById('tipReasoning').value.trim();
-  if(!matchSel || pickBtns.length===0 || !reasoning){
-    document.getElementById('tipFormError').textContent = 'Odaberi meč, tip (1/X/2) i napiši kratko obrazloženje prije objave.';
-    return;
-  }
+  var cat = tipCategories.find(function(c){ return c.id===tipFormCategory; });
+  var errorEl = document.getElementById('tipFormError');
+  var reasoning = tipFormReasoning.trim();
+  var incomplete = tipFormLegs.some(function(l){ return !l.pick; });
+  if(incomplete){ errorEl.textContent = 'Odaberi 1/X/2 tip za svaki događaj u tiketu.'; return; }
+  if(tipFormLegs.length < cat.minLegs){ errorEl.textContent = cat.label + ' zahtijeva najmanje ' + cat.minLegs + ' događaja.'; return; }
+  if(cat.maxLegs && tipFormLegs.length > cat.maxLegs){ errorEl.textContent = cat.label + ' dozvoljava najviše ' + cat.maxLegs + ' događaja.'; return; }
+  if(!reasoning){ errorEl.textContent = 'Napiši kratko obrazloženje prije objave.'; return; }
   publishedTips.unshift({
     author: loggedIn ? 'ti (demo nalog)' : 'Gost',
-    matchId: parseInt(matchSel.value,10),
-    pick: pickBtns[0].dataset.pick,
+    category: tipFormCategory,
+    legs: tipFormLegs.map(function(l){ return {matchId:l.matchId, pick:l.pick}; }),
+    customTag: tipFormCustomTag.trim() || null,
     reasoning: reasoning,
     time: 'upravo sad'
   });
-  document.getElementById('tipReasoning').value = '';
-  document.querySelectorAll('.tip-form-pick').forEach(function(b){ b.classList.remove('active'); });
+  tipFormCategory = 'single-dana';
+  tipFormLegs = [{matchId:matches[0].id, pick:null}];
+  tipFormReasoning = '';
+  tipFormCustomTag = '';
+  errorEl.textContent = '';
   render();
-}
-function selectTipFormPick(el){
-  document.querySelectorAll('.tip-form-pick').forEach(function(b){ b.classList.remove('active'); });
-  el.classList.add('active');
 }
 
 function tipCardHtml(t){
-  var m = matches.find(function(x){ return x.id===t.matchId; });
-  var pickLabel = t.pick==='1' ? (m?m.home:'1') : t.pick==='2' ? (m?m.away:'2') : 'Neriješeno';
+  var legsHtml = t.legs.map(function(l){
+    var m = matches.find(function(x){ return x.id===l.matchId; });
+    var pickLabel = l.pick==='1' ? (m?m.home:'1') : l.pick==='2' ? (m?m.away:'2') : 'Neriješeno';
+    return '<div class="leg"><span>' + (m? m.home+' — '+m.away : 'Meč') + '</span><span class="odd">' + pickLabel + '</span></div>';
+  }).join('');
+  var tagChip = t.customTag ? '<span class="badge-open" style="margin-left:6px;">🏷 ' + escHtml(t.customTag) + ' · čeka odobrenje</span>' : '';
   return '<div class="acca-card" style="margin-bottom:8px;"><div class="acca-head">'
-    + '<div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(t.author,48) + '</div><b>' + t.author + '</b></div>'
+    + '<div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(t.author,48) + '</div><b>' + t.author + '</b>'
+    + '<span class="tip-status featured" style="margin-left:8px;">' + tipCategoryLabel(t.category) + '</span>' + tagChip + '</div>'
     + '<div class="footnote" style="margin:0;">' + t.time + '</div></div>'
-    + '<div class="leg" style="margin-bottom:8px;"><span>' + (m? m.home+' — '+m.away : 'Meč') + '</span><span class="odd">Tip: ' + pickLabel + '</span></div>'
-    + '<div style="font-size:12.5px;color:var(--text-dim);">' + t.reasoning + '</div></div>';
+    + '<div class="acca-legs">' + legsHtml + '</div>'
+    + '<div style="font-size:12.5px;color:var(--text-dim);">' + escHtml(t.reasoning) + '</div></div>';
 }
 
 function pagePredictions(){
@@ -951,28 +1003,51 @@ function pagePredictions(){
 }
 
 function pageTipsters(){
-  var matchOptions = matches.map(function(m){ return '<option value="'+m.id+'">'+m.home+' — '+m.away+'</option>'; }).join('');
+  var activeCat = tipCategories.find(function(c){ return c.id===tipFormCategory; });
+
+  var catChips = tipCategories.map(function(c){
+    return '<div class="filter-chip ' + (tipFormCategory===c.id?'active':'') + '" onclick="setTipCategory(\'' + c.id + '\')" style="cursor:pointer;">' + c.label + '</div>';
+  }).join('');
+
+  var legsHtml = tipFormLegs.map(function(leg, idx){
+    var opts = matches.map(function(m){ return '<option value="'+m.id+'" '+(m.id===leg.matchId?'selected':'')+'>'+m.home+' — '+m.away+'</option>'; }).join('');
+    var picks = ['1','X','2'].map(function(p){
+      return '<div class="odd-btn tip-form-pick ' + (leg.pick===p?'active':'') + '" onclick="setTipLegPick(' + idx + ",'" + p + "')\"><span class=\"lbl\">" + p + '</span></div>';
+    }).join('');
+    var removable = tipFormLegs.length > activeCat.minLegs;
+    var removeBtn = removable ? '<span class="slip-item-remove" onclick="removeTipLeg(' + idx + ')">✕</span>' : '';
+    return '<div class="tool-card" style="padding:12px;margin-bottom:8px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span class="footnote" style="margin:0;">Događaj ' + (idx+1) + '</span>' + removeBtn + '</div>'
+      + '<select onchange="setTipLegMatch(' + idx + ',this.value)" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;margin-bottom:8px;">' + opts + '</select>'
+      + '<div class="odds-row">' + picks + '</div></div>';
+  }).join('');
+
+  var addLegBtn = (!activeCat.maxLegs || tipFormLegs.length<activeCat.maxLegs)
+    ? '<button class="filter-chip" style="cursor:pointer;margin-bottom:14px;" onclick="addTipLeg();">+ Dodaj događaj</button>'
+    : '';
+
   var publishForm = '<div class="tool-card" style="margin-bottom:24px;">'
     + '<div class="tool-title">Objavi predikciju <span class="badge-open">' + (loggedIn?'ti (demo nalog)':'kao gost') + '</span></div>'
-    + '<div class="tool-desc">Opt-in je obavezan — ovim potvrđuješ da tvoj tip postaje javno vidljiv sa tvojim imenom.</div>'
-    + '<div style="margin-bottom:10px;"><select id="tipMatchSelect" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:12.5px;">' + matchOptions + '</select></div>'
-    + '<div class="odds-row" style="margin-bottom:10px;">'
-    + '<div class="odd-btn tip-form-pick" data-pick="1" onclick="selectTipFormPick(this)"><span class="lbl">1</span></div>'
-    + '<div class="odd-btn tip-form-pick" data-pick="X" onclick="selectTipFormPick(this)"><span class="lbl">X</span></div>'
-    + '<div class="odd-btn tip-form-pick" data-pick="2" onclick="selectTipFormPick(this)"><span class="lbl">2</span></div>'
-    + '</div>'
-    + '<textarea id="tipReasoning" placeholder="Kratko obrazloženje (obavezno — bez obrazloženja se ne objavljuje)" style="width:100%;min-height:64px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:12.5px;font-family:inherit;resize:vertical;margin-bottom:8px;"></textarea>'
+    + '<div class="tool-desc">Opt-in je obavezan — ovim potvrđuješ da tvoj tip postaje javno vidljiv sa tvojim imenom. Za razliku od Predictora (prost 1/X/2 unos po meču), tipsterski tip nosi kategoriju, obrazloženje i, po potrebi, više događaja u jednom tiketu.</div>'
+    + '<div class="footnote" style="margin-bottom:6px;">Kategorija tipa (obavezno)</div>'
+    + '<div class="filters-bar" style="margin-bottom:4px;">' + catChips + '</div>'
+    + '<div class="footnote" style="margin-bottom:14px;">' + activeCat.hint + ' Granice kvota se određuju po sportu — fudbal i košarka nemaju iste pragove.</div>'
+    + legsHtml
+    + addLegBtn
+    + '<textarea id="tipReasoning" oninput="tipFormReasoning=this.value;" placeholder="Kratko obrazloženje (obavezno — bez obrazloženja se ne objavljuje)" style="width:100%;min-height:64px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:12.5px;font-family:inherit;resize:vertical;margin-bottom:8px;">' + escHtml(tipFormReasoning) + '</textarea>'
+    + '<input id="tipCustomTag" oninput="tipFormCustomTag=this.value;" value="' + escHtml(tipFormCustomTag) + '" placeholder="Opcionalno: tvoj naziv za tip (npr. &quot;Derbi specijal&quot;) — ne ulazi u statistiku, prolazi odobrenje prije objave" style="width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:12.5px;margin-bottom:8px;">'
     + '<div id="tipFormError" style="color:var(--live);font-size:11.5px;margin-bottom:8px;"></div>'
     + '<button class="op-cta" style="width:100%;" onclick="publishTip();">Objavi predikciju →</button></div>';
 
-  return '<div class="page-header"><div class="page-title">Tipsters</div><div class="page-desc">Verifikovana zajednica — opt-in obavezan, niko ne postaje javan automatski</div></div>'
+  return '<div class="page-header"><div class="page-title">Tipsters</div><div class="page-desc">Verifikovana zajednica — opt-in obavezan, niko ne postaje javan automatski. Ozbiljnija, detaljnija kategorija naspram prostog Predictora.</div></div>'
     + publishForm
     + '<div class="block-head"><div class="block-title">Najnovije analize zajednice</div></div>'
     + '<div style="margin-bottom:24px;">' + publishedTips.slice(0,5).map(tipCardHtml).join('') + '</div>'
     + '<div class="block-head"><div class="block-title">Leaderboard</div></div>'
     + '<div class="tipster-list">' + tipsters.map(tipsterRowHtml).join('') + '</div>'
     + '<div class="block" style="margin-top:24px;"><div class="block-head"><div class="block-title">Guest Analysts</div><div class="block-sub" style="margin:0;">Nisu javno vezani za profil</div></div>'
-    + '<div class="tipster-list">' + guestAnalysts.map(function(t){ return tipsterRowHtml({name:t.name,status:t.status,wr:t.wr,tips:t.tips,rank:'—',featured:false}); }).join('') + '</div></div>';
+    + '<div class="tipster-list">' + guestAnalysts.map(function(t){ return tipsterRowHtml({name:t.name,status:t.status,wr:t.wr,tips:t.tips,rank:'—',featured:false}); }).join('') + '</div></div>'
+    + '<div class="footnote" style="margin-top:14px;">OTVORENO: kriterijum za javnu vidljivost tipstera nije finalizovan — Opcija A (samo učinak), B (učinak + podrška zajednice), C (ručni izbor tima) ili D (kombinacija: bedž prag za osnovnu vidljivost, ručni izbor za isticanje). Status prikazan gore (User / Guest Analyst / Featured Analyst / Paid Contributor) je ilustrativan.</div>';
 }
 
 function pageAccumulators(){
