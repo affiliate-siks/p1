@@ -383,7 +383,7 @@ Osvoji novi BMW
 // Nakon deploy-a posebnog Google Apps Script-a (vidi priloženi
 // google_apps_script_kviz_tracking.js), zalijepi dobijeni URL ovdje:
 // ==========================================================
-const TRACKING_ENDPOINT = "https://script.google.com/macros/s/AKfycbxkiDjttcfsqon2T0X8y4C_-9NoU6LydJ_gDp-mYVgjEWiKfQv0ro_w9JOT-ObqNTZslw/exec";
+const TRACKING_ENDPOINT = "PASTE_GOOGLE_APPS_SCRIPT_TRACKING_URL_HERE";
 
 (function () {
 if (!TRACKING_ENDPOINT || TRACKING_ENDPOINT.indexOf("PASTE_") === 0) {
@@ -478,7 +478,7 @@ sendToSheet(Object.assign({ event: eventName }, extra || {}));
 };
 window.setFunnelStep = function (step) { funnelStep = step; };
 
-// Geolokacija po IP-u — pa slanje pageview-a
+// Geolokacija po IP-u — pa slanje "usao" eventa
 fetch('https://ipwho.is/')
 .then(function (r) { return r.json(); })
 .then(function (geo) {
@@ -488,10 +488,10 @@ country: geo.country || "",
 city: geo.city || "",
 region: geo.region || ""
 };
-window.trackEvent('pageview');
+window.trackEvent('usao');
 })
 .catch(function () {
-window.trackEvent('pageview');
+window.trackEvent('usao');
 });
 
 window.addEventListener('scroll', function () {
@@ -501,12 +501,16 @@ const pct = Math.round((window.scrollY / docHeight) * 100);
 if (pct > maxScrollPercent) maxScrollPercent = Math.min(100, pct);
 }, { passive: true });
 
+let leftViaRedirect = false;
+
 window.addEventListener('pagehide', function () {
-window.trackEvent('exit', {
+if (leftViaRedirect) return; // vec smo poslali "otisao_na_link", ne treba i "izasao"
+window.trackEvent('izasao', {
 time_on_page_seconds: Math.round((Date.now() - pageLoadTime) / 1000),
 max_scroll_percent: maxScrollPercent
 });
 });
+window.markLeftViaRedirect = function () { leftViaRedirect = true; };
 })();
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFWp77vnQ3lC62Wvr8J9IqjuPZS1gshI_3xfg0K7kPGeg7qoWq3VKFNyGUGTwVCeGXCg/exec';
@@ -544,18 +548,6 @@ let activeQuestions = [];
 let selectedAnswers = [];
 let revealedClues = [];
 let participantToken = '';
-
-// Prati prvi fokus na bilo koje polje forme (samo jednom)
-let formStartTracked = false;
-function trackFormStartOnce() {
-if (formStartTracked) return;
-formStartTracked = true;
-window.setFunnelStep('form_start');
-window.trackEvent('form_start');
-}
-[imeInput, emailInput, playerIdInput].forEach(function (input) {
-input.addEventListener('focus', trackFormStartOnce, { once: true });
-});
 function setStatus(el, msg, type = '') {
 el.textContent = msg || '';
 el.className = 'status' + (type ? ' ' + type : '');
@@ -596,11 +588,10 @@ quizSection.classList.remove('active');
 resultSection.classList.add('active');
 window.scrollTo({ top: 0, behavior: 'smooth' });
 window.setFunnelStep('result_shown');
-window.trackEvent('result_view', { final_score: finalCorrect.textContent });
 if (redirectTimeout) clearTimeout(redirectTimeout);
 redirectTimeout = setTimeout(() => {
-window.setFunnelStep('auto_redirected');
-window.trackEvent('auto_redirect');
+if (window.markLeftViaRedirect) window.markLeftViaRedirect();
+window.trackEvent('otisao_na_link', { nacin: 'automatski' });
 window.location.href = REDIRECT_URL;
 }, REDIRECT_DELAY_MS);
 }
@@ -657,12 +648,6 @@ selectedAnswers[currentQuestion] = index;
 renderQuestion();
 nextBtn.disabled = false;
 window.setFunnelStep('question_' + (currentQuestion + 1));
-window.trackEvent('question_answered', {
-question_index: currentQuestion + 1,
-category: q.kategorija || '',
-difficulty: q.tezina || '',
-chosen_letter: ANSWER_LETTERS[index]
-});
 });
 answersWrap.appendChild(btn);
 });
@@ -690,10 +675,6 @@ clueRevealBtn.textContent = 'Sledeći trag (' + count + '/' + clues.length + ')'
 clueRevealBtn.onclick = () => {
 revealedClues[currentQuestion] = count + 1;
 renderClues(clues);
-window.trackEvent('clue_revealed', {
-question_index: currentQuestion + 1,
-clue_number: count + 1
-});
 };
 } else {
 clueRevealBtn.style.display = 'none';
@@ -730,11 +711,10 @@ startBtn.addEventListener('click', async () => {
 const ime = imeInput.value.trim();
 const email = emailInput.value.trim().toLowerCase();
 const playerId = playerIdInput.value.trim();
-window.trackEvent('start_click');
-if (ime.length < 2) { setStatus(registerStatus, 'Unesi ime i prezime.', 'error'); window.trackEvent('validation_error', { detail: 'ime_prekratko' }); return; }
-if (!isValidEmail(email)) { setStatus(registerStatus, 'Provjeri unos email adrese.', 'error'); window.trackEvent('validation_error', { detail: 'email_nevalidan' }); return; }
-if (playerId.length < 3) { setStatus(registerStatus, 'Unesi ID igrača sa admiralbet.me naloga.', 'error'); window.trackEvent('validation_error', { detail: 'player_id_prekratak' }); return; }
-if (!privacyInput.checked) { setStatus(registerStatus, 'Potvrdi saglasnost.', 'error'); window.trackEvent('validation_error', { detail: 'privacy_nepotvrdjeno' }); return; }
+if (ime.length < 2) { setStatus(registerStatus, 'Unesi ime i prezime.', 'error'); return; }
+if (!isValidEmail(email)) { setStatus(registerStatus, 'Provjeri unos email adrese.', 'error'); return; }
+if (playerId.length < 3) { setStatus(registerStatus, 'Unesi ID igrača sa admiralbet.me naloga.', 'error'); return; }
+if (!privacyInput.checked) { setStatus(registerStatus, 'Potvrdi saglasnost.', 'error'); return; }
 startBtn.disabled = true;
 setStatus(registerStatus, '');
 registerSection.style.display = 'none';
@@ -751,7 +731,6 @@ registerSection.style.display = '';
 setStatus(registerStatus, data.message || 'Pokušaj ponovo.', 'error');
 startBtn.disabled = false;
 window.setFunnelStep('registration_failed');
-window.trackEvent('registration_failed', { message: data.message || '', name: ime, email: email, player_id: playerId });
 return;
 }
 participantToken = data.participantToken;
@@ -760,7 +739,6 @@ selectedAnswers = new Array(activeQuestions.length).fill(null);
 revealedClues = new Array(activeQuestions.length).fill(undefined);
 currentQuestion = 0;
 window.setFunnelStep('quiz_started');
-window.trackEvent('registration_success', { name: ime, email: email, player_id: playerId, total_questions: activeQuestions.length });
 renderQuestion();
 showQuiz();
 } catch (error) {
@@ -769,7 +747,6 @@ registerSection.style.display = '';
 setStatus(registerStatus, 'Pokušaj ponovo.', 'error');
 startBtn.disabled = false;
 window.setFunnelStep('registration_error');
-window.trackEvent('registration_error', { message: String(error && error.message || error) });
 }
 });
 async function finishOrAdvance() {
@@ -778,7 +755,6 @@ setStatus(quizStatus, 'Izaberi odgovor.', 'error');
 return;
 }
 if (currentQuestion < activeQuestions.length - 1) {
-window.trackEvent('next_question_click', { question_index: currentQuestion + 1 });
 currentQuestion++;
 renderQuestion();
 return;
@@ -787,7 +763,6 @@ nextBtn.disabled = true;
 nextBtn.textContent = 'Slanje...';
 setStatus(quizStatus, 'Provjera odgovora i slanje kviza...', 'loading');
 window.setFunnelStep('quiz_submitting');
-window.trackEvent('quiz_finish_click', { total_questions: activeQuestions.length });
 try {
 const data = await submitQuiz(selectedAnswers);
 if (!data.success) {
@@ -795,13 +770,12 @@ setStatus(quizStatus, data.message || 'Pokušaj ponovo.', 'error');
 nextBtn.disabled = false;
 nextBtn.textContent = 'Završi kviz';
 window.setFunnelStep('quiz_submit_failed');
-window.trackEvent('quiz_submit_failed', { message: data.message || '' });
 return;
 }
 finalCorrect.textContent = `${data.correctAnswers}/${data.totalQuestions}`;
 finalStatus.textContent = 'Poslato';
 window.setFunnelStep('quiz_submitted');
-window.trackEvent('quiz_submit_success', {
+window.trackEvent('odigrao', {
 correct_answers: data.correctAnswers,
 total_questions: data.totalQuestions
 });
@@ -811,17 +785,16 @@ nextBtn.disabled = false;
 nextBtn.textContent = 'Završi kviz';
 setStatus(quizStatus, 'Pokušaj ponovo.', 'error');
 window.setFunnelStep('quiz_submit_error');
-window.trackEvent('quiz_submit_error', { message: String(error && error.message || error) });
 }
 }
 nextBtn.addEventListener('click', finishOrAdvance);
 
 // Ručni klik na CTA linkove ka BMW promociji (prije auto-redirekcije)
-document.querySelectorAll('.viber-btn, .extra-banner').forEach(function (link, idx) {
+document.querySelectorAll('.viber-btn, .extra-banner').forEach(function (link) {
 link.addEventListener('click', function () {
 if (redirectTimeout) clearTimeout(redirectTimeout);
-window.setFunnelStep('cta_clicked_manual');
-window.trackEvent('cta_click_manual', { source: idx === 0 ? 'dugme' : 'baner' });
+if (window.markLeftViaRedirect) window.markLeftViaRedirect();
+window.trackEvent('otisao_na_link', { nacin: 'rucno' });
 });
 });
 document.addEventListener('keydown', (e) => {
