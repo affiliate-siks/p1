@@ -360,8 +360,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <button data-mode="casino"><span class="ic">🎰</span><span class="sb-label">Casino</span></button>
     </div>
     <div class="vip-wrap">
-      <div class="vip-top"><div class="vip-lvl"><span class="badge">11</span>Level 11</div><div class="vip-xp">2,340 / 3,650 XP</div></div>
-      <div class="vip-bar"><div class="vip-bar-fill"></div></div>
+      <div class="vip-top"><div class="vip-lvl"><span class="badge" id="vipBadge">11</span><span id="vipLevelText">Level 11</span></div><div class="vip-xp" id="vipXpText">2,340 / 3,650 XP</div></div>
+      <div class="vip-bar"><div class="vip-bar-fill" id="vipBarFill"></div></div>
     </div>
     <div class="sb-section" id="modeNavSection">
       <div class="sb-section-label" id="modeNavLabel">Sport</div>
@@ -400,7 +400,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
           <a href="#" onclick="event.preventDefault();setMarket('BR')">🇧🇷 BR</a>
         </div>
       </div>
-      <button class="balance-pill" onclick="goToPage('my-dashboard')"><span class="lvl">11</span> <span class="xp-val mono">2,340</span> XP</button>
+      <button class="balance-pill" onclick="goToPage('my-dashboard')"><span class="lvl" id="balanceLvl">11</span> <span class="xp-val mono" id="balanceXp">2,340</span> XP</button>
       <div style="position:relative;">
         <button class="icon-btn" onclick="document.getElementById('acctPopover').classList.toggle('open')">👤</button>
         <div class="dropdown-menu" id="acctPopover">
@@ -684,16 +684,28 @@ function runBonusFinder(){
   box.style.display = 'block';
   box.innerHTML = 'Preporuka za tebe: <b>' + pick.name + '</b><br>' + pick.bonus
     + '<div style="margin-top:10px;"><button class="op-cta" style="width:100%;" onclick="closeModal();claimBonus(\'' + cat + '\',\'' + pick.id + '\');">Preuzmi ovaj bonus →</button></div>';
+  if(!userStats.finderUsed){ userStats.finderUsed = true; }
 }
 
 /* ---- SportsPass subscribe ---- */
 function openSubscribeModal(){
+  if(sportsPassSubscribed){
+    openModal('SportsPass pretplata',
+      '<p style="margin-bottom:10px;color:var(--green);">✓ Premium lane je vec aktivna na tvom nalogu (demo).</p>'
+      + '<p class="footnote">Premium nagrade po Level tieru su sada dostupne na Rewards stranici.</p>');
+    return;
+  }
   openModal('SportsPass pretplata',
-    '<p style="margin-bottom:8px;">Jedan nivo pretplate. Nagrade prate tvoj Account Level u realnom vremenu — bez retroaktivnog potrazivanja proslih nivoa.</p>'
-    + '<p style="margin-bottom:14px;" class="footnote">Ovo je demo prikaz — pretplata jos nije aktivna na platformi.</p>'
-    + '<button class="btn-primary gold" style="width:100%;" onclick="confirmSubscribe()">Potvrdi interesovanje →</button>');
+    '<p style="margin-bottom:8px;">Jedan nivo pretplate — Premium lane sa nagradama koje prate tvoj Account Level u realnom vremenu, bez retroaktivnog potrazivanja proslih nivoa.</p>'
+    + '<p style="margin-bottom:14px;" class="footnote">Ovo je demo prikaz — aktivacija ne trazi placanje u prototipu.</p>'
+    + '<button class="btn-primary gold" style="width:100%;" onclick="confirmSubscribe()">Aktiviraj Premium (demo) →</button>');
 }
-function confirmSubscribe(){ closeModal(); showToast('Zabelezeno interesovanje za SportsPass (demo).'); }
+function confirmSubscribe(){
+  sportsPassSubscribed = true;
+  closeModal();
+  showToast('SportsPass Premium aktiviran (demo)! Premium nagrade su otkljucane na Rewards stranici.');
+  render();
+}
 
 /* ---- Community external links ---- */
 function openCommunityPlaceholder(kind){
@@ -778,6 +790,204 @@ let mode = 'sport';
 let page = 'sport-home';
 let slip = [];
 let sidebarCollapsed = false;
+
+/* ============ REWARD ENGINE: XP/Level, Coins, Predictor scoring, Challenges, Badges, Shop, SportsPass ============ */
+let userXP = 2340;            // XP progress within the current level
+let userLevel = 11;
+let userXPToNext = 3650;      // XP needed to reach the next level
+let walletCoins = 640;        // spendable currency for the Shop (separate from level XP)
+
+let round14Resolved = false;
+let round14Results = [];      // [{m, actual, pick, correct, pts}]
+let round14TotalPoints = 0;
+let round14Placement = '';
+
+let userStats = { tipsPublished:0, predictorSubmits:0, slipAdds:0, operatorViewedIds:new Set(), finderUsed:false };
+let claimedChallenges = {};   // challengeId -> true
+let ownedShopItems = {};      // shopItemId -> true
+let claimedSPTiers = {};      // 'free-11' / 'prem-11' -> true
+let sportsPassSubscribed = false;
+
+const CHALLENGES = [
+  {id:'c1', title:'Unesi 3 tipa', desc:'Objavi 3 predikcije na Tipsters stranici.', target:3, xp:80, track:'tipsPublished'},
+  {id:'c2', title:'Odigraj kolo Predictora', desc:'Predaj sve tipove za tekuce kolo.', target:1, xp:120, track:'predictorSubmits'},
+  {id:'c3', title:'Uporedi kvote', desc:'Dodaj 3 razlicita meca u Compare Tray.', target:3, xp:40, track:'slipAdds'},
+  {id:'c4', title:'Istrazi operatore', desc:'Otvori profil bar 2 operatora.', target:2, xp:30, track:'operatorViews'},
+];
+const BADGES = [
+  {id:'b1', icon:'🎯', name:'Prvi tip', desc:'Objavi svoju prvu predikciju.', cond:function(){ return userStats.tipsPublished>=1; }},
+  {id:'b2', icon:'🔥', name:'Tipster u usponu', desc:'Objavi 5 predikcija.', cond:function(){ return userStats.tipsPublished>=5; }},
+  {id:'b3', icon:'🎟️', name:'Prvo kolo', desc:'Predaj svoje prvo Predictor kolo.', cond:function(){ return userStats.predictorSubmits>=1; }},
+  {id:'b4', icon:'🏆', name:'Na postolju', desc:'Zavrsi kolo Predictora u top 3.', cond:function(){ return round14Resolved && ['#1','#2','#3'].indexOf(round14Placement)>-1; }},
+  {id:'b5', icon:'📊', name:'Analiticar kvota', desc:'Uporedi kvote za 3 razlicita meca.', cond:function(){ return userStats.slipAdds>=3; }},
+  {id:'b6', icon:'⭐', name:'Level 12', desc:'Dostigni Level 12.', cond:function(){ return userLevel>=12; }},
+  {id:'b7', icon:'🔍', name:'Istrazivac', desc:'Pogledaj profile 2 operatora.', cond:function(){ return userStats.operatorViewedIds.size>=2; }},
+  {id:'b8', icon:'🎁', name:'Lovac na bonuse', desc:'Otvori Bonus finder.', cond:function(){ return userStats.finderUsed; }},
+];
+const SHOP_ITEMS = [
+  {id:'s1', icon:'🖼️', name:'Zlatni avatar okvir', desc:'Kozmeticki okvir oko tvog profila.', cost:300},
+  {id:'s2', icon:'🎨', name:'Custom boja imena', desc:'Istakni se u chatu i na leaderboardu.', cost:220},
+  {id:'s3', icon:'🏷️', name:'"Sharp" titula', desc:'Poseban tag pored korisnickog imena.', cost:450},
+  {id:'s4', icon:'⚡', name:'XP Boost (24h)', desc:'+20% XP na sve aktivnosti sledeca 24h.', cost:180},
+  {id:'s5', icon:'🎫', name:'Extra Predictor slot', desc:'Unesi tip i nakon zakljucavanja kola (jednom).', cost:260},
+];
+const SPORTSPASS_TIERS = [
+  {level:9,  free:'50 🪙', premium:'150 🪙 + avatar okvir'},
+  {level:10, free:'Badge: Redovan igrac', premium:'200 🪙'},
+  {level:11, free:'80 🪙', premium:'"Sharp" titula'},
+  {level:12, free:'Badge: Level 12', premium:'250 🪙 + XP Boost 24h'},
+  {level:13, free:'100 🪙', premium:'300 🪙'},
+  {level:14, free:'Badge: Veteran', premium:'Custom boja imena'},
+  {level:15, free:'150 🪙', premium:'Ekskluzivna VIP soba'},
+];
+
+function refreshXpUI(){
+  var badge=document.getElementById('vipBadge'), lvlText=document.getElementById('vipLevelText'),
+      xpText=document.getElementById('vipXpText'), barFill=document.getElementById('vipBarFill'),
+      balLvl=document.getElementById('balanceLvl'), balXp=document.getElementById('balanceXp');
+  var pct = Math.max(2, Math.min(100, Math.round(userXP/userXPToNext*100)));
+  if(badge) badge.textContent = userLevel;
+  if(lvlText) lvlText.textContent = 'Level ' + userLevel;
+  if(xpText) xpText.textContent = userXP.toLocaleString() + ' / ' + userXPToNext.toLocaleString() + ' XP';
+  if(barFill) barFill.style.width = pct + '%';
+  if(balLvl) balLvl.textContent = userLevel;
+  if(balXp) balXp.textContent = userXP.toLocaleString();
+}
+function addXP(amount){
+  if(amount<=0) return;
+  userXP += amount;
+  while(userXP >= userXPToNext){
+    userXP -= userXPToNext;
+    userLevel += 1;
+    userXPToNext = Math.round(userXPToNext * 1.12);
+    showToast('Cestitamo — dostigao/la si Level ' + userLevel + '!');
+  }
+  refreshXpUI();
+}
+function addCoins(amount){ walletCoins += amount; refreshXpUI(); }
+function getStatValue(track){ return track==='operatorViews' ? userStats.operatorViewedIds.size : (userStats[track]||0); }
+
+/* ---- Challenges ---- */
+function challengeRowHtml(c){
+  var val = getStatValue(c.track);
+  var pct = Math.min(100, Math.round(val/c.target*100));
+  var claimed = !!claimedChallenges[c.id];
+  var ready = !claimed && val>=c.target;
+  var action = claimed ? '<span class="footnote" style="margin:0;color:var(--green);">✓ Preuzeto</span>'
+    : ready ? '<button class="op-cta" style="padding:7px 14px;" onclick="claimChallenge(\'' + c.id + '\')">Preuzmi +' + c.xp + ' XP</button>'
+    : '<span class="footnote" style="margin:0;">' + val + '/' + c.target + '</span>';
+  return '<div class="tool-card" style="margin-bottom:8px;padding:14px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px;">'
+    + '<div><div class="tool-title" style="margin-bottom:2px;">' + c.title + '</div><div class="tool-desc" style="margin-bottom:0;">' + c.desc + '</div></div>' + action + '</div>'
+    + '<div class="vip-bar"><div class="vip-bar-fill" style="width:' + pct + '%;' + (claimed?'':'') + '"></div></div></div>';
+}
+function claimChallenge(id){
+  var c = CHALLENGES.find(function(x){ return x.id===id; });
+  if(!c || claimedChallenges[id] || getStatValue(c.track)<c.target) return;
+  claimedChallenges[id] = true;
+  addXP(c.xp);
+  addCoins(Math.round(c.xp/3));
+  showToast('Preuzeto: +' + c.xp + ' XP (' + c.title + ')');
+  render();
+}
+
+/* ---- Badges ---- */
+function badgeGridHtml(){
+  return BADGES.map(function(b){
+    var earned = b.cond();
+    return '<div class="tool-card" style="text-align:center;padding:14px;' + (earned?'':'opacity:.42;') + '">'
+      + '<div style="font-size:24px;margin-bottom:6px;">' + b.icon + '</div>'
+      + '<div class="tool-title" style="font-size:12.5px;margin-bottom:3px;">' + b.name + '</div>'
+      + '<div class="tool-desc" style="margin-bottom:0;font-size:10.5px;">' + b.desc + '</div>'
+      + '<div class="footnote" style="margin-top:7px;' + (earned?'color:var(--green);':'') + '">' + (earned?'✓ Osvojeno':'🔒 Zakljucano') + '</div></div>';
+  }).join('');
+}
+
+/* ---- Shop ---- */
+function shopItemHtml(item){
+  var owned = !!ownedShopItems[item.id];
+  var afford = walletCoins>=item.cost;
+  var action = owned ? '<span class="footnote" style="margin:0;color:var(--green);">✓ Otkljucano</span>'
+    : '<button class="op-cta" style="padding:7px 14px;' + (afford?'':'opacity:.4;pointer-events:none;') + '" onclick="buyShopItem(\'' + item.id + '\')">' + item.cost + ' 🪙</button>';
+  return '<div class="tool-card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;padding:14px;">'
+    + '<div style="display:flex;gap:11px;align-items:center;"><div style="font-size:21px;">' + item.icon + '</div>'
+    + '<div><div class="tool-title" style="margin-bottom:2px;">' + item.name + '</div><div class="tool-desc" style="margin-bottom:0;">' + item.desc + '</div></div></div>' + action + '</div>';
+}
+function buyShopItem(id){
+  var item = SHOP_ITEMS.find(function(x){ return x.id===id; });
+  if(!item || ownedShopItems[id]) return;
+  if(walletCoins<item.cost){ showToast('Nemas dovoljno coina za ovu nagradu.'); return; }
+  walletCoins -= item.cost;
+  ownedShopItems[id] = true;
+  showToast('Otkljucano: ' + item.name + '!');
+  render();
+}
+
+/* ---- SportsPass ---- */
+function sportsPassTierHtml(t){
+  var unlocked = userLevel>=t.level;
+  var freeClaimed = !!claimedSPTiers['free-' + t.level];
+  var premClaimed = !!claimedSPTiers['prem-' + t.level];
+  var freeBtn = !unlocked ? '<span class="footnote" style="margin:0;">🔒 Lvl ' + t.level + '</span>'
+    : freeClaimed ? '<span class="footnote" style="margin:0;color:var(--green);">✓</span>'
+    : '<button class="op-cta" style="padding:6px 12px;font-size:11px;" onclick="claimSportsPassTier(' + t.level + ',\'free\')">Preuzmi</button>';
+  var premBtn = !sportsPassSubscribed ? '<span class="footnote" style="margin:0;">🔒 Premium</span>'
+    : !unlocked ? '<span class="footnote" style="margin:0;">🔒 Lvl ' + t.level + '</span>'
+    : premClaimed ? '<span class="footnote" style="margin:0;color:var(--gold);">✓</span>'
+    : '<button class="op-cta" style="padding:6px 12px;font-size:11px;background:var(--gold);" onclick="claimSportsPassTier(' + t.level + ',\'prem\')">Preuzmi</button>';
+  return '<div class="tool-card" style="margin-bottom:7px;padding:14px;' + (unlocked?'':'opacity:.55;') + '">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><b class="mono">LVL ' + t.level + '</b>' + (unlocked?'<span class="footnote" style="margin:0;color:var(--green);">Otkljucano</span>':'') + '</div>'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--border);"><div><div style="font-size:9px;color:var(--text-faint);text-transform:uppercase;">Free</div><div style="font-size:12px;">' + t.free + '</div></div>' + freeBtn + '</div>'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-top:1px dashed var(--border);"><div><div style="font-size:9px;color:var(--gold);text-transform:uppercase;">Premium</div><div style="font-size:12px;">' + t.premium + '</div></div>' + premBtn + '</div></div>';
+}
+function claimSportsPassTier(level, lane){
+  var key = lane + '-' + level;
+  if(claimedSPTiers[key]) return;
+  if(userLevel<level) return;
+  if(lane==='prem' && !sportsPassSubscribed) return;
+  claimedSPTiers[key] = true;
+  addCoins(30);
+  showToast('Preuzeta SportsPass nagrada (Level ' + level + ', ' + (lane==='prem'?'Premium':'Free') + ').');
+  render();
+}
+
+/* ---- Predictor scoring (uses the real odds, not just a bare 1/X/2 pick) ---- */
+function pointsForPick(m, pick){
+  var idx = pick==='1'?0:pick==='X'?1:2;
+  var odd = parseFloat(m.odds[idx]) || 1;
+  return Math.round(10 + (odd-1)*12); // harder (higher-odd) correct picks are worth more
+}
+function simulateOutcome(m){
+  var o1=parseFloat(m.odds[0]), ox=parseFloat(m.odds[1]), o2=parseFloat(m.odds[2]);
+  var p1=1/o1, px=1/ox, p2=1/o2, sum=p1+px+p2;
+  p1/=sum; px/=sum; p2/=sum;
+  var r = Math.random();
+  if(r<p1) return '1';
+  if(r<p1+px) return 'X';
+  return '2';
+}
+function resolveRoundDemo(){
+  if(!predictorSubmitted || round14Resolved) return;
+  var roundMatches = matches.slice(0,6);
+  var total=0, correct=0, results=[];
+  roundMatches.forEach(function(m){
+    var actual = simulateOutcome(m);
+    var pick = predictorPicks[m.id];
+    var isCorrect = pick===actual;
+    var pts = isCorrect ? pointsForPick(m,pick) : 0;
+    if(isCorrect){ correct++; total+=pts; }
+    results.push({m:m, actual:actual, pick:pick, correct:isCorrect, pts:pts});
+  });
+  round14Resolved = true;
+  round14Results = results;
+  round14TotalPoints = total;
+  round14Placement = total>=220?'#1' : total>=150?'#3' : total>=80?'#7' : '#14';
+  addXP(total);
+  addCoins(Math.round(total/2));
+  render();
+  showToast('Kolo 14 zavrseno — osvojio/la si ' + total + ' XP (' + correct + '/6 tacnih) i zavrsio/la na ' + round14Placement + ' mjestu. (demo simulacija)');
+}
+
 function starRow(rating){ const full = Math.round(parseFloat(rating)); return '★'.repeat(full) + '☆'.repeat(5-full); }
 function filterChip(label, value, activeValue, setter){
   return '<div class="filter-chip ' + (value===activeValue?'active':'') + '" onclick="' + setter + "('" + value + "')" + '">' + label + '</div>';
@@ -845,7 +1055,7 @@ function addToSlip(matchId, pick, label, odd){
   var existingIdx = slip.findIndex(function(s){ return s.matchId===matchId; });
   if(existingIdx>-1 && slip[existingIdx].pick===pick){ slip.splice(existingIdx,1); }
   else if(existingIdx>-1){ slip[existingIdx] = {matchId:matchId,pick:pick,label:label,odd:odd}; }
-  else { slip.push({matchId:matchId,pick:pick,label:label,odd:odd}); }
+  else { slip.push({matchId:matchId,pick:pick,label:label,odd:odd}); userStats.slipAdds++; }
   renderSlip(); render();
 }
 function removeFromSlip(matchId){ slip = slip.filter(function(s){ return s.matchId!==matchId; }); renderSlip(); render(); }
@@ -858,7 +1068,7 @@ function openCompareView(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function openMatch(id){ selectedMatchId = id; page = 'match-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
-function openOperator(type, id){ selectedOperator = {type:type,id:id}; page = 'operator-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function openOperator(type, id){ selectedOperator = {type:type,id:id}; userStats.operatorViewedIds.add(type+':'+id); page = 'operator-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function openRoom(id){ selectedRoomId = id; page = 'chat-room'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function goToPage(p){ page = p; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function toggleLogin(){
@@ -1040,9 +1250,18 @@ function submitPredictorRound(){
   if(!loggedIn){ toggleLogin(); }
   page = 'sport-predictions';
   predictorSubmitted = true;
+  userStats.predictorSubmits++;
   render();
 }
-function resetPredictorRound(){ predictorPicks = {}; predictorSubmitted = false; render(); }
+function resetPredictorRound(){
+  predictorPicks = {};
+  predictorSubmitted = false;
+  round14Resolved = false;
+  round14Results = [];
+  round14TotalPoints = 0;
+  round14Placement = '';
+  render();
+}
 function publishTip(){
   var matchSel = document.getElementById('tipMatchSelect');
   var pickBtns = document.querySelectorAll('.tip-form-pick.active');
@@ -1058,6 +1277,7 @@ function publishTip(){
     reasoning: reasoning,
     time: 'upravo sad'
   });
+  userStats.tipsPublished++;
   document.getElementById('tipReasoning').value = '';
   document.querySelectorAll('.tip-form-pick').forEach(function(b){ b.classList.remove('active'); });
   render();
@@ -1075,29 +1295,45 @@ function tipCardHtml(t){
     + '<div class="leg" style="margin-bottom:8px;"><span>' + (m? m.home+' — '+m.away : 'Meč') + '</span><span class="odd">Tip: ' + pickLabel + '</span></div>'
     + '<div style="font-size:12.5px;color:var(--text-dim);">' + t.reasoning + '</div></div>';
 }
+function predictorLabel(m, p){ return p==='1' ? m.home : p==='X' ? 'Neriješeno' : m.away; }
+function predictorRowHtml(m){
+  var pick = predictorPicks[m.id];
+  if(round14Resolved){
+    var res = round14Results.find(function(r){ return r.m.id===m.id; });
+    return '<div class="match-row" style="grid-template-columns:1fr auto;">'
+      + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams"><div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
+      + '<div style="text-align:right;">'
+      + '<div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Tvoj tip: <b>' + predictorLabel(m,res.pick) + '</b> · Rezultat: <b>' + predictorLabel(m,res.actual) + '</b></div>'
+      + '<div class="mono" style="font-weight:800;color:' + (res.correct?'var(--green)':'var(--live)') + ';">' + (res.correct?('✓ +'+res.pts+' XP'):'✕ 0 XP') + '</div>'
+      + '</div></div>';
+  }
+  var pts1=pointsForPick(m,'1'), ptsX=pointsForPick(m,'X'), pts2=pointsForPick(m,'2');
+  return '<div class="match-row" style="grid-template-columns:1fr auto;">'
+    + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams">'
+    + '<div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
+    + '<div class="odds-row">'
+    + '<div class="odd-btn ' + (pick==='1'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'1')\"><span class=\"lbl\">1</span><span class=\"val\">" + m.odds[0] + '</span><span class="footnote" style="margin:2px 0 0;">+' + pts1 + ' XP</span></div>'
+    + '<div class="odd-btn ' + (pick==='X'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'X')\"><span class=\"lbl\">X</span><span class=\"val\">" + m.odds[1] + '</span><span class="footnote" style="margin:2px 0 0;">+' + ptsX + ' XP</span></div>'
+    + '<div class="odd-btn ' + (pick==='2'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'2')\"><span class=\"lbl\">2</span><span class=\"val\">" + m.odds[2] + '</span><span class="footnote" style="margin:2px 0 0;">+' + pts2 + ' XP</span></div>'
+    + '</div></div>';
+}
 function pagePredictions(){
   var roundMatches = matches.slice(0,6);
   var pickedCount = roundMatches.filter(function(m){ return predictorPicks[m.id]; }).length;
-  var rowsHtml = roundMatches.map(function(m){
-    var pick = predictorPicks[m.id];
-    return '<div class="match-row" style="grid-template-columns:1fr auto;">'
-      + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams">'
-      + '<div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
-      + '<div class="odds-row">'
-      + '<div class="odd-btn ' + (pick==='1'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'1')\"><span class=\"lbl\">1</span><span class=\"val\">" + m.odds[0] + '</span></div>'
-      + '<div class="odd-btn ' + (pick==='X'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'X')\"><span class=\"lbl\">X</span><span class=\"val\">" + m.odds[1] + '</span></div>'
-      + '<div class="odd-btn ' + (pick==='2'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'2')\"><span class=\"lbl\">2</span><span class=\"val\">" + m.odds[2] + '</span></div>'
-      + '</div></div>';
-  }).join('');
+  var rowsHtml = roundMatches.map(predictorRowHtml).join('');
   var ctaBlock;
-  if(predictorSubmitted){
-    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Tipovi predati</div><h3>Vidimo se poslije mečeva</h3><p>Poeni se računaju automatski kad mečevi završe. Pratiš status na My Dashboard.</p></div>'
-      + '<button class="btn-primary" onclick="resetPredictorRound();">Izmijeni tipove</button></div>';
+  if(round14Resolved){
+    var correctCount = round14Results.filter(function(r){ return r.correct; }).length;
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Kolo zavrseno</div><h3>' + round14TotalPoints + ' XP osvojeno · ' + correctCount + '/6 tacnih</h3><p>Zavrsio/la si na mjestu ' + round14Placement + ' (demo simulacija rezultata, tezi ishodi nose vise XP).</p></div>'
+      + '<button class="btn-primary" onclick="resetPredictorRound();">Novo kolo (demo) →</button></div>';
+  } else if(predictorSubmitted){
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Tipovi predati</div><h3>Vidimo se poslije mečeva</h3><p>Poeni zavise od kvote svakog tipa — sto je ishod manje ocekivan, to nosi vise XP kad pogodis.</p></div>'
+      + '<button class="btn-primary" onclick="resolveRoundDemo();">Simuliraj rezultate (demo) →</button></div>';
   } else {
-    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč, pa predaj kolo prije zaključavanja.</p></div>'
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč — poeni po tipu zavise od kvote, pa predaj kolo prije zaključavanja.</p></div>'
       + '<button class="btn-primary" ' + (pickedCount<6?'style="opacity:.45;pointer-events:none;"':'') + ' onclick="submitPredictorRound();">Predaj tipove →</button></div>';
   }
-  return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — besplatna igra pogađanja rezultata</div></div>'
+  return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — pogodi ishod, poeni zavise od kvote (teza opklada = vise XP)</div></div>'
     + ctaBlock
     + '<div class="block-head"><div class="block-title">Kolo 14 — mečevi</div></div>'
     + '<div class="match-list" style="margin-bottom:26px;">' + rowsHtml + '</div>'
@@ -1196,23 +1432,27 @@ function pageMyDashboard(){
       + '<div class="predictor-cta"><div class="left"><h3>Nisi prijavljen</h3><p>Prijavi se (Sign Up gore desno) da otključaš Dashboard sa svojim XP-om, nivoom i istorijom tipova.</p></div><button class="btn-primary" onclick="toggleLogin();">Sign Up →</button></div>';
   }
   var pickedCount = matches.slice(0,6).filter(function(m){ return predictorPicks[m.id]; }).length;
-  var round14Status = predictorSubmitted ? 'Predato' : (pickedCount>0 ? 'U toku' : 'Nije početo');
-  var round14Val = predictorSubmitted ? '✓' : pickedCount+'/6';
+  var round14Status = round14Resolved ? 'Zavrseno' : predictorSubmitted ? 'Predato' : (pickedCount>0 ? 'U toku' : 'Nije početo');
+  var round14Val = round14Resolved ? round14Placement : predictorSubmitted ? '✓' : pickedCount+'/6';
   var myTipsHtml;
-  if(predictorSubmitted){
+  if(round14Resolved){
+    myTipsHtml = round14Results.map(function(r){
+      return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + r.m.home + ' — ' + r.m.away + '</div><div class="tip-status">Tip: ' + predictorLabel(r.m,r.pick) + ' · Rezultat: ' + predictorLabel(r.m,r.actual) + '</div></div><div class="tip-stat"><div class="num" style="color:' + (r.correct?'var(--green)':'var(--live)') + ';">' + (r.correct?('+'+r.pts):'0') + '</div><div class="lbl">XP</div></div></div>';
+    }).join('');
+  } else if(predictorSubmitted){
     myTipsHtml = matches.slice(0,6).map(function(m){
       var pick = predictorPicks[m.id];
-      var label = pick==='1'?m.home : pick==='2'?m.away : 'Neriješeno';
+      var label = predictorLabel(m,pick);
       return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + m.home + ' — ' + m.away + '</div><div class="tip-status">Tip: ' + label + '</div></div><div class="tip-stat"><div class="num">' + m.odds[pick==='1'?0:pick==='X'?1:2] + '</div><div class="lbl">kvota</div></div></div>';
     }).join('');
   } else {
     myTipsHtml = '<div class="footnote" style="padding:14px;">Još nisi predao tipove za Kolo 14. <a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-predictions\');" style="display:inline;">Unesi tipove →</a></div>';
   }
   return '<div class="page-header"><div class="page-title">My Dashboard</div><div class="page-desc">Poeni, nivo, moja kola, moji tipovi</div></div>'
-    + '<div class="predictor-cta" style="margin-bottom:22px;"><div class="left"><div class="round-pill">Level 11</div><h3>2,340 / 3,650 XP</h3><p>1,310 XP do sljedećeg nivoa.</p></div><div class="vip-bar" style="width:180px;"><div class="vip-bar-fill"></div></div></div>'
+    + '<div class="predictor-cta" style="margin-bottom:22px;"><div class="left"><div class="round-pill">Level ' + userLevel + '</div><h3>' + userXP.toLocaleString() + ' / ' + userXPToNext.toLocaleString() + ' XP</h3><p>' + (userXPToNext-userXP) + ' XP do sljedećeg nivoa · ' + walletCoins + ' 🪙 na raspolaganju.</p></div><div class="vip-bar" style="width:180px;"><div class="vip-bar-fill" style="width:' + Math.max(2,Math.min(100,Math.round(userXP/userXPToNext*100))) + '%;"></div></div></div>'
     + '<div class="block-head"><div class="block-title">Moja kola — Predictor</div></div>'
     + '<div class="tipster-list" style="margin-bottom:22px;"><div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 13</div><div class="tip-status">Završeno</div></div><div class="tip-stat"><div class="num">#4</div><div class="lbl">plasman</div></div></div>'
-    + '<div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 14</div><div class="tip-status featured">' + round14Status + '</div></div><div class="tip-stat"><div class="num">' + round14Val + '</div><div class="lbl">unesenih tipova</div></div></div></div>'
+    + '<div class="tipster-row"><div class="tip-info"><div class="tip-name">Kolo 14</div><div class="tip-status featured">' + round14Status + '</div></div><div class="tip-stat"><div class="num">' + round14Val + '</div><div class="lbl">' + (round14Resolved?'plasman':'unesenih tipova') + '</div></div></div></div>'
     + '<div class="block-head"><div class="block-title">Moji tipovi — Kolo 14</div></div>'
     + '<div class="tipster-list">' + myTipsHtml + '</div>';
 }
@@ -1294,15 +1534,21 @@ function pageGlobalBonuses(){
     + '<div class="footnote">UK/IT/druga regulisana tržišta: prikaz bonusa je usklađen sa lokalnim pravilima oglašavanja — neki bonusi mogu biti blokirani ili prikazani generički.</div>';
 }
 function pageGlobalRewards(){
+  var xpToNext = userXPToNext - userXP;
+  var badgesEarned = BADGES.filter(function(b){ return b.cond(); }).length;
+  var challengesReady = CHALLENGES.filter(function(c){ return !claimedChallenges[c.id] && getStatValue(c.track)>=c.target; }).length;
   return '<div class="page-header"><div class="page-title">Rewards</div><div class="page-desc">Overview · Challenges · Badges · Shop · SportsPass</div></div>'
-    + '<div class="predictor-cta" style="margin-bottom:22px;"><div class="left"><div class="round-pill">Level 11</div><h3>2,340 / 3,650 XP do Level 12</h3><p>Zarađuj XP kroz Predictor, Weekly Quiz i aktivnost u zajednici.</p></div><button class="btn-primary" onclick="goToPage(\'my-dashboard\');">Otvori Dashboard →</button></div>'
-    + '<div class="cards-grid" style="margin-bottom:22px;">'
-    + '<div class="tool-card"><div class="tool-icon">🎯</div><div class="tool-title">Challenges</div><div class="tool-desc">Sedmični zadaci — unesi 3 tipa, komentariši u zajednici, osvoji XP.</div></div>'
-    + '<div class="tool-card"><div class="tool-icon">🏅</div><div class="tool-title">Badges</div><div class="tool-desc">12 osvojenih od 40 dostupnih bedževa.</div></div>'
-    + '<div class="tool-card"><div class="tool-icon">🛍️</div><div class="tool-title">Shop</div><div class="tool-desc">Zamijeni XP za pogodnosti — bez keš/fizičkih nagrada za sad.</div></div>'
-    + '</div>'
-    + '<div class="block-head"><div class="block-title">SportsPass <span class="badge-open">Pretplata</span></div></div>'
-    + '<div class="tool-card"><div class="tool-desc" style="margin-bottom:14px;">Jedan nivo pretplate, dual-lane nagrade koje prate tvoj Account Level. Real-time otključavanje, bez retroaktivnog potraživanja.</div><button class="op-cta" style="width:auto;padding:10px 20px;" onclick="openSubscribeModal();">Pretplati se →</button></div>';
+    + '<div class="predictor-cta" style="margin-bottom:22px;"><div class="left"><div class="round-pill">Level ' + userLevel + '</div><h3>' + userXP.toLocaleString() + ' / ' + userXPToNext.toLocaleString() + ' XP do Level ' + (userLevel+1) + '</h3><p>Jos ' + xpToNext + ' XP · balans ' + walletCoins + ' 🪙 · zaradjujes XP kroz Predictor, izazove i aktivnost u zajednici.</p></div><button class="btn-primary" onclick="goToPage(\'my-dashboard\');">Otvori Dashboard →</button></div>'
+    + '<div class="block-head"><div class="block-title">Challenges <span class="badge-open">' + challengesReady + ' spremno za preuzimanje</span></div></div>'
+    + '<div style="margin-bottom:22px;">' + CHALLENGES.map(challengeRowHtml).join('') + '</div>'
+    + '<div class="block-head"><div class="block-title">Badges</div><div class="block-sub" style="margin:0;">' + badgesEarned + ' od ' + BADGES.length + ' osvojenih</div></div>'
+    + '<div class="cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:22px;">' + badgeGridHtml() + '</div>'
+    + '<div class="block-head"><div class="block-title">Shop</div><div class="block-sub" style="margin:0;">Tvoj balans: ' + walletCoins + ' 🪙 — kozmetika, bez kes/fizickih nagrada</div></div>'
+    + '<div style="margin-bottom:22px;">' + SHOP_ITEMS.map(shopItemHtml).join('') + '</div>'
+    + '<div class="block-head"><div class="block-title">SportsPass <span class="badge-open">' + (sportsPassSubscribed?'Premium aktivan':'Free lane') + '</span></div>'
+    + (sportsPassSubscribed?'':'<button class="op-cta" style="width:auto;padding:8px 16px;" onclick="openSubscribeModal();">Aktiviraj Premium →</button>') + '</div>'
+    + '<div class="footnote" style="margin:0 0 10px;">Free lane je uvijek dostupna. Premium lane se otkljucava kad aktiviras SportsPass, a svaki tier i dalje zavisi od tvog Account Level-a.</div>'
+    + SPORTSPASS_TIERS.map(sportsPassTierHtml).join('');
 }
 function pageGlobalContent(){
   return '<div class="page-header"><div class="page-title">Content</div><div class="page-desc">Guides &amp; News · Education · Community</div></div>'
@@ -1439,6 +1685,7 @@ renderSlip();
 renderTicker();
 renderNav();
 renderAccount();
+refreshXpUI();
 render();
 </script>
 </body>
