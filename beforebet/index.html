@@ -72,6 +72,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .topbar{position:sticky;top:0;z-index:40;background:rgba(15,21,25,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 20px;height:60px;}
 .search-box{flex:1;max-width:420px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--text-faint);font-size:13px;}
 .search-box:hover{border-color:var(--surface-3);}
+.mobile-search-btn{display:none;}
+.mobile-search-row{display:none;}
+.mobile-search-row.open{display:block;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+.mobile-search-row input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.mobile-search-row input:focus{border-color:rgba(47,163,107,.4);}
 .topbar-spacer{flex:1;}
 .balance-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 8px 6px 12px;font-weight:700;font-size:13px;}
 .balance-pill .lvl{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--gold),#8A7238);display:flex;align-items:center;justify-content:center;font-size:10px;color:#1a1206;font-family:var(--font-mono);}
@@ -379,6 +384,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .burger-mobile{display:flex;position:relative;z-index:201;}
   body.menu-open .topbar{z-index:210;}
   .search-box{display:none;}
+  .mobile-search-btn{display:flex;}
   .topbar{gap:8px;padding:0 12px;height:54px;}
   .market-pill span{display:none;}
   .market-pill{padding:8px;}
@@ -417,11 +423,26 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .odd-btn{flex:1;min-width:0;}
   .operator-strip, .cards-grid{grid-template-columns:1fr;}
   .game-grid{grid-template-columns:repeat(3,1fr);gap:7px;}
-  .dropdown-menu{right:auto;left:0;min-width:150px;}
+  /* Dropdowns are anchored (position:absolute) to whichever small button opens them — on a
+     narrow screen that button can sit close enough to an edge that the dropdown's fixed
+     min-width pushes it off-screen either side. Detaching to the viewport instead (fixed,
+     pinned under the topbar with equal side margins) guarantees it never overflows. */
+  .dropdown-menu{position:fixed;top:58px;left:12px;right:12px;width:auto;min-width:0;max-width:none;}
   .promo-desc{display:none;}
   .footer-cols{flex-direction:column;gap:18px;}
   .bn-item{font-size:8.5px;}
   .bn-item .bn-ic{font-size:16px;}
+  /* Responsive tables: stack into cards instead of forcing horizontal scroll.
+     bm-table-compare (the Compare Tray odds matrix) keeps real horizontal scroll — it has a
+     variable number of bookmaker columns, so stacking it into cards would repeat the same
+     row label N times and become harder to read, not easier. */
+  .bm-table:not(.bm-table-compare){border-collapse:separate;border-spacing:0;}
+  .bm-table:not(.bm-table-compare) tr:has(th){display:none;}
+  .bm-table:not(.bm-table-compare) tr{display:block;border-bottom:1px solid var(--border);padding:10px 15px;}
+  .bm-table:not(.bm-table-compare) tr:last-child{border-bottom:none;}
+  .bm-table:not(.bm-table-compare) td{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:none;}
+  .bm-table:not(.bm-table-compare) td.bm-name{padding-top:3px;padding-bottom:7px;}
+  .bm-table:not(.bm-table-compare) td[data-label]::before{content:attr(data-label);font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:var(--text-faint);font-weight:700;flex-shrink:0;}
 }
 /* Landscape phones / very short viewports: keep bottom nav from eating too much vertical space */
 @media (max-height:420px) and (max-width:900px){
@@ -472,6 +493,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <div class="topbar">
       <button class="burger-mobile" id="burgerBtn">☰</button>
       <div class="search-box" id="searchBox" onclick="toggleSearch()">🔍 Pretraži mečeve, tipstere, operatore...</div>
+      <button class="icon-btn mobile-search-btn" id="mobileSearchBtn" onclick="toggleMobileSearch()">🔍</button>
       <div class="topbar-spacer"></div>
       <div style="position:relative;">
         <button class="market-pill" onclick="document.getElementById('marketDropdown').classList.toggle('open')">🌍 <span id="marketLabel">UK</span></button>
@@ -498,6 +520,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
         </div>
       </div>
       <button class="btn-signup" id="signupBtn" onclick="toggleLogin()">Sign Up</button>
+    </div>
+    <div class="mobile-search-row" id="mobileSearchRow">
+      <input id="mobileSearchInput" placeholder="Pretraži mečeve, tipstere, operatore..." oninput="runMobileSearch(this.value)">
     </div>
     <div class="ticker-wrap">
       <div class="ticker-track" id="tickerTrack"></div>
@@ -1245,6 +1270,17 @@ function toggleSearch(){
 }
 let searchQuery = '';
 function runSearch(v){ searchQuery = v.toLowerCase(); if(page==='sport-matches'){ document.getElementById('app').innerHTML = pageMatches(); } }
+function toggleMobileSearch(){
+  var row = document.getElementById('mobileSearchRow');
+  var open = row.classList.toggle('open');
+  if(open){ document.getElementById('mobileSearchInput').focus(); }
+  else { document.getElementById('mobileSearchInput').value=''; searchQuery=''; if(page==='sport-matches'){ render(); } }
+}
+function runMobileSearch(v){
+  searchQuery = v.toLowerCase();
+  if(page!=='sport-matches'){ page='sport-matches'; render(); document.getElementById('mobileSearchInput').focus(); }
+  else { document.getElementById('app').innerHTML = pageMatches(); }
+}
 function renderSlip(){
   document.getElementById('slipCount').textContent = slip.length;
   document.getElementById('slipTotal').textContent = slip.length;
@@ -1354,9 +1390,9 @@ function homeCasino(){
     + '<button class="btn-primary gold" onclick="goToPage(\'casino-freeplay\');">Igraj besplatno →</button></div></div>'
     + '<div class="block"><div class="block-head"><div class="block-title">RTP Index — ova sedmica</div><a href="#" class="see-all sub-link" data-target="casino-rtp">Puna tabela →</a></div>'
     + '<div style="overflow-x:auto;"><table class="bm-table"><tr><th>Igra</th><th>Provajder</th><th>RTP</th><th>Operator sa najvišim RTP</th></tr>'
-    + '<tr><td>Sweet Bonanza</td><td>Pragmatic Play</td><td class="mono" style="color:var(--green);">96.5%</td><td>GoldSpin Casino</td></tr>'
-    + '<tr><td>Gates of Olympus</td><td>Pragmatic Play</td><td class="mono" style="color:var(--green);">96.9%</td><td>Aurora Casino</td></tr>'
-    + '<tr><td>Starburst</td><td>NetEnt</td><td class="mono" style="color:var(--green);">96.1%</td><td>Emerald Palace</td></tr></table></div>'
+    + '<tr><td class="bm-name">Sweet Bonanza</td><td data-label="Provajder">Pragmatic Play</td><td class="mono" data-label="RTP" style="color:var(--green);">96.5%</td><td data-label="Najbolji operator">GoldSpin Casino</td></tr>'
+    + '<tr><td class="bm-name">Gates of Olympus</td><td data-label="Provajder">Pragmatic Play</td><td class="mono" data-label="RTP" style="color:var(--green);">96.9%</td><td data-label="Najbolji operator">Aurora Casino</td></tr>'
+    + '<tr><td class="bm-name">Starburst</td><td data-label="Provajder">NetEnt</td><td class="mono" data-label="RTP" style="color:var(--green);">96.1%</td><td data-label="Najbolji operator">Emerald Palace</td></tr></table></div>'
     + '<div class="block"><div class="block-head"><div class="block-title">Aktivni turniri</div><a href="#" class="see-all" onclick="event.preventDefault();openTournamentsModal();">Svi turniri →</a></div>'
     + '<div class="cards-grid"><div class="article-card" style="cursor:pointer;" onclick="openTournamentsModal();">' + decorImg('article-thumb','tourn1',300,160,'Turnir','slot machine,casino') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Slots Masters — nagradni fond €10,000, prijava do 31.08.</div></div></div>'
     + '<div class="article-card" style="cursor:pointer;" onclick="openTournamentsModal();">' + decorImg('article-thumb','tourn2',300,160,'Turnir','casino,poker chips') + '<div class="article-body"><div class="article-cat">Turnir</div><div class="article-title">Weekend Spin Race — top 50 dijeli free spinove</div></div></div></div></div>'
@@ -1516,10 +1552,12 @@ function pageTipsters(){
     + '<textarea id="tipReasoning" placeholder="Kratko obrazloženje (obavezno — bez obrazloženja se ne objavljuje)" style="width:100%;min-height:64px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:12.5px;font-family:inherit;resize:vertical;margin-bottom:8px;"></textarea>'
     + '<div id="tipFormError" style="color:var(--live);font-size:11.5px;margin-bottom:8px;"></div>'
     + '<button class="op-cta" style="width:100%;" onclick="publishTip();">Objavi predikciju →</button></div>';
+  var feedCards = publishedTips.slice(0,5).map(tipCardHtml);
+  if(feedCards.length>1){ feedCards.splice(1, 0, sponsoredAccaCardHtml(2)); } else { feedCards.push(sponsoredAccaCardHtml(2)); }
   return '<div class="page-header"><div class="page-title">Tipsters</div><div class="page-desc">Verifikovana zajednica — opt-in obavezan, niko ne postaje javan automatski</div></div>'
     + publishForm
     + '<div class="block-head"><div class="block-title">Najnovije analize zajednice</div></div>'
-    + '<div style="margin-bottom:24px;">' + publishedTips.slice(0,5).map(tipCardHtml).join('') + '</div>'
+    + '<div style="margin-bottom:24px;">' + feedCards.join('') + '</div>'
     + '<div class="block-head"><div class="block-title">Leaderboard</div></div>'
     + '<div class="tipster-list">' + tipsters.map(tipsterRowHtml).join('') + '</div>'
     + '<div class="block" style="margin-top:24px;"><div class="block-head"><div class="block-title">Guest Analysts</div><div class="block-sub" style="margin:0;">Nisu javno vezani za profil</div></div>'
@@ -1553,18 +1591,33 @@ function pageTipsterProfile(){
     + '<div class="block-head"><div class="block-title">Objave — ' + t.name + '</div></div>'
     + '<div>' + tipsHtml + '</div>';
 }
+function sponsoredAccaCardHtml(seedIdx){
+  var x = opPool()[seedIdx % opPool().length];
+  return '<div class="acca-card sponsored-row" style="position:relative;cursor:pointer;" onclick="claimBonus(\'' + x.type + '\',\'' + x.op.id + '\');">'
+    + '<span class="ad-tag">Reklama</span>'
+    + '<div class="acca-head"><div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;border-radius:8px;">' + avatarImg(x.op.name,48) + '</div>' + x.op.name + '</div>'
+    + '<div class="footnote" style="margin:0;">Partner</div></div>'
+    + '<div style="padding:6px 0 4px;font-size:13px;font-weight:700;">' + x.op.bonus + '</div>'
+    + '<div style="font-size:12px;color:var(--text-dim);margin-bottom:11px;">Iskoristi bonus prije nego uplatis sljedeci tiket.</div>'
+    + '<button class="op-cta" style="width:100%;">Preuzmi bonus →</button></div>';
+}
 function pageAccumulators(){
   var filtered = sampleAcca.filter(function(a){ return a.type===accaFilter; });
   var chips = [['daily','Dnevni'],['weekend','Vikend']].map(function(c){ return filterChip(c[1], c[0], accaFilter, 'setAccaFilter'); }).join('');
   var emptyHtml = filtered.length ? '' : '<div class="footnote" style="padding:20px;text-align:center;">Nema tiketa za ovaj filter.</div>';
+  var cardsArr = [];
+  filtered.forEach(function(a,i){
+    cardsArr.push(accaCardHtml(a));
+    if((i+1)%2===0){ cardsArr.push(sponsoredAccaCardHtml(Math.floor(i/2))); }
+  });
   return '<div class="page-header"><div class="page-title">Accumulators</div><div class="page-desc">Kuratorisani tiketi — dnevni i vikend</div></div>'
     + '<div class="filters-bar">' + chips + '</div>'
-    + '<div class="cards-grid">' + filtered.map(accaCardHtml).join('') + '</div>' + emptyHtml;
+    + '<div class="cards-grid">' + cardsArr.join('') + '</div>' + emptyHtml;
 }
 function pageBookmakers(){
   var rows = bookmakersFull.map(function(b){
-    return '<tr><td class="bm-name">' + b.name + '</td><td><span class="stars">' + starRow(b.rating) + '</span> <span class="mono" style="color:var(--text-dim);">' + b.rating + '</span></td>'
-      + '<td><span class="bonus-tag">' + b.bonus + '</span></td><td>' + b.markets + '</td><td><a href="#" class="see-all" onclick="event.preventDefault();openOperator(\'bookmaker\',\'' + b.id + '\');">Recenzija →</a></td></tr>';
+    return '<tr><td class="bm-name">' + b.name + '</td><td data-label="Ocjena"><span class="stars">' + starRow(b.rating) + '</span> <span class="mono" style="color:var(--text-dim);">' + b.rating + '</span></td>'
+      + '<td data-label="Bonus"><span class="bonus-tag">' + b.bonus + '</span></td><td data-label="Tržišta">' + b.markets + '</td><td><a href="#" class="see-all" onclick="event.preventDefault();openOperator(\'bookmaker\',\'' + b.id + '\');">Recenzija →</a></td></tr>';
   }).join('');
   return '<div class="page-header"><div class="page-title">Bookmakers</div><div class="page-desc">Recenzije, poređenje kvota i head-to-head</div></div>'
     + '<div style="overflow-x:auto;"><table class="bm-table"><tr><th>Operator</th><th>Ocjena</th><th>Bonus</th><th>Tržišta</th><th></th></tr>' + rows + '</table></div>';
@@ -1597,9 +1650,9 @@ function pageMatchDetail(){
     + '<div class="tool-card"><div class="tool-desc">64% korisnika tipuje pobjedu ' + m.home + ', 22% neriješeno, 14% ' + m.away + '.</div></div></div>'
     + '<div class="block"><div class="block-head"><div class="block-title">Statistika sezone</div></div>'
     + '<div style="overflow-x:auto;"><table class="bm-table"><tr><th></th><th>' + m.home + '</th><th>' + m.away + '</th></tr>'
-    + '<tr><td>Pobjede</td><td class="mono">14</td><td class="mono">11</td></tr>'
-    + '<tr><td>Golova po meču</td><td class="mono">2.1</td><td class="mono">1.7</td></tr>'
-    + '<tr><td>Primljeno po meču</td><td class="mono">0.9</td><td class="mono">1.3</td></tr></table></div>';
+    + '<tr><td class="bm-name">Pobjede</td><td class="mono" data-label="' + m.home + '">14</td><td class="mono" data-label="' + m.away + '">11</td></tr>'
+    + '<tr><td class="bm-name">Golova po meču</td><td class="mono" data-label="' + m.home + '">2.1</td><td class="mono" data-label="' + m.away + '">1.7</td></tr>'
+    + '<tr><td class="bm-name">Primljeno po meču</td><td class="mono" data-label="' + m.home + '">0.9</td><td class="mono" data-label="' + m.away + '">1.3</td></tr></table></div>';
 }
 function pageOperatorDetail(){
   var opType = selectedOperator && selectedOperator.type==='casino' ? 'casino' : 'bookmaker';
@@ -1682,8 +1735,8 @@ function pageCasinoGames(){
 }
 function pageCasinoCasinos(){
   var rows = featuredCasinos.concat([{id:'winzone-casino', name:'WinZone Casino', rating:'4.1', bonus:'50 free spins'}]).map(function(b){
-    return '<tr><td class="bm-name">' + b.name + '</td><td><span class="stars">' + starRow(b.rating) + '</span> <span class="mono" style="color:var(--text-dim);">' + b.rating + '</span></td>'
-      + '<td><span class="bonus-tag">' + b.bonus + '</span></td><td><a href="#" class="see-all" onclick="event.preventDefault();openOperator(\'casino\',\'' + b.id + '\');">Recenzija →</a></td></tr>';
+    return '<tr><td class="bm-name">' + b.name + '</td><td data-label="Ocjena"><span class="stars">' + starRow(b.rating) + '</span> <span class="mono" style="color:var(--text-dim);">' + b.rating + '</span></td>'
+      + '<td data-label="Bonus"><span class="bonus-tag">' + b.bonus + '</span></td><td><a href="#" class="see-all" onclick="event.preventDefault();openOperator(\'casino\',\'' + b.id + '\');">Recenzija →</a></td></tr>';
   }).join('');
   return '<div class="page-header"><div class="page-title">Casinos</div><div class="page-desc">Best Casinos — filter/sort, operator detail, head-to-head</div></div>'
     + '<div style="overflow-x:auto;"><table class="bm-table"><tr><th>Operator</th><th>Ocjena</th><th>Bonus</th><th></th></tr>' + rows + '</table></div>';
@@ -1699,7 +1752,7 @@ function pageCasinoFreeplay(){
 function pageCasinoRtp(){
   var rows = navGames.map(function(g){
     var best = featuredCasinos[Math.floor(Math.random()*featuredCasinos.length)];
-    return '<tr><td class="bm-name" style="display:flex;align-items:center;gap:9px;"><span class="avatar" style="width:26px;height:26px;border-radius:6px;">' + avatarImg('game-'+g.name,52) + '</span>' + g.name + '</td><td>' + g.provider + '</td><td class="mono" style="color:var(--green);font-weight:700;">' + g.rtp + '</td><td>' + best.name + '</td></tr>';
+    return '<tr><td class="bm-name" style="display:flex;align-items:center;gap:9px;"><span class="avatar" style="width:26px;height:26px;border-radius:6px;">' + avatarImg('game-'+g.name,52) + '</span>' + g.name + '</td><td data-label="Provajder">' + g.provider + '</td><td class="mono" data-label="RTP" style="color:var(--green);font-weight:700;">' + g.rtp + '</td><td data-label="Najbolji operator">' + best.name + '</td></tr>';
   }).join('');
   return '<div class="page-header"><div class="page-title">RTP Index</div><div class="page-desc">Ista igra, različit RTP po operatoru — naša diferencirajuća metrika</div></div>'
     + '<div style="overflow-x:auto;"><table class="bm-table">' + '<tr><th>Igra</th><th>Provajder</th><th>RTP</th><th>Operator sa najvišim RTP</th></tr>' + rows + '</table></div>';
@@ -1752,10 +1805,18 @@ function pageGlobalRewards(){
     + '<div class="footnote" style="margin:0 0 12px;">Free lane je uvijek dostupna. Premium lane se otkljucava kad aktiviras SportsPass, a svaki tier i dalje zavisi od tvog Account Level-a.</div>'
     + '<div class="rw-grid-2">' + SPORTSPASS_TIERS.map(sportsPassTierHtml).join('') + '</div>';
 }
+function sponsoredArticleCardHtml(seedIdx){
+  var x = opPool()[(seedIdx+1) % opPool().length];
+  return '<div class="article-card sponsored-row" style="position:relative;cursor:pointer;" onclick="claimBonus(\'' + x.type + '\',\'' + x.op.id + '\');">'
+    + '<span class="ad-tag">Sponzorisano</span>' + decorImg('article-thumb','sponsored-'+x.op.id,300,160,x.op.name,'')
+    + '<div class="article-body"><div class="article-cat">Partner sadrzaj</div><div class="article-title">' + x.op.name + ' — ' + x.op.bonus + '</div></div></div>';
+}
 function pageGlobalContent(){
+  var newsCards = articles.map(function(a,i){return articleCardHtml(a.cat,a.title,'article-'+i);});
+  newsCards.splice(2, 0, sponsoredArticleCardHtml(0));
   return '<div class="page-header"><div class="page-title">Content</div><div class="page-desc">Guides &amp; News · Education · Community</div></div>'
     + '<div class="block-head"><div class="block-title">Guides &amp; News</div></div>'
-    + '<div class="cards-grid" style="margin-bottom:22px;">' + articles.map(function(a,i){return articleCardHtml(a.cat,a.title,'article-'+i);}).join('') + '</div>'
+    + '<div class="cards-grid" style="margin-bottom:22px;">' + newsCards.join('') + '</div>'
     + '<div class="block-head"><div class="block-title">Education</div></div>'
     + '<div class="cards-grid">'
     + '<div class="article-card" style="cursor:pointer;" onclick="openArticleModal(\'Sports Betting 101\',\'Tipovi opklada objasnjeni — od 1X2 do Asian Handicap\')">' + decorImg('article-thumb','edu1',300,160,'Education','sports betting,soccer') + '<div class="article-body"><div class="article-cat">Sports Betting 101</div><div class="article-title">Tipovi opklada objašnjeni — od 1X2 do Asian Handicap</div></div></div>'
@@ -1824,7 +1885,8 @@ function pageCompareView(){
   }).join('');
   return '<div class="page-header"><a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-matches\');">← Nastavi biranje</a>'
     + '<div class="page-title" style="margin-top:8px;">Uporedi kvote</div><div class="page-desc">' + slip.length + ' odabrano · ★ = najbolja kvota po redu</div></div>'
-    + '<div style="overflow-x:auto;"><table class="bm-table">' + header + body + '</table></div>'
+    + '<div class="footnote" style="margin:0 0 8px;">📱 Prevuci tabelu ulijevo/udesno da vidiš sve operatore.</div>'
+    + '<div style="overflow-x:auto;"><table class="bm-table bm-table-compare">' + header + body + '</table></div>'
     + '<div class="footnote">Kvote su simulirane radi demonstracije poređenja — u produkciji dolaze iz live feed integracije (Odds API / Sportmonks).</div>';
 }
 const routes = {
