@@ -335,14 +335,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .sp-lane{flex-wrap:wrap;}
 }
 
-/* ============ Predictor pick — kvota (odds) + XP reward, clearly labeled ============ */
-.predict-pick{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:9px 8px;text-align:center;flex:1;min-width:0;transition:.12s;}
+/* ============ Predictor pick — 1/X/2 only + XP reward. No odds/kvota shown here by design:
+   this is a free-to-play result predictor, not an odds picker. Kvota still shows on
+   Matches, Bookmakers, Accumulators, Compare Tray etc. — just not on Predictions. ============ */
+.predict-pick{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:11px 8px;text-align:center;flex:1;min-width:0;transition:.12s;}
 .predict-pick:hover{border-color:var(--green);}
 .predict-pick.selected{background:rgba(47,163,107,.16);border-color:var(--green);box-shadow:var(--glow-green-soft);}
-.predict-pick .pp-lbl{font-size:10px;font-weight:800;color:var(--text-faint);display:block;}
-.predict-pick .pp-odd-label{font-size:8px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;display:block;}
-.predict-pick .pp-odd{font-family:var(--font-mono);font-weight:800;font-size:14.5px;color:var(--green);display:block;line-height:1.3;}
-.predict-pick .pp-xp{font-size:9.5px;color:var(--gold);font-weight:700;margin-top:2px;white-space:nowrap;display:block;}
+.predict-pick .pp-lbl{font-family:var(--font-mono);font-weight:800;font-size:17px;color:var(--green);display:block;line-height:1.3;}
+.predict-pick .pp-xp{font-size:9.5px;color:var(--gold);font-weight:700;margin-top:3px;white-space:nowrap;display:block;}
 .bm-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
 .bm-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--text-faint);padding:11px 15px;border-bottom:1px solid var(--border);}
 .bm-table td{padding:13px 15px;border-bottom:1px solid var(--border);font-size:12.5px;}
@@ -1496,7 +1496,7 @@ function predictorRowHtml(m){
     return '<div class="match-row" style="grid-template-columns:1fr auto;">'
       + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams"><div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
       + '<div style="text-align:right;">'
-      + '<div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Tvoj tip: <b>' + predictorLabel(m,res.pick) + '</b> (kvota ' + predictorOddOf(m,res.pick) + ') · Rezultat: <b>' + predictorLabel(m,res.actual) + '</b></div>'
+      + '<div style="font-size:11px;color:var(--text-dim);margin-bottom:3px;">Tvoj tip: <b>' + res.pick + '</b> · Rezultat: <b>' + res.actual + '</b></div>'
       + '<div class="mono" style="font-weight:800;color:' + (res.correct?'var(--green)':'var(--live)') + ';">' + (res.correct?('✓ +'+res.pts+' XP'):'✕ 0 XP') + '</div>'
       + '</div></div>';
   }
@@ -1505,9 +1505,9 @@ function predictorRowHtml(m){
     + '<div class="match-teams"><div class="league">' + m.league + '</div><div class="teams">'
     + '<div class="team">' + m.home + '</div><div class="team">' + m.away + '</div></div></div>'
     + '<div class="odds-row">'
-    + '<div class="predict-pick ' + (pick==='1'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'1')\"><span class=\"pp-lbl\">1</span><span class=\"pp-odd-label\">Kvota</span><span class=\"pp-odd\">" + m.odds[0] + '</span><span class="pp-xp">+' + pts1 + ' XP</span></div>'
-    + '<div class="predict-pick ' + (pick==='X'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'X')\"><span class=\"pp-lbl\">X</span><span class=\"pp-odd-label\">Kvota</span><span class=\"pp-odd\">" + m.odds[1] + '</span><span class="pp-xp">+' + ptsX + ' XP</span></div>'
-    + '<div class="predict-pick ' + (pick==='2'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'2')\"><span class=\"pp-lbl\">2</span><span class=\"pp-odd-label\">Kvota</span><span class=\"pp-odd\">" + m.odds[2] + '</span><span class="pp-xp">+' + pts2 + ' XP</span></div>'
+    + '<div class="predict-pick ' + (pick==='1'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'1')\"><span class=\"pp-lbl\">1</span><span class=\"pp-xp\">+" + pts1 + ' XP</span></div>'
+    + '<div class="predict-pick ' + (pick==='X'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'X')\"><span class=\"pp-lbl\">X</span><span class=\"pp-xp\">+" + ptsX + ' XP</span></div>'
+    + '<div class="predict-pick ' + (pick==='2'?'selected':'') + '" onclick="setPredictorPick(' + m.id + ",'2')\"><span class=\"pp-lbl\">2</span><span class=\"pp-xp\">+" + pts2 + ' XP</span></div>'
     + '</div></div>';
 }
 function pagePredictions(){
@@ -1520,17 +1520,17 @@ function pagePredictions(){
     ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Kolo zavrseno</div><h3>' + round14TotalPoints + ' XP osvojeno · ' + correctCount + '/6 tacnih</h3><p>Zavrsio/la si na mjestu ' + round14Placement + ' (demo simulacija rezultata, tezi ishodi nose vise XP).</p></div>'
       + '<button class="btn-primary" onclick="resetPredictorRound();">Novo kolo (demo) →</button></div>';
   } else if(predictorSubmitted){
-    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Tipovi predati</div><h3>Vidimo se poslije mečeva</h3><p>Poeni zavise od kvote svakog tipa — sto je ishod manje ocekivan, to nosi vise XP kad pogodis.</p></div>'
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;border-color:rgba(47,163,107,.4);"><div class="left"><div class="round-pill">✓ Tipovi predati</div><h3>Vidimo se poslije mečeva</h3><p>Poeni zavise od tezine svakog tipa — sto je ishod manje ocekivan, to nosi vise XP kad pogodis.</p></div>'
       + '<button class="btn-primary" onclick="resolveRoundDemo();">Simuliraj rezultate (demo) →</button></div>';
   } else {
-    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč — poeni po tipu zavise od kvote, pa predaj kolo prije zaključavanja.</p></div>'
+    ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč — poeni po tipu zavise od tezine ishoda, pa predaj kolo prije zaključavanja.</p></div>'
       + '<button class="btn-primary" ' + (pickedCount<6?'style="opacity:.45;pointer-events:none;"':'') + ' onclick="submitPredictorRound();">Predaj tipove →</button></div>';
   }
   var sponsor = opPool()[3 % opPool().length];
   var sponsorBanner = '<div class="predictor-cta sponsored-row" style="margin-bottom:18px;border-color:rgba(181,146,74,.3);position:relative;" onclick="claimBonus(\'' + sponsor.type + '\',\'' + sponsor.op.id + '\');">'
     + '<span class="ad-tag">Reklama</span><div class="left"><div class="round-pill gold">Sponzor kola 14</div><h3>' + sponsor.op.name + ' — ' + sponsor.op.bonus + '</h3><p>Partner ovog kola Predictora.</p></div>'
     + '<button class="btn-primary gold">Preuzmi bonus →</button></div>';
-  return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — pogodi ishod, poeni zavise od kvote (teza opklada = vise XP)</div></div>'
+  return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — pogodi ishod, poeni zavise od tezine tipa (manje ocekivan ishod = vise XP)</div></div>'
     + ctaBlock
     + sponsorBanner
     + '<div class="block-head"><div class="block-title">Kolo 14 — mečevi</div></div>'
@@ -1686,7 +1686,7 @@ function pageMyDashboard(){
     myTipsHtml = matches.slice(0,6).map(function(m){
       var pick = predictorPicks[m.id];
       var label = predictorLabel(m,pick);
-      return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + m.home + ' — ' + m.away + '</div><div class="tip-status">Tip: ' + label + '</div></div><div class="tip-stat"><div class="num">' + m.odds[pick==='1'?0:pick==='X'?1:2] + '</div><div class="lbl">kvota</div></div></div>';
+      return '<div class="tipster-row"><div class="tip-info"><div class="tip-name">' + m.home + ' — ' + m.away + '</div><div class="tip-status">Tip: ' + label + '</div></div><div class="tip-stat"><div class="num mono" style="color:var(--green);">' + pick + '</div><div class="lbl">odabir</div></div></div>';
     }).join('');
   } else {
     myTipsHtml = '<div class="footnote" style="padding:14px;">Još nisi predao tipove za Kolo 14. <a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-predictions\');" style="display:inline;">Unesi tipove →</a></div>';
