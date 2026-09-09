@@ -184,6 +184,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .op-banner img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.1) brightness(.75);}
 .op-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(10,15,19,.55) 100%);}
 .featured-tag{position:absolute;top:9px;right:9px;background:var(--gold);color:#1a1206;font-size:9px;font-weight:800;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.3px;}
+.ad-tag{position:absolute;top:8px;left:8px;background:rgba(10,13,17,.75);color:var(--text-dim);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:3px 7px;border-radius:5px;z-index:2;backdrop-filter:blur(2px);}
+.sb-ad{position:relative;margin:4px 14px 10px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.sb-ad-img{width:100%;height:60px;object-fit:cover;display:block;filter:saturate(1.1) brightness(.8);}
+.sb-ad-body{padding:8px 10px;}
+.sb-ad-body .adt{font-size:11px;font-weight:700;margin-bottom:3px;}
+.sb-ad-body .adb a{color:var(--green);font-weight:700;font-size:10.5px;}
+.footer-partners{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+.footer-partner-tile{width:92px;height:50px;border-radius:8px;overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--border);flex-shrink:0;transition:.15s;}
+.footer-partner-tile:hover{border-color:rgba(47,163,107,.35);}
+.footer-partner-tile img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.1) brightness(.7);}
+.footer-partner-tile .fpt-name{position:absolute;left:0;right:0;bottom:0;background:rgba(6,9,12,.78);color:var(--text);font-size:8px;font-weight:700;text-align:center;padding:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sponsored-row{cursor:pointer;}
+.sponsored-row:hover{border-color:rgba(181,146,74,.4);}
 .op-body{padding:14px;}
 .op-name{font-family:var(--font-display);font-weight:700;font-size:14px;margin-bottom:5px;}
 .op-rating{display:flex;align-items:center;gap:6px;margin-bottom:9px;}
@@ -207,7 +220,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .img-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--gold);background:var(--surface-3);}
 .crest .img-fallback{font-size:8px;color:var(--text-dim);}
-.op-banner.img-failed, .game-tile.img-failed, .promo-banner.img-failed{background:linear-gradient(135deg,var(--surface-3),var(--surface-2)) !important;}
+.op-banner.img-failed, .game-tile.img-failed, .promo-banner.img-failed, .sb-ad.img-failed, .footer-partner-tile.img-failed{background:linear-gradient(135deg,var(--surface-3),var(--surface-2)) !important;}
 .article-card.img-failed .article-thumb{display:none;}
 .tip-info{flex:1;min-width:0;}
 .tip-name{font-weight:700;font-size:13px;}
@@ -449,6 +462,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <a href="#" class="sb-item sub-link" data-target="global-methodology"><span class="ic-wrap">📐</span><span class="sb-label">Rankings method</span></a>
       <a href="#" class="sb-item sub-link" data-target="global-rg"><span class="ic-wrap">🛡️</span><span class="sb-label">Responsible play</span></a>
     </div>
+    <div class="sb-ad" id="sbAd"></div>
     <div class="sb-bottom">
       <button class="sb-collapse" id="collapseBtn">‹ Suzi meni</button>
     </div>
@@ -493,6 +507,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     </div>
     <main class="content" id="app"></main>
     <footer class="site-footer">
+      <div class="footer-col-title">Partneri</div>
+      <div class="footer-partners" id="footerPartners"></div>
       <div class="footer-cols">
         <div class="footer-col">
           <div class="footer-col-title">Platforma</div>
@@ -632,6 +648,43 @@ function renderTicker(){
     return '<span class="ticker-item">🔥 <span class="name">' + t.name + '</span> ' + t.text + ' <b>' + t.odd + '</b></span>';
   }).join('');
   document.getElementById('tickerTrack').innerHTML = html + html;
+}
+
+/* ============ SIDEBAR / IN-FEED / FOOTER PARTNER ADS ============ */
+function opPool(){
+  return featuredBookmakers.map(function(o){ return {op:o,type:'bookmaker'}; })
+    .concat(featuredCasinos.map(function(o){ return {op:o,type:'casino'}; }))
+    .concat(otherOperators.map(function(o){ return {op:o,type:(o.id.indexOf('casino')>-1?'casino':'bookmaker')}; }));
+}
+function renderSidebarAd(){
+  var pool = mode==='casino' ? featuredCasinos : featuredBookmakers;
+  var op = pool[0];
+  var type = mode==='casino' ? 'casino' : 'bookmaker';
+  document.getElementById('sbAd').innerHTML = '<span class="ad-tag">Reklama</span>'
+    + decorImg('sb-ad-img','sbad-'+op.id,260,120,op.name,'')
+    + '<div class="sb-ad-body"><div class="adt">' + op.name + '</div><div class="footnote" style="margin:0 0 6px;">' + op.bonus + '</div>'
+    + '<div class="adb"><a href="#" onclick="event.preventDefault();claimBonus(\'' + type + '\',\'' + op.id + '\');">Preuzmi bonus →</a></div></div>';
+}
+function renderFooterPartners(){
+  document.getElementById('footerPartners').innerHTML = opPool().map(function(x){
+    return '<div class="footer-partner-tile" onclick="openOperator(\'' + x.type + '\',\'' + x.op.id + '\');">'
+      + decorImg('','fp-'+x.op.id,180,96,x.op.name,'') + '<div class="fpt-name">' + x.op.name + '</div></div>';
+  }).join('');
+}
+function sponsoredMatchRowHtml(seedIdx){
+  var pool = opPool();
+  var x = pool[seedIdx % pool.length];
+  return '<div class="match-row sponsored-row" style="position:relative;grid-template-columns:52px 1fr auto;" onclick="claimBonus(\'' + x.type + '\',\'' + x.op.id + '\');">'
+    + '<span class="ad-tag">Reklama</span>'
+    + '<div class="avatar" style="border-radius:8px;">' + avatarImg(x.op.name,52) + '</div>'
+    + '<div class="match-teams"><div class="league">Partner promocija</div><div class="teams"><div class="team">' + x.op.name + '</div></div></div>'
+    + '<div><span class="op-cta" style="display:inline-block;">' + x.op.bonus + ' →</span></div></div>';
+}
+function sponsoredGameTileHtml(seedIdx){
+  var op = featuredCasinos[seedIdx % featuredCasinos.length];
+  return '<div class="game-tile sponsored-row" style="position:relative;" onclick="claimBonus(\'casino\',\'' + op.id + '\');">'
+    + '<span class="ad-tag">Reklama</span>' + decorImg('','ad-'+op.id,260,340,op.name,'')
+    + '<div class="game-overlay"><div class="game-name">' + op.name + '</div><div class="game-rtp" style="color:var(--gold);">' + op.bonus + '</div></div></div>';
 }
 
 /* ============ GENERIC MODAL + TOAST (every dead-end button opens one of these) ============ */
@@ -1075,14 +1128,18 @@ function setAccaFilter(v){ accaFilter = v; render(); }
 function setBonusFilter(v){ bonusFilter = v; render(); }
 function initials(name){ return name.charAt(0).toUpperCase(); }
 function imgUrl(seed, w, h){ return 'https://picsum.photos/seed/' + encodeURIComponent(seed) + '/' + w + '/' + (h||w); }
-function unsplashUrl(topic, seed, w, h){ return 'https://source.unsplash.com/' + w + 'x' + (h||w) + '/?' + encodeURIComponent(topic) + '&sig=' + encodeURIComponent(seed); }
+/* NOTE: source.unsplash.com was shut down by Unsplash years ago — every image that used to route
+   through it (any decorImg() call with a topic) rendered as a broken/blank image site-wide.
+   unsplashUrl() is kept only so no call site needs editing; it now resolves through the
+   still-reliable picsum.photos service instead, using topic+seed for variety. */
+function unsplashUrl(topic, seed, w, h){ return imgUrl((topic||'img') + '-' + seed, w, h); }
 function avatarImg(seed, size){
   var init = (seed||'?').charAt(0).toUpperCase();
   return '<img src="' + imgUrl('av-'+seed, size||64) + '" alt="' + seed + '" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;img-fallback&quot;>' + init + '</span>\'">';
 }
 function decorImg(cls, seed, w, h, alt, topic){
   var src = topic ? unsplashUrl(topic, seed, w, h) : imgUrl(seed, w, h);
-  return '<img class="' + cls + '" src="' + src + '" alt="' + (alt||'') + '" loading="lazy" onerror="this.style.display=\'none\';this.closest(\'.op-banner,.game-tile,.article-card,.promo-banner\').classList.add(\'img-failed\');">';
+  return '<img class="' + cls + '" src="' + src + '" alt="' + (alt||'') + '" loading="lazy" onerror="this.style.display=\'none\';var c=this.closest(\'.op-banner,.game-tile,.article-card,.promo-banner,.sb-ad,.footer-partner-tile\');if(c)c.classList.add(\'img-failed\');">';
 }
 function articleCardHtml(cat, title, seed){
   return '<div class="article-card" style="cursor:pointer;" onclick="openArticleModal(\'' + cat + '\',\'' + title.replace(/'/g,"\\'") + '\')">' + decorImg('article-thumb',seed,300,160,cat,'sports betting')
@@ -1317,7 +1374,17 @@ function pageMatches(){
   var emptyMsg = matchesStatusFilter==='tomorrow'
     ? 'Raspored za sutra još nije objavljen — vrati se kasnije.'
     : 'Nema mečeva za ovaj filter.';
-  var listHtml = filtered.length ? filtered.map(matchRowHtml).join('') : '<div class="footnote" style="padding:20px;text-align:center;">' + (searchQuery ? ('Nema mečeva za "'+searchQuery+'".') : emptyMsg) + '</div>';
+  var listHtml;
+  if(filtered.length){
+    var rowsWithAds = [];
+    filtered.forEach(function(m,i){
+      rowsWithAds.push(matchRowHtml(m));
+      if((i+1)%4===0){ rowsWithAds.push(sponsoredMatchRowHtml(Math.floor(i/4))); }
+    });
+    listHtml = rowsWithAds.join('');
+  } else {
+    listHtml = '<div class="footnote" style="padding:20px;text-align:center;">' + (searchQuery ? ('Nema mečeva za "'+searchQuery+'".') : emptyMsg) + '</div>';
+  }
   var leagues = ['all'].concat(matches.map(function(m){return m.league;}).filter(function(l,i,arr){return arr.indexOf(l)===i;}));
   var leagueChips = leagues.map(function(l){ return filterChip(l==='all'?'Sve lige':l, l, matchesLeagueFilter, 'setMatchesLeague'); }).join('');
   var statusChips = [['today','Danas'],['tomorrow','Sutra'],['live','Uživo']].map(function(s){ return filterChip(s[1], s[0], matchesStatusFilter, 'setMatchesStatus'); }).join('');
@@ -1423,8 +1490,13 @@ function pagePredictions(){
     ctaBlock = '<div class="predictor-cta" style="margin-bottom:24px;"><div class="left"><div class="round-pill">● Kolo 14 u toku · zatvara za 2h 14m</div><h3>' + pickedCount + '/6 mečeva odabrano</h3><p>Klikni 1 / X / 2 za svaki meč — poeni po tipu zavise od kvote, pa predaj kolo prije zaključavanja.</p></div>'
       + '<button class="btn-primary" ' + (pickedCount<6?'style="opacity:.45;pointer-events:none;"':'') + ' onclick="submitPredictorRound();">Predaj tipove →</button></div>';
   }
+  var sponsor = opPool()[3 % opPool().length];
+  var sponsorBanner = '<div class="predictor-cta sponsored-row" style="margin-bottom:18px;border-color:rgba(181,146,74,.3);position:relative;" onclick="claimBonus(\'' + sponsor.type + '\',\'' + sponsor.op.id + '\');">'
+    + '<span class="ad-tag">Reklama</span><div class="left"><div class="round-pill gold">Sponzor kola 14</div><h3>' + sponsor.op.name + ' — ' + sponsor.op.bonus + '</h3><p>Partner ovog kola Predictora.</p></div>'
+    + '<button class="btn-primary gold">Preuzmi bonus →</button></div>';
   return '<div class="page-header"><div class="page-title">Predictions</div><div class="page-desc">Ulaz u Predictor — pogodi ishod, poeni zavise od kvote (teza opklada = vise XP)</div></div>'
     + ctaBlock
+    + sponsorBanner
     + '<div class="block-head"><div class="block-title">Kolo 14 — mečevi</div></div>'
     + '<div class="match-list" style="margin-bottom:26px;">' + rowsHtml + '</div>'
     + '<div class="block-head"><div class="block-title">Leaderboard — Kolo 14</div></div>'
@@ -1594,10 +1666,13 @@ function pageCasinoGames(){
     if(gamesFilter==='netent') return g.provider==='NetEnt';
     return true;
   });
-  var tiles = filtered.map(function(g){
-    return '<div class="game-tile" style="cursor:pointer;" onclick="openGameByName(\'' + g.name.replace(/'/g,"\\'") + '\')">' + decorImg('',('game-'+g.name),260,340,g.name,'slot machine,casino lights')
-      + '<div class="game-overlay"><div class="game-name">' + g.name + '</div><div class="game-rtp">RTP ' + g.rtp + '</div></div></div>';
-  }).join('');
+  var tileArr = [];
+  filtered.forEach(function(g,i){
+    tileArr.push('<div class="game-tile" style="cursor:pointer;" onclick="openGameByName(\'' + g.name.replace(/'/g,"\\'") + '\')">' + decorImg('',('game-'+g.name),260,340,g.name,'slot machine,casino lights')
+      + '<div class="game-overlay"><div class="game-name">' + g.name + '</div><div class="game-rtp">RTP ' + g.rtp + '</div></div></div>');
+    if((i+1)%6===0){ tileArr.push(sponsoredGameTileHtml(Math.floor(i/6))); }
+  });
+  var tiles = tileArr.join('');
   var chips = [['all','Sve'],['slots','Slots'],['live','Live Casino'],['jackpot','Jackpot'],['pragmatic','Pragmatic Play'],['netent','NetEnt']]
     .map(function(c){ return filterChip(c[1], c[0], gamesFilter, 'setGamesFilter'); }).join('');
   var emptyHtml = filtered.length ? '' : '<div class="footnote" style="padding:20px;text-align:center;">Nema igara za ovaj filter.</div>';
@@ -1781,6 +1856,7 @@ document.querySelectorAll('#modeToggle button').forEach(function(btn){
     btn.classList.add('active');
     page = mode==='sport' ? 'sport-home' : 'casino-home';
     renderNav();
+    renderSidebarAd();
     render();
   };
 });
@@ -1814,6 +1890,8 @@ renderTicker();
 renderNav();
 renderAccount();
 refreshXpUI();
+renderSidebarAd();
+renderFooterPartners();
 render();
 </script>
 </body>
