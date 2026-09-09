@@ -575,11 +575,11 @@ const featuredCasinos = [
   {id:'aurora', name:'Aurora Casino', rating:'4.4', bonus:'100% do €300', tags:['welcome','cashback'], pros:['Odlična VIP šema','24/7 podrška'], cons:['Sporija verifikacija naloga'], terms:'Wagering 35x, rok 30 dana.'},
 ];
 const tipsters = [
-  {rank:1, name:'punter_kate', status:'Paid Contributor', wr:'68%', tips:214, featured:true},
-  {rank:2, name:'sharp_marko', status:'Featured Analyst', wr:'64%', tips:180, featured:true},
-  {rank:3, name:'valuehunter', status:'Featured Analyst', wr:'61%', tips:156, featured:true},
-  {rank:4, name:'bkbetting', status:'User', wr:'58%', tips:97, featured:false},
-  {rank:5, name:'oddswiz', status:'User', wr:'57%', tips:88, featured:false},
+  {rank:1, name:'punter_kate', status:'Paid Contributor', wr:'68%', tips:214, featured:true, joined:'Mar 2025', specialty:['Premier League','La Liga'], bio:'Fokusirana na Over/Under i BTTS trzista u top 5 evropskih liga. Prati sastave i minutazu kljucnih igraca prije svakog tipa.'},
+  {rank:2, name:'sharp_marko', status:'Featured Analyst', wr:'64%', tips:180, featured:true, joined:'Jan 2025', specialty:['Bundesliga','Serie A'], bio:'Analiza zasnovana na xG podacima i formi poslednjih 5 kola. Specijalizovan za hendikep trzista.'},
+  {rank:3, name:'valuehunter', status:'Featured Analyst', wr:'61%', tips:156, featured:true, joined:'Jun 2025', specialty:['Champions League','Ligue 1'], bio:'Trazi value kvote poredjenjem sa implicitnom vjerovatnocom — cilj je dugorocna profitabilnost, ne pogodak po svaku cijenu.'},
+  {rank:4, name:'bkbetting', status:'User', wr:'58%', tips:97, featured:false, joined:'Avg 2025', specialty:['Premier League'], bio:'Redovne dnevne akumulator preporuke za domacu ligu.'},
+  {rank:5, name:'oddswiz', status:'User', wr:'57%', tips:88, featured:false, joined:'Sep 2025', specialty:['La Liga','Serie A'], bio:'Kombinuje statistiku i formu poslednjih mečeva — najaktivniji na weekend kolima.'},
 ];
 const guestAnalysts = [
   {name:'anon_2481', status:'Guest Analyst', wr:'63%', tips:41},
@@ -844,6 +844,8 @@ let currentMarket = 'UK';
 let selectedMatchId = null;
 let selectedOperator = null; // {type, id}
 let selectedRoomId = null;
+let selectedTipsterName = null;
+let followedTipsters = {}; // tipster name -> true
 let predictorPicks = {};      // matchId -> '1'|'X'|'2'
 let predictorSubmitted = false;
 let gamesFilter = 'all';
@@ -1108,7 +1110,7 @@ function opCardHtml(op, tagIcon, type){
     + '<a href="#" class="op-cta" onclick="event.preventDefault();event.stopPropagation();claimBonus(\'' + t + '\',\'' + op.id + '\');">Preuzmi bonus</a></div></div>';
 }
 function tipsterRowHtml(t){
-  return '<div class="tipster-row"><div class="rank-num">' + t.rank + '</div>'
+  return '<div class="tipster-row" style="cursor:pointer;" onclick="openTipsterProfile(\'' + t.name.replace(/'/g,"\\'") + '\')"><div class="rank-num">' + t.rank + '</div>'
     + '<div class="avatar">' + avatarImg(t.name,64) + '</div>'
     + '<div class="tip-info"><div class="tip-name">' + t.name + '</div><div class="tip-status ' + (t.featured?'featured':'') + '">' + t.status + '</div></div>'
     + '<div class="tip-stat"><div class="num">' + t.wr + '</div><div class="lbl">uspješnost</div></div>'
@@ -1118,7 +1120,7 @@ function accaCardHtml(a){
   var idx = sampleAcca.indexOf(a);
   var legs = a.legs.map(function(l){ return '<div class="leg"><span>' + l.m + ' — ' + l.pick + '</span><span class="odd">' + l.odd + '</span></div>'; }).join('');
   return '<div class="acca-card"><div class="acca-head">'
-    + '<div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(a.author,48) + '</div>' + a.author + '</div>'
+    + '<div class="acca-author" style="cursor:pointer;" onclick="openTipsterProfile(\'' + a.author.replace(/'/g,"\\'") + '\')"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(a.author,48) + '</div>' + a.author + '</div>'
     + '<div class="footnote" style="margin:0;">Dnevni tiket</div></div>'
     + '<div class="acca-legs">' + legs + '</div>'
     + '<div class="acca-total"><span style="font-size:12px;color:var(--text-dim);">Kombinovana kvota</span><span class="val mono">' + a.total + '</span></div>'
@@ -1144,6 +1146,19 @@ function openCompareView(){
 function openMatch(id){ selectedMatchId = id; page = 'match-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function openOperator(type, id){ selectedOperator = {type:type,id:id}; userStats.operatorViewedIds.add(type+':'+id); page = 'operator-detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function openRoom(id){ selectedRoomId = id; page = 'chat-room'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function openTipsterProfile(name){
+  var t = tipsters.find(function(x){ return x.name===name; });
+  if(!t){ showToast('Guest Analyst — profil nije javno vezan, nema javnu statistiku.'); return; }
+  selectedTipsterName = name;
+  page = 'tipster-profile';
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleFollowTipster(name){
+  followedTipsters[name] = !followedTipsters[name];
+  showToast(followedTipsters[name] ? ('Sada pratis ' + name) : ('Prestao/la si pratiti ' + name));
+  render();
+}
 function goToPage(p){ page = p; render(); window.scrollTo({top:0,behavior:'smooth'}); }
 function toggleLogin(){
   loggedIn = !loggedIn;
@@ -1364,7 +1379,7 @@ function tipCardHtml(t){
   var m = matches.find(function(x){ return x.id===t.matchId; });
   var pickLabel = t.pick==='1' ? (m?m.home:'1') : t.pick==='2' ? (m?m.away:'2') : 'Neriješeno';
   return '<div class="acca-card" style="margin-bottom:8px;"><div class="acca-head">'
-    + '<div class="acca-author"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(t.author,48) + '</div><b>' + t.author + '</b></div>'
+    + '<div class="acca-author" style="cursor:pointer;" onclick="openTipsterProfile(\'' + t.author.replace(/'/g,"\\'") + '\')"><div class="avatar" style="width:24px;height:24px;font-size:10px;">' + avatarImg(t.author,48) + '</div><b>' + t.author + '</b></div>'
     + '<div class="footnote" style="margin:0;">' + t.time + '</div></div>'
     + '<div class="leg" style="margin-bottom:8px;"><span>' + (m? m.home+' — '+m.away : 'Meč') + '</span><span class="odd">Tip: ' + pickLabel + '</span></div>'
     + '<div style="font-size:12.5px;color:var(--text-dim);">' + t.reasoning + '</div></div>';
@@ -1437,6 +1452,34 @@ function pageTipsters(){
     + '<div class="tipster-list">' + tipsters.map(tipsterRowHtml).join('') + '</div>'
     + '<div class="block" style="margin-top:24px;"><div class="block-head"><div class="block-title">Guest Analysts</div><div class="block-sub" style="margin:0;">Nisu javno vezani za profil</div></div>'
     + '<div class="tipster-list">' + guestAnalysts.map(function(t){ return tipsterRowHtml({name:t.name,status:t.status,wr:t.wr,tips:t.tips,rank:'—',featured:false}); }).join('') + '</div></div>';
+}
+function pageTipsterProfile(){
+  var t = tipsters.find(function(x){ return x.name===selectedTipsterName; }) || tipsters[0];
+  var following = !!followedTipsters[t.name];
+  var authorTips = publishedTips.filter(function(p){ return p.author===t.name; });
+  var tipsHtml = authorTips.length
+    ? authorTips.map(tipCardHtml).join('')
+    : '<div class="tool-card"><div class="tool-desc">' + t.name + ' jos nije objavio/la predikciju na Tipsters stranici.</div></div>';
+  var specialtyHtml = (t.specialty||[]).map(function(s){ return '<span class="badge-open" style="margin-right:6px;margin-bottom:6px;display:inline-block;">' + s + '</span>'; }).join('');
+  var statsGrid = '<div class="cards-grid" style="margin-bottom:20px;">'
+    + '<div class="tool-card" style="text-align:center;"><div class="tool-title" style="color:var(--green);font-size:20px;margin-bottom:2px;">' + t.wr + '</div><div class="tool-desc" style="margin-bottom:0;">Uspjesnost</div></div>'
+    + '<div class="tool-card" style="text-align:center;"><div class="tool-title" style="font-size:20px;margin-bottom:2px;">' + t.tips + '</div><div class="tool-desc" style="margin-bottom:0;">Objavljenih tipova</div></div>'
+    + '<div class="tool-card" style="text-align:center;"><div class="tool-title" style="color:var(--gold);font-size:20px;margin-bottom:2px;">#' + t.rank + '</div><div class="tool-desc" style="margin-bottom:0;">Rang na leaderboardu</div></div>'
+    + '<div class="tool-card" style="text-align:center;"><div class="tool-title" style="font-size:20px;margin-bottom:2px;">' + (t.joined||'—') + '</div><div class="tool-desc" style="margin-bottom:0;">Pridruzio/la se</div></div>'
+    + '</div>';
+  return '<div class="page-header"><a href="#" class="see-all" onclick="event.preventDefault();goToPage(\'sport-tipsters\');">← Nazad na Tipsters</a>'
+    + '<div style="display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;">'
+    + '<div class="avatar" style="width:64px;height:64px;font-size:22px;">' + avatarImg(t.name,128) + '</div>'
+    + '<div style="flex:1;min-width:180px;"><div class="page-title" style="margin-bottom:2px;">' + t.name + '</div>'
+    + '<div class="tip-status ' + (t.featured?'featured':'') + '" style="font-size:12px;">' + t.status + ' · Rang #' + t.rank + '</div></div>'
+    + '<button class="op-cta" style="width:auto;padding:9px 18px;' + (following?'background:var(--surface-2);color:var(--text);':'') + '" onclick="toggleFollowTipster(\'' + t.name.replace(/'/g,"\\'") + '\')">' + (following?'✓ Pratis':'+ Zaprati') + '</button>'
+    + '</div></div>'
+    + statsGrid
+    + (specialtyHtml ? '<div class="block-head"><div class="block-title">Specijalnost</div></div><div style="margin-bottom:20px;">' + specialtyHtml + '</div>' : '')
+    + '<div class="block-head"><div class="block-title">O tipsteru</div></div>'
+    + '<div class="tool-card" style="margin-bottom:24px;"><div class="tool-desc" style="margin-bottom:0;">' + (t.bio||'Nema opisa.') + '</div></div>'
+    + '<div class="block-head"><div class="block-title">Objave — ' + t.name + '</div></div>'
+    + '<div>' + tipsHtml + '</div>';
 }
 function pageAccumulators(){
   var filtered = sampleAcca.filter(function(a){ return a.type===accaFilter; });
@@ -1720,6 +1763,7 @@ const routes = {
   'global-methodology': pageGlobalMethodology, 'global-rg': pageGlobalRg,
   'match-detail': pageMatchDetail, 'operator-detail': pageOperatorDetail,
   'my-dashboard': pageMyDashboard, 'chat-room': pageChatRoom, 'compare-view': pageCompareView,
+  'tipster-profile': pageTipsterProfile,
 };
 function render(){
   document.getElementById('app').innerHTML = routes[page] ? routes[page]() : homeSport();
