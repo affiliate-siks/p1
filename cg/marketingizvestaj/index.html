@@ -23,6 +23,10 @@
     --c-cdm:#eb6834;
     --c-rezultati:#1baf7a;
     --c-flashscore:#eda100;
+    --c-sportal:#e87ba4;
+    --c-fbads:#008300;
+    --c-igads:#4a3aa7;
+    --c-neutral:#7c8790;
 
     --good:#0ca30c;
     --warning:#c98100;
@@ -50,6 +54,10 @@
       --c-cdm:#d95926;
       --c-rezultati:#199e70;
       --c-flashscore:#c98500;
+      --c-sportal:#d55181;
+      --c-fbads:#008300;
+      --c-igads:#9085e9;
+      --c-neutral:#8a939b;
 
       --good:#3fca3f;
       --warning:#e3a838;
@@ -77,6 +85,10 @@
     --c-cdm:#d95926;
     --c-rezultati:#199e70;
     --c-flashscore:#c98500;
+    --c-sportal:#d55181;
+    --c-fbads:#008300;
+    --c-igads:#9085e9;
+    --c-neutral:#8a939b;
 
     --good:#3fca3f;
     --warning:#e3a838;
@@ -107,7 +119,6 @@
   }
   .num, .tabular{font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums;}
 
-  /* header */
   header.top{
     position:sticky; top:0; z-index:20;
     background:color-mix(in srgb, var(--paper) 88%, transparent);
@@ -132,12 +143,18 @@
   }
   nav.pills a:hover{color:var(--ink); border-color:var(--ink-3);}
 
-  /* hero */
   .hero{padding:44px 0 28px;}
-  .hero h1{font-size:32px; margin:0 0 10px; max-width:20ch;}
+  .hero h1{font-size:32px; margin:0 0 10px; max-width:22ch;}
   .hero p.lede{font-size:16px; color:var(--ink-2); max-width:62ch; margin:0 0 22px;}
   .meta-row{display:flex; gap:18px; flex-wrap:wrap; font-size:13px; color:var(--ink-3); margin-bottom:28px;}
   .meta-row b{color:var(--ink-2); font-weight:600;}
+
+  .update-note{
+    display:flex; gap:10px; align-items:flex-start; margin-bottom:24px;
+    background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius:10px; padding:12px 14px; font-size:13px; color:var(--ink);
+  }
+  .update-note .ico{flex:none;font-size:15px;line-height:1.4;color:var(--accent);}
 
   .verdict-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
   @media (max-width:720px){.verdict-strip{grid-template-columns:repeat(2,1fr);}}
@@ -165,7 +182,6 @@
     margin-bottom:6px; display:block;
   }
 
-  /* comparison chart */
   .cmp-grid{display:flex; flex-direction:column; gap:22px;}
   .cmp-row{display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center;}
   @media (max-width:600px){.cmp-row{grid-template-columns:1fr; gap:6px;}}
@@ -182,7 +198,6 @@
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .legend .dot{width:9px;height:9px;border-radius:50%;}
 
-  /* channel sections */
   .channel-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px; flex-wrap:wrap;}
   .channel-head .dot-lg{width:13px;height:13px;border-radius:50%;background:var(--chan);}
   .channel-head h2{margin:0;}
@@ -225,7 +240,6 @@
   }
   .verdict-box b{color:var(--ink);}
 
-  /* recommendations */
   .table-wrap{overflow-x:auto; border:1px solid var(--border); border-radius:12px;}
   table.rec{width:100%; border-collapse:collapse; min-width:760px; font-size:13.5px;}
   table.rec th{
@@ -239,6 +253,26 @@
 
   footer{padding:30px 0 0; color:var(--ink-3); font-size:12px;}
   a{color:var(--accent);}
+
+  /* compact source cards */
+  .subhead{font-size:16px; margin:30px 0 4px;}
+  .subhead-note{color:var(--ink-3); font-size:13px; margin:0 0 16px; max-width:70ch;}
+  .mini-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+  @media (max-width:720px){.mini-grid{grid-template-columns:1fr;}}
+  .mini-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px;
+    border-left:3px solid var(--chan, var(--c-neutral));
+  }
+  .mini-card .mc-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
+  .mini-card .mc-title{font-family:'Archivo'; font-weight:700; font-size:14px;}
+  .mini-card .mc-src{font-family:'IBM Plex Mono'; font-size:11px; color:var(--ink-3);}
+  .mini-card .mc-stats{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:8px;}
+  .mini-card .mc-stat .v{font-family:'IBM Plex Mono'; font-weight:600; font-size:16px; color:var(--ink);}
+  .mini-card .mc-stat .l{font-size:11px; color:var(--ink-3);}
+  .mini-card .mc-note{font-size:12.5px; color:var(--ink-2);}
+  .noise-list{font-size:13px; color:var(--ink-2); columns:2; column-gap:24px; margin:10px 0 0; padding-left:18px;}
+  @media (max-width:600px){.noise-list{columns:1;}}
+  .noise-list li{margin-bottom:3px;}
 </style>
 </head>
 <body>
@@ -256,6 +290,9 @@
       <a href="#cdm">CDM.me</a>
       <a href="#rezultati">Rezultati.com</a>
       <a href="#flashscore">Flashscore.com</a>
+      <a href="#sportal">Sportal</a>
+      <a href="#social">FB/IG oglasi</a>
+      <a href="#ostalo">Ostali izvori</a>
       <a href="#zakljucak">Preporuke</a>
     </nav>
   </div>
@@ -264,11 +301,17 @@
 <div class="wrap">
 
   <section class="hero" id="pregled" style="border-top:none; padding-top:44px;">
-    <h1>Kvalitet trafika sa Vijesti, CDM, Rezultati i Flashscore</h1>
-    <p class="lede">Analiza 2.203 sesije zabilježene preko UTM oznaka <span class="num">Vijesti</span>, <span class="num">CDM</span>, <span class="num">Rezultati</span> i <span class="num">Flashscore</span> na landing stranici BMW nagradne igre, sa fokusom na angažman posjetilaca, geografsku preciznost targetiranja i signale koji ukazuju na sumnjiv (bot/klik) saobraćaj.</p>
+    <h1>Kvalitet trafika po svim izvorima kampanje</h1>
+    <p class="lede">Prošireno na kompletan tracking izvoz: uz native placemente <span class="num">Vijesti</span>, <span class="num">CDM</span>, <span class="num">Rezultati</span> i <span class="num">Flashscore</span>, sada su analizirani i <span class="num">Sportal</span>, plaćeni <span class="num">Facebook</span>/<span class="num">Instagram</span> oglasi, organski social, direktan/QR saobraćaj, interni referali i sitni/sumnjivi izvori &mdash; ukupno 15.656 sesija iz svih kanala.</p>
+
+    <div class="update-note">
+      <span class="ico">↻</span>
+      <div><b>Prošireno na sve izvore</b> &mdash; prethodna verzija je pokrivala samo 4 native kanala (4.448 sesija). Ovo izdanje dodaje Sportal, plaćeni i organski social, direktan/QR saobraćaj i interne referale, plus jednu manju grupu sesija sa znacima automatizovanog (spam) saobraćaja.</div>
+    </div>
+
     <div class="meta-row">
-      <div><b>Period:</b> 20&ndash;31. avgust 2026.</div>
-      <div><b>Ukupno sesija (4 kanala):</b> 2.203</div>
+      <div><b>Period:</b> 20. avgust &ndash; 10. septembar 2026.</div>
+      <div><b>Ukupno sesija (svi izvori):</b> 15.656</div>
       <div><b>Metoda:</b> client-side telemetrija (pageview/exit), nema conversion eventa niti bot-flag polja u izvoru</div>
     </div>
 
@@ -276,69 +319,87 @@
       <div class="vcard" style="--chan:var(--c-vijesti)">
         <div class="name"><span class="dot"></span>Vijesti.me</div>
         <span class="tier warning">⚠ Prosječno</span>
-        <div class="sub">501 sesija &middot; 47% CG &middot; 39% bez exit signala</div>
+        <div class="sub">964 sesije &middot; 67% CG &middot; 39% bez exit signala</div>
       </div>
       <div class="vcard" style="--chan:var(--c-cdm)">
         <div class="name"><span class="dot"></span>CDM.me</div>
-        <span class="tier warning">⚠ Volumen da, preciznost ne</span>
-        <div class="sub">857 sesija &middot; 34% CG &middot; 19% Srbija</div>
+        <span class="tier warning">⚠ Volumen da, preciznost srednje</span>
+        <div class="sub">1.485 sesija &middot; 58% CG &middot; 11% Srbija</div>
       </div>
       <div class="vcard" style="--chan:var(--c-rezultati)">
         <div class="name"><span class="dot"></span>Rezultati.com</div>
-        <span class="tier good">✓ Najbolji kvalitet</span>
-        <div class="sub">385 sesija &middot; 70% CG &middot; najduže zadržavanje</div>
+        <span class="tier good">✓ Odličan kvalitet</span>
+        <div class="sub">953 sesije &middot; 86% CG &middot; najduže zadržavanje</div>
       </div>
       <div class="vcard" style="--chan:var(--c-flashscore)">
         <div class="name"><span class="dot"></span>Flashscore.com</div>
         <span class="tier warning">⚠ Provjeriti duplikate</span>
-        <div class="sub">460 sesija &middot; 71% CG &middot; 8% duplih sesija</div>
+        <div class="sub">1.046 sesija &middot; 87% CG &middot; 8,4% duplih sesija</div>
+      </div>
+      <div class="vcard" style="--chan:var(--c-sportal)">
+        <div class="name"><span class="dot"></span>Sportal.blic.rs</div>
+        <span class="tier serious">✕ Slab angažman</span>
+        <div class="sub">3.075 sesija &middot; 72% CG &middot; 75% napušta &le;2s</div>
+      </div>
+      <div class="vcard" style="--chan:var(--c-fbads)">
+        <div class="name"><span class="dot"></span>Facebook oglasi</div>
+        <span class="tier good">✓ Najbolji angažman</span>
+        <div class="sub">1.729 sesija &middot; 2,5% napušta &le;2s &middot; geo neizvjesna</div>
+      </div>
+      <div class="vcard" style="--chan:var(--c-igads)">
+        <div class="name"><span class="dot"></span>Instagram oglasi</div>
+        <span class="tier good">✓ Najbolji angažman</span>
+        <div class="sub">2.024 sesije &middot; 1,9% napušta &le;2s &middot; geo neizvjesna</div>
       </div>
     </div>
   </section>
 
   <section>
     <span class="kicker">Poređenje kanala</span>
-    <h2>Isti tip placementa, različit kvalitet posjete</h2>
-    <p class="intro">Tri metrike po kanalu: udio posjeta koje traju &le;2 sekunde (verovatno neplanski/slučajni klik), udio posjeta dužih od 30 sekundi (stvaran interes) i udio saobraćaja potvrđeno iz Crne Gore. Za referencu su dodati plaćeni Facebook/Instagram oglasi i Sportal.blic.rs kao benchmark istog tipa (native/display) placementa.</p>
+    <h2>Sedam glavnih izvora akvizicije, jedna skala</h2>
+    <p class="intro">Tri metrike po kanalu: udio posjeta koje traju &le;2 sekunde (verovatno neplanski/slučajni klik), udio posjeta dužih od 30 sekundi (stvaran interes) i udio saobraćaja potvrđeno iz Crne Gore. Prikazani su svi kanali sa značajnim plaćenim volumenom &mdash; native placementi (Vijesti, CDM, Rezultati, Flashscore, Sportal) i plaćeni social (Facebook, Instagram). Direktan, organski i interni saobraćaj su posebna kategorija i prikazani su u sekciji "Ostali izvori" jer nisu direktno uporedivi sa plaćenim placementima.</p>
 
     <div class="cmp-grid">
       <div class="cmp-row">
         <div class="cmp-label">Napušta za &le;2s<br><span style="font-weight:400;color:var(--ink-3);font-size:11.5px;">niže je bolje</span></div>
         <div class="cmp-bars">
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:66.3%;background:var(--c-vijesti)"></div></div><span class="val">66,3%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:64.6%;background:var(--c-cdm)"></div></div><span class="val">64,6%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:39.6%;background:var(--c-rezultati)"></div></div><span class="val">39,6%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:44.9%;background:var(--c-flashscore)"></div></div><span class="val">44,9%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:75.1%;background:var(--ink-3)"></div></div><span class="val">75,1%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>FB/IG plać.</span><div class="bar-track"><div class="bar-fill" style="width:2.2%;background:var(--ink-3)"></div></div><span class="val">2,2%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:64.4%;background:var(--c-vijesti)"></div></div><span class="val">64,4%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:64.1%;background:var(--c-cdm)"></div></div><span class="val">64,1%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:44.8%;background:var(--c-rezultati)"></div></div><span class="val">44,8%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:46.6%;background:var(--c-flashscore)"></div></div><span class="val">46,6%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-sportal)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:75.2%;background:var(--c-sportal)"></div></div><span class="val">75,2%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-fbads)"></span>FB oglasi</span><div class="bar-track"><div class="bar-fill" style="width:2.5%;background:var(--c-fbads)"></div></div><span class="val">2,5%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-igads)"></span>IG oglasi</span><div class="bar-track"><div class="bar-fill" style="width:1.9%;background:var(--c-igads)"></div></div><span class="val">1,9%</span></div>
         </div>
       </div>
 
       <div class="cmp-row">
         <div class="cmp-label">Ostaje &ge;30s<br><span style="font-weight:400;color:var(--ink-3);font-size:11.5px;">više je bolje</span></div>
         <div class="cmp-bars">
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:8.2%;background:var(--c-vijesti)"></div></div><span class="val">8,2%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:9.6%;background:var(--c-cdm)"></div></div><span class="val">9,6%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:19.2%;background:var(--c-rezultati)"></div></div><span class="val">19,2%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:17.5%;background:var(--c-flashscore)"></div></div><span class="val">17,5%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:4.6%;background:var(--ink-3)"></div></div><span class="val">4,6%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>FB/IG plać.</span><div class="bar-track"><div class="bar-fill" style="width:59.0%;background:var(--ink-3)"></div></div><span class="val">59,0%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:7.3%;background:var(--c-vijesti)"></div></div><span class="val">7,3%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:10.7%;background:var(--c-cdm)"></div></div><span class="val">10,7%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:18.5%;background:var(--c-rezultati)"></div></div><span class="val">18,5%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:18.6%;background:var(--c-flashscore)"></div></div><span class="val">18,6%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-sportal)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:4.6%;background:var(--c-sportal)"></div></div><span class="val">4,6%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-fbads)"></span>FB oglasi</span><div class="bar-track"><div class="bar-fill" style="width:56.2%;background:var(--c-fbads)"></div></div><span class="val">56,2%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-igads)"></span>IG oglasi</span><div class="bar-track"><div class="bar-fill" style="width:61.8%;background:var(--c-igads)"></div></div><span class="val">61,8%</span></div>
         </div>
       </div>
 
       <div class="cmp-row">
         <div class="cmp-label">Potvrđeno iz CG<br><span style="font-weight:400;color:var(--ink-3);font-size:11.5px;">više je bolje</span></div>
         <div class="cmp-bars">
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:47.1%;background:var(--c-vijesti)"></div></div><span class="val">47,1%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:34.2%;background:var(--c-cdm)"></div></div><span class="val">34,2%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:69.9%;background:var(--c-rezultati)"></div></div><span class="val">69,9%</span></div>
-          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:71.1%;background:var(--c-flashscore)"></div></div><span class="val">71,1%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:70.7%;background:var(--ink-3)"></div></div><span class="val">70,7%</span></div>
-          <div class="bar-line" style="opacity:.55"><span class="ch-name"><span class="dot" style="background:var(--ink-3)"></span>FB/IG plać.</span><div class="bar-track"><div class="bar-fill" style="width:42.2%;background:var(--ink-3)"></div></div><span class="val">42,2%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-vijesti)"></span>Vijesti</span><div class="bar-track"><div class="bar-fill" style="width:67.0%;background:var(--c-vijesti)"></div></div><span class="val">67,0%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-cdm)"></span>CDM</span><div class="bar-track"><div class="bar-fill" style="width:57.8%;background:var(--c-cdm)"></div></div><span class="val">57,8%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-rezultati)"></span>Rezultati</span><div class="bar-track"><div class="bar-fill" style="width:86.4%;background:var(--c-rezultati)"></div></div><span class="val">86,4%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-flashscore)"></span>Flashscore</span><div class="bar-track"><div class="bar-fill" style="width:86.6%;background:var(--c-flashscore)"></div></div><span class="val">86,6%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-sportal)"></span>Sportal</span><div class="bar-track"><div class="bar-fill" style="width:72.4%;background:var(--c-sportal)"></div></div><span class="val">72,4%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-fbads)"></span>FB oglasi</span><div class="bar-track"><div class="bar-fill" style="width:40.6%;background:var(--c-fbads)"></div></div><span class="val">40,6%</span></div>
+          <div class="bar-line"><span class="ch-name"><span class="dot" style="background:var(--c-igads)"></span>IG oglasi</span><div class="bar-track"><div class="bar-fill" style="width:43.5%;background:var(--c-igads)"></div></div><span class="val">43,5%</span></div>
         </div>
       </div>
     </div>
-    <p style="font-size:12.5px;color:var(--ink-3);margin-top:18px;">Napomena: preostali procenat do 100% kod geo-metrike najvećim dijelom otpada na sesije kod kojih IP adresa nije mogla da se geolocira (mobilne CGNAT mreže) &mdash; to samo po sebi nije znak lošeg trafika, ali smanjuje pouzdanost tačne geo-raspodjele.</p>
+    <p style="font-size:12.5px;color:var(--ink-3);margin-top:18px;">Napomena: preostali procenat do 100% kod geo-metrike najvećim dijelom otpada na sesije kod kojih IP adresa nije mogla da se geolocira. Kod Facebook/Instagram oglasa taj udio je izrazito visok (54&ndash;58%) &mdash; vjerovatno zato što in-app pregledač tih aplikacija saobraćaj rutira preko sopstvenih (Meta) servera, pa se stvarna IP adresa korisnika često ne vidi. To nije nužno znak lošeg targetiranja, samo ograničenje client-side geolokacije za ovaj tip saobraćaja.</p>
   </section>
 
   <!-- VIJESTI -->
@@ -346,61 +407,61 @@
     <div class="channel-head" style="--chan:var(--c-vijesti)">
       <span class="dot-lg"></span><h2>Vijesti.me</h2><span class="domain">utm_medium=Vijesti</span>
     </div>
-    <p class="intro">501 sesija, gotovo isključivo mobilni saobraćaj. Angažman je slab &mdash; dvije trećine posjeta traje dvije sekunde ili manje &mdash; a trećina sesija uopšte nema zabilježen "exit" signal, što je najviše od sva četiri kanala.</p>
+    <p class="intro">964 sesije (skoro duplo od prve verzije izvještaja). Geo-preciznost je znatno bolja &mdash; 67% potvrđeno iz Crne Gore naspram 47% ranije &mdash; ali angažman ostaje slab i trećina sesija i dalje nema zabilježen exit signal.</p>
 
     <div class="stat-row">
-      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">501</div><div class="l">sesija</div></div>
-      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">66,3%</div><div class="l">napušta za &le;2s</div></div>
-      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">47,1%</div><div class="l">potvrđeno iz Crne Gore</div></div>
-      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">38,9%</div><div class="l">bez exit signala</div></div>
+      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">964</div><div class="l">sesija</div></div>
+      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">64,4%</div><div class="l">napušta za &le;2s</div></div>
+      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">67,0%</div><div class="l">potvrđeno iz Crne Gore</div></div>
+      <div class="stat" style="--chan:var(--c-vijesti)"><div class="v">38,5%</div><div class="l">bez exit signala</div></div>
     </div>
 
     <div class="two-col">
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Geografska raspodjela</h3>
         <div class="geo-bars" style="--chan:var(--c-vijesti)">
-          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:47.1%"></div></div><span class="pct">47,1%</span></div>
-          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:35.1%;opacity:.35"></div></div><span class="pct">35,1%</span></div>
-          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:10.8%"></div></div><span class="pct">10,8%</span></div>
-          <div class="geo-row"><span class="lbl">BiH</span><div class="geo-track"><div class="geo-fill" style="width:1.8%"></div></div><span class="pct">1,8%</span></div>
-          <div class="geo-row"><span class="lbl">SAD</span><div class="geo-track"><div class="geo-fill" style="width:1.4%"></div></div><span class="pct">1,4%</span></div>
+          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:67.0%"></div></div><span class="pct">67,0%</span></div>
+          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:22.3%;opacity:.35"></div></div><span class="pct">22,3%</span></div>
+          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:5.6%"></div></div><span class="pct">5,6%</span></div>
+          <div class="geo-row"><span class="lbl">SAD</span><div class="geo-track"><div class="geo-fill" style="width:1.5%"></div></div><span class="pct">1,5%</span></div>
+          <div class="geo-row"><span class="lbl">BiH</span><div class="geo-track"><div class="geo-fill" style="width:1.1%"></div></div><span class="pct">1,1%</span></div>
         </div>
         <h3 style="font-size:15px;margin:20px 0 12px;">Gradovi u Crnoj Gori</h3>
         <div class="geo-bars" style="--chan:var(--c-vijesti)">
-          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:76.3%"></div></div><span class="pct">76,3%</span></div>
-          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:9.7%"></div></div><span class="pct">9,7%</span></div>
-          <div class="geo-row"><span class="lbl">Ulcinj</span><div class="geo-track"><div class="geo-fill" style="width:4.2%"></div></div><span class="pct">4,2%</span></div>
-          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:3.8%"></div></div><span class="pct">3,8%</span></div>
+          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:81.6%"></div></div><span class="pct">81,6%</span></div>
+          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:5.7%"></div></div><span class="pct">5,7%</span></div>
+          <div class="geo-row"><span class="lbl">Ulcinj</span><div class="geo-track"><div class="geo-fill" style="width:3.1%"></div></div><span class="pct">3,1%</span></div>
+          <div class="geo-row"><span class="lbl">Herceg Novi</span><div class="geo-track"><div class="geo-fill" style="width:3.1%"></div></div><span class="pct">3,1%</span></div>
         </div>
       </div>
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Uređaj &amp; ISP</h3>
         <table class="mini">
           <tr><th>Uređaj</th><th></th></tr>
-          <tr><td>Mobilni (Android/Chrome, iOS/Safari)</td><td class="num">97,8%</td></tr>
-          <tr><td>Desktop</td><td class="num">2,2%</td></tr>
+          <tr><td>Mobilni (Android/Chrome, iOS/Safari)</td><td class="num">98,1%</td></tr>
+          <tr><td>Desktop</td><td class="num">1,9%</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Vodeći ISP</th><th></th></tr>
-          <tr><td>MTEL Crna Gora</td><td class="num">100</td></tr>
-          <tr><td>Crnogorski Telekom</td><td class="num">91</td></tr>
-          <tr><td>Telekom Srbija</td><td class="num">28</td></tr>
-          <tr><td>One Crna Gora</td><td class="num">26</td></tr>
+          <tr><td>Crnogorski Telekom</td><td class="num">259</td></tr>
+          <tr><td>MTEL Crna Gora</td><td class="num">245</td></tr>
+          <tr><td>One Crna Gora</td><td class="num">63</td></tr>
+          <tr><td>Telemach Sarajevo</td><td class="num">47</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Jedinstvenih IP / sesija</th><th></th></tr>
-          <tr><td>277 / 501</td><td class="num">0,55</td></tr>
+          <tr><td>585 / 964</td><td class="num">0,61</td></tr>
         </table>
       </div>
     </div>
 
     <div class="flag">
       <span class="ico">⚠</span>
-      <div><b>Nepotpuna telemetrija:</b> 38,9% sesija nema zabilježen exit event (najviše od sva 4 kanala) &mdash; ne znamo koliko su te posjete trajale niti koliko su skrolovale. Ovo je prije svega tehnički signal (skripta/tab se prekida prije nego što stigne da pošalje "exit" poziv), ali umanjuje pouzdanost bilo kakve ocjene angažmana za ovaj kanal i vrijedi provjeriti implementaciju tag-a na ovom placementu.</div>
+      <div><b>Nepotpuna telemetrija i dalje prisutna:</b> 38,5% sesija nema zabilježen exit event &mdash; identično stanje kao u prvoj verziji izvještaja (38,9%), što znači da tehnički problem sa tagom na ovom placementu nije riješen u međuvremenu. Preporuka da se provjeri implementacija ostaje na snazi.</div>
     </div>
 
     <div class="verdict-box" style="--chan:var(--c-vijesti)">
-      <b>Ocjena:</b> prosječan kvalitet. Geo-preciznost je osrednja (manje od polovine potvrđeno iz Crne Gore, 10,8% Srbija), angažman slab (66% instant napuštanje), a nepotpun tracking otežava dublju ocjenu. Gradska raspodjela unutar Crne Gore je uredna (Podgorica, pa primorje) i ne ukazuje na geografsku anomaliju.</div>
+      <b>Ocjena:</b> geo-preciznost znatno poboljšana (67% CG, sa 47% u prethodnom periodu) i procurenje ka Srbiji prepolovljeno (5,6% naspram 10,8%). Angažman i dalje slab (64% instant napuštanje), a nepotpun tracking (38,5% bez exit signala) i dalje otežava dublju ocjenu.</div>
   </section>
 
   <!-- CDM -->
@@ -408,60 +469,59 @@
     <div class="channel-head" style="--chan:var(--c-cdm)">
       <span class="dot-lg"></span><h2>CDM.me</h2><span class="domain">utm_medium=CDM</span>
     </div>
-    <p class="intro">857 sesija &mdash; najveći volumen od sva četiri kanala. Tracking je najkonzistentniji (najniži procenat sesija bez exit signala), ali geo-preciznost je najslabija: samo trećina saobraćaja je potvrđeno iz Crne Gore, dok skoro jedna petina dolazi iz Srbije.</p>
+    <p class="intro">1.485 sesija &mdash; i dalje najveći volumen. Geo-preciznost je znatno bolja nego u prvoj verziji (58% CG naspram 34%), a procurenje ka Srbiji je prepolovljeno (11,2% naspram 19,4%), ali ostaje najslabija geo-preciznost od sva 4 kanala.</p>
 
     <div class="stat-row">
-      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">857</div><div class="l">sesija</div></div>
-      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">64,6%</div><div class="l">napušta za &le;2s</div></div>
-      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">34,2%</div><div class="l">potvrđeno iz Crne Gore</div></div>
-      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">19,4%</div><div class="l">saobraćaj iz Srbije</div></div>
+      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">1.485</div><div class="l">sesija</div></div>
+      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">64,1%</div><div class="l">napušta za &le;2s</div></div>
+      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">57,8%</div><div class="l">potvrđeno iz Crne Gore</div></div>
+      <div class="stat" style="--chan:var(--c-cdm)"><div class="v">11,2%</div><div class="l">saobraćaj iz Srbije</div></div>
     </div>
 
     <div class="two-col">
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Geografska raspodjela</h3>
         <div class="geo-bars" style="--chan:var(--c-cdm)">
-          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:39.1%;opacity:.35"></div></div><span class="pct">39,1%</span></div>
-          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:34.2%"></div></div><span class="pct">34,2%</span></div>
-          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:19.4%"></div></div><span class="pct">19,4%</span></div>
-          <div class="geo-row"><span class="lbl">BiH</span><div class="geo-track"><div class="geo-fill" style="width:2.1%"></div></div><span class="pct">2,1%</span></div>
-          <div class="geo-row"><span class="lbl">Hrvatska</span><div class="geo-track"><div class="geo-fill" style="width:0.7%"></div></div><span class="pct">0,7%</span></div>
+          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:57.8%"></div></div><span class="pct">57,8%</span></div>
+          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:26.7%;opacity:.35"></div></div><span class="pct">26,7%</span></div>
+          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:11.2%"></div></div><span class="pct">11,2%</span></div>
+          <div class="geo-row"><span class="lbl">BiH</span><div class="geo-track"><div class="geo-fill" style="width:1.3%"></div></div><span class="pct">1,3%</span></div>
+          <div class="geo-row"><span class="lbl">Hrvatska</span><div class="geo-track"><div class="geo-fill" style="width:0.4%"></div></div><span class="pct">0,4%</span></div>
         </div>
         <h3 style="font-size:15px;margin:20px 0 12px;">Gradovi u Crnoj Gori</h3>
         <div class="geo-bars" style="--chan:var(--c-cdm)">
-          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:80.2%"></div></div><span class="pct">80,2%</span></div>
-          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:5.5%"></div></div><span class="pct">5,5%</span></div>
-          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:4.4%"></div></div><span class="pct">4,4%</span></div>
+          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:83.8%"></div></div><span class="pct">83,8%</span></div>
+          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:4.1%"></div></div><span class="pct">4,1%</span></div>
+          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:2.8%"></div></div><span class="pct">2,8%</span></div>
         </div>
       </div>
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Uređaj &amp; ISP</h3>
         <table class="mini">
           <tr><th>Uređaj</th><th></th></tr>
-          <tr><td>Mobilni</td><td class="num">99,9%</td></tr>
+          <tr><td>Mobilni</td><td class="num">99,5%</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Vodeći ISP</th><th></th></tr>
-          <tr><td>Crnogorski Telekom</td><td class="num">125</td></tr>
-          <tr><td>MTEL Crna Gora</td><td class="num">95</td></tr>
+          <tr><td>Crnogorski Telekom</td><td class="num">413</td></tr>
+          <tr><td>MTEL Crna Gora</td><td class="num">257</td></tr>
           <tr><td>Telekom Srbija</td><td class="num">86</td></tr>
-          <tr><td>One Crna Gora</td><td class="num">47</td></tr>
-          <tr><td>CETIN Beograd</td><td class="num">29</td></tr>
+          <tr><td>One Crna Gora</td><td class="num">71</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Jedinstvenih IP / sesija</th><th></th></tr>
-          <tr><td>451 / 857</td><td class="num">0,53</td></tr>
+          <tr><td>847 / 1.485</td><td class="num">0,57</td></tr>
         </table>
       </div>
     </div>
 
     <div class="flag">
       <span class="ico">⚠</span>
-      <div><b>Slaba geo-preciznost:</b> Telekom Srbija i CETIN Beograd su među top 5 ISP-ova, a Beograd je drugi grad po broju sesija (103) odmah iza Podgorice (235). Ako je kampanja plaćena kao geotargetirana isključivo na Crnu Goru, ovo je znak da native placement na CDM-u ne poštuje geo-filter strogo, ili da CDM ima veliku redakcijsku publiku iz Srbije koja klikće na isti oglas.</div>
+      <div><b>Geo-preciznost bolja, ali i dalje najslabija od 4 kanala:</b> Telekom Srbija ostaje među top 5 ISP-ova (86 sesija). Poboljšanje u odnosu na prvi period (34,2%&rarr;57,8% CG) je značajno, ali CDM je i dalje jedini kanal gdje se dvocifren procenat trafika ne može pripisati Crnoj Gori kao izvoru.</div>
     </div>
 
     <div class="verdict-box" style="--chan:var(--c-cdm)">
-      <b>Ocjena:</b> najveći volumen, ali najslabija geo-preciznost i angažman u donjoj polovini. Vrijedan kanal za reach, ali oko trećina do polovina impresija efektivno ne stiže do ciljne (crnogorske) publike &mdash; vrijedi razgovarati sa CDM-om/mrežom o strožem geo-targetingu ili tražiti korekciju cijene srazmjerno in-market udjelu.</div>
+      <b>Ocjena:</b> najveći volumen i vidno poboljšana geo-preciznost, ali angažman i dalje u donjoj polovini i procurenje ka Srbiji nije u potpunosti otklonjeno. I dalje vrijedan kanal za reach, uz nastavak razgovora sa mrežom o strožem geo-targetingu.</div>
   </section>
 
   <!-- REZULTATI -->
@@ -469,59 +529,59 @@
     <div class="channel-head" style="--chan:var(--c-rezultati)">
       <span class="dot-lg"></span><h2>Rezultati.com</h2><span class="domain">utm_medium=Rezultati</span>
     </div>
-    <p class="intro">Najmanji volumen (385 sesija) ali ubjedljivo najbolji kvalitet: najniže instant-napuštanje, najduže zadržavanje i skrolovanje, i najveći udio potvrđenog saobraćaja iz Crne Gore.</p>
+    <p class="intro">953 sesije, sa najboljom geo-preciznošću od sva 4 kanala (86,4% CG, gotovo izjednačeno sa Flashscore-om) i i dalje najvišim angažmanom po skrolovanju. Nova pojava koju treba pratiti: udio skoro-dupliranih sesija je porastao sa 1,0% na 4,1%.</p>
 
     <div class="stat-row">
-      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">385</div><div class="l">sesija</div></div>
-      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">39,6%</div><div class="l">napušta za &le;2s</div></div>
-      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">69,9%</div><div class="l">potvrđeno iz Crne Gore</div></div>
-      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">35,0%</div><div class="l">prosječan scroll</div></div>
+      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">953</div><div class="l">sesija</div></div>
+      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">44,8%</div><div class="l">napušta za &le;2s</div></div>
+      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">86,4%</div><div class="l">potvrđeno iz Crne Gore</div></div>
+      <div class="stat" style="--chan:var(--c-rezultati)"><div class="v">31,2%</div><div class="l">prosječan scroll</div></div>
     </div>
 
     <div class="two-col">
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Geografska raspodjela</h3>
         <div class="geo-bars" style="--chan:var(--c-rezultati)">
-          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:69.9%"></div></div><span class="pct">69,9%</span></div>
-          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:29.9%;opacity:.35"></div></div><span class="pct">29,9%</span></div>
-          <div class="geo-row"><span class="lbl">BiH</span><div class="geo-track"><div class="geo-fill" style="width:0.3%"></div></div><span class="pct">0,3%</span></div>
+          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:86.4%"></div></div><span class="pct">86,4%</span></div>
+          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:13.0%;opacity:.35"></div></div><span class="pct">13,0%</span></div>
+          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:0.4%"></div></div><span class="pct">0,4%</span></div>
         </div>
         <h3 style="font-size:15px;margin:20px 0 12px;">Gradovi u Crnoj Gori</h3>
         <div class="geo-bars" style="--chan:var(--c-rezultati)">
-          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:77.7%"></div></div><span class="pct">77,7%</span></div>
-          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:7.4%"></div></div><span class="pct">7,4%</span></div>
-          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:5.9%"></div></div><span class="pct">5,9%</span></div>
-          <div class="geo-row"><span class="lbl">Herceg Novi</span><div class="geo-track"><div class="geo-fill" style="width:3.7%"></div></div><span class="pct">3,7%</span></div>
+          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:84.0%"></div></div><span class="pct">84,0%</span></div>
+          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:4.9%"></div></div><span class="pct">4,9%</span></div>
+          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:4.6%"></div></div><span class="pct">4,6%</span></div>
+          <div class="geo-row"><span class="lbl">Herceg Novi</span><div class="geo-track"><div class="geo-fill" style="width:2.3%"></div></div><span class="pct">2,3%</span></div>
         </div>
       </div>
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Uređaj &amp; ISP</h3>
         <table class="mini">
           <tr><th>Uređaj</th><th></th></tr>
-          <tr><td>Mobilni</td><td class="num">90,4%</td></tr>
-          <tr><td>Desktop</td><td class="num">9,6%</td></tr>
+          <tr><td>Mobilni</td><td class="num">93,3%</td></tr>
+          <tr><td>Desktop</td><td class="num">6,7%</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Vodeći ISP</th><th></th></tr>
-          <tr><td>MTEL Crna Gora</td><td class="num">111</td></tr>
-          <tr><td>Crnogorski Telekom</td><td class="num">94</td></tr>
-          <tr><td>One Crna Gora</td><td class="num">30</td></tr>
-          <tr><td>Telemach Sarajevo</td><td class="num">28</td></tr>
+          <tr><td>MTEL Crna Gora</td><td class="num">357</td></tr>
+          <tr><td>Crnogorski Telekom</td><td class="num">263</td></tr>
+          <tr><td>One Crna Gora</td><td class="num">82</td></tr>
+          <tr><td>Telemach Sarajevo</td><td class="num">81</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Jedinstvenih IP / sesija</th><th></th></tr>
-          <tr><td>206 / 385</td><td class="num">0,54</td></tr>
+          <tr><td>550 / 953</td><td class="num">0,58</td></tr>
         </table>
       </div>
     </div>
 
     <div class="flag">
       <span class="ico">ⓘ</span>
-      <div><b>Mala anomalija bez crvene zastavice:</b> jedna desktop/Windows IP adresa iz Bara (62.4.41.90) generisala je 8 sesija tokom kampanje, od čega 6 u razmaku od samo 5 minuta 25. avgusta ujutro (06:00&ndash;06:04h). Vremenski obrazac liči na ručno testiranje stranice ili refresh navike jedne osobe, a ne na skriptovani bot &mdash; browser/OS/rezolucija su konzistentni sa realnim korisnikom. Vrijedi zanemariti u ocjeni kvaliteta, ali napomena za slučaj ponavljanja obrasca.</div>
+      <div><b>Prati se novi obrazac:</b> udio skoro-dupliranih sesija (nova sesija sa iste IP adrese &lt;2s nakon prethodne) porastao je sa 1,0% na 4,1% od prve verzije izvještaja. Za sada je i dalje znatno niže od Flashscore-a (8,4%) i vjerovatno je riječ o istom tipu ponašanja (rijetka grupa čestih korisnika), ali vrijedi pratiti u sljedećem periodu da se vidi da li nastavlja da raste.</div>
     </div>
 
     <div class="verdict-box" style="--chan:var(--c-rezultati)">
-      <b>Ocjena:</b> najkvalitetniji od četiri kanala po angažmanu i geo-preciznosti, uprkos najmanjem volumenu. Ako je cilj kvalitet posjete (a ne samo broj klikova), ovo je kandidat za povećanje budžeta/impresija.</div>
+      <b>Ocjena:</b> i dalje najkvalitetniji ili gotovo izjednačen sa Flashscore-om po angažmanu i geo-preciznosti (86,4% CG). Dobar kandidat za dodatni budžet, uz praćenje rastućeg udjela skoro-dupliranih sesija.</div>
   </section>
 
   <!-- FLASHSCORE -->
@@ -529,64 +589,251 @@
     <div class="channel-head" style="--chan:var(--c-flashscore)">
       <span class="dot-lg"></span><h2>Flashscore.com</h2><span class="domain">utm_medium=Flashscore</span>
     </div>
-    <p class="intro">460 sesija sa dobrom geo-preciznošću (71,1% Crna Gora, najbolje od sva 4 kanala) i solidnim zadržavanjem, ali sa uočljivim obrascem ponovljenih/dupliranih sesija sa istih IP adresa koji vrijedi provjeriti.</p>
+    <p class="intro">1.046 sesija sa najboljom geo-preciznošću od sva 4 kanala (86,6% CG). Angažman je stabilan naspram prve verzije izvještaja, ali obrazac skoro-dupliranih sesija sa istih IP adresa ostaje na istom, povišenom nivou (8,4%) &mdash; ovo više nije jednokratna pojava nego dosljedna karakteristika kanala.</p>
 
     <div class="stat-row">
-      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">460</div><div class="l">sesija</div></div>
-      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">44,9%</div><div class="l">napušta za &le;2s</div></div>
-      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">71,1%</div><div class="l">potvrđeno iz Crne Gore</div></div>
-      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">38,5%</div><div class="l">sesija dijeli IP sa drugom</div></div>
+      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">1.046</div><div class="l">sesija</div></div>
+      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">46,6%</div><div class="l">napušta za &le;2s</div></div>
+      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">86,6%</div><div class="l">potvrđeno iz Crne Gore</div></div>
+      <div class="stat" style="--chan:var(--c-flashscore)"><div class="v">8,4%</div><div class="l">skoro-duple sesije</div></div>
     </div>
 
     <div class="two-col">
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Geografska raspodjela</h3>
         <div class="geo-bars" style="--chan:var(--c-flashscore)">
-          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:71.1%"></div></div><span class="pct">71,1%</span></div>
-          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:28.0%;opacity:.35"></div></div><span class="pct">28,0%</span></div>
-          <div class="geo-row"><span class="lbl">Ostalo (UA, Kosovo, IT, RS &hellip;)</span><div class="geo-track"><div class="geo-fill" style="width:0.9%"></div></div><span class="pct">0,9%</span></div>
+          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:86.6%"></div></div><span class="pct">86,6%</span></div>
+          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:12.9%;opacity:.35"></div></div><span class="pct">12,9%</span></div>
+          <div class="geo-row"><span class="lbl">Ostalo (UA, Kosovo, IT, RS &hellip;)</span><div class="geo-track"><div class="geo-fill" style="width:0.5%"></div></div><span class="pct">0,5%</span></div>
         </div>
         <h3 style="font-size:15px;margin:20px 0 12px;">Gradovi u Crnoj Gori</h3>
         <div class="geo-bars" style="--chan:var(--c-flashscore)">
-          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:72.8%"></div></div><span class="pct">72,8%</span></div>
-          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:8.0%"></div></div><span class="pct">8,0%</span></div>
-          <div class="geo-row"><span class="lbl">Tivat</span><div class="geo-track"><div class="geo-fill" style="width:7.3%"></div></div><span class="pct">7,3%</span></div>
-          <div class="geo-row"><span class="lbl">Bar</span><div class="geo-track"><div class="geo-fill" style="width:4.3%"></div></div><span class="pct">4,3%</span></div>
+          <div class="geo-row"><span class="lbl">Podgorica</span><div class="geo-track"><div class="geo-fill" style="width:82.6%"></div></div><span class="pct">82,6%</span></div>
+          <div class="geo-row"><span class="lbl">Budva</span><div class="geo-track"><div class="geo-fill" style="width:4.4%"></div></div><span class="pct">4,4%</span></div>
+          <div class="geo-row"><span class="lbl">Tivat</span><div class="geo-track"><div class="geo-fill" style="width:3.6%"></div></div><span class="pct">3,6%</span></div>
+          <div class="geo-row"><span class="lbl">Herceg Novi</span><div class="geo-track"><div class="geo-fill" style="width:3.5%"></div></div><span class="pct">3,5%</span></div>
         </div>
       </div>
       <div>
         <h3 style="font-size:15px;margin-bottom:12px;">Uređaj &amp; ISP</h3>
         <table class="mini">
           <tr><th>Uređaj</th><th></th></tr>
-          <tr><td>Mobilni</td><td class="num">95,7%</td></tr>
-          <tr><td>Desktop</td><td class="num">4,1%</td></tr>
+          <tr><td>Mobilni</td><td class="num">96,7%</td></tr>
+          <tr><td>Desktop</td><td class="num">3,3%</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Vodeći ISP</th><th></th></tr>
-          <tr><td>Crnogorski Telekom</td><td class="num">124</td></tr>
-          <tr><td>MTEL Crna Gora</td><td class="num">119</td></tr>
-          <tr><td>One Crna Gora</td><td class="num">54</td></tr>
+          <tr><td>Crnogorski Telekom</td><td class="num">363</td></tr>
+          <tr><td>MTEL Crna Gora</td><td class="num">301</td></tr>
+          <tr><td>One Crna Gora</td><td class="num">101</td></tr>
         </table>
         <table class="mini" style="margin-top:14px;">
           <tr><th>Jedinstvenih IP / sesija</th><th></th></tr>
-          <tr><td>210 / 460</td><td class="num">0,46 &larr; najniže</td></tr>
+          <tr><td>511 / 1.046</td><td class="num">0,49 &larr; najniže</td></tr>
         </table>
       </div>
     </div>
 
     <div class="flag critical">
       <span class="ico">⚠</span>
-      <div><b>Ponovljene sesije sa iste IP adrese:</b> 8,0% sesija je "skoro-duplikat" &mdash; nova sesija sa iste IP adrese pokrenuta manje od 2 sekunde nakon prethodne (najviše od sva 4 kanala; kod CDM-a i Rezultati je to 0,5&ndash;1,0%). Jedna IP adresa iz Tivata (mobilni, Android/Chrome) generisala je čak 17 sesija tokom 3 dana, uključujući 3 sesije unutar iste sekunde 22. avgusta. Ovo može biti tehnički problem (tag na Flashscore placementu okida se više puta po kliku) ili mala grupa veoma čestih posjetilaca &mdash; u oba slučaja preporučujemo provjeru implementacije piksela sa ad mrežom prije nego što se broj sesija tretira kao broj jedinstvenih posjetilaca.</div>
+      <div><b>Ponovljene sesije sa iste IP adrese &mdash; potvrđeno u drugom periodu:</b> 8,4% sesija je "skoro-duplikat" (nova sesija sa iste IP adrese &lt;2s nakon prethodne), praktično identično prvoj verziji izvještaja (8,0%). Najaktivnija IP adresa sada ima 25 sesija razvučenih preko više dana (Podgorica, mobilni) &mdash; obrazac više liči na jednog vrlo čestog posjetioca nego na skriptovani bot, ali dosljednost ove metrike kroz dva perioda potvrđuje da vrijedi provjeriti implementaciju tracking piksela sa ad mrežom prije nego što se ukupan broj sesija (1.046) tretira kao broj jedinstvenih posjetilaca.</div>
     </div>
 
     <div class="verdict-box" style="--chan:var(--c-flashscore)">
-      <b>Ocjena:</b> dobra geo-preciznost i pristojan angažman, ali pouzdanost broja sesija je upitna zbog ponavljanja/duplikata &mdash; realan broj jedinstvenih posjetilaca je vjerovatno niži od 460.</div>
+      <b>Ocjena:</b> najbolja geo-preciznost od sva 4 kanala i stabilan angažman, ali pouzdanost broja sesija ostaje upitna &mdash; realan broj jedinstvenih posjetilaca je vjerovatno primjetno niži od 1.046.</div>
+  </section>
+
+  <!-- SPORTAL -->
+  <section id="sportal">
+    <div class="channel-head" style="--chan:var(--c-sportal)">
+      <span class="dot-lg"></span><h2>Sportal.blic.rs</h2><span class="domain">utm_medium=Sportal</span>
+    </div>
+    <p class="intro">3.075 sesija &mdash; najveći pojedinačni izvor u cijeloj kampanji. Dobra geo-preciznost (72,4% CG), ali ubjedljivo najslabiji angažman od svih placementa: tri četvrtine posjeta traje &le;2 sekunde, a samo 4,6% ostaje 30 sekundi ili duže.</p>
+
+    <div class="stat-row">
+      <div class="stat" style="--chan:var(--c-sportal)"><div class="v">3.075</div><div class="l">sesija</div></div>
+      <div class="stat" style="--chan:var(--c-sportal)"><div class="v">75,2%</div><div class="l">napušta za &le;2s</div></div>
+      <div class="stat" style="--chan:var(--c-sportal)"><div class="v">72,4%</div><div class="l">potvrđeno iz Crne Gore</div></div>
+      <div class="stat" style="--chan:var(--c-sportal)"><div class="v">4,6%</div><div class="l">ostaje &ge;30s</div></div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3 style="font-size:15px;margin-bottom:12px;">Geografska raspodjela</h3>
+        <div class="geo-bars" style="--chan:var(--c-sportal)">
+          <div class="geo-row"><span class="lbl">Crna Gora</span><div class="geo-track"><div class="geo-fill" style="width:72.4%"></div></div><span class="pct">72,4%</span></div>
+          <div class="geo-row"><span class="lbl">Nepoznato (IP)</span><div class="geo-track"><div class="geo-fill" style="width:26.7%;opacity:.35"></div></div><span class="pct">26,7%</span></div>
+          <div class="geo-row"><span class="lbl">Srbija</span><div class="geo-track"><div class="geo-fill" style="width:0.8%"></div></div><span class="pct">0,8%</span></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:15px;margin-bottom:12px;">Uređaj &amp; pouzdanost</h3>
+        <table class="mini">
+          <tr><th>Uređaj</th><th></th></tr>
+          <tr><td>Mobilni</td><td class="num">99,5%</td></tr>
+        </table>
+        <table class="mini" style="margin-top:14px;">
+          <tr><th>Ostalo</th><th></th></tr>
+          <tr><td>Bez exit signala</td><td class="num">24,5%</td></tr>
+          <tr><td>Prosječan scroll</td><td class="num">22,6%</td></tr>
+          <tr><td>Jedinstvenih IP / sesija</td><td class="num">0,47</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="flag critical">
+      <span class="ico">⚠</span>
+      <div><b>Najveći volumen, najslabiji kvalitet:</b> Sportal isporučuje više sesija nego bilo koji drugi pojedinačni kanal, ali sa angažmanom koji je dosljedno najslabiji u cijeloj kampanji (75,2% instant napuštanje, samo 4,6% stvarno zainteresovanih posjeta). Geo-preciznost je solidna, pa nije riječ o pogrešnom targetiranju &mdash; prije o prirodi native placementa na ovom portalu (banner unutar članaka koji generiše dosta slučajnih klikova).</div>
+    </div>
+
+    <div class="verdict-box" style="--chan:var(--c-sportal)">
+      <b>Ocjena:</b> koristan za reach i dobro geotargetiran, ali daleko najslabiji po kvalitetu posjete od svih paid kanala &mdash; vrijedi preispitati odnos cijene i stvarno zainteresovanih posjetilaca prije povećanja budžeta.</div>
+  </section>
+
+  <!-- FB/IG ADS -->
+  <section id="social">
+    <span class="kicker">Plaćeni social</span>
+    <h2>Facebook &amp; Instagram oglasi</h2>
+    <p class="intro">3.753 sesije ukupno (2.024 Instagram, 1.729 Facebook) &mdash; ubjedljivo najbolji angažman od svih kanala u kampanji, ali i najveći udio saobraćaja kod kojeg IP geolokacija ne uspijeva da potvrdi zemlju porijekla.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="channel-head" style="--chan:var(--c-igads);margin-bottom:10px;">
+          <span class="dot-lg"></span><h3 style="font-size:16px;margin:0;">Instagram oglasi</h3>
+        </div>
+        <div class="stat-row" style="grid-template-columns:repeat(2,1fr);">
+          <div class="stat" style="--chan:var(--c-igads)"><div class="v">2.024</div><div class="l">sesija</div></div>
+          <div class="stat" style="--chan:var(--c-igads)"><div class="v">1,9%</div><div class="l">napušta za &le;2s</div></div>
+          <div class="stat" style="--chan:var(--c-igads)"><div class="v">61,8%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="stat" style="--chan:var(--c-igads)"><div class="v">43,5%</div><div class="l">potvrđeno iz CG</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="channel-head" style="--chan:var(--c-fbads);margin-bottom:10px;">
+          <span class="dot-lg"></span><h3 style="font-size:16px;margin:0;">Facebook oglasi</h3>
+        </div>
+        <div class="stat-row" style="grid-template-columns:repeat(2,1fr);">
+          <div class="stat" style="--chan:var(--c-fbads)"><div class="v">1.729</div><div class="l">sesija</div></div>
+          <div class="stat" style="--chan:var(--c-fbads)"><div class="v">2,5%</div><div class="l">napušta za &le;2s</div></div>
+          <div class="stat" style="--chan:var(--c-fbads)"><div class="v">56,2%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="stat" style="--chan:var(--c-fbads)"><div class="v">40,6%</div><div class="l">potvrđeno iz CG</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flag" style="margin-top:20px;">
+      <span class="ico">ⓘ</span>
+      <div><b>Geo-neizvjesnost, ne nužno loše targetiranje:</b> 55&ndash;58% sesija sa oba kanala nema geolociranu zemlju (ISP polje je prazno za te redove, ne samo zemlja), znatno više nego kod bilo kog drugog kanala. Meta-ov in-app pregledač (Instagram/Facebook aplikacija) često rutira saobraćaj preko sopstvenih servera, pa se prava IP adresa korisnika ne vidi u tracking sistemu. Targetiranje na nivou Ads Manager-a je i dalje pouzdanije za ocjenu geo-preciznosti ovih kanala nego client-side IP geolokacija.</div>
+    </div>
+
+    <div class="verdict-box" style="--chan:var(--c-igads)">
+      <b>Ocjena:</b> daleko najbolji angažman u cijeloj kampanji (i Facebook i Instagram) &mdash; posjetioci koji dođu preko plaćenog social oglasa ostaju najduže i skroluju najviše. Geo-preciznost se ne može pouzdano ocijeniti client-side metodom; preporuka da se za ove kanale koristi geo-izvještaj direktno iz Ads Manager-a.</div>
+  </section>
+
+  <!-- OSTALI IZVORI -->
+  <section id="ostalo">
+    <span class="kicker">Ostali izvori</span>
+    <h2>Direktan, organski i interni saobraćaj</h2>
+    <p class="intro">Ovi izvori nisu plaćeni placementi u istom smislu kao gornji kanali &mdash; obuhvataju direktne/QR posjete, unutrašnje referale sa AdmiralBet.me, organski social i tehničke widgete. Generalno pokazuju najbolji angažman u cijeloj kampanji, jer je riječ o "toplijoj" publici.</p>
+
+    <h3 class="subhead">Direktan i interni saobraćaj</h3>
+    <p class="subhead-note">Napomena: kod ovih izvora je udio sesija bez exit signala neuobičajeno visok (34&ndash;64%) &mdash; vjerovatno zato što posjetioci dolaze sa fizičkog QR koda ili već otvorene aplikacije i ostave stranicu otvorenu u pozadini umjesto da je zatvore, pa se exit beacon ne šalje na uobičajen način. Prikazane metrike angažmana (scroll, &ge;30s) računate su samo za sesije kod kojih exit signal postoji.</p>
+    <div class="mini-grid">
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Direktno (QR / offline)</span><span class="mc-src">1.318 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">23,5%</div><div class="l">napušta &le;2s</div></div>
+          <div class="mc-stat"><div class="v">66,4%</div><div class="l">prosj. scroll</div></div>
+          <div class="mc-stat"><div class="v">75,3%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Najtopliji tip posjete &mdash; neko je namjerno unio adresu ili skenirao QR kod. Najniže napuštanje i najviši scroll od svih izvora osim organskog Instagrama.</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">AdmiralBet.me referral</span><span class="mc-src">869 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">11,1%</div><div class="l">napušta &le;2s</div></div>
+          <div class="mc-stat"><div class="v">72,9%</div><div class="l">prosj. scroll</div></div>
+          <div class="mc-stat"><div class="v">80,4%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Unakrsna promocija sa glavnog AdmiralBet sajta &mdash; postojeća, angažovana publika. Najviši scroll od svih izvora sa značajnim volumenom.</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Instagram organsko</span><span class="mc-src">378 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">0,4%</div><div class="l">napušta &le;2s</div></div>
+          <div class="mc-stat"><div class="v">70,7%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="mc-stat"><div class="v">77,8%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Klikovi sa objave/bio linka bez plaćene promocije (176 sa UTM oznakom + 202 bez nje). Najbolji angažman od svih izvora u kampanji &mdash; besplatan i najkvalitetniji.</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Cloudfront (interna navigacija)</span><span class="mc-src">531 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">34,2%</div><div class="l">napušta &le;2s</div></div>
+          <div class="mc-stat"><div class="v">42,5%</div><div class="l">prosj. scroll</div></div>
+          <div class="mc-stat"><div class="v">87,6%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Referer je sopstveni domen stranice &mdash; ovo je kretanje unutar samog funnel-a (npr. povratak na početnu), ne novi akvizicioni kanal. Prikazano radi potpunosti, ne kao izvor za budžetiranje.</div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Widget i sitni izvori</h3>
+    <div class="mini-grid">
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Sportradar widget</span><span class="mc-src">1.174 sesije</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">66,0%</div><div class="l">napušta &le;2s</div></div>
+          <div class="mc-stat"><div class="v">7,9%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="mc-stat"><div class="v">78,2%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Klikovi iz ugrađenog live-rezultat widgeta (eu.sportradarserving.com). Angažman sličan Sportalu &mdash; solidna geo-preciznost, ali slab pravi interes; 63,5% sesija bez exit signala (widget kontekst).</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Facebook organsko</span><span class="mc-src">39 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">78,4%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="mc-stat"><div class="v">10,3%</div><div class="l">CG</div></div>
+          <div class="mc-stat"><div class="v">0,18</div><div class="l">uniq. IP odnos</div></div>
+        </div>
+        <div class="mc-note">Mali uzorak sa neobično niskim udjelom Crne Gore (10,3%) i visokom koncentracijom IP adresa &mdash; vjerovatno stariji link dijeljen van regiona ili nekoliko osoba koje su više puta otvarale isti post. Premalo sesija za pouzdan zaključak.</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Google</span><span class="mc-src">33 sesije</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">52,9%</div><div class="l">ostaje &ge;30s</div></div>
+          <div class="mc-stat"><div class="v">72,7%</div><div class="l">CG</div></div>
+        </div>
+        <div class="mc-note">Organska pretraga i Google oglasi zajedno &mdash; zanemarljiv volumen, uredna geo-raspodjela.</div>
+      </div>
+      <div class="mini-card" style="--chan:var(--c-neutral)">
+        <div class="mc-head"><span class="mc-title">Bit.ly skraćeni link</span><span class="mc-src">18 sesija</span></div>
+        <div class="mc-stats">
+          <div class="mc-stat"><div class="v">94,4%</div><div class="l">CG</div></div>
+          <div class="mc-stat"><div class="v">100%</div><div class="l">ostaje &ge;30s</div></div>
+        </div>
+        <div class="mc-note">Vjerovatno link dijeljen u nekoj zatvorenoj grupi/poruci &mdash; premalo sesija za zaključak, ali kvalitet posjete je odličan.</div>
+      </div>
+    </div>
+
+    <h3 class="subhead">Sumnjiv / vjerovatno automatizovan saobraćaj</h3>
+    <div class="flag critical">
+      <span class="ico">⚠</span>
+      <div><b>20 sesija (0,1% od ukupnog trafika) sa jasnim znacima spam/scanning aktivnosti, ne pravih posjetilaca:</b>
+        <ul class="noise-list">
+          <li>13 sesija sa IP 185.237.185.146 (Litvanija) sa referer poljem koje redom "skače" kroz potpuno nepovezane sajtove (behindthename.com, merca20.com, depor.com, cnyes.com, tune.com, freep.com, playerauctions.com) &mdash; klasičan obrazac tzv. "referrer spam" bota koji lažira referer zaglavlje.</li>
+          <li>3 sesije sa IP 128.77.15.66 (Rumunija) preko sirovih IP:port adresa (108.138.26.25:6080) &mdash; port karakterističan za udaljeni pristup/testing alate, ne za pravu posjetu sa sajta.</li>
+          <li>3 sesije sa IP 130.41.177.252 (Bugarska) preko istog obrasca IP:port referera.</li>
+          <li>Pojedinačne sesije sa complaintsboard.com, pureinfotech.com, convert-video-online.com, free-tether.com, app.gamblio.ai i ads.sportradar.com.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--ink-2);margin-top:12px;">Volumen je zanemarljiv (20 od 15.656 sesija) i ne utiče na ukupnu ocjenu kampanje, ali ove sesije ne treba računati u bilo koji izvještaj o "organskom referral" saobraćaju &mdash; nisu prave posjete sa tih sajtova.</p>
   </section>
 
   <section id="zakljucak">
     <span class="kicker">Sinteza</span>
     <h2>Preporuke po kanalu</h2>
-    <p class="intro">Bez podataka o cijeni i broju prikaza sa strane ad mreže ne može se računati CPA/CTR, ali na osnovu ponašanja posjetilaca na landing stranici, evo prioriteta za svaki kanal.</p>
+    <p class="intro">Bez podataka o cijeni i broju prikaza sa strane ad mreže ne može se računati CPA/CTR, ali na osnovu ponašanja posjetilaca na landing stranici, evo prioriteta za svaki kanal nakon produženog perioda posmatranja.</p>
 
     <div class="table-wrap">
       <table class="rec">
@@ -594,27 +841,57 @@
         <tbody>
           <tr>
             <td>Rezultati.com</td>
-            <td><span class="badge" style="background:var(--good-soft);color:var(--good)">Najbolji</span></td>
-            <td>Najniže instant-napuštanje (39,6%), najveći scroll (35%), 69,9% potvrđeno iz CG.</td>
-            <td>Kandidat za povećanje budžeta/impresija &mdash; najbolji odnos kvaliteta posjete i preciznosti targetiranja.</td>
+            <td><span class="badge" style="background:var(--good-soft);color:var(--good)">Odličan</span></td>
+            <td>86,4% potvrđeno iz CG, najveći scroll (31,2%), ali skoro-duple sesije porasle sa 1,0% na 4,1%.</td>
+            <td>Dobar kandidat za dodatni budžet; pratiti trend skoro-dupliranih sesija u narednom periodu.</td>
           </tr>
           <tr>
             <td>Flashscore.com</td>
             <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Provjeriti</span></td>
-            <td>Najbolja geo-preciznost (71,1%), ali 8% skoro-duplih sesija i najniži unique-IP odnos (0,46).</td>
-            <td>Provjeriti implementaciju tracking piksela sa ad mrežom prije nastavka ulaganja; tražiti da se potvrdi broj jedinstvenih klikova.</td>
+            <td>Najbolja geo-preciznost (86,6%), ali 8,4% skoro-duplih sesija drugu nedjelju zaredom potvrđuje dosljedan obrazac.</td>
+            <td>Provjeriti implementaciju tracking piksela sa ad mrežom; tražiti potvrdu broja jedinstvenih klikova prije daljeg ulaganja.</td>
           </tr>
           <tr>
             <td>CDM.me</td>
-            <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Volumen, ne preciznost</span></td>
-            <td>Najveći volumen (857), ali samo 34,2% CG i 19,4% Srbija.</td>
-            <td>Tražiti strože geo-targetiranje na nivou placementa ili korekciju cijene srazmjerno in-market udjelu.</td>
+            <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Poboljšano, prati se</span></td>
+            <td>Najveći volumen (1.485); CG% skočio sa 34,2% na 57,8%, Srbija% prepolovljen (19,4%&rarr;11,2%), ali i dalje najslabiji od 4 kanala.</td>
+            <td>Nastaviti razgovor o strožem geo-targetiranju; trend je pozitivan, treba potvrditi da se zadržava.</td>
           </tr>
           <tr>
             <td>Vijesti.me</td>
-            <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Prosječno</span></td>
-            <td>38,9% sesija bez exit signala &mdash; nepotpuna telemetrija otežava ocjenu; umjeren bounce i geo-procurenje ka Srbiji (10,8%).</td>
-            <td>Provjeriti tag/skriptu na ovom placementu prije donošenja zaključka o angažmanu; pratiti geo-curenje.</td>
+            <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Poboljšano, prati se</span></td>
+            <td>CG% skočio sa 47,1% na 67,0%, ali 38,5% sesija i dalje bez exit signala &mdash; tehnički problem nije riješen.</td>
+            <td>Hitnije provjeriti tag/skriptu na ovom placementu &mdash; problem traje kroz oba perioda posmatranja.</td>
+          </tr>
+          <tr>
+            <td>FB / IG oglasi</td>
+            <td><span class="badge" style="background:var(--good-soft);color:var(--good)">Najbolji angažman</span></td>
+            <td>Napuštanje &le;2s svega 2&ndash;3%, preko 55% ostaje &ge;30s &mdash; ubjedljivo najkvalitetniji posjetioci. Geo-preciznost se ne vidi pouzdano client-side (54&ndash;58% nepoznato).</td>
+            <td>Zadržati/povećati budžet; za geo-izvještavanje koristiti Ads Manager, ne ovu telemetriju.</td>
+          </tr>
+          <tr>
+            <td>Sportal.blic.rs</td>
+            <td><span class="badge" style="background:var(--critical-soft);color:var(--critical)">Najslabiji</span></td>
+            <td>Najveći volumen (3.075) ali i najslabiji angažman od svih kanala (75,2% napuštanje &le;2s, samo 4,6% &ge;30s).</td>
+            <td>Preispitati odnos cijene i kvaliteta posjete prije daljeg povećanja budžeta na ovom placementu.</td>
+          </tr>
+          <tr>
+            <td>Direktno / AdmiralBet / IG organsko</td>
+            <td><span class="badge" style="background:var(--good-soft);color:var(--good)">Odličan, besplatan</span></td>
+            <td>Najtoplija publika u kampanji (11&ndash;24% napuštanje &le;2s, 43&ndash;73% prosječan scroll) &mdash; ali dio bez exit signala pa se dio metrike ne može potvrditi.</td>
+            <td>Nastaviti unakrsnu promociju sa AdmiralBet.me i organskim social objavama &mdash; najbolji ROI jer nema medijski trošak.</td>
+          </tr>
+          <tr>
+            <td>Sportradar widget</td>
+            <td><span class="badge" style="background:var(--warning-soft);color:var(--warning)">Slab angažman</span></td>
+            <td>1.174 sesije, ali obrazac angažmana identičan Sportalu (66% napuštanje &le;2s, 63,5% bez exit signala).</td>
+            <td>Tretirati kao nizak prioritet za širenje dok se ne razjasni tehnički kontekst widgeta.</td>
+          </tr>
+          <tr>
+            <td>Sumnjiv/spam saobraćaj</td>
+            <td><span class="badge" style="background:var(--critical-soft);color:var(--critical)">Zanemariti</span></td>
+            <td>20 sesija (0,1%) sa jasnim znacima lažiranog referera / automatizovanog pristupa.</td>
+            <td>Isključiti iz bilo kakvog izvještaja o organskom/referral saobraćaju; volumen je zanemarljiv za budžetske odluke.</td>
           </tr>
         </tbody>
       </table>
@@ -627,7 +904,7 @@
   </section>
 
   <footer>
-    Izvor: tracking eksport landing stranice (20&ndash;31. avgust 2026, 19.504 event-a, 11.286 sesija ukupno). Analiza obuhvata 2.203 sesije sa UTM medium = Vijesti / CDM / Rezultati / Flashscore.
+    Izvor: tracking eksport landing stranice (20. avgust &ndash; 10. septembar 2026, 26.655 event-a, 15.656 sesija ukupno). Ova verzija pokriva sve identifikovane izvore: 4 native placementa (Vijesti, CDM, Rezultati, Flashscore &mdash; 4.448 sesija), Sportal (3.075), plaćeni Facebook/Instagram (3.753), direktan/QR i interni saobraćaj (2.718), Sportradar widget (1.174), organski social i sitni izvori (468), te 20 sesija sa znacima automatizovanog saobraćaja. Prethodna verzija (samo 4 native kanala, 20&ndash;31. avgust) dostupna je kao ranija verzija ovog izvještaja.
   </footer>
 
 </div>
