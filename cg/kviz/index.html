@@ -249,9 +249,136 @@ margin-bottom: 18px;
 }
 .cover-banner svg { display: block; width: 100%; height: auto; }
 @media (min-width: 900px) { .cover-banner { margin-bottom: 26px; } }
+
+/* ==================== MAINTENANCE / "USKORO" OVERLAY ====================
+   Neaktivan po defaultu ako OVERLAY_ACTIVE = false. Prekidac je dole u
+   <script> bloku. */
+.maintenance-overlay {
+position: fixed;
+inset: 0;
+z-index: 9999;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow-y: auto;
+padding: max(20px, env(safe-area-inset-top, 0px)) 16px max(20px, env(safe-area-inset-bottom, 0px));
+background:
+radial-gradient(1200px 600px at 15% -10%, rgba(243,200,74,.12), transparent 60%),
+radial-gradient(900px 500px at 110% 10%, rgba(63,209,155,.09), transparent 55%),
+linear-gradient(180deg, rgba(8,17,31,.96) 0%, rgba(13,26,48,.97) 50%, rgba(19,35,62,.98) 100%);
+animation: maintenanceFadeIn .4s ease;
+}
+.maintenance-overlay.hidden { display: none; }
+@keyframes maintenanceFadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+.maintenance-card {
+position: relative;
+overflow: hidden;
+text-align: center;
+max-width: 460px;
+width: 100%;
+margin: auto;
+padding: 40px 30px 34px;
+background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+linear-gradient(180deg, var(--panel-2), var(--panel));
+border: 1px solid var(--line);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+backdrop-filter: blur(10px);
+animation: maintenanceRise .5s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes maintenanceRise {
+from { opacity: 0; transform: translateY(14px) scale(.98); }
+to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.maintenance-logo {
+width: min(150px, 46vw);
+margin: 0 auto 22px;
+padding: 10px 14px;
+border: 1px solid var(--line);
+border-radius: 18px;
+background: rgba(255,255,255,.03);
+}
+.maintenance-title {
+margin: 0;
+font-size: clamp(26px, 6vw, 38px);
+line-height: 1.15;
+letter-spacing: -.03em;
+color: var(--text);
+background: linear-gradient(180deg, var(--text) 30%, var(--accent-2) 130%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.maintenance-sub {
+margin: 12px 0 0;
+color: var(--muted);
+font-size: 15px;
+line-height: 1.55;
+}
+.maintenance-dots {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+margin-top: 26px;
+}
+.maintenance-dots .dot {
+width: 11px;
+height: 11px;
+border-radius: 50%;
+background: linear-gradient(180deg, var(--accent), var(--accent-2));
+animation: maintenanceDotPulse 1.4s ease-in-out infinite both;
+}
+.maintenance-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+.maintenance-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+.maintenance-dots .dot:nth-child(3) { animation-delay: 0s; }
+@keyframes maintenanceDotPulse {
+0%, 80%, 100% { transform: scale(0.4); opacity: .45; }
+40% { transform: scale(1); opacity: 1; }
+}
+.maintenance-banner {
+margin-top: 30px;
+border: 1px solid var(--line-strong);
+transition: transform .18s ease, border-color .18s ease;
+}
+.maintenance-banner:hover { transform: translateY(-2px); border-color: rgba(243,200,74,.4); }
+.maintenance-banner img { border-radius: 15px; }
+
+@media (max-width: 420px) {
+.maintenance-card { padding: 32px 20px 28px; border-radius: 20px; }
+.maintenance-logo { margin-bottom: 18px; }
+.maintenance-dots { margin-top: 20px; }
+.maintenance-banner { margin-top: 24px; }
+}
 </style>
 </head>
 <body>
+
+<!-- ==================== MAINTENANCE / "USKORO" OVERLAY ====================
+     Sakriven klasom "hidden". Da ga aktivira, promijeni OVERLAY_ACTIVE u
+     script bloku na dnu fajla na true - sve ostalo ostaje funkcionalno
+     ispod, samo prekriveno ovim ekranom dok je aktivan. -->
+<div class="maintenance-overlay hidden" id="maintenanceOverlay">
+<div class="maintenance-card">
+<div class="maintenance-logo">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsidqhzVJR2KfE1A3SUszID45j4RyrfXNmHg&s" alt="AdmiralBET logo" />
+</div>
+<h1 class="maintenance-title">Vidimo se uskoro</h1>
+<p class="maintenance-sub">Pripremamo nešto novo za tebe.</p>
+<div class="maintenance-dots">
+<span class="dot"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+</div>
+<a href="https://bit.ly/4gJKsOs" target="_blank" rel="noopener noreferrer" class="extra-banner maintenance-banner" id="overlayBannerLink">
+<img src="https://admiralbet.me/assets/images/promotion/oiuztrfcgvhbjnkml.jpg" alt="Osvoji novi BMW" />
+</a>
+</div>
+</div>
+
 <div class="wrap">
 <div class="cover-banner">
 <img src="https://admiralbet.me/assets/images/promotion/scadsfgfhgjhkjf.jpg" alt="AdmiralBET Sportski Kviz" style="width:100%;height:auto;display:block;" />
@@ -377,6 +504,34 @@ Osvoji novi BMW
 <div class="footer-space"></div>
 </div>
 <script>
+// ==========================================================
+// MAINTENANCE / "USKORO" OVERLAY - prekidac
+// true = prikazuje overlay preko cijele stranice (kviz ostaje ispod,
+// samo nije vidljiv niti dostupan korisniku dok je overlay aktivan).
+// false = overlay je sakriven, sajt radi normalno.
+// Dok je aktivan, i dalje se prikazuje BMW baner i radi automatski
+// redirect ka istoj nagradnoj igri (bit.ly/4gJKsOs) posle 5 sekundi.
+// ==========================================================
+const OVERLAY_ACTIVE = true;
+const OVERLAY_REDIRECT_URL = 'https://bit.ly/4gJKsOs';
+const OVERLAY_REDIRECT_DELAY_MS = 5000;
+(function () {
+if (!OVERLAY_ACTIVE) return;
+document.getElementById('maintenanceOverlay').classList.remove('hidden');
+document.body.style.overflow = 'hidden';
+
+const overlayBannerLink = document.getElementById('overlayBannerLink');
+let overlayRedirectTimeout = setTimeout(function () {
+window.location.href = OVERLAY_REDIRECT_URL;
+}, OVERLAY_REDIRECT_DELAY_MS);
+
+if (overlayBannerLink) {
+overlayBannerLink.addEventListener('click', function () {
+if (overlayRedirectTimeout) clearTimeout(overlayRedirectTimeout);
+});
+}
+})();
+
 // ==========================================================
 // INTERNI TRACKING — odvojeno od APPS_SCRIPT_URL koji pokreće kviz.
 // Prati kompletan tok igrača kroz formu, kviz i rezultat.
