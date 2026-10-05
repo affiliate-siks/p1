@@ -557,11 +557,35 @@ section{padding:48px 0;}
 .cd-box{min-width:70px; padding:14px 10px;}
 .cd-box .n{font-size:24px;}
 }
+
+/* redirect bar — poziv na AdmiralBet.me sa auto-preusmjeravanjem */
+.redirect-bar{
+position:fixed; left:50%; bottom:18px; z-index:80;
+transform:translateX(-50%); width:min(560px, calc(100% - 28px));
+background:#0d0f16; border:1px solid rgba(255,210,0,0.45); border-radius:12px;
+padding:16px 18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+box-shadow:0 10px 30px rgba(0,0,0,0.45);
+}
+.redirect-bar.hide{display:none;}
+.redirect-bar .rb-text{flex:1 1 220px; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.85);}
+.redirect-bar .rb-text b{color:var(--gold); font-family:'Barlow Condensed'; font-size:17px;}
+.redirect-bar .rb-actions{display:flex; gap:8px; align-items:center;}
+.redirect-bar .btn{padding:11px 18px; font-size:13.5px; width:auto;}
+.redirect-bar .rb-stay{background:none; border:none; color:rgba(255,255,255,0.55); font-size:12.5px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:2px; padding:6px;}
+.redirect-bar .rb-stay:hover{color:#fff;}
+.redirect-bar .rb-bar{flex-basis:100%; height:3px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;}
+.redirect-bar .rb-bar i{display:block; height:100%; width:100%; background:var(--gold); transform-origin:left; transition:transform 1s linear;}
+body.redirect-active .sticky-counter{display:none;}
+@media (max-width:640px){
+.redirect-bar{bottom:14px; padding:14px;}
+.redirect-bar .rb-actions{width:100%; justify-content:space-between;}
+.redirect-bar .btn{flex:1; justify-content:center;}
+}
 </style>
 <script src="https://a.sportradarserving.com/pixel?id=1003895&type=js&aid=1851"></script>
 </head>
 <body>
-<div class="topstrip">Kampanja traje <b>17.08 - 04.10.2026.</b> · Finalno izvlačenje <b>08.10.2026.</b> · Učestvuju isključivo uplate na AdmiralBET terminalima</div>
+<div class="topstrip">Učešće je završeno 04.10.2026. · <b>Finalno izvlačenje za BMW Serije 1 — četvrtak, 08.10.2026. u 18h</b></div>
 
 <div class="hero" id="top">
 <!-- SLIKE: zamijeni src base64 stringom iz stare verzije ili postavi fajlove u folder photos/ -->
@@ -582,11 +606,10 @@ section{padding:48px 0;}
 <div class="brand"><span class="dot"></span>IZ KOLA <span>U KOLA</span></div>
 </div>
 <nav class="nav-links">
-<a href="#mehanika">Kako učestvovati</a>
-<a href="#nagrade">Nagrade</a>
-<a href="#kola">Kola i izvlačenja</a>
-<a href="#uzivo">Uživo prenos</a>
 <a href="#finale">Finale — BMW</a>
+<a href="#kola">Kola i izvlačenja</a>
+<a href="#nagrade">Nagrade</a>
+<a href="#uzivo">Uživo prenos</a>
 <a href="#pravila">Pravila</a>
 </nav>
 <button class="nav-toggle" id="navToggle" aria-label="Otvori meni" aria-expanded="false">
@@ -594,24 +617,25 @@ section{padding:48px 0;}
 </button>
 </div>
 <div class="mobile-menu" id="mobileMenu">
-<a href="#mehanika">Kako učestvovati</a>
-<a href="#nagrade">Nagrade</a>
-<a href="#kola">Kola i izvlačenja</a>
-<a href="#uzivo">Uživo prenos</a>
 <a href="#finale">Finale — BMW</a>
+<a href="#kola">Kola i izvlačenja</a>
+<a href="#nagrade">Nagrade</a>
+<a href="#uzivo">Uživo prenos</a>
 <a href="#pravila">Pravila</a>
 </div>
 </div>
 
 <div class="wrap hero-content">
-<h1>Iz kola u kola,<br>do <span class="hl">BMW</span>-a.</h1>
-<p class="lead">Igraj na AdmiralBET terminalima i osvoji gejmerski laptop, iPhone 17 Pro, PlayStation 5 ili električni trotinet — svake sedmice! A na kraju te čeka velika završnica: BMW Serije 1 može biti tvoj!</p>
+<div class="badge-live"><span class="pulse"></span>Uskoro izvlačenje</div>
+<h1>Sedam kola je iza nas.<br>Slijedi <span class="hl">BMW</span>.</h1>
+<p class="lead">Učešće u nagradnoj igri „Iz kola u kola“ završeno je 04.10.2026. U četvrtak, 08.10. u 18h, izvlačimo dobitnike posljednjeg kola i dobitnika glavne nagrade — BMW Serije 1. Do tada, pogledaj šta još nudimo na AdmiralBet.me.</p>
 <div class="cta-row">
-<a href="#mehanika" class="btn btn-gold">Kako se kvalifikujem</a>
+<a href="https://admiralbet.me/" class="btn btn-gold" data-redirect-cta>Posjeti AdmiralBet.me</a>
+<a href="#finale" class="btn btn-ghost">Detalji izvlačenja</a>
 </div>
 <div class="duration-block">
-<span class="duration-label">Trajanje igre</span>
-<span class="duration-value">17.08 – 04.10.2026.</span>
+<span class="duration-label">Finalno izvlačenje</span>
+<span class="duration-value">Četvrtak, 08.10.2026. u 18h</span>
 </div>
 </div>
 
@@ -621,8 +645,8 @@ section{padding:48px 0;}
 <section id="countdown-top" class="bg-alt">
 <div class="wrap">
 <div class="countdown-top-inner reveal">
-<div class="ct-label">Do velikog finala — BMW Serije 1</div>
-<div class="ct-sub">Terminali daju više</div>
+<div class="ct-label">Do finalnog izvlačenja — BMW Serije 1</div>
+<div class="ct-sub">Četvrtak, 08.10.2026. u 18h</div>
 <div class="countdown">
 <div class="cd-box"><div class="n" id="cdTopDays">–</div><div class="l">Dana</div></div>
 <div class="cd-box"><div class="n" id="cdTopHours">–</div><div class="l">Sati</div></div>
@@ -635,9 +659,9 @@ section{padding:48px 0;}
 <section id="mehanika" class="bg-alt">
 <div class="wrap">
 <div class="section-head reveal">
-<div class="eyebrow">Kako učestvovati</div>
-<h2>Tri načina da uđeš u igru</h2>
-<p>U nagradnoj igri učestvuju isključivo uplate odnosno tiketi uplaćeni na AdmiralBET terminalima u <a href="https://admiralbet.me/" target="_blank" rel="noopener" class="inline-link">poslovnicama AdmiralBet-a</a>, uz aktivan online nalog na AdmiralBet.me. Na poleđini svakog kvalifikovanog tiketa odnosno potvrde o uplati upiši ime i prezime, broj telefona, e-mail i ID online naloga, a zatim listić ubaci u kutiju za nagradnu igru u poslovnici. Što više kvalifikovanih uplata ostvariš, imaš više prijava i veće šanse za osvajanje nagrada! Izvlačenje sedmičnih nagrada održava se svakog četvrtka, a svi važeći listići automatski učestvuju i u finalnom izvlačenju za BMW Serije 1, 08.10.2026.</p>
+<div class="eyebrow">Učešće je završeno</div>
+<h2>Kako se ulazilo u igru</h2>
+<p>Period uplata trajao je od 17.08. do 04.10.2026. — nove uplate više ne donose pravo učešća. U nagradnoj igri učestvovale su isključivo uplate odnosno tiketi uplaćeni na AdmiralBET terminalima u <a href="https://admiralbet.me/" target="_blank" rel="noopener" class="inline-link">poslovnicama AdmiralBet-a</a>, uz aktivan online nalog na AdmiralBet.me. Na poleđini svakog kvalifikovanog tiketa odnosno potvrde o uplati upisivani su ime i prezime, broj telefona, e-mail i ID online naloga, a listić je ubacivan u kutiju za nagradnu igru u poslovnici. Svi važeći listići koji nijesu izvučeni u sedmičnim kolima učestvuju u finalnom izvlačenju za BMW Serije 1, 08.10.2026. u 18h.</p>
 </div>
 <div class="stub-grid">
 <div class="stub reveal">
@@ -676,7 +700,7 @@ section{padding:48px 0;}
 <div class="section-head reveal">
 <div class="eyebrow">Sedmične nagrade</div>
 <h2>Osim BMW-a, još 28 nagrada</h2>
-<p>Uz BMW Serije 1 kao glavnu nagradu finala, preostale nagrade dodjeljuju se na sedmičnim izvlačenjima, svakog četvrtka tokom trajanja igre.</p>
+<p>Uz BMW Serije 1 kao glavnu nagradu finala, preostale nagrade dodijeljene su na sedmičnim izvlačenjima. Posljednje sedmične nagrade izvlače se u četvrtak, 08.10. u 18h, zajedno sa finalom.</p>
 </div>
 <div class="prize-grid">
 <div class="prize reveal">
@@ -708,7 +732,7 @@ section{padding:48px 0;}
 <div class="section-head reveal">
 <div class="eyebrow">Raspored</div>
 <h2>Iz kola u kola, sve do finala</h2>
-<p>Svako kolo donosi sedmične nagrade, a validni listići iz svih kola učestvuju i u velikom finalnom izvlačenju za BMW Serije 1.</p>
+<p>Svih sedam kola je završeno. Validni listići iz svih kola, koji nijesu izvučeni kao dobitni, učestvuju u finalnom izvlačenju za BMW Serije 1.</p>
 </div>
 <div class="board reveal">
 <div class="board-row head"><span></span><span>Period kola</span><span>Validnih listića u kolu</span></div>
@@ -718,7 +742,7 @@ section{padding:48px 0;}
 <div class="board-row"><span class="num">04</span><span class="period">07.09 - 13.09.</span><span class="listica" data-listica="8009">0</span></div>
 <div class="board-row"><span class="num">05</span><span class="period">14.09 - 20.09.</span><span class="listica" data-listica="7831">0</span></div>
 <div class="board-row"><span class="num">06</span><span class="period">21.09 - 27.09.</span><span class="listica" data-listica="0">0</span></div>
-<div class="board-row final"><span class="num">07</span><span class="period">28.09 - 04.10.2026. <span class="finale-tag">FINALE 08.10.</span></span><span class="listica" data-listica="0">0</span></div>
+<div class="board-row final"><span class="num">07</span><span class="period">28.09 - 04.10.2026. <span class="finale-tag">IZVLAČENJE + FINALE 08.10. u 18h</span></span><span class="listica" data-listica="0">0</span></div>
 </div>
 <div class="pool-total reveal">
 <div>
@@ -727,7 +751,7 @@ section{padding:48px 0;}
 </div>
 <div class="updated" id="poolUpdated">Ažurirano: —</div>
 </div>
-<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Raspored kola računat je od zvaničnog perioda uplata (17.08 - 04.10.2026.). <strong style="color:var(--gold);">Sedmična izvlačenja su svakog četvrtka sa početkom u 18h.</strong> Finalno izvlačenje za BMW Serije 1 održaće se 08.10.2026. godine. Broj validnih listića se ažurira nakon svakog kola.</p>
+<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Period uplata trajao je od 17.08. do 04.10.2026. <strong style="color:var(--gold);">Izvlačenje 7. kola i finalno izvlačenje za BMW Serije 1 održavaju se u četvrtak, 08.10.2026. sa početkom u 18h.</strong> Konačan broj listića u fondu biće ažuriran nakon objedinjavanja prijava iz posljednjeg kola.</p>
 </div>
 </section>
 
@@ -757,14 +781,14 @@ style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; displ
 <div class="wrap reveal">
 <div class="eyebrow">Veliko finale · 08.10.2026.</div>
 <h2>Sve prijave. Jedan dobitnik.<br><span class="gold">BMW Serije 1.</span></h2>
-<p>Svi važeći listići prikupljeni tokom cijelog trajanja igre, koji prethodno nijesu bili izvučeni kao dobitni u nekom od sedmičnih kola, automatski ulaze u finalno izvlačenje glavne nagrade.</p>
+<p>Učešće je završeno. Svi važeći listići prikupljeni od 17.08. do 04.10.2026., koji prethodno nijesu bili izvučeni kao dobitni u nekom od sedmičnih kola, ulaze u finalno izvlačenje glavne nagrade — u četvrtak, 08.10. u 18h.</p>
 <div class="countdown" id="countdown">
 <div class="cd-box"><div class="n" id="cdDays">–</div><div class="l">Dana</div></div>
 <div class="cd-box"><div class="n" id="cdHours">–</div><div class="l">Sati</div></div>
 <div class="cd-box"><div class="n" id="cdMins">–</div><div class="l">Minuta</div></div>
 </div>
-<a href="#mehanika" class="btn btn-gold">Kako se kvalifikujem</a>
-<p style="margin-top:28px; font-size:12.5px; color:rgba(255,255,255,0.55);">Odbrojavanje do finalnog izvlačenja (08.10.2026. u 18h). Video zapis izvlačenja objavljuje se na YouTube kanalu i/ili drugim zvaničnim kanalima AdmiralBet-a.</p>
+<a href="https://admiralbet.me/" class="btn btn-gold" data-redirect-cta>Do izvlačenja — pogledaj šta još nudimo</a>
+<p style="margin-top:28px; font-size:12.5px; color:rgba(255,255,255,0.55);">Odbrojavanje do finalnog izvlačenja (08.10.2026. u 18h). Prenos izvlačenja biće dostupan na ovoj stranici, a video zapis i dobitnici biće objavljeni na YouTube kanalu i drugim zvaničnim kanalima AdmiralBet-a.</p>
 </div>
 </section>
 
@@ -807,7 +831,7 @@ style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; displ
 <p>Lice koje ne želi da učestvuje, iako ispunjava uslove, dužno je da o tome bez odlaganja obavijesti Priređivača putem zvaničnih kanala podrške — od momenta prijema obavještenja, Priređivač isključuje učesnika iz daljeg učešća u najkraćem roku.</p>
 
 <h4>Član 6 — Postupak sprovođenja i izvlačenja nagrada</h4>
-<p>Pravo učešća ostvaruju lica sa aktivnim online nalogom na AdmiralBet.me koja izvrše jednu od gore navedenih uplata. Učesnik na poleđini kvalifikovanog tiketa odnosno potvrde o uplati čitko upisuje ime i prezime, broj telefona, e-mail adresu i ID online naloga, te listić ubacuje u posebno označenu kutiju za nagradnu igru u poslovnici, najkasnije do isteka posljednjeg kola. Kolo traje od ponedeljka do nedelje, a sedmično izvlačenje održava se svakog četvrtka.</p>
+<p>Pravo učešća ostvaruju lica sa aktivnim online nalogom na AdmiralBet.me koja izvrše jednu od gore navedenih uplata. Učesnik na poleđini kvalifikovanog tiketa odnosno potvrde o uplati čitko upisuje ime i prezime, broj telefona, e-mail adresu i ID online naloga, te listić ubacuje u posebno označenu kutiju za nagradnu igru u poslovnici, najkasnije do isteka posljednjeg kola. Kolo traje od ponedjeljka do nedjelje, a sedmično izvlačenje održava se svakog četvrtka.</p>
 <p>Po isteku svakog kola, prijave iz svih poslovnica se objedinjuju i sprovodi se sedmično izvlačenje — učestvuju isključivo validni tiketi tog kola. Tiketi koji nijesu izvučeni kao dobitni prelaze u zajedničku kutiju namijenjenu finalnom izvlačenju, koja se dopunjava nakon svakog narednog kola. Svaki učesnik može biti dobitnik sedmične nagrade samo jednom po kolu, bez obzira na broj tiketa; u finalnom izvlačenju, koje se održava 08.10.2026. godine, učestvuje sa svim validnim tiketima koji prethodno nijesu bili izvučeni kao dobitni. Izvlačenje se sprovodi javnim slučajnim izvlačenjem, uz načela transparentnosti, nepristrasnosti i fer-pleja, pod nadzorom komisije koju imenuje Priređivač.</p>
 <p><strong>Nagrade:</strong> 1× BMW Serije 1 (31.500,00 €), 7× gejmerski laptop (13.447,00 €), 7× iPhone 17 Pro (9.800,00 €), 7× PlayStation 5 (5.250,00 €), 7× električni trotinet (3.430,00 €). Ukupna vrijednost fonda: 63.427,00 € sa uračunatim PDV-om.</p>
 
@@ -848,7 +872,7 @@ style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; displ
 
 <div class="foot-links">
 <a href="https://www.promoadmiral.me/" target="_blank" rel="noopener">Puna pravila nagradne igre</a>
-<a href="#mehanika">Uslovi učešća</a>
+<a href="#mehanika">Kako se učestvovalo</a>
 <a href="https://admiralbet.me/help/category/kontakt-120/card/kontakt-119" target="_blank" rel="noopener">Kontakt za pitanja</a>
 <a href="https://admiralbet.me/help/category/odgovorno-kladjenje-141/card/odgovorno-kladjenje-141" target="_blank" rel="noopener">Odgovorno igranje</a>
 </div>
@@ -857,8 +881,17 @@ style="width:100%; aspect-ratio:16/9; border-radius:14px; overflow:hidden; displ
 </div>
 </footer>
 
+<div class="redirect-bar hide" id="redirectBar" role="status" aria-live="polite">
+<div class="rb-text" id="rbText">Do izvlačenja 08.10. u 18h — pogledaj šta još nudimo. Preusmjeravamo te na AdmiralBet.me za <b id="rbSec">10</b> s.</div>
+<div class="rb-actions">
+<a href="https://admiralbet.me/" class="btn btn-gold" data-redirect-cta>Posjeti AdmiralBet.me</a>
+<button type="button" class="rb-stay" id="rbStay">Ostani na stranici</button>
+</div>
+<div class="rb-bar" id="rbBarWrap"><i id="rbBar"></i></div>
+</div>
+
 <div class="sticky-counter" id="stickyCounter">
-<span class="sc-label">Do finala — BMW Serije 1</span>
+<span class="sc-label">Do izvlačenja — BMW Serije 1</span>
 <span class="sc-time">
 <span class="sc-unit"><b id="scDays">–</b><i>d</i></span>
 <span class="sc-unit"><b id="scHours">–</b><i>h</i></span>
@@ -1165,6 +1198,10 @@ body: JSON.stringify(payload)
 }
 }
 
+window.__trackEvent = function (ev, extra) {
+sendToSheet(Object.assign({ event: ev, session_id: sessionId, timestamp: new Date().toISOString() }, extra || {}));
+};
+
 // Geolokacija po IP-u (besplatan servis, bez API ključa) — pa slanje pageview-a
 fetch('https://ipwho.is/')
 .then(function (r) { return r.json(); })
@@ -1230,6 +1267,71 @@ entries.forEach(e => { finaleVisible = e.isIntersecting; refresh(); });
 }, { threshold: 0.15 });
 finaleObs.observe(finale);
 }
+})();
+
+// ==========================================================
+// PREUSMJERAVANJE NA ADMIRALBET.ME — klik na dugme ili automatski nakon 10 s
+// Na dan izvlačenja (08.10.) auto-preusmjeravanje je isključeno, da gledaoci ostanu na prenosu.
+// ==========================================================
+(function () {
+const REDIRECT_URL = "https://admiralbet.me/"; // po potrebi dodaj UTM parametre
+const REDIRECT_SECONDS = 10;
+const DRAW_DAY_START = new Date('2026-10-08T00:00:00');
+const DRAW_DAY_END = new Date('2026-10-09T00:00:00');
+
+const bar = document.getElementById('redirectBar');
+const secEl = document.getElementById('rbSec');
+const textEl = document.getElementById('rbText');
+const stayBtn = document.getElementById('rbStay');
+const barWrap = document.getElementById('rbBarWrap');
+const barFill = document.getElementById('rbBar');
+let timer = null;
+let done = false;
+
+function track(ev) {
+if (typeof window.__trackEvent === 'function') window.__trackEvent(ev, { redirect_url: REDIRECT_URL });
+}
+function go(source) {
+if (done) return;
+done = true;
+if (timer) clearInterval(timer);
+track(source === 'auto' ? 'redirect_auto' : 'redirect_click');
+setTimeout(function () { window.location.href = REDIRECT_URL; }, 150);
+}
+
+document.querySelectorAll('[data-redirect-cta]').forEach(function (a) {
+a.setAttribute('href', REDIRECT_URL);
+a.addEventListener('click', function (e) { e.preventDefault(); go('click'); });
+});
+
+if (!bar) return;
+const now = new Date();
+const isDrawDay = now >= DRAW_DAY_START && now < DRAW_DAY_END;
+bar.classList.remove('hide');
+document.body.classList.add('redirect-active');
+
+if (isDrawDay) {
+textEl.innerHTML = 'Danas u 18h izvlačimo dobitnika <b>BMW Serije 1</b>. Do tada pogledaj šta još nudimo.';
+stayBtn.textContent = 'Zatvori';
+barWrap.style.display = 'none';
+} else {
+let left = REDIRECT_SECONDS;
+secEl.textContent = left;
+requestAnimationFrame(function () { barFill.style.transform = 'scaleX(' + ((left - 1) / REDIRECT_SECONDS) + ')'; });
+timer = setInterval(function () {
+left -= 1;
+secEl.textContent = Math.max(0, left);
+barFill.style.transform = 'scaleX(' + (Math.max(0, left - 1) / REDIRECT_SECONDS) + ')';
+if (left <= 0) go('auto');
+}, 1000);
+}
+
+stayBtn.addEventListener('click', function () {
+if (timer) clearInterval(timer);
+bar.classList.add('hide');
+document.body.classList.remove('redirect-active');
+track('redirect_cancel');
+});
 })();
 </script>
 
