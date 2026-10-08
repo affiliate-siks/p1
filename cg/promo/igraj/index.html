@@ -182,7 +182,7 @@ footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:spac
   .how-grid{grid-template-columns:1fr}
 }
 @media (max-width:760px){
-  
+
   .hdr-link{display:none}
   .mbar{display:flex}
   footer{padding-bottom:110px}
@@ -197,6 +197,11 @@ footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:spac
   footer .wrap{justify-content:center;text-align:center}
 }
 </style>
+<script>
+/* Stranica se uvijek otvara na vrhu (browser inace vraca prethodnu poziciju skrola pri osvjezavanju) */
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+window.addEventListener('load',function(){if(!location.hash)window.scrollTo(0,0)});
+</script>
 </head>
 <body>
 
