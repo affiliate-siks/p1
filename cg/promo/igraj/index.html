@@ -365,5 +365,136 @@ footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:spac
   window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 })();
 </script>
+
+<!-- ================= TRACKING (LP -> Google Sheet, opciono GA4) ================= -->
+<script>
+(function(){
+  /* ---------- KONFIGURACIJA ---------- */
+  var CONFIG = {
+    SHEET_ENDPOINT: 'PASTE_APPS_SCRIPT_WEB_APP_URL', // URL Apps Script web app-a (/exec)
+    GA4_ID: '',                                      // opciono, npr. G-XXXXXXX; prazno = GA4 iskljucen
+    LP_ID: 'ABCG_LP_Fantazi_Predikcije',             // naziv LP-a u tabeli
+    FORWARD_UTM: true                                // prosljedjuje dolazne UTM-ove na admiralbet.me linkove
+  };
+
+  /* ---------- POMOCNE ---------- */
+  function rid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,10)}
+  function store(type,key,val){try{var s=window[type];if(val===undefined)return s.getItem(key);s.setItem(key,val)}catch(e){return null}}
+  var qs=new URLSearchParams(location.search);
+  var UTM_KEYS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+
+  // posjetilac (trajno) i sesija (do zatvaranja taba)
+  var visitorId=store('localStorage','ab_lp_vid'), newVisitor='0';
+  if(!visitorId){visitorId=rid();newVisitor='1';store('localStorage','ab_lp_vid',visitorId)}
+  var sessionId=store('sessionStorage','ab_lp_sid');
+  if(!sessionId){sessionId=rid();store('sessionStorage','ab_lp_sid',sessionId)}
+
+  // UTM: cuva prvi dolazni set u sesiji (da se ne izgubi pri skrolu na anchor linkove)
+  var utm={};
+  UTM_KEYS.forEach(function(k){utm[k]=qs.get(k)||''});
+  if(utm.utm_source){store('sessionStorage','ab_lp_utm',JSON.stringify(utm))}
+  else{try{var su=JSON.parse(store('sessionStorage','ab_lp_utm')||'null');if(su)utm=su}catch(e){}}
+
+  var clickId=qs.get('gclid')?'gclid':qs.get('fbclid')?'fbclid':qs.get('ttclid')?'ttclid':qs.get('msclkid')?'msclkid':'';
+  var refHost='';try{refHost=document.referrer?new URL(document.referrer).hostname:''}catch(e){}
+  var source=utm.utm_source||(refHost&&refHost!==location.hostname?refHost:'(direct)');
+
+  var w=window.innerWidth;
+  var device=/Mobi|Android|iPhone/i.test(navigator.userAgent)?'mobile':(/iPad|Tablet/i.test(navigator.userAgent)||(w>=600&&w<1024&&'ontouchstart' in window))?'tablet':'desktop';
+  var bot=(navigator.webdriver||/bot|crawl|spider|headless|lighthouse|preview/i.test(navigator.userAgent))?'1':'0';
+
+  var t0=Date.now(), maxScroll=0, clicks=0, sentExit=false;
+
+  /* ---------- SLANJE ---------- */
+  function send(event,extra){
+    var p={
+      lp_id:CONFIG.LP_ID,event:event,promo:'',position:'',label:'',target:'',
+      scroll_pct:'',time_on_page_s:'',
+      session_id:sessionId,visitor_id:visitorId,new_visitor:newVisitor,
+      source:source,utm_source:utm.utm_source,utm_medium:utm.utm_medium,utm_campaign:utm.utm_campaign,
+      utm_content:utm.utm_content,utm_term:utm.utm_term,click_id:clickId,
+      referrer:document.referrer.slice(0,300),device:device,screen:screen.width+'x'+screen.height,
+      viewport:window.innerWidth+'x'+window.innerHeight,lang:navigator.language||'',
+      page_url:location.href.slice(0,500),bot:bot,client_ts:new Date().toISOString(),
+      user_agent:navigator.userAgent.slice(0,300)
+    };
+    for(var k in extra)p[k]=extra[k];
+
+    if(CONFIG.SHEET_ENDPOINT.indexOf('http')===0){
+      var body=JSON.stringify(p);
+      var ok=false;
+      try{ok=navigator.sendBeacon&&navigator.sendBeacon(CONFIG.SHEET_ENDPOINT,new Blob([body],{type:'text/plain'}))}catch(e){}
+      if(!ok){try{fetch(CONFIG.SHEET_ENDPOINT,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:body})}catch(e){}}
+    }
+    if(CONFIG.GA4_ID&&window.gtag){
+      window.gtag('event','lp_'+event,{promo:p.promo,position:p.position,link_text:p.label,link_url:p.target,
+        percent_scrolled:p.scroll_pct,engagement_s:p.time_on_page_s,lp_id:CONFIG.LP_ID});
+    }
+    if(window.dataLayer)window.dataLayer.push({event:'lp_'+event,lp:p}); // za GTM, ako postoji
+  }
+
+  /* ---------- GA4 (opciono) ---------- */
+  if(CONFIG.GA4_ID){
+    var g=document.createElement('script');g.async=true;g.src='https://www.googletagmanager.com/gtag/js?id='+CONFIG.GA4_ID;document.head.appendChild(g);
+    window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
+    gtag('js',new Date());gtag('config',CONFIG.GA4_ID);
+  }
+
+  /* ---------- KLASIFIKACIJA LINKOVA ---------- */
+  function promoOf(href){
+    if(/njeguski-evroliga-fantazi/.test(href))return 'fantazi';
+    if(/admiralbet-predikcije/.test(href))return 'predikcije';
+    if(/\/registration/.test(href))return 'registracija';
+    if(/\/login/.test(href))return 'prijava';
+    if(/admiralbet\.me\/?$/.test(href))return 'logo';
+    return 'ostalo';
+  }
+  function positionOf(el){
+    if(el.closest('.mbar'))return 'sticky_mobile';
+    if(el.closest('.hdr'))return 'header';
+    if(el.closest('.hero'))return 'hero';
+    if(el.closest('.card'))return 'kartica';
+    if(el.closest('.final'))return 'final_cta';
+    if(el.closest('footer'))return 'footer';
+    return 'ostalo';
+  }
+
+  // UTM prosljedjivanje na admiralbet.me linkove
+  if(CONFIG.FORWARD_UTM&&utm.utm_source){
+    document.querySelectorAll('a[href*="admiralbet.me"]').forEach(function(a){
+      try{var u=new URL(a.href);UTM_KEYS.forEach(function(k){if(utm[k]&&!u.searchParams.has(k))u.searchParams.set(k,utm[k])});a.href=u.toString()}catch(e){}
+    });
+  }
+
+  /* ---------- EVENT 1: page_view ---------- */
+  send('page_view',{});
+
+  /* ---------- EVENT 2: cta_click (svi izlazni linkovi) ---------- */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="http"]');
+    if(!a)return;
+    clicks++;
+    send('cta_click',{promo:promoOf(a.href),position:positionOf(a),label:(a.innerText||a.getAttribute('aria-label')||'').trim().slice(0,60),target:a.href.slice(0,500)});
+  },true);
+
+  /* ---------- EVENT 3: scroll (25/50/75/100, jednom po pragu) ---------- */
+  var marks=[25,50,75,100],hit={};
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var pct=h>0?Math.round(window.scrollY/h*100):100;
+    if(pct>maxScroll)maxScroll=pct;
+    marks.forEach(function(m){if(pct>=m&&!hit[m]){hit[m]=1;send('scroll',{scroll_pct:m})}});
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+
+  /* ---------- EVENT 4: page_exit (vrijeme na stranici + max skrol) ---------- */
+  function exit(){
+    if(sentExit)return;sentExit=true;
+    send('page_exit',{scroll_pct:maxScroll,time_on_page_s:Math.round((Date.now()-t0)/1000),label:'clicks:'+clicks});
+  }
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')exit();else sentExit=false});
+  window.addEventListener('pagehide',exit);
+})();
+</script>
 </body>
 </html>
