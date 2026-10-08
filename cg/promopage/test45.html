@@ -606,7 +606,6 @@ body.redirect-active .sticky-counter{display:none;}
 </div>
 <nav class="nav-links">
 <a href="#finale">Finale — BMW</a>
-<a href="#kola">Kola i izvlačenja</a>
 <a href="#nagrade">Nagrade</a>
 <a href="#uzivo">Uživo prenos</a>
 <a href="#pravila">Pravila</a>
@@ -617,7 +616,6 @@ body.redirect-active .sticky-counter{display:none;}
 </div>
 <div class="mobile-menu" id="mobileMenu">
 <a href="#finale">Finale — BMW</a>
-<a href="#kola">Kola i izvlačenja</a>
 <a href="#nagrade">Nagrade</a>
 <a href="#uzivo">Uživo prenos</a>
 <a href="#pravila">Pravila</a>
@@ -725,35 +723,6 @@ body.redirect-active .sticky-counter{display:none;}
 </div>
 </div>
 </section>
-
-<section id="kola" class="bg-alt">
-<div class="wrap">
-<div class="section-head reveal">
-<div class="eyebrow">Raspored</div>
-<h2>Iz kola u kola, sve do finala</h2>
-<p>Svih sedam kola je završeno. Validni listići iz svih kola, koji nijesu izvučeni kao dobitni, učestvuju u finalnom izvlačenju za BMW Serije 1.</p>
-</div>
-<div class="board reveal">
-<div class="board-row head"><span></span><span>Period kola</span><span>Validnih listića u kolu</span></div>
-<div class="board-row"><span class="num">01</span><span class="period">17.08 - 23.08.</span><span class="listica" data-listica="8838">0</span></div>
-<div class="board-row"><span class="num">02</span><span class="period">24.08 - 30.08.</span><span class="listica" data-listica="7659">0</span></div>
-<div class="board-row"><span class="num">03</span><span class="period">31.08 - 06.09.</span><span class="listica" data-listica="7727">0</span></div>
-<div class="board-row"><span class="num">04</span><span class="period">07.09 - 13.09.</span><span class="listica" data-listica="8009">0</span></div>
-<div class="board-row"><span class="num">05</span><span class="period">14.09 - 20.09.</span><span class="listica" data-listica="7831">0</span></div>
-<div class="board-row"><span class="num">06</span><span class="period">21.09 - 27.09.</span><span class="listica" data-listica="0">0</span></div>
-<div class="board-row final"><span class="num">07</span><span class="period">28.09 - 04.10.2026. <span class="finale-tag">IZVLAČENJE + FINALE 08.10. u 18h</span></span><span class="listica" data-listica="0">0</span></div>
-</div>
-<div class="pool-total reveal">
-<div>
-<div class="lbl">Ukupno u fondu za finalno izvlačenje</div>
-<div class="val" id="poolTotal">0<span>validnih listića</span></div>
-</div>
-<div class="updated" id="poolUpdated">Ažurirano: —</div>
-</div>
-<p style="margin-top:18px; font-size:12.5px; color:var(--gray); line-height:1.6;">Period uplata trajao je od 17.08. do 04.10.2026. <strong style="color:var(--gold);">Izvlačenje 7. kola i finalno izvlačenje za BMW Serije 1 održavaju se u četvrtak, 08.10.2026. sa početkom u 18h.</strong> Konačan broj listića u fondu biće ažuriran nakon objedinjavanja prijava iz posljednjeg kola.</p>
-</div>
-</section>
-
 
 <section id="uzivo" class="bg-alt" style="display:none;">
 <div class="wrap">
@@ -968,44 +937,6 @@ if (rulesToggle) rulesToggle.scrollIntoView({ behavior: 'smooth', block: 'start'
 });
 });
 
-// Broj listića po kolu
-function formatBroj(n){
-return new Intl.NumberFormat('sr-RS').format(n);
-}
-function initListica(){
-const rows = document.querySelectorAll('.listica[data-listica]');
-let total = 0;
-rows.forEach(el => {
-const val = parseInt(el.getAttribute('data-listica'), 10) || 0;
-total += val;
-el.childNodes[0].nodeValue = formatBroj(val);
-});
-const totalEl = document.getElementById('poolTotal');
-if (totalEl) {
-const span = totalEl.querySelector('span');
-animateCount(totalEl, total, span ? span.outerHTML : '');
-}
-const updatedEl = document.getElementById('poolUpdated');
-if (updatedEl) {
-const now = new Date();
-const datum = now.toLocaleDateString('sr-RS', { day:'2-digit', month:'2-digit', year:'numeric' });
-const vrijeme = now.toLocaleTimeString('sr-RS', { hour:'2-digit', minute:'2-digit' });
-updatedEl.textContent = `Ažurirano: ${datum} u ${vrijeme}`;
-}
-}
-function animateCount(el, target, suffixHTML){
-const dur = 900;
-const start = performance.now();
-function step(now){
-const p = Math.min(1, (now - start) / dur);
-const eased = 1 - Math.pow(1 - p, 3);
-const val = Math.round(target * eased);
-el.innerHTML = formatBroj(val) + suffixHTML;
-if (p < 1) requestAnimationFrame(step);
-}
-requestAnimationFrame(step);
-}
-initListica();
 
 // Finalno izvlačenje: 08.10.2026. u 18h
 const target = new Date('2026-10-08T19:00:00');
