@@ -441,7 +441,7 @@ const D=s=>{const d=new Date(s+'T00:00:00');return d};
 const days=d=>Math.round((d-TODAY)/864e5);
 const fmt=d=>`${d.getDate()}.${d.getMonth()+1}.`;
 const DAYN=['nedjelja','ponedjeljak','utorak','srijeda','četvrtak','petak','subota'];
-function rel(d){const n=days(d);return n===0?'Danas':n===1?'Sutra':n<7?DAYN[d.getDay()][0].toUpperCase()+DAYN[d.getDay()].slice(1):fmt(d)}
+function rel(d){const n=days(d);return n===0?'Danas':n===1?'Sjutra':n<7?DAYN[d.getDay()][0].toUpperCase()+DAYN[d.getDay()].slice(1):fmt(d)}
 function nextWeekday(wd){const d=new Date(TODAY);d.setDate(d.getDate()+((wd-d.getDay()+7)%7||7));return d}
 /* kada promocija važi: sort = koliko je "hitna" (manje = prije), hide = istekla */
 const TIMING={
