@@ -494,7 +494,7 @@ const QS={
   p:{q:'Imaš li nalog?',L:{v:'new',t:'Nemam',ic:USER_PLUS},R:{v:'existing',t:'Imam',ic:USER_OK}}
 };
 function renderOnboarding(h){
-  const todo=['v','p'].filter(k=>!prof[k]);
+  const todo=['p','v'].filter(k=>!prof[k]);
   h.innerHTML=`<div class="onb"><div class="deck" id="deck"></div>
     <button class="skip" id="bSkip">Preskoči</button></div>`;
   $('bSkip').onclick=()=>{track('promo_guide_skip');$('all').scrollIntoView({behavior:'smooth'})};
