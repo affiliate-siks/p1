@@ -213,11 +213,13 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   .gcard p{grid-column:2;grid-row:3;font-size:11.5px;line-height:1.35;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .gcard .row{grid-column:2;grid-row:4;margin-top:8px;padding-top:0;display:flex;align-items:center;gap:12px}
   .gcard .row .btn{height:30px;font-size:11px;padding:0 12px;border-radius:9px;flex:0 0 auto}
-  .gcard .row .btn-y{background:transparent;color:#dfe3ea;border:1px solid #3a4150;transition:background .3s,color .3s,border-color .3s}
+  .gcard{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s,border-color .35s,box-shadow .35s,background .35s}
+  .gcard .row .btn-y{background:#22262c;color:#fff;border:1px solid transparent;transition:background .3s,color .3s,transform .3s}
   .gcard .row .btn-g{order:2;background:none;padding:0;height:auto;color:var(--muted);text-decoration:underline;font-size:11px}
   .gcard.me{border-color:#23272e}
-  .gcard.inview{border-color:#4a5262;background:#1a1d22}
-  .gcard.inview .row .btn-y{background:var(--yellow);color:#000;border-color:var(--yellow)}
+  .focus-mode .gcard{opacity:.5;transform:scale(.96)}
+  .focus-mode .gcard.inview{opacity:1;transform:scale(1.04);border-color:var(--yellow);background:#1a1d22;box-shadow:0 0 0 1px var(--yellow),0 14px 40px rgba(255,203,5,.18);position:relative;z-index:2}
+  .gcard.inview .row .btn-y{background:var(--yellow);color:#000;transform:scale(1.05)}
   .tl .ti{grid-template-columns:110px 1fr;gap:4px 12px}.tl .ti img{width:110px;height:66px}
   .total .num{font-size:56px}
   .rung{padding:12px 14px}
@@ -635,14 +637,27 @@ function renderGrid(){
   $('grid').innerHTML=list.map(p=>gcard(p)).join('');
   observeCards();
 }
-/* mobilni: kartica koja je na sredini ekrana dobija istaknuto dugme */
-let cardObs=null;
-function observeCards(){
-  if(!('IntersectionObserver' in window))return;
-  if(cardObs)cardObs.disconnect();
-  cardObs=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('inview',e.isIntersecting)),{rootMargin:'-49% 0px -49% 0px'});
-  document.querySelectorAll('#grid .gcard').forEach(c=>cardObs.observe(c));
+/* mobilni: aktivna je kartica najbliža "liniji fokusa". Linija je na sredini ekrana,
+   a pri kraju stranice klizi prema dnu, pa se aktiviraju i posljednje kartice. */
+const mqMob=matchMedia('(max-width:560px)');
+let focusRaf=0;
+function observeCards(){updateFocus()}
+function updateFocus(){
+  const cards=[...document.querySelectorAll('#grid .gcard')];
+  if(!mqMob.matches){cards.forEach(c=>c.classList.remove('inview','dim'));document.body.classList.remove('focus-mode');return}
+  const vh=innerHeight,stickyH=($('sticky').classList.contains('up')?$('sticky').offsetHeight:0);
+  const left=document.documentElement.scrollHeight-(scrollY+vh);
+  const zone=vh*0.6, t=left<zone?1-left/zone:0;
+  const target=vh*0.45+t*(vh-stickyH-vh*0.45-40);
+  const g=$('grid').getBoundingClientRect();
+  const inGrid=g.top<vh*0.8&&g.bottom>vh*0.2;
+  let best=null,bd=1e9;
+  if(inGrid)cards.forEach(c=>{const r=c.getBoundingClientRect();const d=Math.abs((r.top+r.bottom)/2-target);if(d<bd){bd=d;best=c}});
+  document.body.classList.toggle('focus-mode',!!best);
+  cards.forEach(c=>{c.classList.toggle('inview',c===best)});
 }
+addEventListener('scroll',()=>{cancelAnimationFrame(focusRaf);focusRaf=requestAnimationFrame(updateFocus)},{passive:true});
+addEventListener('resize',updateFocus);
 $('grid').onclick=e=>{const a=e.target.closest('[data-id]');if(a)track('promo_cta_click',{promo_id:a.dataset.id,source:'grid'})};
 function markSeen(){prof.seen=PROMOS.map(p=>p.id);saveProf()}
 
